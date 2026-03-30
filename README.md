@@ -1,75 +1,77 @@
-# Nuxt Minimal Starter
+# Центр Умного Развития "УРА" — Frontend Core
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Фронтенд-приложение сайта [ypa-center.ru](https://ypa-center.ru), построенное на Nuxt 4 и Vue 3.
 
-## Setup
+## Стек
 
-Make sure to install dependencies:
+| Категория                | Технологии                    |
+| --------------------------------- | --------------------------------------- |
+| Фреймворк                | Nuxt 4, Vue 3                           |
+| UI / стили                   | Nuxt UI, Tailwind CSS 4, Phosphor Icons |
+| Состояние                | Pinia, VueUse                           |
+| Утилиты                    | dayjs (ru), zod, maska                  |
+| SEO                               | sitemap, robots.txt                     |
+| Изображения            | @nuxt/image                             |
+| Доступность            | @nuxt/a11y                              |
+| Пакетный менеджер | Bun                                     |
+
+## Требования
+
+- [Bun](https://bun.sh) ≥ 1.3
+
+## Запуск
 
 ```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
+# Установка зависимостей
 bun install
+
+# Режим разработки
+bun dev
+
+# Сборка для продакшена
+bun build
+
+# Предпросмотр продакшен-сборки
+bun preview
 ```
 
-## Development Server
+## Структура проекта
 
-Start the development server on `http://localhost:3000`:
+```
+app/
+├── assets/
+│   ├── css/            # Глобальные стили
+│   └── images/         # Статические изображения
+├── components/
+│   └── App/            # Глобальные компоненты (AppHeader, AppFooter)
+├── composables/        # Vue composables (авто-импорт)
+├── layouts/
+│   └── default.vue     # Базовый layout
+├── middleware/         # Route middleware
+├── pages/              # Страницы (файловый роутинг)
+├── plugins/            # Nuxt plugins
+├── stores/             # Pinia stores
+├── types/              # TypeScript типы и интерфейсы
+├── utils/              # Утилиты (авто-импорт)
+└── app.vue             # Корневой компонент
+public/                 # Статические файлы (robots, favicon)
+docs/openapi/           # OpenAPI спецификации
+nuxt.config.ts          # Конфигурация Nuxt
+```
+
+## Переменные окружения
+
+Скопируйте `.env` и при необходимости измените значения:
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
+cp .env .env.local
 ```
 
-## Production
+## Качество кода
 
-Build the application for production:
+Проект использует ESLint + Prettier. Husky запускает линтер перед каждым коммитом.
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+# Запуск линтера
+bun lint
 ```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
