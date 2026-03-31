@@ -45,9 +45,7 @@ export default defineNuxtConfig({
     compatibilityDate: "2025-07-15",
 
     vite: {
-        server: {
-            allowedHosts: true
-        },
+        server: process.env.NODE_ENV === "development" ? { allowedHosts: true } : undefined,
         // Добавляем этот блок:
         optimizeDeps: {
             include: [
@@ -89,8 +87,7 @@ export default defineNuxtConfig({
 
     googleFonts: {
         families: {
-            Nunito: "200..1000",
-            Rubik: "300..900"
+            Nunito: "200..1000"
         },
         display: "swap",
         download: true,

@@ -4,7 +4,6 @@
 
 @theme static {
   --font-sans: 'Nunito', sans-serif;
-  --font-mono: 'Rubik', 'sans-serif'
 }
 
 @layer base {
