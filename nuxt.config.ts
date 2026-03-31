@@ -35,12 +35,12 @@ export default defineNuxtConfig({
     },
 
     routeRules: {
-        "/": { ssr: true },
-        "/**": {
-            headers: {
-                "Content-Security-Policy": "frame-src 'self' https://vk.com https://vkvideo.ru"
-            }
-        }
+        "/": { ssr: true }
+        // "/**": {
+        //     headers: {
+        //         "Content-Security-Policy": "frame-src 'self' https://vk.com https://vkvideo.ru"
+        //     }
+        // }
     },
     compatibilityDate: "2025-07-15",
 
