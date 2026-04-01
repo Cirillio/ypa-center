@@ -55,10 +55,14 @@ const bgClass = computed(() => {
 </script>
 <template>
     <div class="flex max-w-xs flex-col xl:max-w-xl">
-        <div class="flex max-xl:flex-col max-xl:gap-2 xl:overflow-hidden xl:rounded-full">
+        <form
+            id="callbackForm"
+            class="flex max-xl:flex-col max-xl:gap-2 xl:overflow-hidden xl:rounded-full"
+        >
             <UInput
                 v-model="phone"
                 v-maska="'+7 (###) ###-##-##'"
+                name="phone"
                 placeholder="+7 (###) ###-##-##"
                 type="tel"
                 autocomplete="tel"
@@ -87,7 +91,9 @@ const bgClass = computed(() => {
                     <UButton
                         :label="isMobile ? selectedTime.label : selectedTime.time"
                         size="xl"
+                        name="time"
                         color="secondary"
+                        type="button"
                         class="w-full justify-between xl:w-auto xl:rounded-none"
                         :class="bgClass"
                         :variant="'ghost'"
@@ -101,6 +107,7 @@ const bgClass = computed(() => {
                                 :label="option.label"
                                 size="xl"
                                 variant="ghost"
+                                type="button"
                                 class="font-semibold"
                                 @click="selectTime(option)"
                             />
@@ -112,12 +119,13 @@ const bgClass = computed(() => {
                     size="xl"
                     color="primary"
                     variant="soft"
+                    type="submit"
                     :block="isMobile ? true : false"
                     label="Жду звонка"
                     class="font-semibold md:w-fit xl:w-auto xl:rounded-none"
                 />
             </div>
-        </div>
+        </form>
 
         <span class="text-default/45 mt-2 px-4 text-[10px] leading-tight">
             Нажимая на кнопку, вы даете согласие на
@@ -125,7 +133,7 @@ const bgClass = computed(() => {
                 обработку персональных данных
             </NuxtLink>
             и соглашаетесь с
-            <NuxtLink to="/privacy" class="hover:text-primary underline transition-colors">
+            <NuxtLink to="/consent" class="hover:text-primary underline transition-colors">
                 политикой конфиденциальности </NuxtLink
             >.
         </span>

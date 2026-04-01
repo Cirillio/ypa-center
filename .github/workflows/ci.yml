@@ -20,6 +20,9 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Prettier check
+        run: bun run prettier --check .
+
       - name: Lint check
         run: bun run lint
 

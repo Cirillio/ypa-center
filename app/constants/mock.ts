@@ -1,4 +1,4 @@
-import type { ClubShort, EventShort, GalleryImage } from "~/types"
+import type { Club, ClubShort, EventShort, GalleryImage } from "~/types"
 
 export const MOCK_CLUBS: ClubShort[] = [
     {
@@ -67,6 +67,61 @@ export const MOCK_EVENTS: EventShort[] = [
         time: "18:30",
         price: "700р",
         isPinned: true
+    }
+]
+
+export const MOCK_CLUBS_FULL: Club[] = [
+    {
+        id: 1,
+        name: "Настольные игры",
+        description:
+            "Развиваем логику, стратегическое мышление и умение работать в команде через увлекательные настольные игры.",
+        photo: "moke/club_1.jpg",
+        teacher: { name: "Мария Коваль", photo: "moke/teacher_1.jpg" },
+        schedule: { days: ["Пн", "Ср", "Пт"], timeStart: "16:00", timeEnd: "17:00" },
+        age: { min: 6, max: 12 },
+        price: 120000,
+        spots_total: 10,
+        spots_available: 6
+    },
+    {
+        id: 2,
+        name: "Рисование",
+        description:
+            "Раскрываем творческий потенциал через живопись, графику и художественное творчество. Работаем с акварелью, гуашью и пастелью.",
+        photo: "moke/club_2.jpg",
+        teacher: { name: "Ольга Ненашева", photo: "moke/teacher_2.jpg" },
+        schedule: { days: ["Вт", "Чт"], timeStart: "15:00", timeEnd: "16:30" },
+        age: { min: 4, max: 10 },
+        price: 150000,
+        spots_total: 8,
+        spots_available: 2
+    },
+    {
+        id: 3,
+        name: "Пианино",
+        description:
+            "Обучаем игре на фортепиано с нуля: нотная грамота, техника, разбор произведений классиков и современных авторов.",
+        photo: "moke/club_3.jpg",
+        teacher: { name: "Дмитрий Шаров", photo: "moke/teacher_3.jpg" },
+        schedule: { days: ["Пн", "Чт"], timeStart: "17:00", timeEnd: "17:45" },
+        age: { min: 5, max: 14 },
+        price: 180000,
+        spots_total: 6,
+        spots_available: 0
+    },
+    {
+        id: 4,
+        name: "Каникулярная программа",
+        description:
+            "Яркий и насыщенный досуг во время школьных каникул: мастер-классы, квесты, творческие мастерские и выездные мероприятия.",
+        photo: "moke/club_4.jpg",
+        teacher: { name: "Анастасия Луговая", photo: "moke/teacher_4.jpg" },
+        schedule: { days: ["Пн", "Вт", "Ср", "Чт", "Пт"], timeStart: "10:00", timeEnd: "14:00" },
+        age: { min: 6, max: 14 },
+        price: 250000,
+        spots_total: 15,
+        spots_available: 9
     }
 ]
 
