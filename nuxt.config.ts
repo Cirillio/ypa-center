@@ -89,8 +89,9 @@ export default defineNuxtConfig({
         families: {
             Nunito: "200..1000"
         },
-        display: "swap",
+        display: "fallback",
         download: true,
+        preload: true,
         base64: false,
         inject: true,
         stylePath: "css/fonts.css"

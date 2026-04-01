@@ -21,8 +21,8 @@ const FOOTER_GROUPS: FooterGroup[] = [
         links: [
             { label: "Кружки", to: "/clubs" },
             { label: "О нас", to: "/about" },
-            { label: "Галерея", to: "/gallery" },
-            { label: "Учителя", to: "/teachers" }
+            { label: "Учителя", to: "/teachers" },
+            { label: "Галерея", to: "/gallery" }
         ]
     },
     {
@@ -70,7 +70,11 @@ const FOOTER_GROUPS: FooterGroup[] = [
                     <NuxtLink to="/" class="group flex items-center gap-2.5">
                         <NuxtImg
                             src="/core/Sun.png"
+                            alt=""
                             class="h-12 transition-transform duration-300 group-hover:rotate-10"
+                            format="webp"
+                            quality="90"
+                            loading="lazy"
                         />
                         <span class="text-secondary text-3xl leading-tight font-extrabold">
                             <span class="text-primary">У</span>лица

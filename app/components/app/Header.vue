@@ -17,7 +17,7 @@ const NAV_ROUTES: NavigationMenuItem[] = [
 <template>
     <header
         class="fixed top-0 right-0 left-0 z-99 flex justify-center transition-all duration-300"
-        :class="isScrolled ? 'bg-white/75 shadow-sm backdrop-blur-sm' : 'bg-transparent'"
+        :class="isScrolled ? 'bg-white/85 shadow-xs/5 backdrop-blur-sm' : 'bg-transparent'"
     >
         <UContainer
             class="relative flex h-(--header-height) w-full items-center justify-between p-2"
@@ -29,7 +29,12 @@ const NAV_ROUTES: NavigationMenuItem[] = [
             >
                 <NuxtImg
                     src="/core/Sun.png"
+                    alt=""
                     class="h-full transition-transform delay-75 duration-300 ease-in-out group-hover:rotate-10"
+                    format="webp"
+                    quality="90"
+                    loading="eager"
+                    fetchpriority="high"
                 />
 
                 <div class="flex flex-col items-start">
@@ -65,6 +70,7 @@ const NAV_ROUTES: NavigationMenuItem[] = [
                 <!-- ACTION -->
 
                 <UButton
+                    to="/enroll"
                     label="Записаться"
                     trailing-icon="ph:rocket-launch-duotone"
                     class="h-full px-4 py-2 text-base font-semibold"
@@ -83,6 +89,7 @@ const NAV_ROUTES: NavigationMenuItem[] = [
                     }"
                 >
                     <UButton
+                        to="/subscription"
                         color="secondary"
                         icon="ph:pencil-duotone"
                         class="h-full p-2 text-base font-semibold"
