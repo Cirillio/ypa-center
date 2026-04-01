@@ -17,7 +17,7 @@ const NAV_ROUTES: NavigationMenuItem[] = [
 <template>
     <header
         class="fixed top-0 right-0 left-0 z-99 flex justify-center transition-all duration-300"
-        :class="isScrolled ? 'bg-white/85 shadow-xs/5 backdrop-blur-sm' : 'bg-transparent'"
+        :class="isScrolled ? 'bg-white/85 backdrop-blur-sm' : 'bg-transparent'"
     >
         <UContainer
             class="relative flex h-(--header-height) w-full items-center justify-between p-2"

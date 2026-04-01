@@ -3,11 +3,12 @@ import { MOCK_CLUBS } from "~/constants/mock"
 </script>
 
 <template>
-    <section class="bg-default relative z-10 flex w-full overflow-hidden py-20">
-        <UIcon
-            name="ph:puzzle-piece-duotone"
-            class="text-secondary absolute top-8 right-0 z-0 size-120 translate-x-1/2 opacity-15"
-        />
+    <section class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20">
+        <div
+            class="absolute top-6 right-6 z-0 flex rounded-full bg-white p-2 opacity-60 xl:top-8 xl:right-0 xl:translate-x-1/2 xl:rounded-none xl:bg-transparent xl:p-0 xl:opacity-15"
+        >
+            <UIcon name="ph:puzzle-piece-duotone" class="text-secondary size-10 xl:size-120" />
+        </div>
 
         <UContainer class="relative z-10 flex flex-col gap-12 md:gap-16">
             <!-- Floating promo card -->
@@ -26,11 +27,11 @@ import { MOCK_CLUBS } from "~/constants/mock"
                     мы найдём занятие для каждого характера и таланта.
                 </template>
                 <template #action>
-                    <UButton to="/clubs" size="xl" class="group mt-auto w-fit px-5 py-2.5">
-                        <span class="text-lg font-bold">Все кружки</span>
+                    <UButton to="/clubs" size="xl" class="group mt-auto w-fit md:px-5 md:py-2.5">
+                        <span class="font-bold md:text-lg">Все кружки</span>
                         <UIcon
                             name="ph:arrow-right-bold"
-                            class="size-5 transition group-hover:translate-x-1"
+                            class="size-4 transition group-hover:translate-x-1 md:size-5"
                         />
                     </UButton>
                 </template>
@@ -42,7 +43,7 @@ import { MOCK_CLUBS } from "~/constants/mock"
                     v-for="club in MOCK_CLUBS"
                     :key="club.title"
                     v-bind="club"
-                    class="h-98"
+                    class="h-72 md:h-98"
                 />
             </div>
         </UContainer>
