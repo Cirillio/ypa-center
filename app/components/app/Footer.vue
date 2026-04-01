@@ -47,26 +47,32 @@ const FOOTER_GROUPS: FooterGroup[] = [
     <footer class="bg-default z-10">
         <UContainer class="py-12">
             <!-- Top row: link groups + brand -->
-            <div class="grid grid-cols-2 gap-8 sm:grid-cols-4">
-                <!-- Link groups -->
-                <div v-for="group in FOOTER_GROUPS" :key="group.title" class="flex flex-col gap-3">
-                    <h4 class="text-default/90 text-sm font-bold tracking-widest uppercase">
-                        {{ group.title }}
-                    </h4>
-                    <nav class="flex flex-col gap-1.5">
-                        <NuxtLink
-                            v-for="link in group.links"
-                            :key="link.label"
-                            :to="link.to"
-                            class="text-default/70 hover:text-primary w-fit text-base font-medium transition-colors"
-                        >
-                            {{ link.label }}
-                        </NuxtLink>
-                    </nav>
+            <div class="flex gap-8 max-md:flex-col">
+                <div class="grid w-full gap-8 sm:grid-cols-3">
+                    <!-- Link groups -->
+                    <div
+                        v-for="group in FOOTER_GROUPS"
+                        :key="group.title"
+                        class="flex flex-col gap-3"
+                    >
+                        <h4 class="text-default/90 text-sm font-bold tracking-widest uppercase">
+                            {{ group.title }}
+                        </h4>
+                        <nav class="flex flex-col gap-1.5">
+                            <NuxtLink
+                                v-for="link in group.links"
+                                :key="link.label"
+                                :to="link.to"
+                                class="text-default/70 hover:text-primary w-fit text-base font-medium transition-colors"
+                            >
+                                {{ link.label }}
+                            </NuxtLink>
+                        </nav>
+                    </div>
                 </div>
 
                 <!-- Brand + socials (right column) -->
-                <div class="col-span-2 flex flex-col items-start gap-4 sm:col-span-1 sm:items-end">
+                <div class="flex shrink-0 flex-col items-start gap-4 lg:items-end">
                     <NuxtLink to="/" class="group flex items-center gap-2.5">
                         <NuxtImg
                             src="/core/Sun.png"
@@ -76,13 +82,13 @@ const FOOTER_GROUPS: FooterGroup[] = [
                             quality="90"
                             loading="lazy"
                         />
-                        <span class="text-secondary text-3xl leading-tight font-extrabold">
+                        <span class="text-secondary shrink-0 text-3xl leading-tight font-extrabold">
                             <span class="text-primary">У</span>лица
                             <span class="text-primary">Ра</span>дости
                         </span>
                     </NuxtLink>
 
-                    <p class="text-default/75 text-base font-medium sm:text-right">
+                    <p class="text-default/75 text-base font-medium lg:text-right">
                         Место, где дети учатся думать,<br />
                         творить и верить в себя.
                     </p>
@@ -102,7 +108,6 @@ const FOOTER_GROUPS: FooterGroup[] = [
                     </div>
                 </div>
             </div>
-
             <!-- Divider + bottom row -->
             <div
                 class="border-default mt-10 flex flex-col items-center justify-between gap-3 border-t pt-5 sm:flex-row"

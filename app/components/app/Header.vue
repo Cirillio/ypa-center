@@ -56,7 +56,7 @@ const NAV_ROUTES: NavigationMenuItem[] = [
 
             <div class="header-right flex items-center gap-4">
                 <!-- NAV -->
-                <nav class="flex h-full list-none items-center space-x-2">
+                <nav class="flex h-full list-none items-center space-x-2 max-lg:hidden">
                     <li v-for="r in NAV_ROUTES" :key="r.label">
                         <UButton
                             :label="r.label"
@@ -73,7 +73,7 @@ const NAV_ROUTES: NavigationMenuItem[] = [
                     to="/enroll"
                     label="Записаться"
                     trailing-icon="ph:rocket-launch-duotone"
-                    class="h-full px-4 py-2 text-base font-semibold"
+                    class="h-full px-4 py-2 text-base font-semibold max-md:hidden"
                     :ui="{
                         trailingIcon: 'size-5'
                     }"
@@ -85,14 +85,14 @@ const NAV_ROUTES: NavigationMenuItem[] = [
                     }"
                     :delay-duration="75"
                     :ui="{
-                        content: 'shadow-none ring-0 bg-secondary text-white p-4'
+                        content: 'shadow-none ring-0 bg-secondary max-md:hidden text-white p-4'
                     }"
                 >
                     <UButton
                         to="/subscription"
                         color="secondary"
                         icon="ph:pencil-duotone"
-                        class="h-full p-2 text-base font-semibold"
+                        class="h-full p-2 text-base font-semibold max-md:hidden"
                         :ui="{
                             trailingIcon: 'size-5'
                         }"
@@ -101,6 +101,45 @@ const NAV_ROUTES: NavigationMenuItem[] = [
                         <span class="text-base font-bold">Оформить абонемент</span>
                     </template>
                 </UTooltip>
+
+                <UPopover
+                    :ui="{
+                        content: 'shadow-none bg-white ring-2 ring-primary'
+                    }"
+                    :content="{
+                        align: 'end'
+                    }"
+                >
+                    <UButton
+                        label="Меню"
+                        trailing-icon="ph:list-bold"
+                        size="xl"
+                        color="neutral"
+                        variant="soft"
+                        class="lg:hidden"
+                        :ui="{
+                            label: 'max-sm:hidden'
+                        }"
+                    />
+
+                    <template #content>
+                        <div class="flex p-2">
+                            <!-- NAV -->
+                            <nav class="flex h-full w-full list-none flex-col space-x-2">
+                                <li v-for="r in NAV_ROUTES" :key="r.label">
+                                    <UButton
+                                        :label="r.label"
+                                        :to="r.to"
+                                        block
+                                        size="xl"
+                                        :variant="'ghost'"
+                                        class="justify-start px-4 text-lg font-semibold"
+                                    />
+                                </li>
+                            </nav>
+                        </div>
+                    </template>
+                </UPopover>
             </div>
         </UContainer>
     </header>

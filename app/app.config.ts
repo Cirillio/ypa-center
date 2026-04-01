@@ -46,5 +46,9 @@ export default defineAppConfig({
         ],
         mapLink: "https://yandex.ru/maps/-/CPRON8mX",
         workingHours: "Пн-Пт: 8:00-20:00"
+    },
+    promo: {
+        aboutVideoUrl:
+            "https://vkvideo.ru/video_ext.php?oid=-182596799&id=456239953&hash=83002f9ccf49043e&hd=2"
     }
 })

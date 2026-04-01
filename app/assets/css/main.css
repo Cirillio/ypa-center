@@ -59,6 +59,12 @@
   transform-origin: center center;
 }
 
+.floating-element-slow {
+  animation: slow-float 4s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+
 .floating-element-delayed {
   animation: float 5s ease-in-out infinite;
   animation-delay: 1s;
@@ -76,3 +82,16 @@
     transform: translateY(0px) translateX(var(--tw-translate-x, 0));
   }
 }
+
+@keyframes slow-float {
+  0% {
+    transform: translateY(0px) translateX(var(--tw-translate-x, 0));
+  }
+  50% {
+    transform: translateY(-8px) translateX(var(--tw-translate-x, 0));
+  }
+  100% {
+    transform: translateY(0px) translateX(var(--tw-translate-x, 0));
+  }
+}
+

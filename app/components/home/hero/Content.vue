@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col justify-center gap-4 px-2 sm:gap-8 sm:px-4">
         <h1
-            class="text-secondary flex flex-col text-5xl leading-[0.88] font-extrabold min-[480px]:text-6xl lg:text-7xl xl:text-8xl"
+            class="text-secondary flex flex-col text-6xl leading-[0.88] font-extrabold md:text-6xl lg:text-7xl xl:text-8xl"
         >
             <span> <span class="text-primary">У</span>лица </span>
             <span> <span class="text-primary">РА</span>дости </span>

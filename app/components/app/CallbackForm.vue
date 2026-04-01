@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { vMaska } from "maska/vue"
+import { useMediaQuery } from "@vueuse/core"
+const isMobile = useMediaQuery("(max-width: 767px)")
 
-withDefaults(
+const props = withDefaults(
     defineProps<{
         bg?: "white" | "default"
     }>(),
@@ -42,81 +44,81 @@ function selectTime(option: ContactTimeOption) {
     selectedTime.value = option
     popoverOpen.value = false
 }
-</script>
 
+const bgClass = computed(() => {
+    if (props.bg === "white") {
+        return "bg-white"
+    } else {
+        return "bg-default"
+    }
+})
+</script>
 <template>
-    <div class="flex flex-col">
-        <div
-            class="flex overflow-hidden rounded-full *:px-4 *:py-2 *:text-lg"
-            :class="bg === 'white' ? 'bg-white' : 'bg-default'"
-        >
+    <div class="flex max-w-xs flex-col xl:max-w-xl">
+        <div class="flex max-xl:flex-col max-xl:gap-2 xl:overflow-hidden xl:rounded-full">
             <UInput
                 v-model="phone"
                 v-maska="'+7 (###) ###-##-##'"
-                :placeholder="'+7 (###) ###-##-##'"
-                :variant="'none'"
-                size="xl"
-                color="primary"
-                class="flex-2/4"
+                placeholder="+7 (###) ###-##-##"
                 type="tel"
                 autocomplete="tel"
                 inputmode="decimal"
                 leading-icon="lucide:phone"
-                :ui="{
-                    base: 'text-lg font-semibold placeholder:text-default/50',
-                    leadingIcon: 'ml-2 text-primary'
-                }"
-            />
-
-            <UPopover
-                :open="popoverOpen"
-                :ui="{
-                    content:
-                        'bg-white shadow-none ring-2 ring-transparent hover:ring-primary transition duration-150 ease-out'
-                }"
-                @update:open="popoverOpen = $event"
-            >
-                <UTooltip
-                    :content="{ side: 'top' }"
-                    :delay-duration="75"
-                    :ui="{
-                        content: 'font-bold text-lg ring-0 shadow-none bg-secondary text-white p-4'
-                    }"
-                >
-                    <UButton
-                        :label="selectedTime.time"
-                        size="xl"
-                        variant="ghost"
-                        class="rounded-none"
-                        color="secondary"
-                        :trailing-icon="'ph:caret-down-bold'"
-                    />
-                    <template #content> Выберите удобное для вас время </template>
-                </UTooltip>
-
-                <template #content>
-                    <div class="flex flex-col gap-2 p-2">
-                        <UButton
-                            v-for="option in contactTimeOptions"
-                            :key="option.value"
-                            :label="option.label"
-                            size="xl"
-                            variant="ghost"
-                            class="font-semibold"
-                            @click="selectTime(option)"
-                        />
-                    </div>
-                </template>
-            </UPopover>
-
-            <UButton
-                class="rounded-none font-semibold"
-                variant="soft"
                 size="xl"
                 color="primary"
-                label="Жду звонка"
+                class="rounded-md text-lg md:py-2 md:pl-4 xl:rounded-none"
+                :class="bgClass"
+                :variant="'none'"
+                :ui="{
+                    base: 'md:text-lg font-semibold placeholder:text-default/50',
+                    leadingIcon: 'md:ml-2 text-primary max-sm:size-5 ml-1'
+                }"
             />
+
+            <div class="flex *:px-4 *:py-2 max-xl:gap-2 max-md:flex-col md:*:text-lg">
+                <UPopover
+                    :open="popoverOpen"
+                    :ui="{
+                        content:
+                            'bg-white shadow-none ring-2 ring-transparent hover:ring-primary transition duration-150 ease-out'
+                    }"
+                    @update:open="popoverOpen = $event"
+                >
+                    <UButton
+                        :label="isMobile ? selectedTime.label : selectedTime.time"
+                        size="xl"
+                        color="secondary"
+                        class="w-full justify-between xl:w-auto xl:rounded-none"
+                        :class="bgClass"
+                        :variant="'ghost'"
+                        :trailing-icon="'ph:caret-down-bold'"
+                    />
+                    <template #content>
+                        <div class="flex flex-col gap-1 p-2">
+                            <UButton
+                                v-for="option in contactTimeOptions"
+                                :key="option.value"
+                                :label="option.label"
+                                size="xl"
+                                variant="ghost"
+                                class="font-semibold"
+                                @click="selectTime(option)"
+                            />
+                        </div>
+                    </template>
+                </UPopover>
+
+                <UButton
+                    size="xl"
+                    color="primary"
+                    variant="soft"
+                    :block="isMobile ? true : false"
+                    label="Жду звонка"
+                    class="font-semibold md:w-fit xl:w-auto xl:rounded-none"
+                />
+            </div>
         </div>
+
         <span class="text-default/45 mt-2 px-4 text-[10px] leading-tight">
             Нажимая на кнопку, вы даете согласие на
             <NuxtLink to="/privacy" class="hover:text-primary underline transition-colors">
@@ -124,9 +126,8 @@ function selectTime(option: ContactTimeOption) {
             </NuxtLink>
             и соглашаетесь с
             <NuxtLink to="/privacy" class="hover:text-primary underline transition-colors">
-                политикой конфиденциальности
-            </NuxtLink>
-            .
+                политикой конфиденциальности </NuxtLink
+            >.
         </span>
     </div>
 </template>
