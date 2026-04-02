@@ -3,8 +3,10 @@
         <Transition name="skeleton-fade">
             <div
                 v-if="!isLoaded && !hasError"
-                class="bg-primary/15 absolute inset-0 animate-pulse"
-            />
+                class="bg-primary/15 absolute inset-0 flex animate-pulse items-center justify-center"
+            >
+                <UIcon name="ph:circle-notch-bold" class="text-primary size-8 animate-spin" />
+            </div>
         </Transition>
 
         <Transition name="skeleton-fade">

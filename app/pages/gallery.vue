@@ -17,7 +17,7 @@ const photos = computed(() =>
 </script>
 
 <template>
-    <main>
+    <main class="from-secondary/5 via-default to-primary/10 bg-linear-to-br">
         <GallerySection />
         <GalleryGrid :photos="photos" :pending="pending" :error="!!error" />
     </main>

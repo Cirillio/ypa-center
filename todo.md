@@ -7,7 +7,7 @@
 * [ ] `main.css` — переименовать `--font-mono: 'Rubik'` → `--font-display` или `--font-heading`
 * [ ] `ci.yml` — добавить шаг `prettier --check .` после lint
 * [ ] `nuxt.config.ts` — добавить `https://yandex.ru` в `frame-src` CSP (нужно для карты на /about)
-* [ ] `AppCallbackForm.vue` — исправить ссылку: первая ведёт на `/consent`, вторая на `/privacy`
+* [X] `AppCallbackForm.vue` — исправить ссылку: первая ведёт на `/consent`, вторая на `/privacy`
 
 ---
 
@@ -15,17 +15,17 @@
 
 ### Компоненты
 
-* [ ] `components/gallery/Section.vue` — hero-шапка страницы (заголовок + подзаголовок)
-* [ ] `components/gallery/Grid.vue` — сетка фото + состояние (activeIndex, open/close/prev/next)
-* [ ] `components/gallery/Modal.vue` — тупой презентационный компонент, только props + emits
+* [X] `components/gallery/Section.vue` — hero-шапка страницы (заголовок + подзаголовок)
+* [X] `components/gallery/Grid.vue` — сетка фото + состояние (activeIndex, open/close/prev/next)
+* [X] `components/gallery/Modal.vue` — тупой презентационный компонент, только props + emits
 
 ### Логика `Grid.vue`
 
-* [ ] `photos` — загрузка через `useFetch` с бэка
-* [ ] `activeIndex: Ref<number | null>` — null = модал закрыт
-* [ ] `activePhoto` — computed из activeIndex
-* [ ] `prev()` / `next()` — с wrap-around (с последнего → первый)
-* [ ] `onKeydown` — `ArrowLeft`, `ArrowRight`, `Escape`
+* [X] `photos` — загрузка через `useFetch` с бэка
+* [X] `activeIndex: Ref<number | null>` — null = модал закрыт
+* [X] `activePhoto` — computed из activeIndex
+* [X] `prev()` / `next()` — с wrap-around (с последнего → первый)
+* [X] `onKeydown` — `ArrowLeft`, `ArrowRight`, `Escape`
 
 ### Контракт `Modal.vue`
 
@@ -83,12 +83,12 @@ type GalleryPhoto = {
 
 ### Компоненты
 
-* [ ] `components/legal/Section.vue` — один компонент на обе страницы, принимает контент через слот
+* [X] `components/legal/Section.vue` — один компонент на обе страницы, принимает контент через слот
 
 ### Страницы
 
-* [ ] `pages/privacy.vue` — Политика конфиденциальности
-* [ ] `pages/consent.vue` — Согласие на обработку персональных данных
+* [X] `pages/privacy.vue` — Политика конфиденциальности
+* [X] `pages/consent.vue` — Согласие на обработку персональных данных
 
 ### Структура `Section.vue`
 
@@ -110,11 +110,13 @@ type GalleryPhoto = {
 
 ### Компоненты
 
-* [ ] `components/clubs/Section.vue` — hero-шапка
-* [ ] `components/clubs/Filters.vue` — фильтры: возраст (число) + дни недели (мультиселект)
-* [ ] `components/clubs/Grid.vue` — сетка карточек, принимает отфильтрованный список
-* [ ] `components/clubs/Card.vue` — карточка кружка
-* [ ] `components/clubs/Empty.vue` — состояние «ничего не найдено»
+* [X] `components/clubs/Section.vue` — hero-шапка
+
+* ~~ `components/clubs/Filters.vue` — фильтры: возраст (число) + дни недели (мультиселект)~~
+
+* [X] `components/clubs/Grid.vue` — сетка карточек, принимает отфильтрованный список
+* [X] `components/clubs/Card.vue` — карточка кружка
+* [X] `components/clubs/Empty.vue` — состояние «ничего не найдено»
 
 ### Логика фильтрации (клиентская, в `clubs.vue` или composable)
 
@@ -125,13 +127,13 @@ type GalleryPhoto = {
 
 ### Карточка `Card.vue`
 
-* [ ] Фото кружка
-* [ ] Название + описание
-* [ ] Педагог (фото + имя)
-* [ ] Расписание (дни + время)
-* [ ] Возраст (мин–макс)
-* [ ] Цена (форматируется через `Intl.NumberFormat`, значение с бэка в копейках)
-* [ ] Доступность мест — три состояния:
+* [X] Фото кружка
+* [X] Название + описание
+* [X] Педагог (фото + имя)
+* [X] Расписание (дни)
+* [X] Возраст (мин–макс)
+* ~~ Цена (форматируется через `Intl.NumberFormat`, значение с бэка в копейках)~~
+* [X] Доступность мест — три состояния:
   * 🟢 Есть места (`spots_available > 3`)
   * 🟡 Мало мест (`spots_available` от 1 до 3)
   * 🔴 Мест нет — кнопка «Записаться» задизейблена
@@ -162,7 +164,7 @@ type Club = {
 }
 ```
 
-### Инфраструктура (задача Андрея)
+### Инфраструктура (для бэка)
 
 * [ ] Модель `Club` + `Teacher` в Django
 * [ ] Эндпоинт `GET /clubs/` — возвращает все кружки (фильтрация на клиенте)

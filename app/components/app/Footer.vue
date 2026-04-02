@@ -21,7 +21,7 @@ const FOOTER_GROUPS: FooterGroup[] = [
         links: [
             { label: "Кружки", to: "/clubs" },
             { label: "О нас", to: "/about" },
-            { label: "Учителя", to: "/teachers" },
+
             { label: "Галерея", to: "/gallery" }
         ]
     },
@@ -29,8 +29,7 @@ const FOOTER_GROUPS: FooterGroup[] = [
         title: "Информация",
         links: [
             { label: "События", to: "/#events" },
-            { label: "Фото", to: "/#gallery" },
-            { label: "Частые вопросы", to: "/#faq" }
+            { label: "Учителя", to: "/teachers" }
         ]
     },
     {
@@ -119,9 +118,23 @@ const FOOTER_GROUPS: FooterGroup[] = [
                 >
                     {{ contacts.address }}
                 </a>
-                <span class="text-default/35 text-xs font-medium">
-                    &copy; {{ currentYear }} Улица Радости. Все права защищены.
-                </span>
+                <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+                    <NuxtLink
+                        to="/privacy"
+                        class="text-default/35 hover:text-primary text-xs font-medium transition"
+                    >
+                        Политика конфиденциальности
+                    </NuxtLink>
+                    <NuxtLink
+                        to="/consent"
+                        class="text-default/35 hover:text-primary text-xs font-medium transition"
+                    >
+                        Согласие на обработку ПД
+                    </NuxtLink>
+                    <span class="text-default/35 text-xs font-medium">
+                        &copy; {{ currentYear }} Улица Радости. Все права защищены.
+                    </span>
+                </div>
             </div>
         </UContainer>
     </footer>

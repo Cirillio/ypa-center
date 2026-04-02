@@ -129,11 +129,21 @@ const bgClass = computed(() => {
 
         <span class="text-default/45 mt-2 px-4 text-[10px] leading-tight">
             Нажимая на кнопку, вы даете согласие на
-            <NuxtLink to="/privacy" class="hover:text-primary underline transition-colors">
+            <NuxtLink
+                target="_blank"
+                external
+                to="/privacy"
+                class="hover:text-primary underline transition-colors"
+            >
                 обработку персональных данных
             </NuxtLink>
             и соглашаетесь с
-            <NuxtLink to="/consent" class="hover:text-primary underline transition-colors">
+            <NuxtLink
+                target="_blank"
+                external
+                to="/consent"
+                class="hover:text-primary underline transition-colors"
+            >
                 политикой конфиденциальности </NuxtLink
             >.
         </span>

@@ -1,10 +1,14 @@
 <script lang="ts" setup>
 // Hero-шапка страницы галереи
+
+const appConfig = useAppConfig()
+const centerTelegram =
+    appConfig.contactInfo.socials.find((i) => i.label === "Telegram")?.href || "/bad-link"
 </script>
 
 <template>
     <section
-        class="bg-default relative z-10 flex w-full overflow-hidden pt-[calc(var(--header-height)+3rem)] pb-16 md:pt-40 md:pb-24"
+        class="relative z-10 flex w-full overflow-hidden pt-[calc(var(--header-height)+3rem)] pb-16 md:pt-40 md:pb-24"
     >
         <!-- Декоративная иконка -->
         <div
@@ -15,7 +19,7 @@
 
         <UContainer class="relative z-10 flex flex-col gap-8">
             <FloatPromoCard
-                to="https://t.me/joystreet"
+                :to="centerTelegram"
                 icon="ph:images-fill"
                 sublabel="Больше"
                 label="Фото"

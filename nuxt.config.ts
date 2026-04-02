@@ -38,6 +38,8 @@ export default defineNuxtConfig({
         "/": { ssr: true },
         "/clubs": { ssr: true },
         "/gallery": { ssr: true },
+        "/privacy": { prerender: true },
+        "/consent": { prerender: true },
         "/**": {
             headers: {
                 "Content-Security-Policy":
