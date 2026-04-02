@@ -2,12 +2,12 @@
 
 ## Глобальные правки (сделать до начала страниц)
 
-* [ ] `nuxt.config.ts` — обернуть `vite.server.allowedHosts: true` в условие `NODE_ENV === 'development'`
-* [ ] `package.json` — перенести `@nuxt/a11y` и `nuxt-openapi-docs-module` в `devDependencies`
-* [ ] `main.css` — переименовать `--font-mono: 'Rubik'` → `--font-display` или `--font-heading`
-* [ ] `ci.yml` — добавить шаг `prettier --check .` после lint
-* [ ] `nuxt.config.ts` — добавить `https://yandex.ru` в `frame-src` CSP (нужно для карты на /about)
-* [X] `AppCallbackForm.vue` — исправить ссылку: первая ведёт на `/consent`, вторая на `/privacy`
+- [ ] `nuxt.config.ts` — обернуть `vite.server.allowedHosts: true` в условие `NODE_ENV === 'development'`
+- [ ] `package.json` — перенести `@nuxt/a11y` и `nuxt-openapi-docs-module` в `devDependencies`
+- [ ] `main.css` — переименовать `--font-mono: 'Rubik'` → `--font-display` или `--font-heading`
+- [ ] `ci.yml` — добавить шаг `prettier --check .` после lint
+- [ ] `nuxt.config.ts` — добавить `https://yandex.ru` в `frame-src` CSP (нужно для карты на /about)
+- [x] `AppCallbackForm.vue` — исправить ссылку: первая ведёт на `/consent`, вторая на `/privacy`
 
 ---
 
@@ -15,17 +15,17 @@
 
 ### Компоненты
 
-* [X] `components/gallery/Section.vue` — hero-шапка страницы (заголовок + подзаголовок)
-* [X] `components/gallery/Grid.vue` — сетка фото + состояние (activeIndex, open/close/prev/next)
-* [X] `components/gallery/Modal.vue` — тупой презентационный компонент, только props + emits
+- [x] `components/gallery/Section.vue` — hero-шапка страницы (заголовок + подзаголовок)
+- [x] `components/gallery/Grid.vue` — сетка фото + состояние (activeIndex, open/close/prev/next)
+- [x] `components/gallery/Modal.vue` — тупой презентационный компонент, только props + emits
 
 ### Логика `Grid.vue`
 
-* [X] `photos` — загрузка через `useFetch` с бэка
-* [X] `activeIndex: Ref<number | null>` — null = модал закрыт
-* [X] `activePhoto` — computed из activeIndex
-* [X] `prev()` / `next()` — с wrap-around (с последнего → первый)
-* [X] `onKeydown` — `ArrowLeft`, `ArrowRight`, `Escape`
+- [x] `photos` — загрузка через `useFetch` с бэка
+- [x] `activeIndex: Ref<number | null>` — null = модал закрыт
+- [x] `activePhoto` — computed из activeIndex
+- [x] `prev()` / `next()` — с wrap-around (с последнего → первый)
+- [x] `onKeydown` — `ArrowLeft`, `ArrowRight`, `Escape`
 
 ### Контракт `Modal.vue`
 
@@ -46,7 +46,7 @@ next
 ```ts
 type GalleryPhoto = {
     id: number
-    url: string       // абсолютный URL (Media Root → Nginx)
+    url: string // абсолютный URL (Media Root → Nginx)
     alt: string
     thumbnail: string
 }
@@ -54,9 +54,9 @@ type GalleryPhoto = {
 
 ### Инфраструктура (задача Андрея)
 
-* [ ] Модель `GalleryPhoto` в Django
-* [ ] Медиафайлы хранятся в Docker volume, Nginx раздаёт `/media/`
-* [ ] Эндпоинт `GET /gallery/photos/`
+- [ ] Модель `GalleryPhoto` в Django
+- [ ] Медиафайлы хранятся в Docker volume, Nginx раздаёт `/media/`
+- [ ] Эндпоинт `GET /gallery/photos/`
 
 ---
 
@@ -64,18 +64,18 @@ type GalleryPhoto = {
 
 ### Компоненты
 
-* [ ] `components/about/Section.vue` — hero-шапка (заголовок + короткий текст)
-* [ ] `components/about/Story.vue` — история создания центра (текст + фото)
-* [ ] `components/about/Stats.vue` — переиспользовать `CENTER_STATS` с главной
-* [ ] `components/about/Team.vue` — карточки педагогов (фото + имя + роль)
-* [ ] `components/about/Map.vue` — iframe Яндекс.Карты
-* [ ] `components/about/Cta.vue` — призыв внизу («Запишитесь на пробное»)
+- [ ] `components/about/Section.vue` — hero-шапка (заголовок + короткий текст)
+- [ ] `components/about/Story.vue` — история создания центра (текст + фото)
+- [ ] `components/about/Stats.vue` — переиспользовать `CENTER_STATS` с главной
+- [ ] `components/about/Team.vue` — карточки педагогов (фото + имя + роль)
+- [ ] `components/about/Map.vue` — iframe Яндекс.Карты
+- [ ] `components/about/Cta.vue` — призыв внизу («Запишитесь на пробное»)
 
 ### `Map.vue`
 
-* [ ] Встроенный `<iframe>` от Яндекс.Карт (без npm-пакетов)
-* [ ] Прописать корректные координаты центра
-* [ ] Убедиться что CSP разрешает `frame-src https://yandex.ru`
+- [ ] Встроенный `<iframe>` от Яндекс.Карт (без npm-пакетов)
+- [ ] Прописать корректные координаты центра
+- [ ] Убедиться что CSP разрешает `frame-src https://yandex.ru`
 
 ---
 
@@ -83,12 +83,12 @@ type GalleryPhoto = {
 
 ### Компоненты
 
-* [X] `components/legal/Section.vue` — один компонент на обе страницы, принимает контент через слот
+- [x] `components/legal/Section.vue` — один компонент на обе страницы, принимает контент через слот
 
 ### Страницы
 
-* [X] `pages/privacy.vue` — Политика конфиденциальности
-* [X] `pages/consent.vue` — Согласие на обработку персональных данных
+- [x] `pages/privacy.vue` — Политика конфиденциальности
+- [x] `pages/consent.vue` — Согласие на обработку персональных данных
 
 ### Структура `Section.vue`
 
@@ -101,8 +101,8 @@ type GalleryPhoto = {
 
 ### Контент
 
-* [ ] Получить финальные тексты обоих документов от юриста/хозяйки
-* [ ] Вставить в соответствующие страницы
+- [ ] Получить финальные тексты обоих документов от юриста/хозяйки
+- [ ] Вставить в соответствующие страницы
 
 ---
 
@@ -110,33 +110,35 @@ type GalleryPhoto = {
 
 ### Компоненты
 
-* [X] `components/clubs/Section.vue` — hero-шапка
+- [x] `components/clubs/Section.vue` — hero-шапка
 
-* ~~ `components/clubs/Filters.vue` — фильтры: возраст (число) + дни недели (мультиселект)~~
+- ~~ `components/clubs/Filters.vue` — фильтры: возраст (число) + дни недели (мультиселект)~~
 
-* [X] `components/clubs/Grid.vue` — сетка карточек, принимает отфильтрованный список
-* [X] `components/clubs/Card.vue` — карточка кружка
-* [X] `components/clubs/Empty.vue` — состояние «ничего не найдено»
+- [x] `components/clubs/Grid.vue` — сетка карточек, принимает отфильтрованный список
+- [x] `components/clubs/Card.vue` — карточка кружка
+- [x] `components/clubs/Empty.vue` — состояние «ничего не найдено»
 
 ### Логика фильтрации (клиентская, в `clubs.vue` или composable)
 
-* [ ] `selectedDays: Ref<string[]>` — мультиселект дней
-* [ ] `selectedAge: Ref<number | null>` — возраст ребёнка
-* [ ] `filtered` — computed, фильтрует по обоим параметрам одновременно
-* [ ] Сброс фильтров
+- [ ] `selectedDays: Ref<string[]>` — мультиселект дней
+- [ ] `selectedAge: Ref<number | null>` — возраст ребёнка
+- [ ] `filtered` — computed, фильтрует по обоим параметрам одновременно
+- [ ] Сброс фильтров
 
 ### Карточка `Card.vue`
 
-* [X] Фото кружка
-* [X] Название + описание
-* [X] Педагог (фото + имя)
-* [X] Расписание (дни)
-* [X] Возраст (мин–макс)
-* ~~ Цена (форматируется через `Intl.NumberFormat`, значение с бэка в копейках)~~
-* [X] Доступность мест — три состояния:
-  * 🟢 Есть места (`spots_available > 3`)
-  * 🟡 Мало мест (`spots_available` от 1 до 3)
-  * 🔴 Мест нет — кнопка «Записаться» задизейблена
+- [x] Фото кружка
+- [x] Название + описание
+- [x] Педагог (фото + имя)
+- [x] Расписание (дни)
+- [x] Возраст (мин–макс)
+
+- ~~ Цена (форматируется через `Intl.NumberFormat`, значение с бэка в копейках)~~
+
+- [x] Доступность мест — три состояния:
+    - 🟢 Есть места (`spots_available > 3`)
+    - 🟡 Мало мест (`spots_available` от 1 до 3)
+    - 🔴 Мест нет — кнопка «Записаться» задизейблена
 
 ### Тип данных
 
@@ -158,7 +160,7 @@ type Club = {
         min: number
         max: number
     }
-    price: number           // копейки
+    price: number // копейки
     spots_total: number
     spots_available: number // бэк считает, фронт только отображает
 }
@@ -166,14 +168,14 @@ type Club = {
 
 ### Инфраструктура (для бэка)
 
-* [ ] Модель `Club` + `Teacher` в Django
-* [ ] Эндпоинт `GET /clubs/` — возвращает все кружки (фильтрация на клиенте)
+- [ ] Модель `Club` + `Teacher` в Django
+- [ ] Эндпоинт `GET /clubs/` — возвращает все кружки (фильтрация на клиенте)
 
 ---
 
 ## Следующий этап (не сейчас)
 
-* [ ] `/enroll` — запись на пробное занятие + флоу ЮKassa
-* [ ] `/subscribe` — оформление абонемента + флоу ЮKassa
-* [ ] `/clubs/[id]` — страница отдельного кружка (если понадобится)
-* [ ] `/events` — События и каникулярные программы
+- [ ] `/enroll` — запись на пробное занятие + флоу ЮKassa
+- [ ] `/subscribe` — оформление абонемента + флоу ЮKassa
+- ~~ `/clubs/[id]` — страница отдельного кружка (если понадобится)~~
+- ~~ `/events` — События и каникулярные программы~~

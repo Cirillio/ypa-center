@@ -1,33 +1,33 @@
 name: CI/CD Pipeline
 
 on:
-  push:
-    branches: ['**'] # Запуск на любой ветке
-  pull_request:
-    branches: [main] # Запуск при попытке мерджа в main
+    push:
+        branches: ["**"] # Запуск на любой ветке
+    pull_request:
+        branches: [main] # Запуск при попытке мерджа в main
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: latest
+    build-and-test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v1
+              with:
+                  bun-version: latest
 
-      - name: Prettier check
-        run: bun run prettier --check .
+            - name: Install dependencies
+              run: bun install --frozen-lockfile
 
-      - name: Lint check
-        run: bun run lint
+            - name: Prettier check
+              run: bun run prettier --check .
 
-      - name: Type check
-        run: bun run typecheck
+            - name: Lint check
+              run: bun run lint
 
-      - name: Production build
-        run: bun run build
+            - name: Type check
+              run: bun run typecheck
+
+            - name: Production build
+              run: bun run build
