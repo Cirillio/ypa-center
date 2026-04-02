@@ -1,79 +1,91 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
-
 @theme static {
-  --font-sans: 'Nunito', sans-serif;
-  --font-mono: 'Rubik', 'sans-serif'
+    --font-sans: "Nunito", sans-serif;
 }
 
 @layer base {
-   body {
-    font-family: "Nunito", sans-serif;
-    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
-  }
+    body {
+        font-family: "Nunito", sans-serif;
+        font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+    }
 
-   h1, 
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  .font-display {
-    @apply tracking-tight;
-    font-family: "Nunito", sans-serif;
-  }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .font-display {
+        @apply tracking-tight;
+        font-family: "Nunito", sans-serif;
+    }
 }
 
 @layer utilities {
-  .h-with-header {
-    @apply h-[calc(100dvh-var(--header-height-full))];
-  }
+    .h-with-header {
+        @apply h-[calc(100dvh-var(--header-height-full))];
+    }
 
-  .page-container {
-    @apply max-w-[100rem]
-  }
+    .page-container {
+        @apply max-w-[100rem];
+    }
 }
 
-
 :root {
+    /* Primary and Secondary */
+    --ui-primary: #fe7d30;
+    --ui-secondary: #35ab6e;
 
-  /* Primary and Secondary */
-  --ui-primary: #FE7D30;
-  --ui-secondary: #35AB6E;
+    /* Text default */
+    --ui-text: #4d4845;
+    /* Background Default */
+    --ui-bg: #fbf9f7;
 
-  /* Text default */
-  --ui-text: #4D4845;
-  /* Background Default */
-  --ui-bg: #FBF9F7;
+    --ui-radius: 1rem;
 
-  --ui-radius: 1rem;
-
-
-  /* header height */
-  /* --header-height-full: 88px; */
-  --header-height: 72px;
+    /* header height */
+    /* --header-height-full: 88px; */
+    --header-height: 72px;
 }
 
 .floating-element {
-  animation: float 6s ease-in-out infinite;
-  transform-origin: center center;
+    animation: float 6s ease-in-out infinite;
+    transform-origin: center center;
+}
+
+.floating-element-slow {
+    animation: slow-float 4s ease-in-out infinite;
+    transform-origin: center center;
 }
 
 .floating-element-delayed {
-  animation: float 5s ease-in-out infinite;
-  animation-delay: 1s;
-  transform-origin: center center;
+    animation: float 5s ease-in-out infinite;
+    animation-delay: 1s;
+    transform-origin: center center;
 }
 
 @keyframes float {
-  0% {
-    transform: translateY(0px) translateX(var(--tw-translate-x, 0));
-  }
-  50% {
-    transform: translateY(-16px) translateX(var(--tw-translate-x, 0));
-  }
-  100% {
-    transform: translateY(0px) translateX(var(--tw-translate-x, 0));
-  }
+    0% {
+        transform: translateY(0px) translateX(var(--tw-translate-x, 0));
+    }
+    50% {
+        transform: translateY(-16px) translateX(var(--tw-translate-x, 0));
+    }
+    100% {
+        transform: translateY(0px) translateX(var(--tw-translate-x, 0));
+    }
+}
+
+@keyframes slow-float {
+    0% {
+        transform: translateY(0px) translateX(var(--tw-translate-x, 0));
+    }
+    50% {
+        transform: translateY(-8px) translateX(var(--tw-translate-x, 0));
+    }
+    100% {
+        transform: translateY(0px) translateX(var(--tw-translate-x, 0));
+    }
 }

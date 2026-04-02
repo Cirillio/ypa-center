@@ -36,18 +36,21 @@ export default defineNuxtConfig({
 
     routeRules: {
         "/": { ssr: true },
+        "/clubs": { ssr: true },
+        "/gallery": { ssr: true },
+        "/privacy": { prerender: true },
+        "/consent": { prerender: true },
         "/**": {
             headers: {
-                "Content-Security-Policy": "frame-src 'self' https://vk.com https://vkvideo.ru"
+                "Content-Security-Policy":
+                    "frame-src 'self' https://vk.com https://vkvideo.ru https://yandex.ru"
             }
         }
     },
     compatibilityDate: "2025-07-15",
 
     vite: {
-        server: {
-            allowedHosts: true
-        },
+        server: process.env.NODE_ENV === "development" ? { allowedHosts: true } : undefined,
         // Добавляем этот блок:
         optimizeDeps: {
             include: [
@@ -89,11 +92,11 @@ export default defineNuxtConfig({
 
     googleFonts: {
         families: {
-            Nunito: "200..1000",
-            Rubik: "300..900"
+            Nunito: "200..1000"
         },
-        display: "swap",
+        display: "fallback",
         download: true,
+        preload: true,
         base64: false,
         inject: true,
         stylePath: "css/fonts.css"

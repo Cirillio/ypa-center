@@ -4,15 +4,15 @@
 
 ## Стек
 
-| Категория                | Технологии                    |
-| --------------------------------- | --------------------------------------- |
-| Фреймворк                | Nuxt 4, Vue 3                           |
-| UI / стили                   | Nuxt UI, Tailwind CSS 4, Phosphor Icons |
-| Состояние                | Pinia, VueUse                           |
-| Утилиты                    | dayjs (ru), zod, maska                  |
-| SEO                               | sitemap, robots.txt                     |
-| Изображения            | @nuxt/image                             |
-| Доступность            | @nuxt/a11y                              |
+| Категория         | Технологии                              |
+| ----------------- | --------------------------------------- |
+| Фреймворк         | Nuxt 4, Vue 3                           |
+| UI / стили        | Nuxt UI, Tailwind CSS 4, Phosphor Icons |
+| Состояние         | Pinia, VueUse                           |
+| Утилиты           | dayjs (ru), zod, maska                  |
+| SEO               | sitemap, robots.txt                     |
+| Изображения       | @nuxt/image                             |
+| Доступность       | @nuxt/a11y                              |
 | Пакетный менеджер | Bun                                     |
 
 ## Требования
