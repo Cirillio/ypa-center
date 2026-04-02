@@ -6,7 +6,6 @@
       "name": "frontend-core-ypa-center",
       "dependencies": {
         "@iconify-json/ph": "^1.2.2",
-        "@nuxt/a11y": "1.0.0-alpha.1",
         "@nuxt/image": "2.0.0",
         "@nuxt/ui": "^4.5.1",
         "@nuxtjs/google-fonts": "3.2.0",
@@ -26,6 +25,7 @@
         "zod": "^4.3.6",
       },
       "devDependencies": {
+        "@nuxt/a11y": "1.0.0-alpha.1",
         "@nuxt/eslint": "^1.15.2",
         "@types/node": "^25.5.0",
         "eslint": "^10.0.2",
