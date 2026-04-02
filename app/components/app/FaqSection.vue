@@ -35,7 +35,9 @@ const faqItems = [
 
 <template>
     <section id="faq" class="relative z-10 flex w-full overflow-hidden bg-white py-12 md:py-20">
-        <div class="absolute top-6 right-6 z-0 flex rounded-full bg-default p-2 opacity-60 xl:top-8 xl:right-auto xl:left-0 xl:-translate-x-1/2 xl:rounded-none xl:bg-transparent xl:p-0 xl:opacity-15">
+        <div
+            class="bg-default absolute top-6 right-6 z-0 flex rounded-full p-2 opacity-60 xl:top-8 xl:right-auto xl:left-0 xl:-translate-x-1/2 xl:rounded-none xl:bg-transparent xl:p-0 xl:opacity-15"
+        >
             <UIcon name="ph:lightbulb-filament-duotone" class="text-primary size-10 xl:size-80" />
         </div>
 
@@ -60,17 +62,19 @@ const faqItems = [
                 <AppCallbackForm bg="default" />
             </div>
 
-            <!-- Right: accordion -->
-            <UAccordion
-                :items="faqItems"
-                :ui="{
-                    root: 'space-y-4',
-                    item: 'border-0 bg-default rounded-md',
-                    trigger:
-                        'py-4 px-4 text-lg font-bold text-secondary hover:text-primary transition-colors rounded-t-md cursor-pointer',
-                    body: 'text-default/80 font-medium text-base leading-relaxed px-6 pb-6 pt-4 border-t-2 border-white'
-                }"
-            />
+            <div class="py-4">
+                <!-- Right: accordion -->
+                <UAccordion
+                    :items="faqItems"
+                    :ui="{
+                        root: 'space-y-4',
+                        item: 'border-0 bg-default rounded-md',
+                        trigger:
+                            'py-4 px-4 text-lg font-bold text-secondary hover:text-primary transition-colors rounded-t-md cursor-pointer',
+                        body: 'text-default/80 font-medium text-base leading-relaxed px-6 pb-6 pt-4 border-t-2 border-white'
+                    }"
+                />
+            </div>
         </UContainer>
     </section>
 </template>

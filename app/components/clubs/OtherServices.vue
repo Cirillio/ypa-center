@@ -28,13 +28,7 @@ const services: OtherService[] = [
 </script>
 
 <template>
-    <section class="relative z-10 flex w-full overflow-hidden bg-white py-12 md:py-16">
-        <div
-            class="bg-default absolute top-6 right-6 z-0 flex rounded-full p-2 opacity-60 xl:top-8 xl:right-auto xl:left-0 xl:-translate-x-1/2 xl:rounded-none xl:bg-transparent xl:p-0 xl:opacity-10"
-        >
-            <UIcon name="ph:sparkle-duotone" class="text-secondary size-10 xl:size-80" />
-        </div>
-
+    <section class="z-10 flex w-full overflow-hidden bg-white py-12 md:py-16">
         <UContainer class="relative z-10 flex flex-col gap-10 md:gap-12">
             <!-- Заголовок -->
             <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">

@@ -7,7 +7,9 @@ const promo = appConfig.promo
 
 <template>
     <section class="relative z-10 flex w-full overflow-hidden bg-white py-12 md:py-20">
-        <div class="absolute top-6 right-6 z-0 flex rounded-full bg-default p-2 opacity-60 xl:top-8 xl:right-auto xl:left-0 xl:-translate-x-1/2 xl:rotate-5 xl:rounded-none xl:bg-transparent xl:p-0 xl:opacity-25">
+        <div
+            class="bg-default absolute top-6 right-6 z-0 flex rounded-full p-2 opacity-60 xl:top-8 xl:right-auto xl:left-0 xl:-translate-x-1/2 xl:rotate-5 xl:rounded-none xl:bg-transparent xl:p-0 xl:opacity-25"
+        >
             <UIcon name="ph:flower-tulip-duotone" class="text-primary size-10 xl:size-120" />
         </div>
 

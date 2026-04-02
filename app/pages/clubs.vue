@@ -16,6 +16,17 @@ useSeoMeta({
 <template>
     <div class="flex w-full min-w-0 flex-col">
         <ClubsSection />
+        <div class="relative z-20 h-0 w-full">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <UButton
+                    to="/clubs#schedule"
+                    size="xl"
+                    label="Посмотреть расписание"
+                    trailing-icon="ph:arrow-down-bold"
+                    class="floating-element-slow text-lg"
+                />
+            </div>
+        </div>
 
         <section class="bg-default relative z-10 flex w-full py-12 md:py-20">
             <UContainer class="flex w-full flex-col gap-6 md:gap-8">

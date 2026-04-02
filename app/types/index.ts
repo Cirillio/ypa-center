@@ -23,6 +23,13 @@ export interface GalleryImage {
     alt: string
 }
 
+export interface GalleryPhoto {
+    id: number
+    url: string
+    alt: string
+    thumbnail: string
+}
+
 export interface Club {
     id: number
     name: string

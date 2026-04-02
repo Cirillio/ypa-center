@@ -1,4 +1,4 @@
-import type { Club, ClubShort, EventShort, GalleryImage } from "~/types"
+import type { Club, ClubShort, EventShort, GalleryImage, GalleryPhoto } from "~/types"
 
 export const MOCK_CLUBS: ClubShort[] = [
     {
@@ -130,4 +130,13 @@ export const MOCK_GALLERY_IMAGES: GalleryImage[] = [
     { src: "moke/event-1.jpeg", alt: "Театральные игры" },
     { src: "moke/club_2.jpg", alt: "Рисование" },
     { src: "moke/event-4.jpg", alt: "Космическая лекция" }
+]
+
+export const MOCK_GALLERY_PHOTOS: GalleryPhoto[] = [
+    { id: 1, url: "/moke/club_1.jpg", thumbnail: "/moke/club_1.jpg", alt: "Настольные игры" },
+    { id: 2, url: "/moke/event-1.jpeg", thumbnail: "/moke/event-1.jpeg", alt: "Театральные игры" },
+    { id: 3, url: "/moke/club_2.jpg", thumbnail: "/moke/club_2.jpg", alt: "Рисование" },
+    { id: 4, url: "/moke/event-4.jpg", thumbnail: "/moke/event-4.jpg", alt: "Космическая лекция" },
+    { id: 5, url: "/moke/club_3.jpg", thumbnail: "/moke/club_3.jpg", alt: "Пианино" },
+    { id: 6, url: "/moke/club_4.jpg", thumbnail: "/moke/club_4.jpg", alt: "Каникулы" }
 ]

@@ -49,6 +49,6 @@ export default defineAppConfig({
     },
     promo: {
         aboutVideoUrl:
-            "https://vkvideo.ru/video_ext.php?oid=-182596799&id=456239953&hash=83002f9ccf49043e&hd=2"
+            "https://vkvideo.ru/video_ext.php?oid=-191501337&id=456241087&hash=894a312317d568c7&hd=3"
     }
 })

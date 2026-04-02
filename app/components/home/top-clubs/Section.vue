@@ -12,7 +12,14 @@ import { MOCK_CLUBS } from "~/constants/mock"
 
         <UContainer class="relative z-10 flex flex-col gap-12 md:gap-16">
             <!-- Floating promo card -->
-            <HomeTopClubsOurTeachersCard />
+            <FloatPromoCard
+                to="/teachers"
+                icon="ph:chalkboard-teacher-duotone"
+                sublabel="Наши"
+                label="Учителя"
+                description="Профессионалы, которые вдохновляют детей и помогают найти призвание."
+                go-text="Познакомиться"
+            />
 
             <!-- Top: text content -->
             <SectionLeading subtitle="Для вашего ребёнка">

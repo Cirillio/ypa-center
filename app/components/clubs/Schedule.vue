@@ -81,7 +81,10 @@ const desktopGridClass = computed(() => desktopGridCols[activeDays.value.length]
 </script>
 
 <template>
-    <section class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-16">
+    <section
+        id="schedule"
+        class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20"
+    >
         <UContainer class="flex w-full flex-col gap-4">
             <!-- Заголовок -->
 
@@ -93,11 +96,9 @@ const desktopGridClass = computed(() => desktopGridCols[activeDays.value.length]
                 <span class="text-default">Расписание на неделю</span>
             </span>
 
-            <!-- ══════════════════════════════════════════════════════════════ -->
-            <!-- МОБИЛЬ                                                        -->
-            <!-- ══════════════════════════════════════════════════════════════ -->
+            <!-- Mobile -->
             <template v-if="isMobile">
-                <!-- Скроллируемая строка дней -->
+                <!-- Дни недели-->
                 <div class="relative">
                     <Transition name="fade">
                         <div
@@ -167,9 +168,7 @@ const desktopGridClass = computed(() => desktopGridCols[activeDays.value.length]
                 </Transition>
             </template>
 
-            <!-- ══════════════════════════════════════════════════════════════ -->
-            <!-- ДЕСКТОП                                                       -->
-            <!-- ══════════════════════════════════════════════════════════════ -->
+            <!-- Desktop -->
             <div v-else class="grid gap-2" :class="desktopGridClass">
                 <div v-for="day in activeDays" :key="day.dayShort" class="flex flex-col gap-2">
                     <!-- Заголовок колонки -->

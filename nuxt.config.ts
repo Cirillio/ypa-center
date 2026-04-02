@@ -37,6 +37,7 @@ export default defineNuxtConfig({
     routeRules: {
         "/": { ssr: true },
         "/clubs": { ssr: true },
+        "/gallery": { ssr: true },
         "/**": {
             headers: {
                 "Content-Security-Policy":
