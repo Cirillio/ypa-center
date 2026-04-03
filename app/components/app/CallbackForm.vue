@@ -74,7 +74,7 @@ const bgClass = computed(() => {
                 :class="bgClass"
                 :variant="'none'"
                 :ui="{
-                    base: 'md:text-lg font-semibold placeholder:text-default/50',
+                    base: 'md:text-lg font-semibold text-default placeholder:text-default/50',
                     leadingIcon: 'md:ml-2 text-primary max-sm:size-5 ml-1'
                 }"
             />

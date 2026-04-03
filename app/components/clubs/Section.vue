@@ -2,14 +2,8 @@
 
 <template>
     <section
-        class="from-secondary/5 via-default to-primary/10 relative z-0 flex w-full overflow-hidden bg-linear-to-br pt-[calc(var(--header-height)+3rem)] pb-16 md:pt-40 md:pb-24"
+        class="gradient-bg-ps relative z-0 flex w-full overflow-hidden pt-[calc(var(--header-height)+3rem)] pb-16 md:pt-40 md:pb-24"
     >
-        <div
-            class="bg-default absolute top-6 right-6 z-0 flex rounded-full p-2 opacity-50 xl:top-20 xl:right-auto xl:left-0 xl:-translate-x-1/2 xl:rounded-none xl:bg-transparent xl:p-0 xl:opacity-10"
-        >
-            <UIcon name="ph:puzzle-piece-duotone" class="text-secondary size-10 xl:size-120" />
-        </div>
-
         <UContainer
             class="relative z-10 grid grid-cols-1 items-start gap-12 md:grid-cols-2 md:gap-16"
         >

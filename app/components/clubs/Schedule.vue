@@ -144,28 +144,26 @@ const desktopGridClass = computed(() => desktopGridCols[activeDays.value.length]
                 </div>
 
                 <!-- Список кружков выбранного дня -->
-                <Transition name="schedule-list" mode="out-in">
-                    <div
-                        v-if="filteredClubs.length"
-                        :key="selectedDay.dayShort"
-                        class="flex flex-col gap-2"
-                    >
-                        <ClubsScheduleCard
-                            v-for="club in filteredClubs"
-                            :key="club.id"
-                            :club="club"
-                            variant="row"
-                        />
-                    </div>
-                    <div
-                        v-else
-                        :key="`empty-${selectedDay.dayShort}`"
-                        class="flex flex-col items-start gap-2 py-4"
-                    >
-                        <UIcon name="ph:coffee-duotone" class="text-default/25 size-10" />
-                        <span class="text-default/45 font-semibold">В этот день занятий нет</span>
-                    </div>
-                </Transition>
+                <div
+                    v-if="filteredClubs.length"
+                    :key="selectedDay.dayShort"
+                    class="flex flex-col gap-2"
+                >
+                    <ClubsScheduleCard
+                        v-for="club in filteredClubs"
+                        :key="club.id"
+                        :club="club"
+                        variant="row"
+                    />
+                </div>
+                <div
+                    v-else
+                    :key="`empty-${selectedDay.dayShort}`"
+                    class="flex flex-col items-start gap-2 py-4"
+                >
+                    <UIcon name="ph:coffee-duotone" class="text-default/25 size-10" />
+                    <span class="text-default/45 font-semibold">В этот день занятий нет</span>
+                </div>
             </template>
 
             <!-- Desktop -->

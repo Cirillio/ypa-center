@@ -42,10 +42,10 @@ export default defineAppConfig({
         directorTelegram: "https://t.me/MakukhaNG",
         address: "г. Новосибирск, ул Ильича, 23",
         socials: [
-            { icon: "simple-icons:vk", href: "#", label: "ВКонтакте" },
+            { icon: "simple-icons:vk", href: "https://vk.com/joystreetacadem", label: "ВКонтакте" },
             { icon: "simple-icons:telegram", href: "https://t.me/joystreet", label: "Telegram" }
         ],
-        mapLink: "https://yandex.ru/maps/-/CPRON8mX",
+        mapLink: "https://yandex.ru/maps/-/CPbt6Xni",
         workingHours: "Пн-Пт: 8:00-20:00"
     },
     promo: {

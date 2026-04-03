@@ -109,7 +109,7 @@ const FOOTER_GROUPS: FooterGroup[] = [
             </div>
             <!-- Divider + bottom row -->
             <div
-                class="border-default mt-10 flex flex-col items-center justify-between gap-3 border-t pt-5 sm:flex-row"
+                class="border-primary/25 mt-10 flex flex-col items-center justify-between gap-3 border-t pt-5 sm:flex-row"
             >
                 <a
                     :href="contacts.mapLink"

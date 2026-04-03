@@ -7,12 +7,6 @@ const promo = appConfig.promo
 
 <template>
     <section class="relative z-10 flex w-full overflow-hidden bg-white py-12 md:py-20">
-        <div
-            class="bg-default absolute top-6 right-6 z-0 flex rounded-full p-2 opacity-60 xl:top-8 xl:right-auto xl:left-0 xl:-translate-x-1/2 xl:rotate-5 xl:rounded-none xl:bg-transparent xl:p-0 xl:opacity-25"
-        >
-            <UIcon name="ph:flower-tulip-duotone" class="text-primary size-10 xl:size-120" />
-        </div>
-
         <UContainer
             class="relative z-10 grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16"
         >
@@ -64,21 +58,7 @@ const promo = appConfig.promo
             <div
                 class="hover:ring-primary flex aspect-square w-full overflow-hidden rounded-lg ring-2 ring-transparent transition"
             >
-                <iframe
-                    title="Промо-видео центра Улица Радости"
-                    loading="lazy"
-                    :src="promo.aboutVideoUrl"
-                    allow="
-                        autoplay;
-                        encrypted-media;
-                        fullscreen;
-                        picture-in-picture;
-                        screen-wake-lock;
-                    "
-                    frameborder="0"
-                    allowfullscreen
-                    class="h-full w-full object-cover"
-                />
+                <AppVideo :src="promo.aboutVideoUrl" title="Промо-видео центра Улица Радости" />
             </div>
         </UContainer>
     </section>

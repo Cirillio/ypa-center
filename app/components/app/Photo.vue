@@ -3,7 +3,7 @@
         <Transition name="skeleton-fade">
             <div
                 v-if="!isLoaded && !hasError"
-                class="bg-primary/15 absolute inset-0 flex animate-pulse items-center justify-center"
+                class="bg-primary/15 absolute inset-0 flex size-full animate-pulse items-center justify-center"
             >
                 <UIcon name="ph:circle-notch-bold" class="text-primary size-8 animate-spin" />
             </div>
@@ -23,11 +23,10 @@
             v-show="!hasError"
             :src="src"
             :alt="alt"
-            :placeholder="[32, 32, 5, 4]"
             loading="lazy"
             format="webp"
             quality="85"
-            class="h-full w-full object-cover object-center"
+            class="h-full w-full"
             :class="combinedClasses"
             @load="isLoaded = true"
             @error="onError"

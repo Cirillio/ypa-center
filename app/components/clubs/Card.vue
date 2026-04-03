@@ -19,11 +19,12 @@ const formattedNumber = computed(() => String(props.index + 1).padStart(2, "0"))
 
 <template>
     <article
+        :id="club.slug"
         class="group hover:ring-primary relative flex h-40 w-full gap-4 rounded-lg bg-white p-5 ring-2 ring-transparent transition-all duration-200 md:h-64 md:gap-8"
     >
         <!-- Фото с декоративным номером -->
         <div class="aspect-square h-full shrink-0 overflow-hidden rounded-md">
-            <AppPhoto :src="club.photo" :alt="club.name" />
+            <AppPhoto :src="club.photo" :alt="club.name" class="object-cover object-center" />
         </div>
         <span
             class="text-primary absolute top-2 left-2 flex aspect-square rounded-full bg-white p-3 text-lg font-bold select-none md:text-lg"
@@ -46,6 +47,10 @@ const formattedNumber = computed(() => String(props.index + 1).padStart(2, "0"))
                         :src="club.teacher.photo"
                         :alt="club.teacher.name"
                         size="sm"
+                        :ui="{
+                            root: 'bg-default',
+                            icon: 'text-primary/75'
+                        }"
                         icon="ph:user-bold"
                     />
                     <span class="text-default/60 text-sm font-semibold">{{

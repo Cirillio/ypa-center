@@ -4,12 +4,6 @@ import { MOCK_CLUBS } from "~/constants/mock"
 
 <template>
     <section class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20">
-        <div
-            class="absolute top-6 right-6 z-0 flex rounded-full bg-white p-2 opacity-60 xl:top-8 xl:right-0 xl:translate-x-1/2 xl:rounded-none xl:bg-transparent xl:p-0 xl:opacity-15"
-        >
-            <UIcon name="ph:puzzle-piece-duotone" class="text-secondary size-10 xl:size-120" />
-        </div>
-
         <UContainer class="relative z-10 flex flex-col gap-12 md:gap-16">
             <!-- Floating promo card -->
             <FloatPromoCard
@@ -50,7 +44,7 @@ import { MOCK_CLUBS } from "~/constants/mock"
                     v-for="club in MOCK_CLUBS"
                     :key="club.title"
                     v-bind="club"
-                    class="h-72 md:h-98"
+                    class="h-72 md:h-108"
                 />
             </div>
         </UContainer>

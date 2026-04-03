@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useMediaQuery } from "@vueuse/core"
 import type { GalleryPhoto } from "~/types"
 
 const props = defineProps<{
@@ -20,7 +21,16 @@ const isOpen = computed({
     set: (value) => emit("update:modelValue", value)
 })
 
-// Управление клавиатурой
+const isMobile = useMediaQuery("(max-width: 1024px)")
+
+const currentPhoto = ref(props.photo)
+const currentPhotoWatcher = watch(
+    () => props.photo,
+    (val) => {
+        if (val) currentPhoto.value = val
+    }
+)
+
 const handleKeydown = (e: KeyboardEvent) => {
     if (!isOpen.value) return
     if (e.key === "ArrowLeft" && props.hasPrev) emit("prev")
@@ -28,69 +38,86 @@ const handleKeydown = (e: KeyboardEvent) => {
 }
 
 onMounted(() => window.addEventListener("keydown", handleKeydown))
-onUnmounted(() => window.removeEventListener("keydown", handleKeydown))
+onUnmounted(() => {
+    window.removeEventListener("keydown", handleKeydown)
+    currentPhotoWatcher()
+})
 </script>
 
 <template>
     <UModal
         v-model:open="isOpen"
-        fullscreen
+        :fullscreen="isMobile"
+        :transition="!isMobile"
         :close="false"
         :ui="{
-            content:
-                'bg-default/75 backdrop-blur-sm border-none shadow-none flex items-center justify-center focus:outline-none'
+            content: isMobile
+                ? 'rounded-none bg-black ring-0 shadow-none focus:outline-none'
+                : 'max-w-5xl w-full rounded-md ring-0 shadow-none overflow-hidden focus:outline-none',
+            overlay: 'bg-black/60 backdrop-blur-sm'
         }"
     >
-        <!-- Слот триггера оставляем пустым, так как открываем программно -->
-
         <template #content>
-            <div class="relative flex h-full w-full items-center justify-center p-4 sm:p-20">
-                <!-- Кнопка закрытия -->
-                <UButton
-                    color="neutral"
-                    variant="ghost"
-                    icon="i-heroicons-x-mark-20-solid"
-                    class="text-default/70 hover:text-default absolute top-4 right-4 z-50 hover:bg-white/90"
-                    @click="isOpen = false"
-                />
-
-                <!-- Навигация: Назад -->
-                <UButton
-                    v-if="hasPrev"
-                    color="secondary"
-                    variant="soft"
-                    icon="i-heroicons-chevron-left-20-solid"
-                    class="absolute left-4 z-50 hidden size-12 items-center justify-center rounded-full sm:flex"
-                    @click="emit('prev')"
-                />
-
-                <!-- Основное изображение -->
-                <div v-if="photo" class="relative grid h-full w-full items-center justify-center">
-                    <AppPhoto
-                        :src="photo.url"
-                        :alt="photo.alt"
-                        class="h-full w-full rounded-md object-cover object-center"
-                    />
+            <!-- Мобайл: flex-column на весь экран -->
+            <div v-if="isMobile" class="flex h-dvh w-full flex-col">
+                <div class="relative min-h-0 flex-1 overflow-hidden">
+                    <Transition name="photo-fade">
+                        <AppPhoto
+                            v-if="currentPhoto"
+                            :key="currentPhoto.url"
+                            :src="currentPhoto.url"
+                            :alt="currentPhoto.alt"
+                            class="h-full w-full object-contain! object-center"
+                        />
+                    </Transition>
                 </div>
 
-                <!-- Навигация: Вперед -->
-                <UButton
-                    v-if="hasNext"
-                    color="secondary"
-                    variant="soft"
-                    icon="i-heroicons-chevron-right-20-solid"
-                    class="absolute right-4 z-50 hidden size-12 items-center justify-center rounded-full sm:flex"
-                    @click="emit('next')"
+                <GalleryModalControls
+                    class="controls-bar bg-black/80 text-sm text-white/75"
+                    :alt="currentPhoto?.alt"
+                    :prev="hasPrev ? () => emit('prev') : undefined"
+                    :next="hasNext ? () => emit('next') : undefined"
+                    :close="() => (isOpen = false)"
                 />
+            </div>
 
-                <!-- Подпись снизу -->
-                <div
-                    v-if="photo?.alt"
-                    class="text-default/70 absolute bottom-4 left-0 w-full text-center text-sm font-medium sm:bottom-6 sm:text-lg"
-                >
-                    {{ photo.alt }}
+            <!-- Десктоп: windowed -->
+            <div v-else class="flex w-full flex-col">
+                <div class="relative h-fit max-h-[80vh] w-full overflow-hidden">
+                    <Transition name="photo-fade">
+                        <AppPhoto
+                            v-if="currentPhoto"
+                            :key="currentPhoto.url"
+                            :src="currentPhoto.url"
+                            :alt="currentPhoto.alt"
+                            class="h-fit! w-full object-contain! object-center"
+                        />
+                    </Transition>
                 </div>
+
+                <GalleryModalControls
+                    class="text-default/80 text-xl"
+                    :alt="currentPhoto?.alt"
+                    :prev="hasPrev ? () => emit('prev') : undefined"
+                    :next="hasNext ? () => emit('next') : undefined"
+                    :close="() => (isOpen = false)"
+                />
             </div>
         </template>
     </UModal>
 </template>
+
+<style scoped>
+.photo-fade-enter-active {
+    transition: opacity 0.15s ease;
+}
+.photo-fade-leave-active {
+    position: absolute;
+    inset: 0;
+    transition: opacity 0.15s ease;
+}
+.photo-fade-enter-from,
+.photo-fade-leave-to {
+    opacity: 0;
+}
+</style>

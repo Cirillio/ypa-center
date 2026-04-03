@@ -1,10 +1,17 @@
 // Глобальные типы приложения
 
+export interface Teacher {
+    id: number
+    name: string
+    role: string
+    description: string
+    photo: string
+}
+
 export interface ClubShort {
     title: string
     shortDesc: string
     img: string
-    to: string
 }
 
 export interface EventShort {
@@ -32,6 +39,7 @@ export interface GalleryPhoto {
 
 export interface Club {
     id: number
+    slug: string
     name: string
     description: string
     photo: string

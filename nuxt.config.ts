@@ -38,9 +38,12 @@ export default defineNuxtConfig({
         "/": { ssr: true },
         "/clubs": { ssr: true },
         "/gallery": { ssr: true },
+        "/about": { prerender: true },
+        "/teachers": { prerender: true },
         "/privacy": { prerender: true },
         "/consent": { prerender: true },
         "/**": {
+            ssr: true,
             headers: {
                 "Content-Security-Policy":
                     "frame-src 'self' https://vk.com https://vkvideo.ru https://yandex.ru"

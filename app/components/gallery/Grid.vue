@@ -69,13 +69,13 @@ const openPhoto = (index: number) => {
             <div
                 v-for="(photo, index) in photos"
                 :key="photo.id"
-                class="group relative cursor-pointer overflow-hidden rounded-lg"
+                class="group hover:ring-primary relative cursor-pointer overflow-hidden rounded-md ring-2 ring-transparent transition-all"
                 @click="openPhoto(index)"
             >
                 <AppPhoto
                     :src="photo.thumbnail || photo.url"
                     :alt="photo.alt"
-                    class="aspect-square transition-transform duration-500 group-hover:scale-110"
+                    class="aspect-square object-cover object-center transition-transform duration-150 group-hover:scale-105"
                 />
                 <div
                     class="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity group-hover:opacity-100"
@@ -87,7 +87,7 @@ const openPhoto = (index: number) => {
 
         <!-- Модалка -->
         <GalleryModal
-            v-model="isModalOpen"
+            v-model:model-value="isModalOpen"
             :photo="activePhoto"
             :has-prev="photos.length > 1"
             :has-next="photos.length > 1"

@@ -1,29 +1,25 @@
-import type { Club, ClubShort, EventShort, GalleryImage, GalleryPhoto } from "~/types"
+import type { Club, ClubShort, EventShort, GalleryImage, GalleryPhoto, Teacher } from "~/types"
 
 export const MOCK_CLUBS: ClubShort[] = [
     {
         title: "Настольные игры",
         shortDesc: "Развиваем логику и стратегическое мышление через увлекательные настольные игры",
-        img: "moke/club_1.jpg",
-        to: "/clubs#board-games"
+        img: "moke/club_1.jpg"
     },
     {
         title: "Каникулы",
         shortDesc: "Организуем яркий и полезный досуг во время школьных каникул.",
-        img: "moke/club_4.jpg",
-        to: "/clubs#holidays"
+        img: "moke/club_4.jpg"
     },
     {
         title: "Рисование",
         shortDesc: "Раскрываем творческий потенциал через живопись и художественное творчество",
-        img: "moke/club_2.jpg",
-        to: "/clubs#drawing"
+        img: "moke/club_2.jpg"
     },
     {
         title: "Пианино",
         shortDesc: "Обучаем игре на фортепиано с нуля",
-        img: "moke/club_3.jpg",
-        to: "/clubs#piano"
+        img: "moke/club_3.jpg"
     }
 ]
 
@@ -74,6 +70,7 @@ export const MOCK_CLUBS_FULL: Club[] = [
     {
         id: 1,
         name: "Настольные игры",
+        slug: "board-games",
         description:
             "Развиваем логику, стратегическое мышление и умение работать в команде через увлекательные настольные игры.",
         photo: "moke/club_1.jpg",
@@ -87,6 +84,7 @@ export const MOCK_CLUBS_FULL: Club[] = [
     {
         id: 2,
         name: "Рисование",
+        slug: "drawing",
         description:
             "Раскрываем творческий потенциал через живопись, графику и художественное творчество. Работаем с акварелью, гуашью и пастелью.",
         photo: "moke/club_2.jpg",
@@ -100,6 +98,7 @@ export const MOCK_CLUBS_FULL: Club[] = [
     {
         id: 3,
         name: "Пианино",
+        slug: "piano",
         description:
             "Обучаем игре на фортепиано с нуля: нотная грамота, техника, разбор произведений классиков и современных авторов.",
         photo: "moke/club_3.jpg",
@@ -113,6 +112,7 @@ export const MOCK_CLUBS_FULL: Club[] = [
     {
         id: 4,
         name: "Каникулярная программа",
+        slug: "holidays",
         description:
             "Яркий и насыщенный досуг во время школьных каникул: мастер-классы, квесты, творческие мастерские и выездные мероприятия.",
         photo: "moke/club_4.jpg",
@@ -125,18 +125,53 @@ export const MOCK_CLUBS_FULL: Club[] = [
     }
 ]
 
+export const MOCK_TEACHERS: Teacher[] = [
+    {
+        id: 1,
+        name: "Мария Коваль",
+        role: "Педагог настольных игр",
+        description:
+            "Увлечена игровой педагогикой уже больше восьми лет. Умеет объяснить правила любой сложности так, что дети с первого раза хотят играть снова. Считает, что настольные игры — лучший способ научить ребёнка думать и проигрывать достойно.",
+        photo: "/moke/teacher_1.png"
+    },
+    {
+        id: 2,
+        name: "Ольга Ненашева",
+        role: "Педагог по рисованию",
+        description:
+            "Художник и преподаватель с профильным образованием. Работает с акварелью, гуашью и пастелью. Убеждена, что у каждого ребёнка есть свой визуальный язык — её задача помочь его найти, а не заменить шаблоном.",
+        photo: "/moke/teacher_2.png"
+    },
+    {
+        id: 3,
+        name: "Дмитрий Шаров",
+        role: "Педагог по фортепиано",
+        description:
+            "Окончил музыкальное училище по классу фортепиано, преподаёт детям с 2018 года. Строит программу от интереса ребёнка: классика, современные треки, собственные мелодии — без скучных этюдов ради этюдов.",
+        photo: "/moke/teacher_3.png"
+    },
+    {
+        id: 4,
+        name: "Анастасия Луговая",
+        role: "Педагог каникулярных программ",
+        description:
+            "Специалист по досуговой педагогике и организации детских событий. Придумывает квесты, мастер-классы и выездные активности. В её каникулах дети не скучают ни одной минуты — это проверено.",
+        photo: "/moke/teacher_4.png"
+    }
+]
+
 export const MOCK_GALLERY_IMAGES: GalleryImage[] = [
-    { src: "moke/club_1.jpg", alt: "Настольные игры" },
+    { src: "moke/club_1.jpg", alt: "" },
     { src: "moke/event-1.jpeg", alt: "Театральные игры" },
-    { src: "moke/club_2.jpg", alt: "Рисование" },
+    { src: "moke/club_2.jpg", alt: "" },
     { src: "moke/event-4.jpg", alt: "Космическая лекция" }
 ]
 
 export const MOCK_GALLERY_PHOTOS: GalleryPhoto[] = [
-    { id: 1, url: "/moke/club_1.jpg", thumbnail: "/moke/club_1.jpg", alt: "Настольные игры" },
+    { id: 1, url: "/moke/club_1.jpg", thumbnail: "/moke/club_1.jpg", alt: "" },
     { id: 2, url: "/moke/event-1.jpeg", thumbnail: "/moke/event-1.jpeg", alt: "Театральные игры" },
     { id: 3, url: "/moke/club_2.jpg", thumbnail: "/moke/club_2.jpg", alt: "Рисование" },
-    { id: 4, url: "/moke/event-4.jpg", thumbnail: "/moke/event-4.jpg", alt: "Космическая лекция" },
-    { id: 5, url: "/moke/club_3.jpg", thumbnail: "/moke/club_3.jpg", alt: "Пианино" },
+    { id: 4, url: "/moke/event-4.jpg", thumbnail: "/moke/event-4.jpg", alt: "" },
+    { id: 5, url: "/moke/club_3.jpg", thumbnail: "/moke/club_3.jpg", alt: "" },
     { id: 6, url: "/moke/club_4.jpg", thumbnail: "/moke/club_4.jpg", alt: "Каникулы" }
 ]
