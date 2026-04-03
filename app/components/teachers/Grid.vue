@@ -34,7 +34,7 @@ defineProps<{
         </div>
 
         <!-- Сетка -->
-        <div v-else class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div v-else class="grid grid-cols-1 gap-6 sm:grid-cols-1">
             <TeachersCard v-for="teacher in teachers" :key="teacher.id" :teacher="teacher" />
         </div>
     </UContainer>

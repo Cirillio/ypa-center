@@ -1,7 +1,7 @@
 <template>
     <div class="relative flex size-full flex-col md:justify-center">
         <div
-            class="relative flex aspect-square w-full max-w-full items-center justify-center border border-slate-50 p-4 sm:max-w-sm md:mx-auto md:max-w-none"
+            class="relative flex aspect-square w-full max-w-full items-center justify-center p-4 sm:max-w-sm md:mx-auto md:max-w-none"
         >
             <div
                 id="hero_main_bg"

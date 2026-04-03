@@ -1,6 +1,4 @@
-<script lang="ts" setup>
-const contacts = useAppConfig().contactInfo
-</script>
+<script lang="ts" setup></script>
 
 <template>
     <section id="map" name="center-map" class="relative z-10 flex w-full flex-col bg-white">
@@ -11,47 +9,28 @@ const contacts = useAppConfig().contactInfo
                 class="hover:ring-primary overflow-hidden rounded-md ring-2 ring-transparent transition"
             >
                 <div class="relative h-150 w-full">
-                    <iframe
-                        id="map-iframe"
-                        title="Улица Радости на карте"
-                        src="https://yandex.ru/map-widget/v1/-/CPRON8mX"
-                        width="100%"
-                        height="100%"
-                        frameborder="0"
-                        allowfullscreen
-                        class="block w-full"
-                    />
-
-                    <!-- Карточка адреса -->
-                    <div
-                        class="ring-secondary/50 absolute bottom-6 left-1/2 z-10 grid -translate-x-1/2 grid-cols-[auto_1fr] items-center gap-x-2 gap-y-2 rounded-md bg-white p-4 ring-2 sm:right-12 sm:bottom-8 sm:left-auto sm:translate-x-0"
-                    >
-                        <UIcon name="ph:map-pin-duotone" class="text-primary size-5" />
-                        <span class="text-default text-sm font-semibold">
-                            {{ contacts.address }}
-                        </span>
-
-                        <UIcon name="ph:phone-duotone" class="text-primary size-5" />
+                    <div class="h-full w-full" style="position: relative; overflow: hidden">
                         <a
-                            :href="`tel:${contacts.phoneTo}`"
-                            class="text-secondary hover:text-primary text-sm font-semibold transition-colors"
-                        >
-                            {{ contacts.phone }}
-                        </a>
-
-                        <UIcon name="ph:clock-duotone" class="text-primary size-5" />
-                        <span class="text-default/70 text-sm font-semibold">
-                            {{ contacts.workingHours }}
-                        </span>
-
-                        <a
-                            :href="contacts.mapLink"
-                            target="_blank"
-                            class="bg-secondary col-span-2 mt-1 flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-                        >
-                            Открыть в Яндекс.Картах
-                            <UIcon name="ph:arrow-square-out-bold" class="size-4" />
-                        </a>
+                            href="https://yandex.ru/maps/org/ulitsa_radosti/58873423499/?utm_medium=mapframe&utm_source=maps"
+                            style="color: #eee; font-size: 12px; position: absolute; top: 0px"
+                            >Улица Радости</a
+                        ><a
+                            href="https://yandex.ru/maps/65/novosibirsk/category/further_education/184106162/?utm_medium=mapframe&utm_source=maps"
+                            style="color: #eee; font-size: 12px; position: absolute; top: 14px"
+                            >Дополнительное образование в Новосибирске</a
+                        ><a
+                            href="https://yandex.ru/maps/65/novosibirsk/category/club_for_children_and_teenagers/184107202/?utm_medium=mapframe&utm_source=maps"
+                            style="color: #eee; font-size: 12px; position: absolute; top: 28px"
+                            >Клуб для детей и подростков в Новосибирске</a
+                        ><iframe
+                            src="https://yandex.ru/map-widget/v1/?from=mapframe&indoorLevel=1&ll=83.095882%2C54.841172&mode=search&oid=58873423499&ol=biz&source=mapframe&utm_source=share&z=17.4"
+                            width="100%"
+                            height="100%"
+                            frameborder="0"
+                            allowfullscreen
+                            class="block w-full"
+                            style="position: relative"
+                        ></iframe>
                     </div>
                 </div>
             </div>
