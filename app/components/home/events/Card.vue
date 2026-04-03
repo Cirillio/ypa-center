@@ -5,7 +5,7 @@
     >
         <!-- Image -->
         <div class="relative aspect-4/3 overflow-hidden rounded-md">
-            <AppPhoto :src="img" :alt="label" />
+            <AppPhoto :src="img" :alt="label" class="object-cover object-center" />
             <div
                 class="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent"
             />
@@ -20,7 +20,7 @@
         <!-- Title & description -->
         <div class="flex flex-col gap-2">
             <h3
-                class="text-secondary group-hover:text-secondary/75 text-3xl leading-[1.1] font-extrabold transition-colors duration-200"
+                class="text-secondary text-3xl leading-[1.1] font-extrabold transition-colors duration-200"
             >
                 {{ label }}
             </h3>
@@ -46,10 +46,6 @@
             <!-- CTA hint -->
             <span class="text-primary flex items-center gap-1.5 font-bold">
                 {{ price ?? "Бесплатно" }}
-                <UIcon
-                    name="ph:arrow-right"
-                    class="mb-0.5 size-5 transition-transform duration-200 group-hover:translate-x-1"
-                />
             </span>
         </div>
     </article>

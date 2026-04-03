@@ -71,7 +71,18 @@ const NAV_ROUTES: NavigationMenuItem[] = [
 
                 <UButton
                     to="/enroll"
-                    label="Записаться"
+                    label="Абонемент"
+                    color="secondary"
+                    trailing-icon="ph:pencil-bold"
+                    class="h-full px-4 py-2 text-base font-semibold max-md:hidden"
+                    :ui="{
+                        trailingIcon: 'size-5'
+                    }"
+                />
+
+                <UButton
+                    to="/enroll"
+                    label="Пробное занятие"
                     trailing-icon="ph:rocket-launch-duotone"
                     class="h-full px-4 py-2 text-base font-semibold max-md:hidden"
                     :ui="{
@@ -79,7 +90,7 @@ const NAV_ROUTES: NavigationMenuItem[] = [
                     }"
                 />
 
-                <UTooltip
+                <!-- <UTooltip
                     :content="{
                         align: 'end'
                     }"
@@ -100,7 +111,7 @@ const NAV_ROUTES: NavigationMenuItem[] = [
                     <template #content>
                         <span class="text-base font-bold">Оформить абонемент</span>
                     </template>
-                </UTooltip>
+                </UTooltip> -->
 
                 <UPopover
                     :ui="{

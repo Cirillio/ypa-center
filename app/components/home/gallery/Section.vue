@@ -7,12 +7,6 @@ import { MOCK_GALLERY_IMAGES } from "~/constants/mock"
         id="gallery"
         class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20"
     >
-        <div
-            class="absolute top-6 right-6 z-0 flex rounded-full bg-white p-2 opacity-60 xl:top-8 xl:right-0 xl:translate-x-1/2 xl:rounded-none xl:bg-transparent xl:p-0 xl:opacity-15"
-        >
-            <UIcon name="ph:camera-duotone" class="text-secondary size-10 xl:size-120" />
-        </div>
-
         <UContainer class="relative z-10 flex flex-col gap-8 md:gap-12">
             <SectionLeading subtitle="Наши моменты">
                 <template #title>
@@ -41,11 +35,8 @@ import { MOCK_GALLERY_IMAGES } from "~/constants/mock"
                     <AppPhoto
                         :src="photo.src"
                         :alt="photo.alt"
-                        :class="
-                            i === 0
-                                ? 'aspect-square duration-500 group-hover:scale-105'
-                                : 'aspect-4/3 duration-500 group-hover:scale-105'
-                        "
+                        class="object-cover object-center"
+                        :class="i === 0 ? 'aspect-square' : 'aspect-4/3'"
                     />
                 </div>
             </div>

@@ -5,7 +5,7 @@
             <span class="text-default font-semibold">Абонементы</span>
         </div>
 
-        <ul class="grid list-none grid-cols-3 gap-2">
+        <ul class="grid list-none grid-cols-2 gap-2 md:grid-cols-3">
             <li
                 v-for="tier in tiers"
                 :key="tier.label ?? tier.lessons ?? 'unlimited'"

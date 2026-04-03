@@ -31,6 +31,10 @@
     .page-container {
         @apply max-w-[100rem];
     }
+
+    .gradient-bg-ps {
+        @apply bg-linear-to-br from-primary/5 via-default to-secondary/10;
+    }
 }
 
 :root {

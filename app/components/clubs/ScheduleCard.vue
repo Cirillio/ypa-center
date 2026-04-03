@@ -44,13 +44,17 @@ const computedClass = computed(() => {
         </div>
         <div class="bg-default/20 h-8 w-px shrink-0" />
         <span class="flex-1 text-base font-extrabold" :class="style.title">{{ club.name }}</span>
-        <span class="text-xs font-bold" :class="spots.colorClass">{{ spots.label }}</span>
+        <span
+            class="w-fit rounded-xs bg-white px-1.5 py-0.5 text-xs font-bold"
+            :class="spots.colorClass"
+            >{{ spots.label }}</span
+        >
     </div>
 
     <!-- Квадратный вариант (десктоп) -->
     <div
         v-else
-        class="flex aspect-4/3 flex-col justify-between rounded-sm p-4 ring-2"
+        class="flex aspect-4/3 flex-col justify-between rounded-sm px-4 py-3 ring-2"
         :class="computedClass"
     >
         <span
@@ -60,10 +64,13 @@ const computedClass = computed(() => {
             {{ club.name }}
         </span>
         <div class="flex flex-col gap-0.5">
-            <span class="text-default text-lg font-bold xl:text-xl">
+            <span class="text-default/85 text-lg font-bold xl:text-xl">
                 {{ club.schedule.timeStart }}–{{ club.schedule.timeEnd }}
             </span>
-            <span class="text-base font-semibold xl:text-lg" :class="spots.colorClass">
+            <span
+                class="w-fit rounded-xs bg-white px-2.5 py-1 text-base font-semibold xl:text-lg"
+                :class="spots.colorClass"
+            >
                 {{ spots.label }}
             </span>
         </div>

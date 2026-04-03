@@ -35,12 +35,6 @@ const faqItems = [
 
 <template>
     <section id="faq" class="relative z-10 flex w-full overflow-hidden bg-white py-12 md:py-20">
-        <div
-            class="bg-default absolute top-6 right-6 z-0 flex rounded-full p-2 opacity-60 xl:top-8 xl:right-auto xl:left-0 xl:-translate-x-1/2 xl:rounded-none xl:bg-transparent xl:p-0 xl:opacity-15"
-        >
-            <UIcon name="ph:lightbulb-filament-duotone" class="text-primary size-10 xl:size-80" />
-        </div>
-
         <UContainer
             class="relative z-10 grid grid-cols-1 items-start gap-12 md:grid-cols-2 md:gap-16"
         >
