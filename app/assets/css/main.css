@@ -33,7 +33,7 @@
     }
 
     .gradient-bg-ps {
-        @apply bg-linear-to-br from-primary/5 via-default to-secondary/10;
+        @apply from-primary/5 via-default to-secondary/10 bg-linear-to-br;
     }
 }
 
