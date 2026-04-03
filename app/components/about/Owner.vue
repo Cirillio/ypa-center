@@ -18,7 +18,7 @@
                     <template #title>
                         <span class="text-secondary">
                             Макуха<br />
-                            <span class="text-primary">Наталья</span>
+                            <span class="text-primary">Надежда</span>
                         </span>
                     </template>
                     <template #description>

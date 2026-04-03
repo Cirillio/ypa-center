@@ -20,7 +20,7 @@ const formattedNumber = computed(() => String(props.index + 1).padStart(2, "0"))
 <template>
     <article
         :id="club.slug"
-        class="group hover:ring-primary relative flex h-40 w-full gap-4 rounded-lg bg-white p-5 ring-2 ring-transparent transition-all duration-200 md:h-64 md:gap-8"
+        class="group hover:ring-primary relative flex h-40 w-full gap-4 rounded-lg bg-white p-5 ring-2 ring-transparent transition-all duration-200 md:h-68 md:gap-8"
     >
         <!-- Фото с декоративным номером -->
         <div class="aspect-square h-full shrink-0 overflow-hidden rounded-md">
