@@ -16,7 +16,6 @@ defineProps<{
                 v-if="prev"
                 icon="ph:arrow-left-bold"
                 color="secondary"
-                variant="ghost"
                 size="xl"
                 @click="prev()"
             />
@@ -24,11 +23,10 @@ defineProps<{
                 v-if="next"
                 icon="ph:arrow-right-bold"
                 color="secondary"
-                variant="ghost"
                 size="xl"
                 @click="next()"
             />
-            <UButton icon="ph:x-bold" color="error" variant="ghost" size="xl" @click="close()" />
+            <UButton icon="ph:x-bold" color="error" variant="soft" size="xl" @click="close()" />
         </div>
     </div>
 </template>

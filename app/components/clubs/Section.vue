@@ -48,8 +48,8 @@
                                     />
                                 </UButton>
                             </div>
-                        </div> </template
-                    >l
+                        </div>
+                    </template>
                 </SectionLeading>
             </div>
 
