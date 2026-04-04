@@ -130,7 +130,7 @@ const bgClass = computed(() => {
             </div>
         </form>
 
-        <span class="text-default/45 mt-2 px-4 text-[10px] leading-tight">
+        <span class="text-default/45 mt-2 px-4 text-xs leading-tight">
             Нажимая на кнопку, вы даете согласие на
             <NuxtLink
                 target="_blank"

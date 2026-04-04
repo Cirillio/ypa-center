@@ -14,7 +14,10 @@ const visibleEvents = computed(() =>
 </script>
 
 <template>
-    <section id="events" class="relative z-10 flex w-full overflow-hidden bg-white py-20 md:py-24">
+    <section
+        id="events"
+        class="relative z-10 flex w-full overflow-hidden bg-white py-12 md:py-20 lg:py-24"
+    >
         <UContainer class="relative z-10 flex flex-col gap-8 md:gap-12">
             <SectionLeading subtitle="Ближайшие мероприятия">
                 <template #title>

@@ -65,7 +65,7 @@ const openPhoto = (index: number) => {
         </div>
 
         <!-- Сетка -->
-        <div v-else class="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
+        <div v-else class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
             <div
                 v-for="(photo, index) in photos"
                 :key="photo.id"

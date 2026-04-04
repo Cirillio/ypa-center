@@ -5,7 +5,7 @@ import { MOCK_GALLERY_IMAGES } from "~/constants/mock"
 <template>
     <section
         id="gallery"
-        class="bg-default relative z-10 flex w-full overflow-hidden py-20 md:py-24"
+        class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20 lg:py-24"
     >
         <UContainer class="relative z-10 flex flex-col gap-6 md:gap-12">
             <SectionLeading subtitle="Наши моменты">
@@ -22,7 +22,7 @@ import { MOCK_GALLERY_IMAGES } from "~/constants/mock"
             </SectionLeading>
 
             <!-- Gallery grid -->
-            <div class="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-4">
+            <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
                 <div
                     v-for="(photo, i) in MOCK_GALLERY_IMAGES"
                     :key="photo.src"

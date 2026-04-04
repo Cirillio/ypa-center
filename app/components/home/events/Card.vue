@@ -20,7 +20,7 @@
         <!-- Title & description -->
         <div class="flex flex-col gap-1 md:gap-2">
             <h3
-                class="text-secondary text-3xl leading-[1.1] font-bold transition-colors duration-200"
+                class="text-secondary text-xl leading-[1.1] font-bold transition-colors duration-200 sm:text-2xl md:text-3xl"
             >
                 {{ label }}
             </h3>

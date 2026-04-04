@@ -3,7 +3,7 @@ import { MOCK_CLUBS } from "~/constants/mock"
 </script>
 
 <template>
-    <section class="bg-default relative z-10 flex w-full overflow-hidden py-20 md:py-24">
+    <section class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20 lg:py-24">
         <UContainer class="relative z-10 flex flex-col gap-6 md:gap-12">
             <!-- Top: text content -->
             <SectionLeading subtitle="Для вашего ребёнка">

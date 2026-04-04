@@ -24,7 +24,7 @@ defineProps<{
                 size="xl"
                 class="mt-2 w-fit text-sm font-semibold md:text-lg"
             />
-            <h3 class="text-secondary text-3xl leading-tight font-extrabold">
+            <h3 class="text-secondary text-2xl leading-tight font-extrabold sm:text-3xl">
                 {{ teacher.name }}
             </h3>
             <p
