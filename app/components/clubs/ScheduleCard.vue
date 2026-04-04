@@ -33,7 +33,7 @@ const computedClass = computed(() => {
     <!-- Строчный вариант (мобиль) -->
     <div
         v-if="variant === 'row'"
-        class="flex items-center gap-4 rounded-sm p-4 ring-2"
+        class="flex items-center gap-4 rounded-md p-4 ring-2"
         :class="style.bg"
     >
         <div class="flex shrink-0 flex-col items-center">
@@ -54,7 +54,7 @@ const computedClass = computed(() => {
     <!-- Квадратный вариант (десктоп) -->
     <div
         v-else
-        class="flex aspect-4/3 flex-col justify-between rounded-sm px-4 py-3 ring-2"
+        class="flex aspect-4/3 flex-col justify-between rounded-md px-4 py-3 ring-2"
         :class="computedClass"
     >
         <span

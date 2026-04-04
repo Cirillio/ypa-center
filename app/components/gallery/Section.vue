@@ -13,15 +13,6 @@ const centerTelegram =
         <!-- Декоративная иконка -->
 
         <UContainer class="relative z-10 flex flex-col gap-8">
-            <FloatPromoCard
-                :to="centerTelegram"
-                icon="ph:images-fill"
-                sublabel="Больше"
-                label="Фото"
-                description="Ищите в нашем телеграм канале."
-                :external="true"
-                :target="'_blank'"
-            />
             <SectionLeading subtitle="Наши моменты" center>
                 <template #title>
                     <span class="text-secondary">
@@ -34,6 +25,16 @@ const centerTelegram =
                     «Улицы Радости».
                 </template>
             </SectionLeading>
+
+            <FloatPromoCard
+                :to="centerTelegram"
+                icon="ph:images-fill"
+                sublabel="Больше"
+                label="Фото"
+                description="Ищите в нашем телеграм канале."
+                :external="true"
+                :target="'_blank'"
+            />
         </UContainer>
     </section>
 </template>

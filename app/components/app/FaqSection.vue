@@ -34,7 +34,10 @@ const faqItems = [
 </script>
 
 <template>
-    <section id="faq" class="relative z-10 flex w-full overflow-hidden bg-white py-12 md:py-20">
+    <section
+        id="faq"
+        class="relative z-10 flex w-full overflow-hidden bg-white py-12 md:py-20 lg:py-24"
+    >
         <UContainer
             class="relative z-10 grid grid-cols-1 items-start gap-12 md:grid-cols-2 md:gap-16"
         >
@@ -64,8 +67,8 @@ const faqItems = [
                         root: 'space-y-4',
                         item: 'border-0 bg-default rounded-md',
                         trigger:
-                            'py-4 px-4 text-lg font-bold text-secondary hover:text-primary transition-colors rounded-t-md cursor-pointer',
-                        body: 'text-default/80 font-medium text-base leading-relaxed px-6 pb-6 pt-4 border-t-2 border-white'
+                            'md:p-4 p-3 max-md:gap-3 text-base md:text-lg font-bold text-secondary hover:text-primary transition-colors rounded-t-md cursor-pointer',
+                        body: 'text-default/80 font-medium text-sm md:text-base leading-relaxed px-6 pb-6 pt-4 border-t-2 border-white'
                     }"
                 />
             </div>

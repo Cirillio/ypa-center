@@ -97,7 +97,7 @@ export default defineNuxtConfig({
         families: {
             Nunito: "200..1000"
         },
-        display: "fallback",
+        display: "swap",
         download: true,
         preload: true,
         base64: false,

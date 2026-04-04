@@ -12,7 +12,7 @@
                 :data-price="tier.price"
                 :aria-label="tier.label"
                 :aria-price="formatPrice(tier.price)"
-                class="group flex flex-col gap-0.5 rounded-sm p-3 ring-2 transition-all duration-200"
+                class="group flex flex-col gap-0.5 rounded-md p-3 ring-2 transition-all duration-200"
                 :class="
                     tier.highlight
                         ? 'bg-primary ring-primary hover:bg-primary/90'
@@ -26,7 +26,7 @@
                     {{ tier.label ?? tier.lessons }}
                 </span>
                 <span
-                    class="text-[11px] font-semibold"
+                    class="text-xs font-semibold"
                     :class="tier.highlight ? 'text-white/65' : 'text-default/45'"
                 >
                     {{
@@ -42,7 +42,7 @@
                     {{ formatPrice(tier.price) }}
                 </span>
                 <span
-                    class="text-[11px] font-medium"
+                    class="text-xs font-medium"
                     :class="tier.highlight ? 'text-white/55' : 'text-default/35'"
                 >
                     {{ perLesson(tier) }}

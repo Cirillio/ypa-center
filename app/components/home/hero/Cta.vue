@@ -1,7 +1,7 @@
 <template>
-    <div class="flex flex-col gap-2 md:gap-4">
+    <div class="flex flex-col gap-2">
         <UButton to="/enroll" size="lg" class="group w-fit md:px-4 md:py-2">
-            <span class="font-bold md:text-lg">Записаться на пробное</span>
+            <span class="text-base font-bold md:text-lg">Записаться на пробное</span>
             <UIcon
                 name="ph:rocket-launch-duotone"
                 class="size-4.5 transition group-hover:translate-x-1.5 group-hover:scale-110 group-hover:rotate-5 md:size-5.5"
@@ -13,10 +13,10 @@
             color="secondary"
             class="group w-fit md:px-5 md:py-2.5"
         >
-            <span class="font-bold md:text-xl">Оформить абонемент</span>
+            <span class="text-lg font-bold">Оформить абонемент</span>
             <UIcon
                 name="ph:pencil-duotone"
-                class="size-5 transition group-hover:translate-x-1.5 group-hover:scale-110 group-hover:rotate-5 md:size-6"
+                class="size-6 transition group-hover:translate-x-1.5 group-hover:scale-110 group-hover:rotate-5"
             />
         </UButton>
     </div>

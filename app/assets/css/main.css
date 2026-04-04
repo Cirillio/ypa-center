@@ -11,6 +11,10 @@
         font-feature-settings: "ss01", "ss02", "cv01", "cv02";
     }
 
+    *:focus-visible {
+        @apply ring-primary ring-2 outline-none;
+    }
+
     h1,
     h2,
     h3,

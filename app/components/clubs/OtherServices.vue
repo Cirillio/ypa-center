@@ -28,7 +28,7 @@ const services: OtherService[] = [
 </script>
 
 <template>
-    <section class="z-10 flex w-full overflow-hidden bg-white py-12 md:py-16">
+    <section class="z-10 flex w-full overflow-hidden bg-white py-12 md:py-20 lg:py-24">
         <UContainer class="relative z-10 flex flex-col gap-10 md:gap-12">
             <!-- Заголовок -->
             <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">

@@ -62,7 +62,7 @@ const FOOTER_GROUPS: FooterGroup[] = [
                                 v-for="link in group.links"
                                 :key="link.label"
                                 :to="link.to"
-                                class="text-default/70 hover:text-primary w-fit text-base font-medium transition-colors"
+                                class="text-default/70 hover:text-primary active:text-primary w-fit text-base font-medium transition-colors"
                             >
                                 {{ link.label }}
                             </NuxtLink>
@@ -76,30 +76,34 @@ const FOOTER_GROUPS: FooterGroup[] = [
                         <NuxtImg
                             src="/core/Sun.png"
                             alt=""
-                            class="h-12 transition-transform duration-300 group-hover:rotate-10"
+                            class="h-10 transition-transform duration-300 group-hover:rotate-10 md:h-12"
                             format="webp"
                             quality="90"
                             loading="lazy"
                         />
-                        <span class="text-secondary shrink-0 text-3xl leading-tight font-extrabold">
+                        <span
+                            class="text-secondary shrink-0 text-2xl leading-tight font-extrabold md:text-3xl"
+                        >
                             <span class="text-primary">У</span>лица
                             <span class="text-primary">Ра</span>дости
                         </span>
                     </NuxtLink>
 
-                    <p class="text-default/75 text-base font-medium lg:text-right">
+                    <p class="text-default/75 text-sm font-medium md:text-base lg:text-right">
                         Место, где дети учатся думать,<br />
                         творить и верить в себя.
                     </p>
 
                     <!-- Social icons -->
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 max-md:flex-col">
                         <UButton
                             v-for="social in contacts.socials"
                             :key="social.label"
                             :to="social.href"
                             :aria-label="social.label"
+                            :label="social.label"
                             :variant="'ghost'"
+                            color="info"
                             :icon="social.icon"
                             target="_blank"
                             class="p-2"
@@ -109,25 +113,25 @@ const FOOTER_GROUPS: FooterGroup[] = [
             </div>
             <!-- Divider + bottom row -->
             <div
-                class="border-primary/25 mt-10 flex flex-col items-center justify-between gap-3 border-t pt-5 sm:flex-row"
+                class="border-default/50 mt-10 flex flex-col items-center justify-between gap-3 border-t pt-5 sm:flex-row"
             >
                 <a
                     :href="contacts.mapLink"
                     target="_blank"
-                    class="text-default/35 hover:text-primary text-xs font-medium transition"
+                    class="text-default/35 active:text-primary hover:text-primary text-xs font-medium transition"
                 >
                     {{ contacts.address }}
                 </a>
                 <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
                     <NuxtLink
                         to="/privacy"
-                        class="text-default/35 hover:text-primary text-xs font-medium transition"
+                        class="text-default/35 active:text-primary hover:text-primary text-xs font-medium transition"
                     >
                         Политика конфиденциальности
                     </NuxtLink>
                     <NuxtLink
                         to="/consent"
-                        class="text-default/35 hover:text-primary text-xs font-medium transition"
+                        class="text-default/35 active:text-primary hover:text-primary text-xs font-medium transition"
                     >
                         Согласие на обработку ПД
                     </NuxtLink>
