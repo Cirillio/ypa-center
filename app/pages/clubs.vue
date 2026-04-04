@@ -28,7 +28,7 @@ useSeoMeta({
             </div>
         </div>
 
-        <section class="bg-default relative z-10 flex w-full py-12 md:py-20">
+        <section class="bg-default relative z-10 flex w-full py-12 md:py-20 lg:py-24">
             <UContainer class="flex w-full flex-col gap-6 md:gap-8">
                 <div class="flex items-center justify-between gap-4">
                     <h2 class="text-secondary text-2xl font-extrabold md:text-3xl">Все кружки</h2>

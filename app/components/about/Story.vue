@@ -3,7 +3,7 @@ const promo = useAppConfig().promo
 </script>
 
 <template>
-    <section class="relative z-10 flex w-full overflow-hidden bg-white py-20 md:py-24">
+    <section class="relative z-10 flex w-full overflow-hidden bg-white py-12 sm:py-20 md:py-24">
         <UContainer class="grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16">
             <div class="flex flex-col gap-6">
                 <SectionLeading subtitle="Наша история">
@@ -29,7 +29,7 @@ const promo = useAppConfig().promo
             </div>
 
             <div
-                class="hover:ring-primary aspect-square w-full overflow-hidden rounded-lg ring-2 ring-transparent transition duration-300"
+                class="hover:ring-primary focus-within:ring-primary aspect-square w-full overflow-hidden rounded-lg ring-2 ring-transparent transition duration-300"
             >
                 <AppVideo :src="promo.aboutVideoUrl" title="Промо-видео центра Улица Радости" />
             </div>

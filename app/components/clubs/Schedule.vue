@@ -83,7 +83,7 @@ const desktopGridClass = computed(() => desktopGridCols[activeDays.value.length]
 <template>
     <section
         id="schedule"
-        class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20"
+        class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20 lg:py-24"
     >
         <UContainer class="flex w-full flex-col gap-4">
             <!-- Заголовок -->
@@ -111,7 +111,7 @@ const desktopGridClass = computed(() => desktopGridCols[activeDays.value.length]
                             v-for="day in weekDays"
                             :key="day.dayShort"
                             type="button"
-                            class="flex shrink-0 cursor-pointer flex-col items-center gap-0.5 rounded-sm px-4 py-2.5 ring-2 transition-all duration-150"
+                            class="flex aspect-square min-w-0 flex-1 cursor-pointer flex-col items-center gap-0.5 rounded-sm p-3 ring-2 transition-all duration-150"
                             :class="
                                 selectedDay.dayShort === day.dayShort
                                     ? 'bg-primary ring-primary text-white'
@@ -159,7 +159,7 @@ const desktopGridClass = computed(() => desktopGridCols[activeDays.value.length]
                 <div
                     v-else
                     :key="`empty-${selectedDay.dayShort}`"
-                    class="flex flex-col items-start gap-2 py-4"
+                    class="flex flex-col items-center gap-2 py-4"
                 >
                     <UIcon name="ph:coffee-duotone" class="text-default/25 size-10" />
                     <span class="text-default/45 font-semibold">В этот день занятий нет</span>

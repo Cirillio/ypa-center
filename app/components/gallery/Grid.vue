@@ -66,23 +66,23 @@ const openPhoto = (index: number) => {
 
         <!-- Сетка -->
         <div v-else class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
-            <div
+            <button
                 v-for="(photo, index) in photos"
                 :key="photo.id"
-                class="group hover:ring-primary relative cursor-pointer overflow-hidden rounded-md ring-2 ring-transparent transition-all"
+                class="group hover:ring-primary focus-within:ring-primary active:ring-primary relative cursor-pointer overflow-hidden rounded-md ring-2 ring-transparent transition-all"
                 @click="openPhoto(index)"
             >
                 <AppPhoto
                     :src="photo.thumbnail || photo.url"
                     :alt="photo.alt"
-                    class="aspect-square object-cover object-center transition-transform duration-150 group-hover:scale-105"
+                    class="aspect-square scale-105 object-cover object-center transition-transform duration-150 group-hover:scale-100 group-active:scale-100"
                 />
                 <div
-                    class="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity group-hover:opacity-100"
+                    class="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 group-active:opacity-100"
                 >
                     <UIcon name="ph:magnifying-glass-plus-duotone" class="size-8 text-white" />
                 </div>
-            </div>
+            </button>
         </div>
 
         <!-- Модалка -->

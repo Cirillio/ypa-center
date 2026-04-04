@@ -25,17 +25,19 @@ withDefaults(
         :to="to"
         :target="target"
         :external="external"
-        class="floating-element-slow group hover:ring-primary active:ring-primary z-20 flex overflow-hidden rounded-md bg-white ring-2 ring-transparent transition-all duration-150 hover:rotate-0 max-md:h-fit md:absolute md:top-12 md:right-24 md:aspect-square md:h-56 md:w-72 md:rotate-2 md:hover:scale-105"
+        class="floating-element-slow group hover:ring-primary active:ring-primary focus-within:ring-primary z-20 flex overflow-hidden rounded-md bg-white ring-2 ring-transparent transition-all duration-150 hover:rotate-0 max-lg:h-fit max-lg:max-w-md md:hover:scale-105 lg:absolute lg:top-12 lg:right-24 lg:aspect-square lg:h-56 lg:w-72 lg:rotate-2"
     >
-        <div class="relative flex w-full flex-col p-6">
+        <div class="relative flex w-full flex-col p-4 md:p-6">
             <UIcon
                 :name="icon"
                 class="text-primary absolute -top-8 -right-8 size-32 -rotate-15 opacity-25 transition-all group-hover:rotate-5 group-hover:opacity-75"
             />
-            <div class="mt-4 flex flex-col gap-1">
-                <span v-if="sublabel" class="text-primary/85 text-2xl leading-none font-black">{{
-                    sublabel
-                }}</span>
+            <div class="mt-4 flex flex-col md:gap-1">
+                <span
+                    v-if="sublabel"
+                    class="text-primary/85 text-xl leading-none font-black md:text-2xl"
+                    >{{ sublabel }}</span
+                >
                 <span class="text-primary mb-1 text-4xl font-black">{{ label }}</span>
             </div>
             <p class="text-default/90 text-base leading-tight font-semibold text-balance">

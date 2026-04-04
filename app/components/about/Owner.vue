@@ -1,7 +1,7 @@
 <script lang="ts" setup></script>
 
 <template>
-    <section class="bg-default relative z-10 flex w-full overflow-hidden py-20 md:py-24">
+    <section class="bg-default relative z-10 flex w-full overflow-hidden py-12 sm:py-20 md:py-24">
         <UContainer class="grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16">
             <div class="flex w-full justify-center">
                 <div class="h-92 w-full overflow-hidden rounded-lg md:h-132">

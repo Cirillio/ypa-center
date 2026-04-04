@@ -87,7 +87,8 @@ const bgClass = computed(() => {
                     }"
                     :ui="{
                         content:
-                            'bg-white shadow-none ring-2 ring-transparent hover:ring-primary transition duration-150 ease-out'
+                            'shadow-none ring-2 ring-transparent hover:ring-primary transition duration-150 ease-out ' +
+                            bgClass
                     }"
                     @update:open="popoverOpen = $event"
                 >
