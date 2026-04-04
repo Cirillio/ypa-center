@@ -2,7 +2,7 @@
 
 <template>
     <section id="map" name="center-map" class="relative z-10 flex w-full flex-col bg-white">
-        <UContainer class="py-16 md:py-24">
+        <UContainer class="py-20 md:py-24">
             <SectionLeading subtitle="Мы на карте" center> </SectionLeading>
 
             <div

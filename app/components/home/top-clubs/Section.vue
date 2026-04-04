@@ -3,18 +3,8 @@ import { MOCK_CLUBS } from "~/constants/mock"
 </script>
 
 <template>
-    <section class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20">
-        <UContainer class="relative z-10 flex flex-col gap-12 md:gap-16">
-            <!-- Floating promo card -->
-            <FloatPromoCard
-                to="/teachers"
-                icon="ph:chalkboard-teacher-duotone"
-                sublabel="Наши"
-                label="Учителя"
-                description="Профессионалы, которые вдохновляют детей и помогают найти призвание."
-                go-text="Познакомиться"
-            />
-
+    <section class="bg-default relative z-10 flex w-full overflow-hidden py-20 md:py-24">
+        <UContainer class="relative z-10 flex flex-col gap-6 md:gap-12">
             <!-- Top: text content -->
             <SectionLeading subtitle="Для вашего ребёнка">
                 <template #title>
@@ -39,14 +29,24 @@ import { MOCK_CLUBS } from "~/constants/mock"
             </SectionLeading>
 
             <!-- 2x2 Grid -->
-            <div class="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
+            <div class="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
                 <LazyHomeTopClubsCard
                     v-for="club in MOCK_CLUBS"
                     :key="club.title"
                     v-bind="club"
-                    class="h-72 md:h-108"
+                    class="h-80 md:h-108"
                 />
             </div>
+            <!-- Floating promo card -->
+            <FloatPromoCard
+                to="/teachers"
+                icon="ph:chalkboard-teacher-duotone"
+                sublabel="Наши"
+                label="Учителя"
+                description="Профессионалы, которые вдохновляют детей и помогают найти призвание."
+                go-text="Познакомиться"
+                class="max-md:relative! max-md:size-auto!"
+            />
         </UContainer>
     </section>
 </template>

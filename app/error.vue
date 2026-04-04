@@ -23,7 +23,7 @@ onMounted(() => window.scrollTo({ top: 0, behavior: "instant" }))
             <UContainer
                 class="flex items-center justify-center gap-10 max-md:flex-col max-md:py-12 md:gap-12"
             >
-                <div class="relative grid aspect-4/3 h-120 justify-center">
+                <div class="relative grid aspect-4/3 h-60 justify-center md:h-120">
                     <div
                         class="group hover:ring-error flex items-center justify-center overflow-hidden rounded-md ring-4 ring-transparent transition"
                     >
@@ -38,7 +38,7 @@ onMounted(() => window.scrollTo({ top: 0, behavior: "instant" }))
                         <UBadge
                             label="404"
                             size="xl"
-                            class="floating-element-slow rounded-full px-5 py-2.5 text-5xl font-extrabold text-white"
+                            class="floating-element-slow rounded-full text-2xl font-extrabold text-white md:px-5 md:py-2.5 md:text-5xl"
                             color="error"
                         />
                     </div>

@@ -25,9 +25,9 @@ withDefaults(
         :to="to"
         :target="target"
         :external="external"
-        class="floating-element-slow group hover:ring-primary absolute top-12 right-24 z-20 hidden aspect-square h-56 w-72 rotate-2 overflow-hidden rounded-lg bg-white ring-2 ring-transparent transition-all duration-150 hover:scale-105 hover:rotate-0 lg:flex"
+        class="floating-element-slow group hover:ring-primary active:ring-primary z-20 flex overflow-hidden rounded-md bg-white ring-2 ring-transparent transition-all duration-150 hover:rotate-0 max-md:h-fit md:absolute md:top-12 md:right-24 md:aspect-square md:h-56 md:w-72 md:rotate-2 md:hover:scale-105"
     >
-        <div class="relative flex flex-col p-6">
+        <div class="relative flex w-full flex-col p-6">
             <UIcon
                 :name="icon"
                 class="text-primary absolute -top-8 -right-8 size-32 -rotate-15 opacity-25 transition-all group-hover:rotate-5 group-hover:opacity-75"

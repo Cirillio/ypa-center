@@ -1,6 +1,6 @@
 <template>
     <article
-        class="hover:ring-primary focus-visible:outline-primary group relative flex flex-col overflow-hidden rounded-lg bg-white ring-2 ring-transparent transition-all duration-150"
+        class="hover:ring-primary focus-visible:outline-primary group relative flex flex-col overflow-hidden rounded-md bg-white ring-2 ring-transparent transition-all duration-150"
     >
         <!-- Image -->
         <div class="relative h-3/5 min-h-0 overflow-hidden rounded-md">
@@ -12,13 +12,13 @@
         </div>
 
         <!-- Content -->
-        <div class="text-default flex flex-1 flex-col items-start gap-2 p-4">
+        <div class="text-default flex flex-1 flex-col items-start gap-1 px-4 py-2 md:gap-2 md:p-4">
             <h4
-                class="group-hover:text-primary text-secondary text-2xl font-bold transition xl:text-4xl"
+                class="group-hover:text-primary text-secondary text-3xl font-bold transition xl:text-4xl"
             >
                 {{ title }}
             </h4>
-            <p class="text-default/65 text-sm leading-snug font-medium md:text-xl">
+            <p class="text-default/65 text-base leading-snug font-medium md:text-xl">
                 {{ shortDesc }}
             </p>
         </div>

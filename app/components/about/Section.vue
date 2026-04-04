@@ -7,14 +7,6 @@ import { CENTER_STATS } from "~/constants/content"
         class="relative z-10 flex w-full overflow-hidden pt-[calc(var(--header-height)+3rem)] pb-16 md:pt-40 md:pb-24"
     >
         <UContainer class="relative z-10 flex flex-col gap-8">
-            <FloatPromoCard
-                to="/teachers"
-                icon="ph:chalkboard-teacher-duotone"
-                sublabel="Наша"
-                label="Команда"
-                description="Внимательные педагоги, которые любят своё дело."
-            />
-
             <SectionLeading subtitle="О нашем центре" center>
                 <template #title>
                     <span class="text-secondary">
@@ -41,6 +33,14 @@ import { CENTER_STATS } from "~/constants/content"
                 </div>
             </div>
 
+            <FloatPromoCard
+                to="/teachers"
+                icon="ph:chalkboard-teacher-duotone"
+                sublabel="Наша"
+                label="Команда"
+                description="Внимательные педагоги, которые любят своё дело."
+            />
+
             <!-- CTA -->
             <UButton
                 to="#map"
@@ -48,7 +48,7 @@ import { CENTER_STATS } from "~/constants/content"
                 label="Найти нас"
                 color="secondary"
                 size="xl"
-                class="w-fit px-6 text-xl font-semibold"
+                class="w-fit px-6 font-semibold md:text-xl"
             />
         </UContainer>
     </section>

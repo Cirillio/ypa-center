@@ -3,7 +3,7 @@ const promo = useAppConfig().promo
 </script>
 
 <template>
-    <section class="relative z-10 flex w-full overflow-hidden bg-white py-16 md:py-24">
+    <section class="relative z-10 flex w-full overflow-hidden bg-white py-20 md:py-24">
         <UContainer class="grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16">
             <div class="flex flex-col gap-6">
                 <SectionLeading subtitle="Наша история">

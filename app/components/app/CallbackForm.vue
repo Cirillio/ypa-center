@@ -82,6 +82,9 @@ const bgClass = computed(() => {
             <div class="flex *:px-4 *:py-2 max-xl:gap-2 max-md:flex-col md:*:text-lg">
                 <UPopover
                     :open="popoverOpen"
+                    :content="{
+                        align: 'start'
+                    }"
                     :ui="{
                         content:
                             'bg-white shadow-none ring-2 ring-transparent hover:ring-primary transition duration-150 ease-out'

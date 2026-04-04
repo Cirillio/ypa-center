@@ -1,7 +1,7 @@
 <template>
     <!-- Card -->
     <article
-        class="bg-default group hover:ring-primary flex cursor-pointer flex-col gap-5 rounded-md p-4 ring-2 ring-transparent transition"
+        class="bg-default group hover:ring-primary flex cursor-pointer flex-col gap-2 rounded-md p-4 ring-2 ring-transparent transition md:gap-4"
     >
         <!-- Image -->
         <div class="relative aspect-4/3 overflow-hidden rounded-md">
@@ -11,25 +11,27 @@
             />
             <div
                 v-if="isPinned"
-                class="bg-primary/90 absolute top-4 left-4 flex rounded-full p-2 backdrop-blur-sm"
+                class="bg-primary/90 absolute top-4 left-4 flex rounded-full p-1 backdrop-blur-sm md:p-2"
             >
-                <UIcon name="ph:push-pin-duotone" class="size-6 text-white" />
+                <UIcon name="ph:push-pin-duotone" class="size-4 text-white md:size-6" />
             </div>
         </div>
 
         <!-- Title & description -->
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-1 md:gap-2">
             <h3
-                class="text-secondary text-3xl leading-[1.1] font-extrabold transition-colors duration-200"
+                class="text-secondary text-3xl leading-[1.1] font-bold transition-colors duration-200"
             >
                 {{ label }}
             </h3>
-            <p class="text-default/66 line-clamp-2 text-lg leading-relaxed font-medium">
+            <p
+                class="text-default/66 line-clamp-2 text-base leading-relaxed font-medium md:text-lg"
+            >
                 {{ description }}
             </p>
         </div>
 
-        <div class="flex items-center justify-between text-lg uppercase">
+        <div class="flex items-center justify-between text-sm uppercase md:text-base">
             <!-- Meta: date & time -->
             <div class="text-default/75 flex gap-1.5 font-bold tracking-widest">
                 <span class="flex items-center gap-1.5">
