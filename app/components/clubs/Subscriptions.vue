@@ -32,7 +32,7 @@
                     {{
                         tier.lessons === null
                             ? "занятий"
-                            : pluralize(tier.lessons, ["занятие", "занятия", "занятий"])
+                            : pluralizeYears(tier.lessons, ["занятие", "занятия", "занятий"])
                     }}
                 </span>
                 <span

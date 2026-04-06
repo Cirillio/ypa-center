@@ -59,6 +59,32 @@ useHead({
         }
     ]
 })
+
+useHead({
+    script: [
+        {
+            type: "application/ld+json",
+            innerHTML: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                    {
+                        "@type": "ListItem",
+                        position: 1,
+                        name: "Главная",
+                        item: siteUrl
+                    },
+                    {
+                        "@type": "ListItem",
+                        position: 2,
+                        name: "Политика конфиденциальности",
+                        item: `${siteUrl}/privacy`
+                    }
+                ]
+            })
+        }
+    ]
+})
 </script>
 
 <template>
