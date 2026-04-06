@@ -1,5 +1,26 @@
 <script lang="ts" setup>
-import { CENTER_STATS } from "~/constants/content"
+const { stats, pricing } = useAppConfig()
+
+const CENTER_STATS = [
+    {
+        icon: "ph:mask-happy-duotone",
+        textColor: "text-amber-400",
+        label: "Счастливых ребят",
+        value: stats.studentsCount
+    },
+    {
+        icon: "ph:shooting-star-duotone",
+        textColor: "text-emerald-500",
+        label: `Работаем с ${stats.workingSince}`,
+        value: stats.workingYearsText
+    },
+    {
+        icon: "ph:book-bookmark-duotone",
+        textColor: "text-cyan-500",
+        label: "Пробное занятие",
+        value: `${pricing.trialLesson} ₽`
+    }
+]
 </script>
 
 <template>

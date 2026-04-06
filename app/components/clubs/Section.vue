@@ -45,7 +45,7 @@
                                 >
                                     <span class="text-lg font-bold">Оформить абонемент</span>
                                     <UIcon
-                                        name="ph:pencil-duotone"
+                                        name="ph:calendar-dots-fill"
                                         class="size-5 transition-transform duration-200 group-hover:scale-110 group-hover:rotate-6"
                                     />
                                 </UButton>

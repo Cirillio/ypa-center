@@ -1,7 +1,7 @@
 <script lang="ts" setup></script>
 
 <template>
-    <section id="map" name="center-map" class="relative z-10 flex w-full flex-col bg-white">
+    <section id="map" name="center-map" class="bg-default relative z-10 flex w-full flex-col">
         <UContainer class="py-12 sm:py-20 md:py-24">
             <SectionLeading subtitle="Мы на карте" center> </SectionLeading>
 

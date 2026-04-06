@@ -8,8 +8,8 @@
             <SectionLeading subtitle="Наша команда" center>
                 <template #title>
                     <span class="text-secondary">
-                        Небольшая, но<br />
-                        <span class="text-primary">дружная команда</span>
+                        Наша<br />
+                        <span class="text-primary">команда</span>
                     </span>
                 </template>
                 <template #description>

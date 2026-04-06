@@ -7,6 +7,11 @@ const props = defineProps<{
 
 const is404 = computed(() => props.error.status === 404)
 
+useHead({
+    title: is404.value ? "Страница не найдена — Улица Радости" : "Произошла ошибка — Улица Радости",
+    meta: [{ name: "robots", content: "noindex, nofollow" }]
+})
+
 const goHome = () => clearError({ redirect: "/" })
 const reload = () => window.location.reload()
 

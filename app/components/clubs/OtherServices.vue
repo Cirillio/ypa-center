@@ -28,7 +28,7 @@ const services: OtherService[] = [
 </script>
 
 <template>
-    <section class="z-10 flex w-full overflow-hidden bg-white py-12 md:py-20 lg:py-24">
+    <section class="bg-default z-10 flex w-full overflow-hidden py-12 md:py-20 lg:py-24">
         <UContainer class="relative z-10 flex flex-col gap-10 md:gap-12">
             <!-- Заголовок -->
             <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -48,7 +48,7 @@ const services: OtherService[] = [
                 <!-- Телефон -->
                 <a
                     :href="`mailto:${email}`"
-                    class="group bg-default hover:ring-primary flex w-fit shrink-0 items-center gap-3 rounded-lg px-5 py-4 transition-all duration-200 hover:ring-2 md:self-auto"
+                    class="hover:ring-primary group flex w-fit shrink-0 items-center gap-3 rounded-lg bg-white px-5 py-4 transition-all duration-200 hover:ring-2 md:self-auto"
                 >
                     <div
                         class="bg-primary/10 group-hover:bg-primary/20 flex size-10 items-center justify-center rounded-full transition-colors"
@@ -69,10 +69,10 @@ const services: OtherService[] = [
                 <div
                     v-for="service in services"
                     :key="service.name"
-                    class="bg-default flex items-start gap-4 rounded-lg p-4"
+                    class="flex items-start gap-4 rounded-lg bg-white p-4"
                 >
                     <div
-                        class="flex size-10 shrink-0 items-center justify-center rounded-md bg-white"
+                        class="bg-default flex size-10 shrink-0 items-center justify-center rounded-md"
                     >
                         <UIcon :name="service.icon" class="text-secondary size-5" />
                     </div>

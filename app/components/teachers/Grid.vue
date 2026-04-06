@@ -11,7 +11,7 @@ defineProps<{
 <template>
     <UContainer class="pb-20">
         <!-- Скелетон -->
-        <div v-if="pending && !teachers.length" class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div v-if="pending && !teachers.length" class="grid grid-cols-1 gap-6">
             <div
                 v-for="i in 4"
                 :key="i"
@@ -34,7 +34,7 @@ defineProps<{
         </div>
 
         <!-- Сетка -->
-        <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div v-else class="grid grid-cols-1 gap-4">
             <TeachersCard v-for="teacher in teachers" :key="teacher.id" :teacher="teacher" />
         </div>
     </UContainer>

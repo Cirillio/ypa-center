@@ -32,7 +32,7 @@
                     {{
                         tier.lessons === null
                             ? "занятий"
-                            : pluralize(tier.lessons, ["занятие", "занятия", "занятий"])
+                            : pluralizeYears(tier.lessons, ["занятие", "занятия", "занятий"])
                     }}
                 </span>
                 <span
@@ -52,29 +52,17 @@
 
         <p class="text-default/60 text-base leading-relaxed font-medium">
             Абонемент удобнее разовых оплат: не нужно каждый раз переводить деньги, а чем больше
-            занятий — тем ниже цена за каждое. Выгода до&nbsp;40% против разового посещения.
+            занятий — тем ниже цена за каждое. Выгода до&nbsp;50% против разового посещения.
         </p>
     </div>
 </template>
 
 <script lang="ts" setup>
-interface SubscriptionTier {
-    lessons: number | null
-    price: number
-    label?: string
-    highlight?: boolean
-}
+const { subscriptions: tiers } = useAppConfig()
 
-const tiers: SubscriptionTier[] = [
-    { lessons: 4, price: 4000 },
-    { lessons: 8, price: 7000 },
-    { lessons: 12, price: 10000 },
-    { lessons: 16, price: 11000 },
-    { lessons: 20, price: 12000 },
-    { lessons: null, price: 15000, label: "Безлимит", highlight: true }
-]
+type Tier = (typeof tiers)[number]
 
-function perLesson(tier: SubscriptionTier): string {
+function perLesson(tier: Tier): string {
     if (tier.lessons === null) return "∞ занятий"
     const per = Math.round(tier.price / tier.lessons)
     return (

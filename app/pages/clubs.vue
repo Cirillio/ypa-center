@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { MOCK_CLUBS_FULL } from "~/constants/mock"
+import { MOCK_CLUBS_FULL, MOCK_WEEKLY_SLOTS } from "~/constants/mock"
 
-// TODO: заменить на useFetch после реализации GET /clubs/ на бэке
+// TODO: заменить на useFetch после реализации GET /clubs/ и GET /schedule/ на бэке
 const clubs = MOCK_CLUBS_FULL
+const slots = MOCK_WEEKLY_SLOTS
 
 useSeoMeta({
     title: "Кружки — Улица Радости",
@@ -10,6 +11,62 @@ useSeoMeta({
         "Каталог кружков детского центра «Улица Радости». Настольные игры, рисование, пианино, каникулярные программы и другие занятия для детей в Новосибирске.",
     ogTitle: "Кружки — Улица Радости",
     ogDescription: "Найдите занятие для вашего ребёнка. Внимательные педагоги и уютная атмосфера."
+})
+
+const { subscriptions, contactInfo, seo } = useAppConfig()
+const siteUrl = seo.siteUrl
+
+useHead({
+    script: [
+        {
+            type: "application/ld+json",
+            innerHTML: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                    {
+                        "@type": "ListItem",
+                        position: 1,
+                        name: "Главная",
+                        item: siteUrl
+                    },
+                    {
+                        "@type": "ListItem",
+                        position: 2,
+                        name: "Кружки",
+                        item: `${siteUrl}/clubs`
+                    }
+                ]
+            })
+        },
+        {
+            type: "application/ld+json",
+            innerHTML: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "ItemList",
+                name: "Абонементы детского центра «Улица Радости»",
+                description:
+                    "Абонементы на занятия в кружках детского центра «Улица Радости» в Новосибирске.",
+                itemListElement: subscriptions.map((tier, index) => ({
+                    "@type": "ListItem",
+                    position: index + 1,
+                    item: {
+                        "@type": "Offer",
+                        name: tier.label ?? `Абонемент на ${tier.lessons} занятий`,
+                        price: tier.price,
+                        priceCurrency: "RUB",
+                        availability: "https://schema.org/InStock",
+                        seller: {
+                            "@type": "LocalBusiness",
+                            name: "Улица Радости",
+                            address: contactInfo.address,
+                            telephone: contactInfo.phone
+                        }
+                    }
+                }))
+            })
+        }
+    ]
 })
 </script>
 
@@ -23,7 +80,10 @@ useSeoMeta({
                     size="xl"
                     label="Посмотреть расписание"
                     trailing-icon="ph:arrow-down-bold"
-                    class="floating-element-slow text-lg"
+                    class="floating-element-slow text-base md:text-lg"
+                    :ui="{
+                        trailingIcon: 'max-md:size-4'
+                    }"
                 />
             </div>
         </div>
@@ -38,8 +98,8 @@ useSeoMeta({
             </UContainer>
         </section>
 
+        <ClubsSchedule :slots="slots" />
         <ClubsOtherServices />
-        <ClubsSchedule :clubs="clubs" />
-        <AppFaqSection />
+        <FaqSection />
     </div>
 </template>

@@ -32,7 +32,7 @@ import { MOCK_GALLERY_IMAGES } from "~/constants/mock"
                         'col-span-2': i === MOCK_GALLERY_IMAGES.length - 1
                     }"
                 >
-                    <AppPhoto
+                    <LazyAppPhoto
                         :src="photo.src"
                         :alt="photo.alt"
                         class="object-cover object-center"

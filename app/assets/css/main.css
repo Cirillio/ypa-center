@@ -11,6 +11,10 @@
         font-feature-settings: "ss01", "ss02", "cv01", "cv02";
     }
 
+    html {
+        scroll-behavior: smooth;
+    }
+
     *:focus-visible {
         @apply ring-primary ring-2 outline-none;
     }
@@ -33,7 +37,7 @@
     }
 
     .page-container {
-        @apply max-w-[100rem];
+        @apply max-w-400;
     }
 
     .gradient-bg-ps {
