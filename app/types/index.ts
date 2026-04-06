@@ -6,6 +6,7 @@ export interface Teacher {
     role: string
     description: string
     photo: string
+    quote: string
 }
 
 export interface ClubShort {
@@ -59,4 +60,18 @@ export interface Club {
     price: number
     spots_total: number
     spots_available: number
+}
+
+export interface WeeklySlot {
+    id: number
+    activity: {
+        id: number
+        name: string
+    }
+    dayOfWeek: 0 | 1 | 2 | 3 | 4 | 5 | 6
+    startTime: string
+    endTime: string
+    groupName: string
+    maxCapacity: number
+    available: number
 }

@@ -1,10 +1,31 @@
 <script lang="ts" setup>
-import { CENTER_STATS } from "~/constants/content"
+const { stats, pricing } = useAppConfig()
+
+const CENTER_STATS = [
+    {
+        icon: "ph:mask-happy-duotone",
+        textColor: "text-amber-400",
+        label: "Счастливых ребят",
+        value: stats.studentsCount
+    },
+    {
+        icon: "ph:shooting-star-duotone",
+        textColor: "text-emerald-500",
+        label: `Работаем с ${stats.workingSince}`,
+        value: stats.workingYearsText
+    },
+    {
+        icon: "ph:book-bookmark-duotone",
+        textColor: "text-cyan-500",
+        label: "Пробное занятие",
+        value: `${pricing.trialLesson} ₽`
+    }
+]
 </script>
 
 <template>
     <section
-        class="relative z-10 flex w-full overflow-hidden pt-[calc(var(--header-height)+3rem)] pb-16 md:pt-40 md:pb-24"
+        class="gradient-bg-ps relative z-10 flex w-full overflow-hidden pt-[calc(var(--header-height)+3rem)] pb-16 md:pt-40 md:pb-24"
     >
         <UContainer class="relative z-10 flex flex-col gap-8">
             <SectionLeading subtitle="О нашем центре" center>

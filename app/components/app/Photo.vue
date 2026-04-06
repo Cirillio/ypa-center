@@ -25,7 +25,7 @@
             :alt="alt"
             loading="lazy"
             format="webp"
-            quality="85"
+            :quality="quality"
             class="h-full w-full"
             :class="combinedClasses"
             @load="isLoaded = true"
@@ -35,11 +35,19 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{
-    src: string
-    alt?: string
-    class?: string
-}>()
+const props = withDefaults(
+    defineProps<{
+        src: string
+        alt?: string
+        quality?: number
+        class?: string
+    }>(),
+    {
+        alt: "",
+        class: "",
+        quality: 85
+    }
+)
 
 const isLoaded = ref(false)
 const hasError = ref(false)

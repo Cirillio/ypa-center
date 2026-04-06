@@ -1,58 +1,3 @@
-<template>
-    <!-- Card -->
-    <article
-        class="bg-default group hover:ring-primary flex cursor-pointer flex-col gap-2 rounded-md p-4 ring-2 ring-transparent transition md:gap-4"
-    >
-        <!-- Image -->
-        <div class="relative aspect-4/3 overflow-hidden rounded-md">
-            <AppPhoto :src="img" :alt="label" class="object-cover object-center" />
-            <div
-                class="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent"
-            />
-            <div
-                v-if="isPinned"
-                class="bg-primary/90 absolute top-4 left-4 flex rounded-full p-1 backdrop-blur-sm md:p-2"
-            >
-                <UIcon name="ph:push-pin-duotone" class="size-4 text-white md:size-6" />
-            </div>
-        </div>
-
-        <!-- Title & description -->
-        <div class="flex flex-col gap-1 md:gap-2">
-            <h3
-                class="text-secondary text-xl leading-[1.1] font-bold transition-colors duration-200 sm:text-2xl md:text-3xl"
-            >
-                {{ label }}
-            </h3>
-            <p
-                class="text-default/66 line-clamp-2 text-base leading-relaxed font-medium md:text-lg"
-            >
-                {{ description }}
-            </p>
-        </div>
-
-        <div class="flex items-center justify-between text-sm uppercase md:text-base">
-            <!-- Meta: date & time -->
-            <div class="text-default/75 flex gap-1.5 font-bold tracking-widest">
-                <span class="flex items-center gap-1.5">
-                    <UIcon name="ph:calendar-blank" class="text-primary/75 size-5 shrink-0" />
-                    {{ formattedDate }}
-                </span>
-
-                <span class="flex items-center gap-1.5">
-                    <UIcon name="ph:clock" class="text-primary/75 size-5 shrink-0" />
-                    {{ time }}
-                </span>
-            </div>
-
-            <!-- CTA hint -->
-            <span class="text-primary flex items-center gap-1.5 font-bold">
-                {{ price ?? "Бесплатно" }}
-            </span>
-        </div>
-    </article>
-</template>
-
 <script lang="ts" setup>
 import type { EventShort } from "~/types"
 
@@ -60,8 +5,66 @@ const props = defineProps<EventShort>()
 
 const formattedDate = computed(() => {
     return new Intl.DateTimeFormat("ru-RU", {
-        day: "numeric",
-        month: "long"
+        day: "2-digit",
+        month: "2-digit"
     }).format(new Date(props.date))
 })
 </script>
+
+<template>
+    <article class="bg-default flex flex-row gap-2 rounded-md p-2 lg:flex-col lg:gap-4 lg:p-4">
+        <!-- Image -->
+        <div
+            class="relative aspect-square w-24 shrink-0 overflow-hidden rounded-sm sm:w-32 lg:aspect-4/3 lg:w-auto"
+        >
+            <AppPhoto :src="img" :alt="label" class="object-cover object-center" />
+            <div
+                class="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent"
+            />
+            <div
+                v-if="isPinned"
+                class="bg-primary/90 absolute top-1.5 left-1.5 flex rounded-full p-1 backdrop-blur-sm lg:top-4 lg:left-4 lg:p-2"
+            >
+                <UIcon name="ph:push-pin-duotone" class="size-3.5 text-white lg:size-6" />
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="flex min-w-0 flex-1 flex-col justify-between max-lg:pr-2 max-lg:pb-1 lg:gap-2">
+            <!-- Title & description -->
+            <div class="flex flex-col gap-0.5 lg:gap-1">
+                <h3
+                    class="text-secondary line-clamp-2 text-lg leading-tight font-bold sm:text-2xl lg:leading-[1.1] xl:text-3xl"
+                >
+                    {{ label }}
+                </h3>
+                <p
+                    class="text-default/66 line-clamp-2 text-xs leading-relaxed font-medium sm:text-base"
+                >
+                    {{ description }}
+                </p>
+            </div>
+
+            <!-- Meta -->
+            <div class="flex items-center justify-between text-xs uppercase sm:text-base">
+                <div class="text-default/75 flex gap-1.5 font-bold tracking-widest">
+                    <span class="flex items-center gap-1">
+                        <UIcon
+                            name="ph:calendar-blank"
+                            class="text-primary/75 size-3.5 shrink-0 sm:size-5"
+                        />
+                        {{ formattedDate }}
+                    </span>
+                    <span class="flex items-center gap-1">
+                        <UIcon
+                            name="ph:clock"
+                            class="text-primary/75 size-3.5 shrink-0 sm:size-5"
+                        />
+                        {{ time }}
+                    </span>
+                </div>
+                <span class="text-primary font-bold">{{ price ?? "Бесплатно" }}</span>
+            </div>
+        </div>
+    </article>
+</template>

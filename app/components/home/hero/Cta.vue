@@ -15,15 +15,15 @@
         >
             <span class="text-lg font-bold">Оформить абонемент</span>
             <UIcon
-                name="ph:pencil-duotone"
-                class="size-6 transition group-hover:translate-x-1.5 group-hover:scale-110 group-hover:rotate-5"
+                name="ph:calendar-dots-fill"
+                class="size-6 transition group-hover:scale-110 group-hover:rotate-6"
             />
         </UButton>
     </div>
 
     <div class="flex flex-col gap-1">
         <span class="text-default/75 ml-4 font-bold md:text-lg">Или закажите звонок!</span>
-        <AppCallbackForm bg="white" />
+        <CallbackForm bg="white" />
     </div>
 </template>
 

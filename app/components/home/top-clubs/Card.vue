@@ -1,14 +1,10 @@
 <template>
     <article
-        class="hover:ring-primary focus-visible:outline-primary group relative flex flex-col overflow-hidden rounded-md bg-white ring-2 ring-transparent transition-all duration-150"
+        class="focus-visible:outline-primary group relative flex flex-col overflow-hidden rounded-md bg-white"
     >
         <!-- Image -->
         <div class="relative h-3/5 min-h-0 overflow-hidden rounded-md">
-            <AppPhoto
-                :src="img"
-                :class="'object-cover object-center duration-500 group-hover:scale-105'"
-                :alt="'Кружок_' + title"
-            />
+            <AppPhoto :src="img" :class="'object-cover object-center'" :alt="'Кружок_' + title" />
         </div>
 
         <!-- Content -->

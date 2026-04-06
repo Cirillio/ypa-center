@@ -2,9 +2,38 @@
 import type { GalleryPhoto } from "~/types"
 import { MOCK_GALLERY_PHOTOS } from "~/constants/mock"
 
+const { seo } = useAppConfig()
+const siteUrl = seo.siteUrl
+
 useSeoMeta({
     title: "Галерея — Улица Радости",
     description: "Фотографии нашего центра: учебные классы, игровые зоны и моменты с наших занятий."
+})
+
+useHead({
+    script: [
+        {
+            type: "application/ld+json",
+            innerHTML: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                    {
+                        "@type": "ListItem",
+                        position: 1,
+                        name: "Главная",
+                        item: siteUrl
+                    },
+                    {
+                        "@type": "ListItem",
+                        position: 2,
+                        name: "Галерея",
+                        item: `${siteUrl}/gallery`
+                    }
+                ]
+            })
+        }
+    ]
 })
 
 // Получение данных с бэка

@@ -1,4 +1,12 @@
-import type { Club, ClubShort, EventShort, GalleryImage, GalleryPhoto, Teacher } from "~/types"
+import type {
+    Club,
+    ClubShort,
+    EventShort,
+    GalleryImage,
+    GalleryPhoto,
+    Teacher,
+    WeeklySlot
+} from "~/types"
 
 export const MOCK_CLUBS: ClubShort[] = [
     {
@@ -125,22 +133,298 @@ export const MOCK_CLUBS_FULL: Club[] = [
     }
 ]
 
+export const MOCK_WEEKLY_SLOTS: WeeklySlot[] = [
+    // ПОНЕДЕЛЬНИК (dayOfWeek: 1)
+    {
+        id: 1,
+        activity: { id: 1, name: "Кружок Мышления" },
+        dayOfWeek: 1,
+        startTime: "15:00",
+        endTime: "16:00",
+        groupName: "КМ",
+        maxCapacity: 6,
+        available: 1
+    },
+    {
+        id: 2,
+        activity: { id: 1, name: "Кружок Мышления" },
+        dayOfWeek: 1,
+        startTime: "16:00",
+        endTime: "17:00",
+        groupName: "КМ",
+        maxCapacity: 6,
+        available: 4
+    },
+    {
+        id: 3,
+        activity: { id: 1, name: "Кружок Мышления" },
+        dayOfWeek: 1,
+        startTime: "17:00",
+        endTime: "18:00",
+        groupName: "КМ",
+        maxCapacity: 6,
+        available: 4
+    },
+
+    // ВТОРНИК (dayOfWeek: 2)
+    {
+        id: 4,
+        activity: { id: 1, name: "Кружок Мышления" },
+        dayOfWeek: 2,
+        startTime: "15:00",
+        endTime: "16:00",
+        groupName: "КМ",
+        maxCapacity: 6,
+        available: 1
+    },
+    {
+        id: 5,
+        activity: { id: 2, name: "Творчество" },
+        dayOfWeek: 2,
+        startTime: "15:00",
+        endTime: "16:00",
+        groupName: "Творчество",
+        maxCapacity: 6,
+        available: 3
+    },
+    {
+        id: 6,
+        activity: { id: 1, name: "Кружок Мышления" },
+        dayOfWeek: 2,
+        startTime: "16:00",
+        endTime: "17:00",
+        groupName: "КМ",
+        maxCapacity: 6,
+        available: 2
+    },
+    {
+        id: 7,
+        activity: { id: 3, name: "Английский язык" },
+        dayOfWeek: 2,
+        startTime: "16:00",
+        endTime: "17:00",
+        groupName: "АЯ ВПР (7-8 кл)",
+        maxCapacity: 6,
+        available: 4
+    },
+    {
+        id: 8,
+        activity: { id: 1, name: "Кружок Мышления" },
+        dayOfWeek: 2,
+        startTime: "17:00",
+        endTime: "18:00",
+        groupName: "КМ",
+        maxCapacity: 6,
+        available: 6
+    },
+    {
+        id: 9,
+        activity: { id: 3, name: "Английский язык" },
+        dayOfWeek: 2,
+        startTime: "17:00",
+        endTime: "18:00",
+        groupName: "5 o'clock T (2-6 кл)",
+        maxCapacity: 6,
+        available: 0
+    },
+
+    // СРЕДА (dayOfWeek: 3)
+    {
+        id: 10,
+        activity: { id: 1, name: "Кружок Мышления" },
+        dayOfWeek: 3,
+        startTime: "15:00",
+        endTime: "16:00",
+        groupName: "КМ",
+        maxCapacity: 6,
+        available: 1
+    },
+    {
+        id: 11,
+        activity: { id: 4, name: "Рукоделие" },
+        dayOfWeek: 3,
+        startTime: "15:00",
+        endTime: "16:00",
+        groupName: "Рукоделие",
+        maxCapacity: 6,
+        available: 0
+    },
+    {
+        id: 12,
+        activity: { id: 1, name: "Кружок Мышления" },
+        dayOfWeek: 3,
+        startTime: "16:00",
+        endTime: "17:00",
+        groupName: "КМ",
+        maxCapacity: 6,
+        available: 5
+    },
+    {
+        id: 13,
+        activity: { id: 3, name: "Английский язык" },
+        dayOfWeek: 3,
+        startTime: "16:00",
+        endTime: "17:00",
+        groupName: "АЯ ДЗ (2-6 кл)",
+        maxCapacity: 6,
+        available: 1
+    },
+    {
+        id: 14,
+        activity: { id: 7, name: "Настольные игры" },
+        dayOfWeek: 3,
+        startTime: "17:00",
+        endTime: "18:00",
+        groupName: "Настольные игры",
+        maxCapacity: 6,
+        available: 6 // По предварительной записи
+    },
+
+    // ЧЕТВЕРГ (dayOfWeek: 4)
+    {
+        id: 15,
+        activity: { id: 1, name: "Кружок Мышления" },
+        dayOfWeek: 4,
+        startTime: "15:00",
+        endTime: "16:00",
+        groupName: "КМ",
+        maxCapacity: 6,
+        available: 2
+    },
+    {
+        id: 16,
+        activity: { id: 1, name: "Кружок Мышления" },
+        dayOfWeek: 4,
+        startTime: "16:00",
+        endTime: "17:00",
+        groupName: "КМ",
+        maxCapacity: 6,
+        available: 4
+    },
+    {
+        id: 17,
+        activity: { id: 3, name: "Английский язык" },
+        dayOfWeek: 4,
+        startTime: "16:00",
+        endTime: "17:00",
+        groupName: "АЯ exams (ОГЭ+ЕГЭ)",
+        maxCapacity: 6,
+        available: 1
+    },
+    {
+        id: 18,
+        activity: { id: 1, name: "Кружок Мышления" },
+        dayOfWeek: 4,
+        startTime: "17:00",
+        endTime: "18:00",
+        groupName: "КМ",
+        maxCapacity: 6,
+        available: 6
+    },
+    {
+        id: 19,
+        activity: { id: 3, name: "Английский язык" },
+        dayOfWeek: 4,
+        startTime: "17:00",
+        endTime: "18:00",
+        groupName: "5 o'clock T",
+        maxCapacity: 6,
+        available: 0
+    },
+
+    // ПЯТНИЦА (dayOfWeek: 5)
+    {
+        id: 20,
+        activity: { id: 1, name: "Кружок Мышления" },
+        dayOfWeek: 5,
+        startTime: "15:00",
+        endTime: "16:00",
+        groupName: "КМ",
+        maxCapacity: 6,
+        available: 0
+    },
+    {
+        id: 21,
+        activity: { id: 1, name: "Кружок Мышления" },
+        dayOfWeek: 5,
+        startTime: "16:00",
+        endTime: "17:00",
+        groupName: "КМ",
+        maxCapacity: 6,
+        available: 3
+    },
+    {
+        id: 22,
+        activity: { id: 3, name: "Английский язык" },
+        dayOfWeek: 5,
+        startTime: "16:00",
+        endTime: "17:00",
+        groupName: "АЯ ДЗ (2-6 кл)",
+        maxCapacity: 6,
+        available: 1
+    },
+    {
+        id: 23,
+        activity: { id: 1, name: "Кружок Мышления" },
+        dayOfWeek: 5,
+        startTime: "17:00",
+        endTime: "18:00",
+        groupName: "КМ",
+        maxCapacity: 6,
+        available: 2
+    },
+    {
+        id: 24,
+        activity: { id: 3, name: "Английский язык" },
+        dayOfWeek: 5,
+        startTime: "17:00",
+        endTime: "18:00",
+        groupName: "АЯ подростки (7-9 кл)",
+        maxCapacity: 6,
+        available: 3
+    },
+
+    // СУББОТА (dayOfWeek: 6)
+    {
+        id: 25,
+        activity: { id: 3, name: "Английский язык" },
+        dayOfWeek: 6,
+        startTime: "10:00",
+        endTime: "11:00",
+        groupName: "English 1 кл",
+        maxCapacity: 6,
+        available: 3
+    },
+    {
+        id: 26,
+        activity: { id: 6, name: "ГДЕЁЖ" },
+        dayOfWeek: 6,
+        startTime: "11:00",
+        endTime: "13:30",
+        groupName: "ГДЕЁЖ подготовка к школе",
+        maxCapacity: 6,
+        available: 3
+    }
+]
+
 export const MOCK_TEACHERS: Teacher[] = [
     {
         id: 1,
+        name: "Надежда Геннадьевна Макуха",
+        role: "Учитель Английского Языка",
+        description:
+            "Надежда Геннадьевна Макуха, основатель УРа и старший преподаватель СУНЦ НГУ сама проводит занятия английским языком в Центре. Например, по пятницам проходят игры на английском языке для подростков. Легко запомнить: в пятницу в пять. На занятии комфортно человеку с любым уровнем языковой подготовки. Кто-то узнаёт что-то новое в языке, а кто-то открывает для себя новую игру. И то, и другое - увлекательно.  А уж в компании опытного методиста и педагога еще и полезно.",
+        photo: "/moke/teacher_1.png",
+        quote: "Язык открывает двери, которые иначе остаются закрытыми навсегда."
+    },
+    {
+        id: 2,
         name: "Яков Леонидович Мордвинов",
         role: "Педагог Кружка Мышления",
         description:
             "Яков Леонидович Мордвинов проводит Кружок Мышления. Выпускник ФМШ и НГУ, кандидат физико-математических наук уже давно пришёл к выводу, что успешность в учёбе и любой деятельности зависит от уровня развития мышления. За 20 лет он собрал лучшие задания, создал много своих, запрограммировал тренажеры разных полезных навыков и сейчас охотно делится не только ими, но и своим хорошим настроением и с детьми, и со взрослыми. Чтобы понять, что такое Кружок Мышления, нужно прийти самому и попробовать. У разных людей получается разное описание.))) Ведь каждый проживает свой опыт",
-        photo: "/moke/teacher_3.png"
-    },
-    {
-        id: 2,
-        name: "Мария Коваль",
-        role: "Педагог настольных игр",
-        description:
-            "Увлечена игровой педагогикой уже больше восьми лет. Умеет объяснить правила любой сложности так, что дети с первого раза хотят играть снова. Считает, что настольные игры — лучший способ научить ребёнка думать и проигрывать достойно.",
-        photo: "/moke/teacher_1.png"
+        photo: "/moke/teacher_3.png",
+        quote: "Думать — это навык. Как и любой навык, его можно тренировать."
     },
     {
         id: 3,
@@ -148,7 +432,8 @@ export const MOCK_TEACHERS: Teacher[] = [
         role: "Педагог по рисованию",
         description:
             "Художник и преподаватель с профильным образованием. Работает с акварелью, гуашью и пастелью. Убеждена, что у каждого ребёнка есть свой визуальный язык — её задача помочь его найти, а не заменить шаблоном.",
-        photo: "/moke/teacher_2.png"
+        photo: "/moke/teacher_2.png",
+        quote: "У каждого ребёнка есть свой визуальный язык — моя задача помочь его найти."
     },
     {
         id: 4,
@@ -156,7 +441,8 @@ export const MOCK_TEACHERS: Teacher[] = [
         role: "Педагог каникулярных программ",
         description:
             "Специалист по досуговой педагогике и организации детских событий. Придумывает квесты, мастер-классы и выездные активности. В её каникулах дети не скучают ни одной минуты — это проверено.",
-        photo: "/moke/teacher_4.png"
+        photo: "/moke/teacher_4.png",
+        quote: "Каникулы — это не перерыв от развития, а его другая форма."
     }
 ]
 

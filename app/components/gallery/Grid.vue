@@ -72,7 +72,7 @@ const openPhoto = (index: number) => {
                 class="group hover:ring-primary focus-within:ring-primary active:ring-primary relative cursor-pointer overflow-hidden rounded-md ring-2 ring-transparent transition-all"
                 @click="openPhoto(index)"
             >
-                <AppPhoto
+                <LazyAppPhoto
                     :src="photo.thumbnail || photo.url"
                     :alt="photo.alt"
                     class="aspect-square scale-105 object-cover object-center transition-transform duration-150 group-hover:scale-100 group-active:scale-100"

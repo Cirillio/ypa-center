@@ -3,7 +3,7 @@
 
 const appConfig = useAppConfig()
 const centerTelegram =
-    appConfig.contactInfo.socials.find((i) => i.label === "Telegram")?.href || "/bad-link"
+    appConfig.contactInfo.socials.find((i) => i.label === "ВКонтакте")?.href || "/bad-link"
 </script>
 
 <template>
@@ -28,10 +28,10 @@ const centerTelegram =
 
             <FloatPromoCard
                 :to="centerTelegram"
-                icon="ph:images-fill"
+                icon="ph:aperture-duotone"
                 sublabel="Больше"
                 label="Фото"
-                description="Ищите в нашем телеграм канале."
+                description="Ищите в нашей группе Вконтакте."
                 :external="true"
                 :target="'_blank'"
             />

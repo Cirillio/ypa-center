@@ -7,9 +7,11 @@ const currentEvents = computed(() => {
     return [...pinned, ...regular]
 })
 
+const DEFAULT_VISIBLE = 3
+
 const showAllEvents = ref(false)
 const visibleEvents = computed(() =>
-    showAllEvents.value ? currentEvents.value : currentEvents.value.slice(0, 3)
+    showAllEvents.value ? currentEvents.value : currentEvents.value.slice(0, DEFAULT_VISIBLE)
 )
 </script>
 
@@ -30,15 +32,29 @@ const visibleEvents = computed(() =>
                     Интересные встречи, мастер-классы и праздники — следите за расписанием и
                     приходите с детьми.
                 </template>
+
+                <template #action>
+                    <UButton
+                        to="/participating"
+                        size="xl"
+                        class="group mt-auto w-fit md:px-5 md:py-2.5"
+                    >
+                        <span class="font-bold md:text-lg">Участвовать</span>
+                        <UIcon
+                            name="ph:pencil-bold"
+                            class="size-4 transition group-hover:translate-x-1 group-hover:scale-103 group-hover:-rotate-5 md:size-5"
+                        />
+                    </UButton>
+                </template>
             </SectionLeading>
 
-            <!-- Events grid -->
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <!-- Events list / grid -->
+            <div class="flex flex-col gap-2 lg:grid lg:grid-cols-3 lg:gap-4">
                 <LazyHomeEventsCard v-for="event in visibleEvents" :key="event.id" v-bind="event" />
             </div>
 
             <!-- Toggle button -->
-            <div v-if="MOCK_EVENTS.length > 3" class="flex justify-center pt-2">
+            <div v-if="currentEvents.length > DEFAULT_VISIBLE" class="flex justify-center pt-2">
                 <UButton
                     size="xl"
                     variant="ghost"

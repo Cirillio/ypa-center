@@ -10,35 +10,17 @@ interface FooterLink {
     to: string
 }
 
-interface FooterGroup {
-    title: string
-    links: FooterLink[]
-}
+const NAVIGATION_LINKS: FooterLink[] = [
+    { label: "О нас", to: "/about" },
+    { label: "Кружки", to: "/clubs" },
+    { label: "События", to: "/#events" },
+    { label: "Учителя", to: "/teachers" },
+    { label: "Галерея", to: "/gallery" }
+]
 
-const FOOTER_GROUPS: FooterGroup[] = [
-    {
-        title: "Навигация",
-        links: [
-            { label: "Кружки", to: "/clubs" },
-            { label: "О нас", to: "/about" },
-
-            { label: "Галерея", to: "/gallery" }
-        ]
-    },
-    {
-        title: "Информация",
-        links: [
-            { label: "События", to: "/#events" },
-            { label: "Учителя", to: "/teachers" }
-        ]
-    },
-    {
-        title: "Контакты",
-        links: [
-            { label: contacts.phone, to: "tel:" + contacts.phoneTo },
-            { label: contacts.email, to: "mailto:" + contacts.email }
-        ]
-    }
+const CONTACT_LINKS: FooterLink[] = [
+    { label: contacts.phone, to: "tel:" + contacts.phoneTo },
+    { label: contacts.email, to: "mailto:" + contacts.email }
 ]
 </script>
 
@@ -46,20 +28,33 @@ const FOOTER_GROUPS: FooterGroup[] = [
     <footer class="bg-default z-10">
         <UContainer class="py-12">
             <!-- Top row: link groups + brand -->
-            <div class="flex gap-8 max-md:flex-col">
-                <div class="grid w-full gap-8 sm:grid-cols-3">
-                    <!-- Link groups -->
-                    <div
-                        v-for="group in FOOTER_GROUPS"
-                        :key="group.title"
-                        class="flex flex-col gap-3"
-                    >
-                        <h4 class="text-default/90 text-sm font-bold tracking-widest uppercase">
-                            {{ group.title }}
+            <div class="flex justify-between gap-8 max-md:flex-col">
+                <div class="flex flex-col gap-8">
+                    <!-- Навигация -->
+                    <div class="flex flex-col gap-3">
+                        <h4 class="text-default/90 text-base font-bold tracking-widest uppercase">
+                            Навигация
+                        </h4>
+                        <nav class="flex flex-col gap-x-6 gap-y-1.5 md:flex-row md:items-center">
+                            <NuxtLink
+                                v-for="link in NAVIGATION_LINKS"
+                                :key="link.label"
+                                :to="link.to"
+                                class="text-default/70 hover:text-primary active:text-primary w-fit text-base font-medium transition-colors"
+                            >
+                                {{ link.label }}
+                            </NuxtLink>
+                        </nav>
+                    </div>
+
+                    <!-- Контакты -->
+                    <div class="flex flex-col gap-3">
+                        <h4 class="text-default/90 text-base font-bold tracking-widest uppercase">
+                            Контакты
                         </h4>
                         <nav class="flex flex-col gap-1.5">
                             <NuxtLink
-                                v-for="link in group.links"
+                                v-for="link in CONTACT_LINKS"
                                 :key="link.label"
                                 :to="link.to"
                                 class="text-default/70 hover:text-primary active:text-primary w-fit text-base font-medium transition-colors"
