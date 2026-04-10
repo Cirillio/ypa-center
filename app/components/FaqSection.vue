@@ -33,7 +33,7 @@ useHead({
         >
             <!-- Left: text content -->
             <div class="flex flex-col gap-6">
-                <SectionLeading subtitle="Частые вопросы">
+                <SectionLeading subtitle="Частые вопросы" icon="ph:question-duotone">
                     <template #title>
                         <span class="text-secondary">
                             Вопросы<br />

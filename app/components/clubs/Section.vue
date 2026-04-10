@@ -1,4 +1,6 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { EnrollRoutesEnum } from "~/constants/nav"
+</script>
 
 <template>
     <section
@@ -8,54 +10,69 @@
             class="relative z-10 grid grid-cols-1 items-start gap-12 lg:grid-cols-2 lg:gap-16"
         >
             <div class="flex flex-col gap-8">
-                <SectionLeading subtitle="Наши кружки">
+                <SectionLeading as="h1" subtitle="Наши кружки" icon="ph:compass-duotone">
                     <template #title>
                         <span class="text-secondary">
-                            Найдите занятие<br />
-                            <span class="text-primary">для вашего ребёнка</span>
+                            Найдите занятие <br />
+                            <span class="text-primary">для себя и своего ребёнка</span>
                         </span>
                     </template>
                     <template #description>
-                        Внимательные педагоги, уютная атмосфера и занятия, которые дети ждут с
-                        нетерпением.
+                        Уютное пространство, где каждый найдет увлечение по душе. Внимательные
+                        педагоги помогут раскрыть таланты малышам и с удовольствием провести время
+                        взрослым.
                     </template>
 
                     <template #action>
-                        <div class="flex flex-col gap-2">
-                            <span class="text-default/90 ml-2 text-base font-bold md:text-xl">
-                                Пробное занятие —
-                                <span class="text-primary font-bold">1 200 ₽</span>.
-                            </span>
-
-                            <div class="flex flex-wrap gap-2 md:gap-4">
-                                <UButton to="/enroll" size="xl" class="group md:px-5 md:py-2.5">
-                                    <span class="text-base font-bold md:text-lg"
-                                        >Записаться на пробное</span
-                                    >
-                                    <UIcon
-                                        name="ph:rocket-launch-duotone"
-                                        class="size-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 md:size-5"
-                                    />
-                                </UButton>
+                        <div class="flex flex-col gap-3">
+                            <div class="flex flex-col gap-1">
                                 <UButton
-                                    to="/subscribe"
+                                    :to="EnrollRoutesEnum.Subscription"
                                     size="xl"
                                     color="secondary"
-                                    class="group md:px-5 md:py-2.5"
+                                    class="group w-fit"
                                 >
-                                    <span class="text-lg font-bold">Оформить абонемент</span>
+                                    <span class="text-base font-bold md:text-lg"
+                                        >Собрать абонемент</span
+                                    >
                                     <UIcon
-                                        name="ph:calendar-dots-fill"
-                                        class="size-5 transition-transform duration-200 group-hover:scale-110 group-hover:rotate-6"
+                                        name="ph:puzzle-piece-duotone"
+                                        class="size-4.5 transition-transform duration-200 group-hover:scale-110 group-hover:rotate-6 md:size-5.5"
                                     />
                                 </UButton>
+                                <span class="text-default/90 ml-1 text-xs font-bold">
+                                    От <span class="text-primary">450 ₽</span> за занятие — выгоднее
+                                    разового
+                                </span>
                             </div>
+
+                            <UButton
+                                :to="EnrollRoutesEnum.Trial"
+                                size="lg"
+                                variant="ghost"
+                                class="group w-fit"
+                            >
+                                <span class="font-semibold"
+                                    >Или записаться на пробное — 1 200 ₽</span
+                                >
+                                <UIcon
+                                    name="ph:arrow-right-bold"
+                                    class="size-3.5 transition group-hover:translate-x-1"
+                                />
+                            </UButton>
                         </div>
                     </template>
                 </SectionLeading>
             </div>
 
-            <ClubsSubscriptions />
+            <SubscriptionsPromo>
+                <template #sub> Система абонементов </template>
+                <template #desc>
+                    Абонемент удобнее разовых оплат: не нужно каждый раз переводить деньги, а чем
+                    больше занятий — тем ниже цена за каждое. Выгода до&nbsp;50% против разового
+                    посещения.</template
+                >
+            </SubscriptionsPromo>
         </UContainer>
     </section>
 </template>

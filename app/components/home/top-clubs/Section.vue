@@ -3,10 +3,10 @@ import { MOCK_CLUBS } from "~/constants/mock"
 </script>
 
 <template>
-    <section class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20 lg:py-24">
+    <section class="relative z-10 flex w-full overflow-hidden bg-white py-12 md:py-20 lg:py-24">
         <UContainer class="relative z-10 flex flex-col gap-6 md:gap-12">
             <!-- Top: text content -->
-            <SectionLeading subtitle="Для вашего ребёнка">
+            <SectionLeading subtitle="Для вашего ребёнка" icon="ph:star-duotone">
                 <template #title>
                     <span class="text-secondary">
                         Популярные<br />
@@ -18,7 +18,7 @@ import { MOCK_CLUBS } from "~/constants/mock"
                     мы найдём занятие для каждого характера и таланта.
                 </template>
                 <template #action>
-                    <UButton to="/clubs" size="xl" class="group mt-auto w-fit md:px-5 md:py-2.5">
+                    <UButton to="/clubs" size="xl" class="group mt-auto w-fit">
                         <span class="font-bold md:text-lg">Все кружки</span>
                         <UIcon
                             name="ph:arrow-right-bold"
@@ -45,7 +45,7 @@ import { MOCK_CLUBS } from "~/constants/mock"
                 label="Учителя"
                 description="Профессионалы, которые вдохновляют детей и помогают найти призвание."
                 go-text="Познакомиться"
-                class="max-md:relative! max-md:size-auto!"
+                class="bg-default! max-md:relative! max-md:size-auto!"
             />
         </UContainer>
     </section>

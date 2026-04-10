@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { NAV_ROUTES } from "~/constants/nav"
-import { useMobileMenuStore } from "~/store/mobile-menu"
+import { NAV_ROUTES, EnrollRoutesEnum } from "~/constants/nav"
+import { useMobileMenuStore } from "~/store/mobile-menu-store"
 
 const mobileMenuStore = useMobileMenuStore()
 const { isMenuOpen } = storeToRefs(mobileMenuStore)
@@ -61,16 +61,16 @@ function navigate(to: string) {
                             size="xl"
                             class="w-full justify-center py-3 text-base font-semibold"
                             :ui="{ trailingIcon: 'size-5' }"
-                            @click="navigate('/enroll')"
+                            @click="navigate(EnrollRoutesEnum.Trial)"
                         />
                         <UButton
-                            label="Оформить абонемент"
+                            label="Собрать абонемент"
                             color="secondary"
                             trailing-icon="ph:calendar-dots-fill"
                             size="xl"
                             class="w-full justify-center py-3 text-base font-semibold"
                             :ui="{ trailingIcon: 'size-5' }"
-                            @click="navigate('/enroll')"
+                            @click="navigate(EnrollRoutesEnum.Subscription)"
                         />
                     </div>
                 </Transition>

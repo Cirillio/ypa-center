@@ -28,7 +28,7 @@ const CENTER_STATS = [
         class="gradient-bg-ps relative z-10 flex w-full overflow-hidden pt-[calc(var(--header-height)+3rem)] pb-16 md:pt-40 md:pb-24"
     >
         <UContainer class="relative z-10 flex flex-col gap-8">
-            <SectionLeading subtitle="О нашем центре" center>
+            <SectionLeading subtitle="О нашем центре" as="h1" icon="ph:info-duotone">
                 <template #title>
                     <span class="text-secondary">
                         Место, где дети<br />
@@ -50,7 +50,7 @@ const CENTER_STATS = [
                 >
                     <UIcon :name="stat.icon" class="size-5 shrink-0" :class="stat.textColor" />
                     <span class="text-secondary text-sm font-extrabold">{{ stat.value }}</span>
-                    <span class="text-default/60 text-sm font-semibold">{{ stat.label }}</span>
+                    <span class="text-default/85 text-sm font-semibold">{{ stat.label }}</span>
                 </div>
             </div>
 

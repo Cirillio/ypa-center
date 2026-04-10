@@ -1,0 +1,8 @@
+:root {
+    --ui-primary: #f16d22;
+    --ui-secondary: #2d915d;
+    --ui-text: #4d4845;
+    --ui-bg: #fbf9f7;
+    --ui-radius: 1rem;
+    --header-height: 72px;
+}

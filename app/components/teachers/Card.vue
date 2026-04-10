@@ -33,7 +33,7 @@ defineProps<{
                 {{ teacher.quote }}
             </blockquote>
             <p
-                class="text-default/60 text-base leading-relaxed font-semibold md:line-clamp-7 md:text-lg"
+                class="text-default/85 text-base leading-relaxed font-semibold md:line-clamp-7 md:text-lg"
             >
                 {{ teacher.description }}
             </p>

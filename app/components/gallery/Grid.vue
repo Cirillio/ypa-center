@@ -69,6 +69,7 @@ const openPhoto = (index: number) => {
             <button
                 v-for="(photo, index) in photos"
                 :key="photo.id"
+                :aria-label="'Открыть фото: ' + (photo.alt || 'Изображение из галереи')"
                 class="group hover:ring-primary focus-within:ring-primary active:ring-primary relative cursor-pointer overflow-hidden rounded-md ring-2 ring-transparent transition-all"
                 @click="openPhoto(index)"
             >

@@ -3,7 +3,7 @@
  * @param value Число
  * @param words Массив форм [1, 2, 5] (например: ['год', 'года', 'лет'])
  */
-export const pluralizeYears = (
+export const pluralize = (
     count: number,
     words: [string, string, string] = ["год", "года", "лет"]
 ): string => {

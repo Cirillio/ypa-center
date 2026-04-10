@@ -1,0 +1,24 @@
+@theme static {
+    --font-sans: "Nunito", system-ui;
+}
+
+@layer base {
+    body {
+        font-family: var(--font-sans), sans-serif;
+        font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto !important;
+        }
+    }
+
+    *:focus-visible {
+        @apply outline-primary ring-0! outline-2 outline-offset-2;
+    }
+}

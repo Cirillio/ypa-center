@@ -12,8 +12,8 @@ const CARD_STYLES: { bg: string; title: string }[] = [
     { bg: "bg-fuchsia-100 ring-fuchsia-200", title: "text-fuchsia-600" },
     { bg: "bg-violet-100 ring-violet-200", title: "text-violet-600" },
     { bg: "bg-cyan-100 ring-cyan-200", title: "text-cyan-600" },
-    { bg: "bg-amber-100 ring-amber-200", title: "text-amber-500" },
-    { bg: "bg-orange-100 ring-orange-200", title: "text-orange-400" },
+    { bg: "bg-amber-100 ring-amber-200", title: "text-amber-700" },
+    { bg: "bg-orange-100 ring-orange-200", title: "text-orange-700" },
     { bg: "bg-emerald-100 ring-emerald-200", title: "text-emerald-700" },
     { bg: "bg-indigo-100 ring-indigo-200", title: "text-indigo-600" }
 ]
@@ -23,8 +23,8 @@ const style = computed(() => CARD_STYLES[(props.weeklySlot.activity.id - 1) % CA
 const spotsColor = computed<string | null>(() => {
     const n = props.weeklySlot.available
     if (n === 0) return null
-    if (n <= 3) return "text-amber-500"
-    return "text-emerald-600"
+    if (n <= 3) return "text-amber-700"
+    return "text-emerald-800"
 })
 
 const cardClass = computed(() => [
@@ -50,7 +50,7 @@ const cardClass = computed(() => [
 
             <span
                 :title="'Группа: ' + weeklySlot.groupName"
-                class="text-default/75 line-clamp-1 text-xs font-semibold lg:text-sm"
+                class="text-default/95 line-clamp-1 text-xs font-semibold lg:text-sm"
                 >{{ weeklySlot.groupName }}</span
             >
         </div>

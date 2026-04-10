@@ -16,17 +16,26 @@ defineProps<{
                 v-if="prev"
                 icon="ph:arrow-left-bold"
                 color="secondary"
-                size="xl"
+                class="aspect-square rounded-full"
+                size="md"
                 @click="prev()"
             />
             <UButton
                 v-if="next"
                 icon="ph:arrow-right-bold"
                 color="secondary"
-                size="xl"
+                class="aspect-square rounded-full"
+                size="md"
                 @click="next()"
             />
-            <UButton icon="ph:x-bold" color="error" variant="soft" size="xl" @click="close()" />
+            <UButton
+                icon="ph:x-bold"
+                color="error"
+                variant="soft"
+                size="md"
+                class="aspect-square rounded-full"
+                @click="close()"
+            />
         </div>
     </div>
 </template>

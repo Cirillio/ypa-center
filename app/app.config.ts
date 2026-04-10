@@ -1,7 +1,9 @@
+import type { ContactTimeOption } from "./types"
+
 const START_YEAR = 2023
 const currentYears = new Date().getFullYear() - START_YEAR
 
-const pluralizeYears = (count: number): string => {
+const pluralize = (count: number): string => {
     const lastDigit = count % 10
     const lastTwoDigits = count % 100
     if (lastTwoDigits >= 11 && lastTwoDigits <= 19) return "лет"
@@ -22,6 +24,139 @@ export default defineAppConfig({
         button: {
             slots: {
                 base: "cursor-pointer"
+            },
+            variants: {
+                size: {
+                    xs: { base: "px-1.5 py-1" },
+                    sm: { base: "px-2.5 py-1.5" },
+                    md: { base: "px-2.5 py-1.5 md:px-3 md:py-2" },
+                    lg: { base: "px-3 py-2 md:px-4 md:py-2.5" },
+                    xl: { base: "px-3.5 py-2.5 md:px-5 md:py-3" }
+                }
+            },
+            compoundVariants: [
+                {
+                    color: "secondary",
+                    variant: "solid",
+                    class: "text-white"
+                },
+                {
+                    color: "primary",
+                    variant: "solid",
+                    class: "text-white"
+                }
+            ]
+        },
+        formField: {
+            slots: {
+                root: "w-full",
+                label: "block font-semibold text-base text-default mb-0.5",
+                description: "text-muted text-xs",
+                error: "mt-1.5 text-error text-sm font-medium",
+                hint: "text-muted text-xs",
+                help: "mt-1.5 text-muted text-xs",
+                container: "mt-1.5"
+            }
+        },
+
+        input: {
+            slots: {
+                root: "w-full",
+                base: "w-full px-4! rounded-sm placeholder:text-dimmed/60 transition duration-150 text-lg!"
+            },
+            defaultVariants: {
+                variant: "soft",
+                size: "lg",
+                color: "primary"
+            },
+            compoundVariants: [
+                {
+                    color: "error",
+                    variant: "soft",
+                    class: "ring-2 ring-inset ring-error"
+                }
+            ],
+            variants: {
+                variant: {
+                    soft: "bg-default/50 text-default hover:bg-default focus-visible:bg-default"
+                }
+            }
+        },
+
+        select: {
+            compoundVariants: [
+                {
+                    color: "error",
+                    variant: "soft",
+                    class: "ring-2 ring-inset ring-error"
+                },
+                {
+                    variant: "soft",
+                    class: "bg-default/50 focus:bg-default/75 disabled:opacity-50 disabled:bg-default focus:ring-primary ring-2 ring-transparent hover:bg-default text-default focus-visible:bg-default"
+                }
+            ],
+            slots: {
+                base: "w-full px-4! text-lg! rounded-sm cursor-pointer transition duration-150",
+                placeholder: "text-dimmed/60",
+                trailingIcon: "text-muted",
+                content:
+                    "bg-default shadow-none rounded-sm ring-2 ring-transparent hover:ring-primary transition border-0",
+                item: "rounded-sm cursor-pointer data-highlighted:not-data-disabled:before:bg-primary/10 data-highlighted:not-data-disabled:text-default! ring-0  px-4! transition duration-150",
+                itemLabel: "text-base font-semibold",
+                viewport: "p-1"
+            },
+            variants: {
+                size: {
+                    md: {
+                        base: "px-3 py-2 text-lg!"
+                    }
+                }
+            },
+            defaultVariants: {
+                size: "lg",
+                color: "primary",
+                variant: "soft"
+            }
+        },
+
+        checkbox: {
+            compoundVariants: [
+                {
+                    color: "primary",
+                    class: "*:text-white!"
+                }
+            ],
+            slots: {
+                base: "rounded-xs ring-0 border-0 bg-default!"
+            }
+        },
+
+        textarea: {
+            compoundVariants: [
+                {
+                    color: "error",
+                    variant: "soft",
+                    class: "ring-2 ring-inset ring-error"
+                },
+                {
+                    variant: "soft",
+                    class: "bg-default/50 hover:bg-default text-default focus-visible:bg-default"
+                }
+            ],
+            slots: {
+                root: "w-full",
+                base: "w-full px-4! rounded-sm text-lg! placeholder:text-dimmed/60 transition duration-150 resize-none"
+            },
+            variants: {
+                variant: {
+                    outline:
+                        "bg-default ring ring-inset ring-accented hover:ring-primary/40 focus-visible:ring-2 focus-visible:ring-primary"
+                }
+            },
+            defaultVariants: {
+                size: "lg",
+                color: "primary",
+                variant: "outline"
             }
         }
     },
@@ -38,6 +173,23 @@ export default defineAppConfig({
             { icon: "simple-icons:telegram", href: "https://t.me/joystreet", label: "Telegram" }
         ]
     },
+    contactTimeOptions: [
+        {
+            label: "Утром (09:00 – 12:00)",
+            time: "09:00-12:00",
+            value: "morning"
+        },
+        {
+            label: "Днем (12:00 – 18:00)",
+            time: "12:00-18:00",
+            value: "afternoon"
+        },
+        {
+            label: "Вечером (18:00 – 21:00)",
+            time: "18:00-21:00",
+            value: "evening"
+        }
+    ] as ContactTimeOption[],
     seo: {
         siteUrl: "https://ypa-center.ru",
         siteName: "Улица Радости",
@@ -53,7 +205,7 @@ export default defineAppConfig({
     },
     promo: {
         aboutVideoUrl:
-            "https://vkvideo.ru/video_ext.php?oid=-165630070&id=456240305&hash=e391c488a55c0602&hd=4"
+            "https://vkvideo.ru/video_ext.php?oid=-21665793&id=456242838&hash=497511a71d46d3ea&hd=4"
     },
     subscriptions: [
         { lessons: 4, price: 4000 },
@@ -65,40 +217,40 @@ export default defineAppConfig({
     ] as Array<{ lessons: number | null; price: number; label?: string; highlight?: boolean }>,
     faq: [
         {
+            label: "Что если ребёнок захочет сменить кружок?",
+            icon: "ph:arrows-left-right",
+            content:
+                "Без проблем. Один абонемент покрывает все кружки центра — можно ходить на разные занятия в рамках одного абонемента. Захотите сменить направление — просто выберите другой кружок в расписании."
+        },
+        {
+            label: "Что если мы пропустим занятие?",
+            icon: "ph:calendar-x",
+            content:
+                "Пропущенное занятие можно перенести. Предупредите нас заранее — и мы запишем ребёнка в другую группу или подберём удобное время. Занятия не сгорают."
+        },
+        {
+            label: "Почему абонемент выгоднее разовых занятий?",
+            icon: "ph:piggy-bank",
+            content:
+                "Разовое посещение стоит 1 200 ₽. Абонемент на 8 занятий — 7 000 ₽, то есть 875 ₽ за занятие. На 20 занятий — 12 000 ₽, всего 600 ₽ за занятие. Чем больше занятий — тем ниже цена каждого."
+        },
+        {
             label: "С какого возраста можно записаться?",
             icon: "ph:baby",
             content:
-                "Мы принимаем детей от 2 лет. Для самых маленьких есть специальные развивающие и сенсорные занятия с педагогом, а для ребят постарше — кружки, продлёнка и каникулярные программы."
+                "Мы принимаем детей от 2 лет. Для малышей — развивающие и сенсорные занятия с педагогом, для ребят постарше — кружки по интересам, продлёнка и каникулярные программы."
         },
         {
-            label: "Как записаться на пробное занятие?",
-            icon: "ph:pencil-simple",
+            label: "Как понять, подойдёт ли нам этот центр?",
+            icon: "ph:rocket-launch",
             content:
-                "Оставьте заявку через форму на сайте или закажите обратный звонок — мы свяжемся с вами и подберём удобное время. Пробное занятие стоит 1 200 ₽."
-        },
-        {
-            label: "Есть ли абонементы и скидки?",
-            icon: "ph:ticket",
-            content:
-                "Да! Мы предлагаем абонементы на 4 и 8 занятий со скидкой до 20%. Для многодетных семей и при записи на несколько направлений — дополнительные скидки."
-        },
-        {
-            label: "Какие направления у вас есть?",
-            icon: "ph:compass",
-            content:
-                "Настольные игры, рисование, пианино, каникулярные программы, театральные игры и многое другое. Полный список — на странице «Кружки»."
-        },
-        {
-            label: "Где вы находитесь и как добраться?",
-            icon: "ph:map-pin",
-            content:
-                "Наш центр расположен по адресу, который указан на странице «О нас». Мы находимся в шаговой доступности от остановок общественного транспорта. Есть парковка для автомобилей."
+                "Запишитесь на пробное занятие — 1 200 ₽. Ребёнок познакомится с педагогом и попробует формат. Если не понравится, мы поможем подобрать другое направление или вернём деньги."
         }
     ],
     stats: {
-        studentsCount: "300+",
+        studentsCount: "100+",
         workingSince: START_YEAR,
         workingYearsText:
-            currentYears === 0 ? "Меньше года" : `${currentYears} ${pluralizeYears(currentYears)}`
+            currentYears === 0 ? "Меньше года" : `${currentYears} ${pluralize(currentYears)}`
     }
 })

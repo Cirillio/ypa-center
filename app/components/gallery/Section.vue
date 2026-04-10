@@ -13,7 +13,7 @@ const centerTelegram =
         <!-- Декоративная иконка -->
 
         <UContainer class="relative z-10 flex flex-col gap-8">
-            <SectionLeading subtitle="Наши моменты" center>
+            <SectionLeading as="h1" subtitle="Наши моменты" icon="ph:aperture-duotone" center>
                 <template #title>
                     <span class="text-secondary">
                         Галерея<br />

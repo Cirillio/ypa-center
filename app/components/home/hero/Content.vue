@@ -9,7 +9,7 @@
             </h1>
 
             <p
-                class="text-default/75 max-w-[18rem] text-base leading-snug font-semibold sm:max-w-sm sm:text-lg md:text-xl"
+                class="text-default/95 max-w-[18rem] text-base leading-snug font-semibold text-balance sm:max-w-lg sm:text-lg md:text-xl"
             >
                 Место, где дети учатся думать, творить и верить в себя. Кружки, продлёнка и
                 каникулярные программы — в уютной атмосфере рядом с домом.

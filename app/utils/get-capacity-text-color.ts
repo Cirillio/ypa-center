@@ -1,7 +1,7 @@
-export function GetCapacityTextColor(capacity: number) {
+export function getCapacityTextColor(capacity: number) {
     switch (true) {
         case capacity === 0:
-            return "text-default/75"
+            return "text-default/95"
         case capacity <= 3:
             return "text-amber-500"
         default:

@@ -7,7 +7,7 @@ defineProps<{
 </script>
 
 <template>
-    <div class="flex w-full flex-col gap-4">
+    <div class="grid w-full gap-4">
         <ClubsCard v-for="(club, i) in clubs" :key="club.id" :club="club" :index="i" />
     </div>
 </template>

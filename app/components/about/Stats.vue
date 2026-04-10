@@ -26,7 +26,7 @@ const CENTER_STATS = [
 <template>
     <section class="relative z-10 flex w-full bg-white py-16 md:py-24">
         <UContainer class="flex w-full flex-col gap-10">
-            <SectionLeading subtitle="Цифры и факты" center>
+            <SectionLeading subtitle="Цифры и факты" icon="ph:chart-bar-duotone" center>
                 <template #title>
                     <span class="text-secondary">
                         «Улица Радости»<br />
@@ -47,7 +47,7 @@ const CENTER_STATS = [
                         <span class="text-secondary text-4xl leading-none font-extrabold">
                             {{ stat.value }}
                         </span>
-                        <span class="text-default/60 text-base font-semibold">
+                        <span class="text-default/85 text-base font-semibold">
                             {{ stat.label }}
                         </span>
                     </div>

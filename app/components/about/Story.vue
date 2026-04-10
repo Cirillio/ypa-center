@@ -6,7 +6,7 @@ const promo = useAppConfig().promo
     <section class="bg-default relative z-10 flex w-full overflow-hidden py-12 sm:py-20 md:py-24">
         <UContainer class="grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16">
             <div class="flex flex-col gap-6">
-                <SectionLeading subtitle="Наша история">
+                <SectionLeading subtitle="Наша история" icon="ph:book-open-duotone">
                     <template #title>
                         <span class="text-secondary">
                             Как всё<br />
@@ -21,7 +21,7 @@ const promo = useAppConfig().promo
                     </template>
                 </SectionLeading>
 
-                <p class="text-default/60 max-w-md text-base leading-relaxed font-semibold">
+                <p class="text-default/85 max-w-md text-base leading-relaxed font-semibold">
                     Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
                     fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
                     culpa qui officia deserunt mollit anim id est laborum.

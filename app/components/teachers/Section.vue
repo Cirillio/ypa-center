@@ -5,7 +5,7 @@
         class="relative z-10 flex w-full overflow-hidden pt-[calc(var(--header-height)+3rem)] pb-16 md:pt-40 md:pb-24"
     >
         <UContainer class="relative z-10 flex flex-col gap-8">
-            <SectionLeading subtitle="Наша команда" center>
+            <SectionLeading as="h1" subtitle="Наша команда" icon="ph:users-duotone" center>
                 <template #title>
                     <span class="text-secondary">
                         Наша<br />
