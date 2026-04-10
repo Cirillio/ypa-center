@@ -14,7 +14,7 @@
             </div>
 
             <div class="flex flex-col gap-6">
-                <SectionLeading subtitle="Основатель">
+                <SectionLeading subtitle="Основатель" icon="ph:user-circle-duotone">
                     <template #title>
                         <span class="text-secondary">
                             Макуха<br />
@@ -29,7 +29,7 @@
                 </SectionLeading>
 
                 <blockquote
-                    class="border-primary/30 text-default/70 border-l-4 pl-4 text-base leading-relaxed font-semibold italic"
+                    class="border-primary/30 text-default/90 border-l-4 pl-4 text-base leading-relaxed font-semibold italic"
                 >
                     «Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
                     incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis

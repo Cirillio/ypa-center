@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { EventShort } from "~/types"
+import { EnrollRoutesEnum } from "~/constants/nav"
 
 const props = defineProps<EventShort>()
 
@@ -12,10 +13,10 @@ const formattedDate = computed(() => {
 </script>
 
 <template>
-    <article class="bg-default flex flex-row gap-2 rounded-md p-2 lg:flex-col lg:gap-4 lg:p-4">
+    <article class="flex flex-row gap-2 rounded-md bg-white p-2 lg:flex-col lg:gap-4 lg:p-4">
         <!-- Image -->
         <div
-            class="relative aspect-square w-24 shrink-0 overflow-hidden rounded-sm sm:w-32 lg:aspect-4/3 lg:w-auto"
+            class="relative aspect-square w-20 shrink-0 overflow-hidden rounded-sm min-[340px]:w-24 sm:w-32 lg:aspect-4/3 lg:w-auto"
         >
             <AppPhoto :src="img" :alt="label" class="object-cover object-center" />
             <div
@@ -39,31 +40,48 @@ const formattedDate = computed(() => {
                     {{ label }}
                 </h3>
                 <p
-                    class="text-default/66 line-clamp-2 text-xs leading-relaxed font-medium sm:text-base"
+                    class="text-default/90 line-clamp-2 text-xs leading-relaxed font-medium sm:text-base"
                 >
                     {{ description }}
                 </p>
             </div>
 
             <!-- Meta -->
-            <div class="flex items-center justify-between text-xs uppercase sm:text-base">
-                <div class="text-default/75 flex gap-1.5 font-bold tracking-widest">
-                    <span class="flex items-center gap-1">
-                        <UIcon
-                            name="ph:calendar-blank"
-                            class="text-primary/75 size-3.5 shrink-0 sm:size-5"
-                        />
-                        {{ formattedDate }}
-                    </span>
-                    <span class="flex items-center gap-1">
-                        <UIcon
-                            name="ph:clock"
-                            class="text-primary/75 size-3.5 shrink-0 sm:size-5"
-                        />
-                        {{ time }}
-                    </span>
+            <div class="flex flex-col gap-1.5">
+                <div
+                    class="flex items-center justify-between text-xs uppercase max-md:gap-0.5 sm:text-base"
+                >
+                    <div class="text-default/95 flex gap-0.5 font-bold tracking-widest md:gap-1.5">
+                        <span class="flex items-center gap-1">
+                            <UIcon
+                                name="ph:calendar-blank"
+                                class="text-primary/75 size-3.5 shrink-0 sm:size-5"
+                            />
+                            {{ formattedDate }}
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <UIcon
+                                name="ph:clock"
+                                class="text-primary/75 size-3.5 shrink-0 sm:size-5"
+                            />
+                            {{ time }}
+                        </span>
+                    </div>
+                    <span class="text-primary truncate font-bold">{{ price ?? "Бесплатно" }}</span>
                 </div>
-                <span class="text-primary font-bold">{{ price ?? "Бесплатно" }}</span>
+                <UButton
+                    :to="{ path: EnrollRoutesEnum.Event, query: { eventId: id } }"
+                    size="xl"
+                    block
+                    variant="soft"
+                    class="group mt-2"
+                >
+                    <span class="font-semibold">Участвовать</span>
+                    <UIcon
+                        name="ph:arrow-right-bold"
+                        class="size-3 transition group-hover:translate-x-0.5"
+                    />
+                </UButton>
             </div>
         </div>
     </article>

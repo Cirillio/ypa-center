@@ -20,12 +20,14 @@ export default defineNuxtConfig({
         // }
     ],
 
-    devtools: { enabled: true },
+    devtools: { enabled: false },
 
     css: ["~/assets/css/main.css"],
 
     colorMode: {
-        preference: "light"
+        preference: "light",
+        classSuffix: "", // по умолчанию там 'mode', из-за этого класс может быть 'light-mode' вместо 'light'
+        dataValue: "theme" // записывает data-theme="light" на <html>
     },
 
     runtimeConfig: {
@@ -42,6 +44,11 @@ export default defineNuxtConfig({
         "/teachers": { prerender: true },
         "/privacy": { prerender: true },
         "/consent": { prerender: true },
+
+        "/enroll/trial": { ssr: true },
+        "/enroll/event": { ssr: true },
+        "/enroll/subscription": { ssr: true },
+
         "/**": {
             ssr: true,
             headers: {
@@ -50,6 +57,28 @@ export default defineNuxtConfig({
             }
         }
     },
+    site: {
+        url: "https://ypa-center.ru",
+        name: "Улица Радости"
+    },
+
+    sitemap: {
+        strictNuxtContentPaths: false,
+        urls: [
+            { loc: "/", priority: 1.0, changefreq: "weekly" },
+            { loc: "/clubs", priority: 0.9, changefreq: "weekly" },
+            { loc: "/about", priority: 0.7, changefreq: "monthly" },
+            { loc: "/teachers", priority: 0.7, changefreq: "monthly" },
+            { loc: "/gallery", priority: 0.6, changefreq: "monthly" },
+            { loc: "/privacy", priority: 0.2, changefreq: "yearly" },
+            { loc: "/consent", priority: 0.2, changefreq: "yearly" }
+        ]
+    },
+
+    robots: {
+        disallow: ["/enroll", "/api"]
+    },
+
     compatibilityDate: "2025-07-15",
 
     vite: {

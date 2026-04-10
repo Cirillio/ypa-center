@@ -5,10 +5,10 @@ import { MOCK_GALLERY_IMAGES } from "~/constants/mock"
 <template>
     <section
         id="gallery"
-        class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20 lg:py-24"
+        class="relative z-10 flex w-full overflow-hidden bg-white py-12 md:py-20 lg:py-24"
     >
         <UContainer class="relative z-10 flex flex-col gap-6 md:gap-12">
-            <SectionLeading subtitle="Наши моменты">
+            <SectionLeading subtitle="Наши моменты" icon="ph:aperture-duotone">
                 <template #title>
                     <span class="text-secondary">
                         Фото<br />
@@ -43,7 +43,7 @@ import { MOCK_GALLERY_IMAGES } from "~/constants/mock"
 
             <!-- CTA -->
             <div class="flex justify-center">
-                <UButton to="/gallery" size="xl" class="group md:px-8 md:py-2.5">
+                <UButton to="/gallery" size="xl" class="group">
                     <span class="font-bold md:text-lg">Вся галерея</span>
                     <UIcon
                         name="ph:arrow-right-bold"

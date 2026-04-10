@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { MOCK_CLUBS_FULL, MOCK_WEEKLY_SLOTS } from "~/constants/mock"
 
+const { subscriptions, contactInfo, seo } = useAppConfig()
+const siteUrl = seo.siteUrl
+
 // TODO: заменить на useFetch после реализации GET /clubs/ и GET /schedule/ на бэке
 const clubs = MOCK_CLUBS_FULL
 const slots = MOCK_WEEKLY_SLOTS
@@ -8,13 +11,12 @@ const slots = MOCK_WEEKLY_SLOTS
 useSeoMeta({
     title: "Кружки — Улица Радости",
     description:
-        "Каталог кружков детского центра «Улица Радости». Настольные игры, рисование, пианино, каникулярные программы и другие занятия для детей в Новосибирске.",
+        "Каталог кружков центра умного развития «Улица Радости». Настольные игры, рисование, пианино, каникулярные программы и другие занятия для детей в Новосибирске.",
     ogTitle: "Кружки — Улица Радости",
-    ogDescription: "Найдите занятие для вашего ребёнка. Внимательные педагоги и уютная атмосфера."
+    ogDescription: "Найдите занятие для вашего ребёнка. Внимательные педагоги и уютная атмосфера.",
+    ogImage: `${siteUrl}/og/default.jpg`,
+    ogUrl: `${siteUrl}/clubs`
 })
-
-const { subscriptions, contactInfo, seo } = useAppConfig()
-const siteUrl = seo.siteUrl
 
 useHead({
     script: [
@@ -44,9 +46,9 @@ useHead({
             innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "ItemList",
-                name: "Абонементы детского центра «Улица Радости»",
+                name: "Абонементы центра умного развития «Улица Радости»",
                 description:
-                    "Абонементы на занятия в кружках детского центра «Улица Радости» в Новосибирске.",
+                    "Абонементы на занятия в кружках центра умного развития «Улица Радости» в Новосибирске.",
                 itemListElement: subscriptions.map((tier, index) => ({
                     "@type": "ListItem",
                     position: index + 1,

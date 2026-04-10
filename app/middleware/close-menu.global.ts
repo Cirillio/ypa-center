@@ -1,4 +1,4 @@
-import { useMobileMenuStore } from "~/store/mobile-menu"
+import { useMobileMenuStore } from "~/store/mobile-menu-store"
 
 export default defineNuxtRouteMiddleware((_, __) => {
     if (import.meta.client) {

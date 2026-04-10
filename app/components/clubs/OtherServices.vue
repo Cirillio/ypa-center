@@ -32,7 +32,7 @@ const services: OtherService[] = [
         <UContainer class="relative z-10 flex flex-col gap-10 md:gap-12">
             <!-- Заголовок -->
             <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                <SectionLeading subtitle="Также у нас есть">
+                <SectionLeading subtitle="Также у нас есть" icon="ph:squares-four-duotone">
                     <template #title>
                         <span class="text-secondary">
                             Другие услуги<br />
@@ -56,7 +56,7 @@ const services: OtherService[] = [
                         <UIcon name="ph:mailbox-duotone" class="text-primary size-5" />
                     </div>
                     <div class="flex flex-col">
-                        <span class="text-default/50 text-xs font-semibold"
+                        <span class="text-default/75 text-xs font-semibold"
                             >Запись по телефону или по почте:</span
                         >
                         <span class="text-default text-xl font-extrabold">{{ email }}</span>
@@ -78,7 +78,7 @@ const services: OtherService[] = [
                     </div>
                     <div class="flex flex-col gap-1">
                         <span class="text-default text-base font-bold">{{ service.name }}</span>
-                        <span class="text-default/55 text-sm leading-snug font-medium">{{
+                        <span class="text-default/80 text-sm leading-snug font-medium">{{
                             service.description
                         }}</span>
                     </div>

@@ -10,3 +10,9 @@ export const NAV_ROUTES: NavRoute[] = [
     { label: "События", to: "/#events", icon: "ph:calendar-star-duotone" },
     { label: "Галерея", to: "/gallery", icon: "ph:aperture-duotone" }
 ]
+
+export enum EnrollRoutesEnum {
+    Trial = "/enroll/trial",
+    Event = "/enroll/event",
+    Subscription = "/enroll/subscription"
+}

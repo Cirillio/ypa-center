@@ -3,11 +3,17 @@ import type { GalleryPhoto } from "~/types"
 import { MOCK_GALLERY_PHOTOS } from "~/constants/mock"
 
 const { seo } = useAppConfig()
-const siteUrl = seo.siteUrl
+const { siteUrl } = seo
 
 useSeoMeta({
     title: "Галерея — Улица Радости",
-    description: "Фотографии нашего центра: учебные классы, игровые зоны и моменты с наших занятий."
+    description:
+        "Фотографии нашего центра: учебные классы, игровые зоны и моменты с наших занятий.",
+    ogTitle: "Галерея — Улица Радости",
+    ogDescription:
+        "Фотографии нашего центра: учебные классы, игровые зоны и моменты с наших занятий.",
+    ogImage: `${siteUrl}/og/default.jpg`,
+    ogUrl: `${siteUrl}/gallery`
 })
 
 useHead({
@@ -46,8 +52,8 @@ const photos = computed(() =>
 </script>
 
 <template>
-    <main class="gradient-bg-ps">
+    <div class="gradient-bg-ps">
         <GallerySection />
         <GalleryGrid :photos="photos" :pending="pending" :error="!!error" />
-    </main>
+    </div>
 </template>

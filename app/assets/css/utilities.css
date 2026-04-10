@@ -1,0 +1,13 @@
+@layer utilities {
+    .h-with-header {
+        @apply h-[calc(100dvh-var(--header-height-full))];
+    }
+
+    .page-container {
+        @apply max-w-400;
+    }
+
+    .gradient-bg-ps {
+        @apply from-primary/5 via-default to-secondary/10 bg-linear-to-br;
+    }
+}

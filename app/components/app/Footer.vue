@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { EnrollRoutesEnum } from "~/constants/nav"
+
 const currentYear = new Date().getFullYear()
 
 const appConfig = useAppConfig()
@@ -25,22 +27,68 @@ const CONTACT_LINKS: FooterLink[] = [
 </script>
 
 <template>
-    <footer class="bg-default z-10">
-        <UContainer class="py-12">
+    <footer class="bg-default z-10 flex flex-col items-center gap-12 py-12">
+        <UContainer class="flex flex-col items-center gap-8">
+            <NuxtImg
+                src="/core/Sun.png"
+                alt=""
+                class="floating-element-slow h-24 transition-transform duration-300 group-hover:rotate-10 md:h-28"
+                format="webp"
+                quality="90"
+                loading="lazy"
+            />
+
+            <h4 class="text-primary text-3xl leading-tight font-bold">
+                Готовы к нам
+                <span class="text-secondary after:text-primary after:content-['?']"
+                    >присоединиться</span
+                >
+            </h4>
+            <div class="flex gap-2">
+                <UButton :to="EnrollRoutesEnum.Trial" variant="soft" size="md" class="group w-fit">
+                    <span class="font-bold">Записаться на пробное</span>
+                    <UIcon
+                        name="ph:arrow-right-bold"
+                        class="size-4 transition group-hover:translate-x-0.5"
+                    />
+                </UButton>
+
+                <UButton :to="EnrollRoutesEnum.Subscription" color="secondary" class="group w-fit">
+                    <span class="font-bold md:text-lg">Собрать абонемент</span>
+                    <UIcon
+                        name="ph:puzzle-piece-duotone"
+                        class="size-4.5 transition group-hover:scale-110 group-hover:rotate-6 md:size-5.5"
+                    />
+                </UButton>
+            </div>
+        </UContainer>
+        <USeparator>
+            <template #default>
+                <div class="flex gap-2">
+                    <UIcon name="ph:butterfly-duotone" class="size-8 text-amber-400" />
+                    <UIcon name="ph:building-apartment-duotone" class="text-primary size-8" />
+                    <UIcon name="ph:tree-duotone" class="size-8 text-green-600" />
+                </div>
+            </template>
+        </USeparator>
+        <UContainer class="">
             <!-- Top row: link groups + brand -->
             <div class="flex justify-between gap-8 max-md:flex-col">
                 <div class="flex flex-col gap-8">
                     <!-- Навигация -->
                     <div class="flex flex-col gap-3">
-                        <h4 class="text-default/90 text-base font-bold tracking-widest uppercase">
+                        <h2 class="text-default/95 text-base font-bold tracking-widest uppercase">
                             Навигация
-                        </h4>
-                        <nav class="flex flex-col gap-x-6 gap-y-1.5 md:flex-row md:items-center">
+                        </h2>
+                        <nav
+                            class="flex flex-col gap-x-6 gap-y-1.5 md:flex-row md:items-center"
+                            aria-label="Навигация в подвале"
+                        >
                             <NuxtLink
                                 v-for="link in NAVIGATION_LINKS"
                                 :key="link.label"
                                 :to="link.to"
-                                class="text-default/70 hover:text-primary active:text-primary w-fit text-base font-medium transition-colors"
+                                class="text-default/90 hover:text-primary active:text-primary w-fit text-base font-medium transition-colors"
                             >
                                 {{ link.label }}
                             </NuxtLink>
@@ -49,15 +97,15 @@ const CONTACT_LINKS: FooterLink[] = [
 
                     <!-- Контакты -->
                     <div class="flex flex-col gap-3">
-                        <h4 class="text-default/90 text-base font-bold tracking-widest uppercase">
+                        <h2 class="text-default/95 text-base font-bold tracking-widest uppercase">
                             Контакты
-                        </h4>
-                        <nav class="flex flex-col gap-1.5">
+                        </h2>
+                        <nav class="flex flex-col gap-1.5" aria-label="Контактная информация">
                             <NuxtLink
                                 v-for="link in CONTACT_LINKS"
                                 :key="link.label"
                                 :to="link.to"
-                                class="text-default/70 hover:text-primary active:text-primary w-fit text-base font-medium transition-colors"
+                                class="text-default/90 hover:text-primary active:text-primary w-fit text-base font-medium transition-colors"
                             >
                                 {{ link.label }}
                             </NuxtLink>
@@ -68,14 +116,6 @@ const CONTACT_LINKS: FooterLink[] = [
                 <!-- Brand + socials (right column) -->
                 <div class="flex shrink-0 flex-col items-start gap-4 lg:items-end">
                     <NuxtLink to="/" class="group flex items-center gap-2.5">
-                        <NuxtImg
-                            src="/core/Sun.png"
-                            alt=""
-                            class="h-10 transition-transform duration-300 group-hover:rotate-10 md:h-12"
-                            format="webp"
-                            quality="90"
-                            loading="lazy"
-                        />
                         <span
                             class="text-secondary shrink-0 text-2xl leading-tight font-extrabold md:text-3xl"
                         >
@@ -84,9 +124,10 @@ const CONTACT_LINKS: FooterLink[] = [
                         </span>
                     </NuxtLink>
 
-                    <p class="text-default/75 text-sm font-medium md:text-base lg:text-right">
-                        Место, где дети учатся думать,<br />
-                        творить и верить в себя.
+                    <p
+                        class="text-default/80 max-w-xs text-base font-semibold text-balance lg:text-right"
+                    >
+                        Место, где дети учатся думать, творить и верить в себя.
                     </p>
 
                     <!-- Social icons -->
@@ -113,24 +154,24 @@ const CONTACT_LINKS: FooterLink[] = [
                 <a
                     :href="contacts.mapLink"
                     target="_blank"
-                    class="text-default/35 active:text-primary hover:text-primary text-xs font-medium transition"
+                    class="text-default/60 active:text-primary hover:text-primary text-xs font-medium transition"
                 >
                     {{ contacts.address }}
                 </a>
                 <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
                     <NuxtLink
                         to="/privacy"
-                        class="text-default/35 active:text-primary hover:text-primary text-xs font-medium transition"
+                        class="text-default/60 active:text-primary hover:text-primary text-xs font-medium transition"
                     >
                         Политика конфиденциальности
                     </NuxtLink>
                     <NuxtLink
                         to="/consent"
-                        class="text-default/35 active:text-primary hover:text-primary text-xs font-medium transition"
+                        class="text-default/60 active:text-primary hover:text-primary text-xs font-medium transition"
                     >
                         Согласие на обработку ПД
                     </NuxtLink>
-                    <span class="text-default/35 text-xs font-medium">
+                    <span class="text-default/60 text-xs font-medium">
                         &copy; {{ currentYear }} Улица Радости. Все права защищены.
                     </span>
                 </div>

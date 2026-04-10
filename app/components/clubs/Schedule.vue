@@ -80,13 +80,15 @@ function slotsForDay(dow: number): WeeklySlot[] {
                             v-for="day in weekDays"
                             :key="day.dayShort"
                             type="button"
+                            :aria-label="'Показать расписание на ' + day.dayShort"
+                            :aria-pressed="selectedDay.dow === day.dow"
                             class="flex min-w-0 flex-1 cursor-pointer flex-col items-center gap-0.5 rounded-full border-2 px-3 py-2.5 transition-all duration-150"
                             :class="
                                 selectedDay.dow === day.dow
                                     ? 'bg-primary border-primary text-white'
                                     : day.isToday
                                       ? 'border-primary/40 text-default bg-default'
-                                      : 'text-default/75 active:border-primary/30 active:bg-primary/30 bg-default border-transparent'
+                                      : 'text-default/95 active:border-primary/30 active:bg-primary/30 bg-default border-transparent'
                             "
                             @click="selectedDay = day"
                         >
@@ -128,7 +130,7 @@ function slotsForDay(dow: number): WeeklySlot[] {
                         :class="
                             day.isToday
                                 ? 'bg-primary ring-primary text-white'
-                                : 'bg-default text-default/75 ring-transparent'
+                                : 'bg-default text-default/95 ring-transparent'
                         "
                     >
                         <span class="text-lg font-bold uppercase">{{ day.dayShort }}</span>
@@ -154,9 +156,9 @@ function slotsForDay(dow: number): WeeklySlot[] {
                 </div>
             </div>
 
-            <span class="text-default/50 text-xs font-semibold md:text-sm"
-                >• Расписание актуально каждую неделю. За любыми изменениям можно следить в наших
-                соц. сетях.</span
+            <span class="text-default/95 text-xs font-semibold md:text-sm"
+                >• Расписание актуально на неделю. За любыми изменениям можно следить в наших соц.
+                сетях.</span
             >
         </UContainer>
     </section>
