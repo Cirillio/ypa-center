@@ -36,7 +36,7 @@ useHead({
 </script>
 
 <template>
-    <main class="bg-white">
+    <div class="bg-white">
         <LegalSection title="Политика конфиденциальности" updated-at="01 апреля 2025 г.">
             <h2>1. Общие положения</h2>
             <p>
@@ -73,5 +73,5 @@ useHead({
 
             <!-- TODO: вставить полный текст документа из docs/Политика обработки персональных данных_ЧЕРНОВИК.pdf -->
         </LegalSection>
-    </main>
+    </div>
 </template>

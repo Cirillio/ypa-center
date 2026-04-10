@@ -45,8 +45,8 @@ useHead({
 </script>
 
 <template>
-    <main class="gradient-bg-ps">
+    <div class="gradient-bg-ps">
         <TeachersSection />
         <TeachersGrid :teachers="teachers" :pending="pending" :error="!!error" />
-    </main>
+    </div>
 </template>

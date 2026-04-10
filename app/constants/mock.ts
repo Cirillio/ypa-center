@@ -1,6 +1,7 @@
 import type {
     Club,
     ClubShort,
+    ClubWithSlots,
     EventShort,
     GalleryImage,
     GalleryPhoto,
@@ -10,21 +11,25 @@ import type {
 
 export const MOCK_CLUBS: ClubShort[] = [
     {
+        id: "board-games",
         title: "Настольные игры",
         shortDesc: "Развиваем логику и стратегическое мышление через увлекательные настольные игры",
         img: "moke/club_1.jpg"
     },
     {
+        id: "holidays",
         title: "Каникулы",
         shortDesc: "Организуем яркий и полезный досуг во время школьных каникул.",
         img: "moke/club_4.jpg"
     },
     {
+        id: "drawing",
         title: "Рисование",
         shortDesc: "Раскрываем творческий потенциал через живопись и художественное творчество",
         img: "moke/club_2.jpg"
     },
     {
+        id: "piano",
         title: "Пианино",
         shortDesc: "Обучаем игре на фортепиано с нуля",
         img: "moke/club_3.jpg"
@@ -39,7 +44,7 @@ export const MOCK_EVENTS: EventShort[] = [
         img: "moke/event-1.jpeg",
         date: "2026-04-12",
         time: "11:00",
-        price: "500р",
+        price: "1500р",
         isPinned: false
     },
     {
@@ -82,7 +87,7 @@ export const MOCK_CLUBS_FULL: Club[] = [
         description:
             "Развиваем логику, стратегическое мышление и умение работать в команде через увлекательные настольные игры.",
         photo: "moke/club_1.jpg",
-        teacher: { name: "Мария Коваль", photo: "moke/teacher_1.jpg" },
+        teacher: { name: "Яков Леонидович Мордвинов", photo: "/moke/teacher_3.png" },
         schedule: { days: ["Пн", "Ср", "Пт"], timeStart: "16:00", timeEnd: "17:00" },
         age: { min: 6, max: 12 },
         price: 120000,
@@ -96,7 +101,7 @@ export const MOCK_CLUBS_FULL: Club[] = [
         description:
             "Раскрываем творческий потенциал через живопись, графику и художественное творчество. Работаем с акварелью, гуашью и пастелью.",
         photo: "moke/club_2.jpg",
-        teacher: { name: "Ольга Ненашева", photo: "moke/teacher_2.jpg" },
+        teacher: { name: "Надежда Геннадьевна Макуха", photo: "/moke/teacher_1.png" },
         schedule: { days: ["Вт", "Чт"], timeStart: "15:00", timeEnd: "16:30" },
         age: { min: 4, max: 10 },
         price: 150000,
@@ -110,7 +115,7 @@ export const MOCK_CLUBS_FULL: Club[] = [
         description:
             "Обучаем игре на фортепиано с нуля: нотная грамота, техника, разбор произведений классиков и современных авторов.",
         photo: "moke/club_3.jpg",
-        teacher: { name: "Дмитрий Шаров", photo: "moke/teacher_3.jpg" },
+        teacher: { name: "Надежда Геннадьевна Макуха", photo: "/moke/teacher_1.png" },
         schedule: { days: ["Пн", "Чт"], timeStart: "17:00", timeEnd: "17:45" },
         age: { min: 5, max: 14 },
         price: 180000,
@@ -124,7 +129,7 @@ export const MOCK_CLUBS_FULL: Club[] = [
         description:
             "Яркий и насыщенный досуг во время школьных каникул: мастер-классы, квесты, творческие мастерские и выездные мероприятия.",
         photo: "moke/club_4.jpg",
-        teacher: { name: "Анастасия Луговая", photo: "moke/teacher_4.jpg" },
+        teacher: { name: "Яков Леонидович Мордвинов", photo: "/moke/teacher_3.png" },
         schedule: { days: ["Пн", "Вт", "Ср", "Чт", "Пт"], timeStart: "10:00", timeEnd: "14:00" },
         age: { min: 6, max: 14 },
         price: 250000,
@@ -407,6 +412,44 @@ export const MOCK_WEEKLY_SLOTS: WeeklySlot[] = [
     }
 ]
 
+export const MOCK_CLUBS_WITH_SLOTS: ClubWithSlots[] = [
+    {
+        id: "thinking-club",
+        title: "Кружок Мышления",
+        shortDesc: "Развиваем логику, память и нестандартное мышление через авторские методики.",
+        img: "moke/club_1.jpg",
+        slots: MOCK_WEEKLY_SLOTS.filter((s) => s.activity.id === 1)
+    },
+    {
+        id: "english",
+        title: "Английский язык",
+        shortDesc: "Изучаем язык через игры и живое общение для детей всех возрастов.",
+        img: "moke/club_2.jpg",
+        slots: MOCK_WEEKLY_SLOTS.filter((s) => s.activity.id === 3)
+    },
+    {
+        id: "creativity",
+        title: "Творчество и Рукоделие",
+        shortDesc: "Раскрываем таланты через рисование, лепку и создание уникальных поделок.",
+        img: "moke/club_3.jpg",
+        slots: MOCK_WEEKLY_SLOTS.filter((s) => s.activity.id === 2 || s.activity.id === 4)
+    },
+    {
+        id: "pre-school",
+        title: "Подготовка к школе",
+        shortDesc: "Комплексная подготовка: чтение, письмо и математика в игровой форме.",
+        img: "moke/club_4.jpg",
+        slots: MOCK_WEEKLY_SLOTS.filter((s) => s.activity.id === 6)
+    },
+    {
+        id: "board-games",
+        title: "Настольные игры",
+        shortDesc: "Развиваем стратегическое мышление и навыки общения в игровом клубе.",
+        img: "moke/event-3.jpg",
+        slots: MOCK_WEEKLY_SLOTS.filter((s) => s.activity.id === 7)
+    }
+]
+
 export const MOCK_TEACHERS: Teacher[] = [
     {
         id: 1,
@@ -425,24 +468,6 @@ export const MOCK_TEACHERS: Teacher[] = [
             "Яков Леонидович Мордвинов проводит Кружок Мышления. Выпускник ФМШ и НГУ, кандидат физико-математических наук уже давно пришёл к выводу, что успешность в учёбе и любой деятельности зависит от уровня развития мышления. За 20 лет он собрал лучшие задания, создал много своих, запрограммировал тренажеры разных полезных навыков и сейчас охотно делится не только ими, но и своим хорошим настроением и с детьми, и со взрослыми. Чтобы понять, что такое Кружок Мышления, нужно прийти самому и попробовать. У разных людей получается разное описание.))) Ведь каждый проживает свой опыт",
         photo: "/moke/teacher_3.png",
         quote: "Думать — это навык. Как и любой навык, его можно тренировать."
-    },
-    {
-        id: 3,
-        name: "Ольга Ненашева",
-        role: "Педагог по рисованию",
-        description:
-            "Художник и преподаватель с профильным образованием. Работает с акварелью, гуашью и пастелью. Убеждена, что у каждого ребёнка есть свой визуальный язык — её задача помочь его найти, а не заменить шаблоном.",
-        photo: "/moke/teacher_2.png",
-        quote: "У каждого ребёнка есть свой визуальный язык — моя задача помочь его найти."
-    },
-    {
-        id: 4,
-        name: "Анастасия Луговая",
-        role: "Педагог каникулярных программ",
-        description:
-            "Специалист по досуговой педагогике и организации детских событий. Придумывает квесты, мастер-классы и выездные активности. В её каникулах дети не скучают ни одной минуты — это проверено.",
-        photo: "/moke/teacher_4.png",
-        quote: "Каникулы — это не перерыв от развития, а его другая форма."
     }
 ]
 

@@ -1,8 +1,21 @@
 <script lang="ts" setup>
+/**
+ * Компонент формы обратного звонка.
+ * Делегирует бизнес-логику композаблу useCallbackForm.
+ */
+
 import { vMaska } from "maska/vue"
 import { useMediaQuery } from "@vueuse/core"
+import { Maskas } from "~/constants/masks"
+import { isMaskaCompleted, type MaskaDetailEvent } from "~/utils/masks"
+
+// Проверка типа устройства для адаптивного UI
 const isMobile = useMediaQuery("(max-width: 767px)")
 
+/**
+ * Входные параметры компонента
+ * @property {('white'|'default')} bg - Стиль фона для инпутов и кнопок
+ */
 const props = withDefaults(
     defineProps<{
         bg?: "white" | "default"
@@ -12,85 +25,95 @@ const props = withDefaults(
     }
 )
 
-type ContactTimeOption = {
-    label: string
-    time: string
-    value: string
-}
+// Использование композабла для управления логикой формы
+const {
+    form,
+    isFormCompleted,
+    isLoading,
+    modalOpen,
+    popoverOpen,
+    isSpamBlocked,
+    isSubmitDisabled,
+    lastSelectedTimeLabel,
+    contactTimeOptions,
+    setContactTime,
+    submitForm
+} = useCallbackForm()
 
-const contactTimeOptions: ContactTimeOption[] = [
-    {
-        label: "Утром (09:00 – 12:00)",
-        time: "09:00-12:00",
-        value: "morning"
-    },
-    {
-        label: "Днем (12:00 – 18:00)",
-        time: "12:00-18:00",
-        value: "afternoon"
-    },
-    {
-        label: "Вечером (18:00 – 21:00)",
-        time: "18:00-21:00",
-        value: "evening"
-    }
-]
-
-const phone = ref<string>("")
-const selectedTime = ref<ContactTimeOption>(contactTimeOptions[0]!)
-const popoverOpen = ref<boolean>()
-
-function selectTime(option: ContactTimeOption) {
-    selectedTime.value = option
-    popoverOpen.value = false
-}
-
-const bgClass = computed(() => {
-    if (props.bg === "white") {
-        return "bg-white"
-    } else {
-        return "bg-default"
-    }
-})
+// Динамический класс фона на основе пропсов
+const bgClass = computed(() => (props.bg === "white" ? "bg-white" : "bg-default"))
 </script>
+
 <template>
     <div class="flex max-w-xs flex-col xl:max-w-xl">
+        <!-- Модальное окно подтверждения успешной отправки -->
+        <UModal
+            v-model:open="modalOpen"
+            :ui="{
+                content: 'ring-0 overflow-hidden shadow-none',
+                overlay: 'bg-black/25 backdrop-blur-xs'
+            }"
+        >
+            <template #content>
+                <div class="relative flex flex-col items-start space-y-1 px-12 py-8">
+                    <UIcon
+                        name="ph:sun-duotone"
+                        class="text-primary absolute -right-8 -bottom-16 size-32 leading-tight opacity-50"
+                    />
+                    <span class="text-primary text-2xl leading-tight font-bold">
+                        Спасибо! Мы скоро перезвоним!
+                    </span>
+                    <span class="text-default/75 text-lg font-semibold">
+                        Выбранное время: {{ lastSelectedTimeLabel }}
+                    </span>
+                    <UButton
+                        class="mt-3 text-base"
+                        size="xs"
+                        variant="soft"
+                        label="Закрыть"
+                        @click="modalOpen = false"
+                    />
+                </div>
+            </template>
+        </UModal>
+
         <form
             id="callbackForm"
             class="flex max-xl:flex-col max-xl:gap-2 xl:overflow-hidden xl:rounded-full"
+            @submit.prevent="submitForm"
         >
             <UInput
-                v-model="phone"
-                v-maska="'+7 (###) ###-##-##'"
+                v-model="form.phone"
+                v-maska="Maskas.Phone"
+                :disabled="isLoading"
                 name="phone"
-                placeholder="+7 (###) ###-##-##"
+                :placeholder="Maskas.Phone"
                 type="tel"
                 autocomplete="tel"
                 inputmode="decimal"
                 leading-icon="lucide:phone"
                 size="xl"
                 color="primary"
-                class="rounded-md text-lg md:py-2 md:pl-4 xl:rounded-none"
+                class="rounded-md text-lg md:py-2! md:pl-8! xl:rounded-none"
                 :class="bgClass"
                 :variant="'none'"
                 :ui="{
                     base: 'md:text-lg focus-visible:ring-0 font-semibold text-default placeholder:text-default/50',
                     leadingIcon: 'md:ml-2 text-primary max-sm:size-5 ml-1'
                 }"
+                @maska="(e: MaskaDetailEvent) => (isFormCompleted = isMaskaCompleted(e))"
             />
 
             <div class="flex *:px-4 *:py-2 max-xl:gap-2 max-md:flex-col md:*:text-lg">
+                <!-- Выбор времени звонка -->
                 <UPopover
-                    :open="popoverOpen"
-                    :content="{
-                        align: 'start'
-                    }"
+                    v-model:open="popoverOpen"
+                    :content="{ align: 'start' }"
                     :ui="{
                         content:
                             'shadow-none ring-2 ring-transparent hover:ring-primary transition duration-150 ease-out ' +
                             bgClass
                     }"
-                    @update:open="popoverOpen = $event"
                 >
                     <UTooltip
                         :ui="{
@@ -98,16 +121,15 @@ const bgClass = computed(() => {
                                 'ring-0 shadow-none bg-primary md:text-lg md:px-4 font-semibold md:py-3.5 text-white'
                         }"
                         :delay-duration="75"
-                        :content="{
-                            side: 'top'
-                        }"
+                        :content="{ side: 'top' }"
                         text="Выберите удобное для вас время"
                     >
                         <UButton
-                            :label="isMobile ? selectedTime.label : selectedTime.time"
+                            :label="isMobile ? form.time.label : form.time.time"
                             size="xl"
                             name="time"
                             color="secondary"
+                            :disabled="isLoading"
                             type="button"
                             class="w-full justify-between focus-visible:ring-0 xl:w-auto xl:rounded-none"
                             :class="bgClass"
@@ -125,18 +147,46 @@ const bgClass = computed(() => {
                                 variant="ghost"
                                 type="button"
                                 class="font-semibold"
-                                @click="selectTime(option)"
+                                :disabled="isLoading"
+                                @click="setContactTime(option)"
                             />
                         </div>
                     </template>
                 </UPopover>
 
+                <!-- Кнопка отправки с подсказкой при блокировке спама -->
+                <UTooltip
+                    v-if="isSpamBlocked"
+                    :ui="{
+                        content:
+                            'ring-0 shadow-none bg-primary md:text-lg md:px-4 font-semibold md:py-3.5 text-white'
+                    }"
+                    :delay-duration="75"
+                    :content="{ side: 'top' }"
+                    text="Вы недавно уже отправляли заявку. Пожалуйста, подождите."
+                >
+                    <UButton
+                        :disabled="isSubmitDisabled"
+                        :loading="isLoading"
+                        size="xl"
+                        color="primary"
+                        variant="soft"
+                        type="submit"
+                        :block="isMobile"
+                        label="Ожидайте..."
+                        class="font-semibold focus-visible:ring-0 md:w-fit xl:w-auto xl:rounded-none"
+                    />
+                </UTooltip>
+
                 <UButton
+                    v-else
+                    :disabled="isSubmitDisabled"
+                    :loading="isLoading"
                     size="xl"
                     color="primary"
                     variant="soft"
                     type="submit"
-                    :block="isMobile ? true : false"
+                    :block="isMobile"
                     label="Жду звонка"
                     class="font-semibold focus-visible:ring-0 md:w-fit xl:w-auto xl:rounded-none"
                 />

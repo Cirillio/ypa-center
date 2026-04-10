@@ -55,7 +55,14 @@
                 </SectionLeading>
             </div>
 
-            <ClubsSubscriptions />
+            <SubscriptionsPromo>
+                <template #sub> Система абонементов </template>
+                <template #desc>
+                    Абонемент удобнее разовых оплат: не нужно каждый раз переводить деньги, а чем
+                    больше занятий — тем ниже цена за каждое. Выгода до&nbsp;50% против разового
+                    посещения.</template
+                >
+            </SubscriptionsPromo>
         </UContainer>
     </section>
 </template>

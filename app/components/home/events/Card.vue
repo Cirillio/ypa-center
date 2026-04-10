@@ -15,7 +15,7 @@ const formattedDate = computed(() => {
     <article class="bg-default flex flex-row gap-2 rounded-md p-2 lg:flex-col lg:gap-4 lg:p-4">
         <!-- Image -->
         <div
-            class="relative aspect-square w-24 shrink-0 overflow-hidden rounded-sm sm:w-32 lg:aspect-4/3 lg:w-auto"
+            class="relative aspect-square w-20 shrink-0 overflow-hidden rounded-sm min-[340px]:w-24 sm:w-32 lg:aspect-4/3 lg:w-auto"
         >
             <AppPhoto :src="img" :alt="label" class="object-cover object-center" />
             <div
@@ -46,8 +46,10 @@ const formattedDate = computed(() => {
             </div>
 
             <!-- Meta -->
-            <div class="flex items-center justify-between text-xs uppercase sm:text-base">
-                <div class="text-default/75 flex gap-1.5 font-bold tracking-widest">
+            <div
+                class="flex items-center justify-between text-xs uppercase max-md:gap-0.5 sm:text-base"
+            >
+                <div class="text-default/75 flex gap-0.5 font-bold tracking-widest md:gap-1.5">
                     <span class="flex items-center gap-1">
                         <UIcon
                             name="ph:calendar-blank"
@@ -63,7 +65,7 @@ const formattedDate = computed(() => {
                         {{ time }}
                     </span>
                 </div>
-                <span class="text-primary font-bold">{{ price ?? "Бесплатно" }}</span>
+                <span class="text-primary truncate font-bold">{{ price ?? "Бесплатно" }}</span>
             </div>
         </div>
     </article>

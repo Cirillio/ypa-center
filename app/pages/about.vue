@@ -38,11 +38,11 @@ useHead({
 </script>
 
 <template>
-    <main class="gradient-bg-ps flex flex-col">
+    <div class="gradient-bg-ps flex flex-col">
         <AboutSection />
         <AboutStory />
         <AboutOwner />
         <AboutMap />
         <FaqSection />
-    </main>
+    </div>
 </template>

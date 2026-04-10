@@ -40,7 +40,7 @@ const formattedNumber = computed(() => String(props.index + 1).padStart(2, "0"))
                     <UAvatar
                         :src="club.teacher.photo"
                         :alt="club.teacher.name"
-                        size="sm"
+                        size="md"
                         :ui="{
                             root: 'bg-default',
                             icon: 'text-primary/75'
@@ -66,12 +66,6 @@ const formattedNumber = computed(() => String(props.index + 1).padStart(2, "0"))
                     <span
                         class="bg-default text-default/70 flex items-center gap-1.5 rounded-md px-3 py-1.5 text-base font-semibold max-md:text-sm"
                     >
-                        <UIcon name="ph:baby-duotone" class="text-secondary size-4 shrink-0" />
-                        {{ club.age.min }}–{{ club.age.max }} лет
-                    </span>
-                    <span
-                        class="bg-default text-default/70 flex items-center gap-1.5 rounded-md px-3 py-1.5 text-base font-semibold max-md:text-sm"
-                    >
                         <UIcon
                             name="ph:calendar-dots-duotone"
                             class="text-secondary size-4 shrink-0 md:size-4.5"
@@ -81,7 +75,7 @@ const formattedNumber = computed(() => String(props.index + 1).padStart(2, "0"))
                 </div>
                 <span
                     class="bg-default flex w-fit items-center gap-2 rounded-md px-3 py-1.5 text-lg font-bold max-md:text-base"
-                    :class="GetCapacityTextColor(club.spots_available)"
+                    :class="getCapacityTextColor(club.spots_available)"
                 >
                     <UIcon name="ph:users-duotone" class="mb-0.5 size-4.5 md:size-5" />
                     <span class="md:hidden">Доступно мест:</span>

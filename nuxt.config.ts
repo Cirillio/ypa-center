@@ -20,12 +20,14 @@ export default defineNuxtConfig({
         // }
     ],
 
-    devtools: { enabled: true },
+    devtools: { enabled: false },
 
     css: ["~/assets/css/main.css"],
 
     colorMode: {
-        preference: "light"
+        preference: "light",
+        classSuffix: "", // по умолчанию там 'mode', из-за этого класс может быть 'light-mode' вместо 'light'
+        dataValue: "theme" // записывает data-theme="light" на <html>
     },
 
     runtimeConfig: {
@@ -42,6 +44,11 @@ export default defineNuxtConfig({
         "/teachers": { prerender: true },
         "/privacy": { prerender: true },
         "/consent": { prerender: true },
+
+        "/enroll/trial": { ssr: true },
+        "/enroll/event": { ssr: true },
+        "/enroll/subscription": { ssr: true },
+
         "/**": {
             ssr: true,
             headers: {

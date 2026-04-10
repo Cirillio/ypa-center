@@ -36,7 +36,7 @@ useHead({
 </script>
 
 <template>
-    <main class="bg-white">
+    <div class="bg-white">
         <LegalSection
             title="Согласие на обработку персональных данных"
             updated-at="01 апреля 2025 г."
@@ -77,5 +77,5 @@ useHead({
 
             <!-- TODO: вставить полный текст документа из docs/ОПД Совенок.pdf -->
         </LegalSection>
-    </main>
+    </div>
 </template>

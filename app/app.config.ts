@@ -1,7 +1,9 @@
+import type { ContactTimeOption } from "./types"
+
 const START_YEAR = 2023
 const currentYears = new Date().getFullYear() - START_YEAR
 
-const pluralizeYears = (count: number): string => {
+const pluralize = (count: number): string => {
     const lastDigit = count % 10
     const lastTwoDigits = count % 100
     if (lastTwoDigits >= 11 && lastTwoDigits <= 19) return "лет"
@@ -22,6 +24,130 @@ export default defineAppConfig({
         button: {
             slots: {
                 base: "cursor-pointer"
+            },
+            compoundVariants: [
+                {
+                    color: "secondary",
+                    variant: "solid",
+                    class: "text-white"
+                },
+                {
+                    color: "primary",
+                    variant: "solid",
+                    class: "text-white"
+                }
+            ]
+        },
+        formField: {
+            slots: {
+                root: "w-full",
+                label: "block font-semibold text-base text-default mb-0.5",
+                description: "text-muted text-xs",
+                error: "mt-1.5 text-error text-sm font-medium",
+                hint: "text-muted text-xs",
+                help: "mt-1.5 text-muted text-xs",
+                container: "mt-1.5"
+            }
+        },
+
+        input: {
+            slots: {
+                root: "w-full",
+                base: "w-full px-4! rounded-sm placeholder:text-dimmed/60 transition duration-150 text-lg!"
+            },
+            defaultVariants: {
+                variant: "soft",
+                size: "lg",
+                color: "primary"
+            },
+            compoundVariants: [
+                {
+                    color: "error",
+                    variant: "soft",
+                    class: "ring-2 ring-inset ring-error"
+                }
+            ],
+            variants: {
+                variant: {
+                    soft: "bg-default/50 text-default hover:bg-default focus-visible:bg-default"
+                }
+            }
+        },
+
+        select: {
+            compoundVariants: [
+                {
+                    color: "error",
+                    variant: "soft",
+                    class: "ring-2 ring-inset ring-error"
+                },
+                {
+                    variant: "soft",
+                    class: "bg-default/50 focus:bg-default/75 disabled:opacity-50 disabled:bg-default focus:ring-primary ring-2 ring-transparent hover:bg-default text-default focus-visible:bg-default"
+                }
+            ],
+            slots: {
+                base: "w-full px-4! text-lg! rounded-sm cursor-pointer transition duration-150",
+                placeholder: "text-dimmed/60",
+                trailingIcon: "text-muted",
+                content:
+                    "bg-default shadow-none rounded-sm ring-2 ring-transparent hover:ring-primary transition border-0",
+                item: "rounded-sm cursor-pointer data-highlighted:not-data-disabled:before:bg-primary/10 data-highlighted:not-data-disabled:text-default! ring-0  px-4! transition duration-150",
+                itemLabel: "text-base font-semibold",
+                viewport: "p-1"
+            },
+            variants: {
+                size: {
+                    md: {
+                        base: "px-3 py-2 text-lg!"
+                    }
+                }
+            },
+            defaultVariants: {
+                size: "lg",
+                color: "primary",
+                variant: "soft"
+            }
+        },
+
+        checkbox: {
+            compoundVariants: [
+                {
+                    color: "primary",
+                    class: "*:text-white!"
+                }
+            ],
+            slots: {
+                base: "rounded-xs ring-0 border-0 bg-default!"
+            }
+        },
+
+        textarea: {
+            compoundVariants: [
+                {
+                    color: "error",
+                    variant: "soft",
+                    class: "ring-2 ring-inset ring-error"
+                },
+                {
+                    variant: "soft",
+                    class: "bg-default/50 hover:bg-default text-default focus-visible:bg-default"
+                }
+            ],
+            slots: {
+                root: "w-full",
+                base: "w-full px-4! rounded-sm text-lg! placeholder:text-dimmed/60 transition duration-150 resize-none"
+            },
+            variants: {
+                variant: {
+                    outline:
+                        "bg-default ring ring-inset ring-accented hover:ring-primary/40 focus-visible:ring-2 focus-visible:ring-primary"
+                }
+            },
+            defaultVariants: {
+                size: "lg",
+                color: "primary",
+                variant: "outline"
             }
         }
     },
@@ -38,6 +164,23 @@ export default defineAppConfig({
             { icon: "simple-icons:telegram", href: "https://t.me/joystreet", label: "Telegram" }
         ]
     },
+    contactTimeOptions: [
+        {
+            label: "Утром (09:00 – 12:00)",
+            time: "09:00-12:00",
+            value: "morning"
+        },
+        {
+            label: "Днем (12:00 – 18:00)",
+            time: "12:00-18:00",
+            value: "afternoon"
+        },
+        {
+            label: "Вечером (18:00 – 21:00)",
+            time: "18:00-21:00",
+            value: "evening"
+        }
+    ] as ContactTimeOption[],
     seo: {
         siteUrl: "https://ypa-center.ru",
         siteName: "Улица Радости",
@@ -99,6 +242,6 @@ export default defineAppConfig({
         studentsCount: "300+",
         workingSince: START_YEAR,
         workingYearsText:
-            currentYears === 0 ? "Меньше года" : `${currentYears} ${pluralizeYears(currentYears)}`
+            currentYears === 0 ? "Меньше года" : `${currentYears} ${pluralize(currentYears)}`
     }
 })

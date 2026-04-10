@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useWindowScroll } from "@vueuse/core"
-import { NAV_ROUTES } from "~/constants/nav"
-import { useMobileMenuStore } from "~/store/mobile-menu"
+import { NAV_ROUTES, EnrollRoutesEnum } from "~/constants/nav"
+import { useMobileMenuStore } from "~/store/mobile-menu-store"
 
 const SCROLL_THRESHOLD = 10
 const { y } = useWindowScroll()
@@ -71,10 +71,10 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
 
                 <!-- ACTION -->
                 <UButton
-                    to="/enroll"
-                    label="Оформить абонемент"
+                    :to="EnrollRoutesEnum.Subscription"
+                    label="Собрать абонемент"
                     color="secondary"
-                    trailing-icon="ph:calendar-dots-fill"
+                    leading-icon="ph:puzzle-piece-bold"
                     class="h-full px-2 py-2 text-base font-semibold max-lg:hidden xl:px-4"
                     aria-label="Записаться на абонемент"
                     :ui="{ trailingIcon: 'size-5' }"

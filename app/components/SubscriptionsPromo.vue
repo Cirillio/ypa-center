@@ -2,7 +2,9 @@
     <div class="flex flex-col gap-3">
         <div class="flex items-center gap-2">
             <UIcon name="ph:dot-duotone" class="text-primary size-5 animate-pulse" />
-            <span class="text-default font-semibold">Абонементы</span>
+            <span class="text-default font-semibold">
+                <slot name="sub" />
+            </span>
         </div>
 
         <ul class="grid list-none grid-cols-2 gap-2 md:grid-cols-3">
@@ -12,29 +14,27 @@
                 :data-price="tier.price"
                 :aria-label="tier.label"
                 :aria-price="formatPrice(tier.price)"
-                class="group flex flex-col gap-0.5 rounded-md p-3 ring-2 transition-all duration-200"
-                :class="
-                    tier.highlight
-                        ? 'bg-primary ring-primary hover:bg-primary/90'
-                        : 'hover:ring-primary bg-white ring-transparent'
-                "
+                class="group flex flex-col gap-0.5 rounded-sm p-2 transition-all duration-200 md:p-4"
+                :class="tier.highlight ? 'bg-primary ring-primary hover:bg-primary/90' : 'bg-white'"
             >
-                <span
-                    class="text-xl leading-none font-black md:text-2xl"
-                    :class="tier.highlight ? 'text-white' : 'text-secondary'"
-                >
-                    {{ tier.label ?? tier.lessons }}
-                </span>
-                <span
-                    class="text-xs font-semibold"
-                    :class="tier.highlight ? 'text-white/65' : 'text-default/45'"
-                >
-                    {{
-                        tier.lessons === null
-                            ? "занятий"
-                            : pluralizeYears(tier.lessons, ["занятие", "занятия", "занятий"])
-                    }}
-                </span>
+                <div class="flex flex-wrap items-baseline gap-1">
+                    <span
+                        class="text-xl leading-none font-black md:text-2xl"
+                        :class="tier.highlight ? 'text-white' : 'text-secondary'"
+                    >
+                        {{ tier.label ?? tier.lessons }}
+                    </span>
+                    <span
+                        class="text-sm font-semibold"
+                        :class="tier.highlight ? 'text-white/75' : 'text-default/7s5'"
+                    >
+                        {{
+                            tier.lessons === null
+                                ? "занятий"
+                                : pluralize(tier.lessons, ["занятие", "занятия", "занятий"])
+                        }}
+                    </span>
+                </div>
                 <span
                     class="mt-1.5 text-sm font-extrabold md:text-base"
                     :class="tier.highlight ? 'text-white' : 'text-default'"
@@ -51,8 +51,7 @@
         </ul>
 
         <p class="text-default/60 text-base leading-relaxed font-medium">
-            Абонемент удобнее разовых оплат: не нужно каждый раз переводить деньги, а чем больше
-            занятий — тем ниже цена за каждое. Выгода до&nbsp;50% против разового посещения.
+            <slot name="desc" />
         </p>
     </div>
 </template>

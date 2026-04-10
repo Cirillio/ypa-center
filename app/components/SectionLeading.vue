@@ -5,9 +5,9 @@
             <span class="text-default max-md:text-sm">{{ subtitle }}</span>
         </span>
 
-        <h2 class="text-4xl leading-[0.9] font-extrabold sm:text-4xl lg:text-5xl xl:text-6xl">
+        <h1 class="text-4xl leading-[0.9] font-extrabold sm:text-4xl lg:text-5xl xl:text-6xl">
             <slot name="title" />
-        </h2>
+        </h1>
 
         <p class="text-default/65 max-w-md text-base leading-relaxed font-semibold md:text-lg">
             <slot name="description" />
