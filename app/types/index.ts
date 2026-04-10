@@ -100,5 +100,3 @@ export interface ContactTimeOption {
     time: string
     value: string
 }
-
-
