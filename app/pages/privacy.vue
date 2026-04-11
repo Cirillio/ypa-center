@@ -5,7 +5,33 @@ const siteUrl = seo.siteUrl
 useSeoMeta({
     title: "Политика конфиденциальности — Улица Радости",
     description:
-        "Политика обработки персональных данных детского центра «Улица Радости». Узнайте, как мы собираем, храним и защищаем ваши данные."
+        "Политика обработки персональных данных центра умного развития «Улица Радости». Узнайте, как мы собираем, храним и защищаем ваши данные."
+})
+
+useHead({
+    script: [
+        {
+            type: "application/ld+json",
+            innerHTML: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                    {
+                        "@type": "ListItem",
+                        position: 1,
+                        name: "Главная",
+                        item: siteUrl
+                    },
+                    {
+                        "@type": "ListItem",
+                        position: 2,
+                        name: "Политика конфиденциальности",
+                        item: `${siteUrl}/privacy`
+                    }
+                ]
+            })
+        }
+    ]
 })
 
 useHead({

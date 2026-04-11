@@ -59,10 +59,12 @@ useHead({
 <template>
     <div class="flex w-full min-w-0 flex-col">
         <HomeHeroSection />
+        <HomeHowItWorksSection />
         <HomeAboutSection />
         <HomeTopClubsSection />
         <HomeEventsSection />
         <HomeGallerySection />
+        <HomeSubscriptionsSection />
         <FaqSection />
     </div>
 </template>

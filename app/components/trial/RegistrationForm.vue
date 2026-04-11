@@ -122,30 +122,39 @@ const referralItems = [
                 />
             </UFormField>
 
-            <UFormField name="consent">
-                <UCheckbox v-model="state.consent" size="xl">
-                    <template #label>
-                        <span class="text-muted text-sm">
-                            Нажимая на кнопку, вы соглашаетесь с
-                            <NuxtLink
-                                to="/privacy"
-                                class="text-primary hover:text-primary/75 underline underline-offset-2 transition duration-150"
-                            >
-                                Политикой конфиденциальности
-                            </NuxtLink>
-                            и даёте согласие на
-                            <NuxtLink
-                                to="/consent"
-                                class="text-primary hover:text-primary/75 underline underline-offset-2 transition duration-150"
-                            >
-                                обработку персональных данных
-                            </NuxtLink>
-                        </span>
-                    </template>
-                </UCheckbox>
-            </UFormField>
+            <UButton type="submit" label="Перейти к оплате" class="text-lg" block />
 
-            <UButton type="submit" label="Перейти к оплате" class="py-2.5 text-lg" block />
+            <span class="text-muted text-sm">
+                Нажимая на кнопку, вы соглашаетесь с
+                <NuxtLink
+                    to="/privacy"
+                    class="text-primary hover:text-primary/75 underline underline-offset-2 transition duration-150"
+                >
+                    Политикой конфиденциальности
+                </NuxtLink>
+                и даёте согласие на
+                <NuxtLink
+                    to="/consent"
+                    class="text-primary hover:text-primary/75 underline underline-offset-2 transition duration-150"
+                >
+                    обработку персональных данных
+                </NuxtLink>
+            </span>
+
+            <ul class="mt-4 flex flex-col gap-1">
+                <li
+                    v-for="item in [
+                        { icon: 'ph:shield-check-duotone', text: 'Безопасный платёж через ЮКассу' },
+                        { icon: 'ph:calendar-check-duotone', text: 'Занятие можно перенести' },
+                        { icon: 'ph:percent-duotone', text: 'Без скрытых комиссий' }
+                    ]"
+                    :key="item.text"
+                    class="text-default/60 flex items-center gap-1.5 text-sm font-medium"
+                >
+                    <UIcon :name="item.icon" class="text-secondary/70 size-5 shrink-0" />
+                    {{ item.text }}
+                </li>
+            </ul>
         </UForm>
     </div>
 </template>

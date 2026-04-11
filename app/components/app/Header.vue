@@ -56,7 +56,7 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
 
             <div class="header-right flex items-center gap-4">
                 <!-- NAV -->
-                <nav class="h-full max-lg:hidden">
+                <nav class="h-full max-lg:hidden" aria-label="Основная навигация">
                     <ul class="flex list-none items-center gap-2">
                         <li v-for="r in NAV_ROUTES" :key="r.label">
                             <UButton

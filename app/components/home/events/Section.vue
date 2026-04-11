@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { MOCK_EVENTS } from "~/constants/mock"
+import { EnrollRoutesEnum } from "~/constants/nav"
 
 const currentEvents = computed(() => {
     const pinned = MOCK_EVENTS.filter((e) => e.isPinned)
@@ -18,10 +19,10 @@ const visibleEvents = computed(() =>
 <template>
     <section
         id="events"
-        class="relative z-10 flex w-full overflow-hidden bg-white py-12 md:py-20 lg:py-24"
+        class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20 lg:py-24"
     >
         <UContainer class="relative z-10 flex flex-col gap-8 md:gap-12">
-            <SectionLeading subtitle="Ближайшие мероприятия">
+            <SectionLeading subtitle="Ближайшие мероприятия" icon="ph:calendar-star-duotone">
                 <template #title>
                     <span class="text-secondary">
                         События<br />
@@ -35,7 +36,7 @@ const visibleEvents = computed(() =>
 
                 <template #action>
                     <UButton
-                        to="/participating"
+                        :to="EnrollRoutesEnum.Event"
                         size="xl"
                         class="group mt-auto w-fit md:px-5 md:py-2.5"
                     >

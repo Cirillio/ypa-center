@@ -57,7 +57,7 @@ onMounted(() => window.scrollTo({ top: 0, behavior: "instant" }))
                             <span> Страница </span>
                             <span> потерялась </span>
                         </h1>
-                        <p class="text-default/70 max-w-sm text-xl leading-snug font-semibold">
+                        <p class="text-default/90 max-w-sm text-xl leading-snug font-semibold">
                             Кажется, эта страница уехала на каникулы — зато на главной всё самое
                             интересное.
                         </p>
@@ -90,7 +90,7 @@ onMounted(() => window.scrollTo({ top: 0, behavior: "instant" }))
                     <h1 class="text-secondary text-4xl font-extrabold sm:text-5xl">
                         Что-то пошло не так
                     </h1>
-                    <p class="text-default/70 max-w-sm text-lg leading-snug font-semibold">
+                    <p class="text-default/90 max-w-sm text-lg leading-snug font-semibold">
                         Мы уже работаем над этим. Попробуй зайти чуть позже.
                     </p>
                 </div>

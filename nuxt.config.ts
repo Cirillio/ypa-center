@@ -57,6 +57,28 @@ export default defineNuxtConfig({
             }
         }
     },
+    site: {
+        url: "https://ypa-center.ru",
+        name: "Улица Радости"
+    },
+
+    sitemap: {
+        strictNuxtContentPaths: false,
+        urls: [
+            { loc: "/", priority: 1.0, changefreq: "weekly" },
+            { loc: "/clubs", priority: 0.9, changefreq: "weekly" },
+            { loc: "/about", priority: 0.7, changefreq: "monthly" },
+            { loc: "/teachers", priority: 0.7, changefreq: "monthly" },
+            { loc: "/gallery", priority: 0.6, changefreq: "monthly" },
+            { loc: "/privacy", priority: 0.2, changefreq: "yearly" },
+            { loc: "/consent", priority: 0.2, changefreq: "yearly" }
+        ]
+    },
+
+    robots: {
+        disallow: ["/enroll", "/api"]
+    },
+
     compatibilityDate: "2025-07-15",
 
     vite: {

@@ -3,11 +3,17 @@ import type { GalleryPhoto } from "~/types"
 import { MOCK_GALLERY_PHOTOS } from "~/constants/mock"
 
 const { seo } = useAppConfig()
-const siteUrl = seo.siteUrl
+const { siteUrl } = seo
 
 useSeoMeta({
     title: "Галерея — Улица Радости",
-    description: "Фотографии нашего центра: учебные классы, игровые зоны и моменты с наших занятий."
+    description:
+        "Фотографии нашего центра: учебные классы, игровые зоны и моменты с наших занятий.",
+    ogTitle: "Галерея — Улица Радости",
+    ogDescription:
+        "Фотографии нашего центра: учебные классы, игровые зоны и моменты с наших занятий.",
+    ogImage: `${siteUrl}/og/default.jpg`,
+    ogUrl: `${siteUrl}/gallery`
 })
 
 useHead({

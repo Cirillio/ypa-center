@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Club } from "~/types"
+import { EnrollRoutesEnum } from "~/constants/nav"
 
 const props = defineProps<{
     club: Club
@@ -47,7 +48,7 @@ const formattedNumber = computed(() => String(props.index + 1).padStart(2, "0"))
                         }"
                         icon="ph:user-bold"
                     />
-                    <span class="text-default/60 text-sm font-semibold">{{
+                    <span class="text-default/85 text-sm font-semibold">{{
                         club.teacher.name
                     }}</span>
                 </div>
@@ -55,7 +56,7 @@ const formattedNumber = computed(() => String(props.index + 1).padStart(2, "0"))
 
             <!-- Строка 2: описание -->
             <p
-                class="text-default/55 line-clamp-4 text-base leading-relaxed font-medium md:line-clamp-2 lg:text-lg xl:text-xl"
+                class="text-default/80 line-clamp-4 text-base leading-relaxed font-medium md:line-clamp-2 lg:text-lg xl:text-xl"
             >
                 {{ club.description }}
             </p>
@@ -64,7 +65,7 @@ const formattedNumber = computed(() => String(props.index + 1).padStart(2, "0"))
             <div class="mt-auto flex w-full flex-wrap gap-2 max-md:flex-col md:items-center">
                 <div class="flex gap-2">
                     <span
-                        class="bg-default text-default/70 flex items-center gap-1.5 rounded-md px-3 py-1.5 text-base font-semibold max-md:text-sm"
+                        class="bg-default text-default/90 flex items-center gap-1.5 rounded-md px-3 py-1.5 text-base font-semibold max-md:text-sm"
                     >
                         <UIcon
                             name="ph:calendar-dots-duotone"
@@ -84,22 +85,27 @@ const formattedNumber = computed(() => String(props.index + 1).padStart(2, "0"))
                 </span>
                 <UButton
                     v-if="club.spots_available > 0"
-                    to="/enroll"
-                    :disabled="club.spots_available === 0"
+                    :to="{ path: EnrollRoutesEnum.Trial, query: { clubId: club.slug } }"
                     class="group/btn ml-auto w-fit gap-1 text-base font-semibold max-md:mt-2 max-md:w-full max-md:justify-center max-md:py-2 md:text-lg"
                 >
-                    Записаться
+                    Записаться на пробное
                     <UIcon
                         name="ph:arrow-right-bold"
                         class="size-3.5 transition-transform duration-150 group-hover/btn:translate-x-0.5 md:size-4.5"
                     />
                 </UButton>
-                <span
+                <UButton
                     v-else
-                    class="text-default/80 text-base font-bold underline max-md:mt-2 max-md:ml-2 md:ml-auto md:text-lg"
+                    :to="{
+                        path: EnrollRoutesEnum.Trial,
+                        query: { clubId: club.slug, waitlist: '1' }
+                    }"
+                    variant="ghost"
+                    color="neutral"
+                    class="ml-auto w-fit text-base font-semibold max-md:mt-2 max-md:w-full max-md:justify-center max-md:py-2 md:text-lg"
                 >
-                    Набор закрыт</span
-                >
+                    Встать в очередь
+                </UButton>
             </div>
         </div>
     </article>

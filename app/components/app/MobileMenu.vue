@@ -64,7 +64,7 @@ function navigate(to: string) {
                             @click="navigate(EnrollRoutesEnum.Trial)"
                         />
                         <UButton
-                            label="Оформить абонемент"
+                            label="Собрать абонемент"
                             color="secondary"
                             trailing-icon="ph:calendar-dots-fill"
                             size="xl"

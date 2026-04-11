@@ -11,28 +11,39 @@ import type {
 
 export const MOCK_CLUBS: ClubShort[] = [
     {
+        id: "thinking-club",
+        title: "Кружок Мышления",
+        shortDesc: "Развиваем логику, память и нестандартное мышление через авторские методики",
+        img: "moke/club_1.jpg",
+        spotsAvailable: 3
+    },
+    {
+        id: "english",
+        title: "Английский язык",
+        shortDesc: "Изучаем язык через игры и живое общение для детей всех возрастов",
+        img: "moke/club_2.jpg",
+        spotsAvailable: 2
+    },
+    {
+        id: "creativity",
+        title: "Творчество и Рукоделие",
+        shortDesc: "Раскрываем таланты через рисование, лепку и создание уникальных поделок",
+        img: "moke/club_3.jpg",
+        spotsAvailable: 5
+    },
+    {
+        id: "pre-school",
+        title: "Подготовка к школе",
+        shortDesc: "Комплексная подготовка: чтение, письмо и математика в игровой форме",
+        img: "moke/event-1.jpeg",
+        spotsAvailable: 1
+    },
+    {
         id: "board-games",
         title: "Настольные игры",
-        shortDesc: "Развиваем логику и стратегическое мышление через увлекательные настольные игры",
-        img: "moke/club_1.jpg"
-    },
-    {
-        id: "holidays",
-        title: "Каникулы",
-        shortDesc: "Организуем яркий и полезный досуг во время школьных каникул.",
-        img: "moke/club_4.jpg"
-    },
-    {
-        id: "drawing",
-        title: "Рисование",
-        shortDesc: "Раскрываем творческий потенциал через живопись и художественное творчество",
-        img: "moke/club_2.jpg"
-    },
-    {
-        id: "piano",
-        title: "Пианино",
-        shortDesc: "Обучаем игре на фортепиано с нуля",
-        img: "moke/club_3.jpg"
+        shortDesc: "Развиваем стратегическое мышление и навыки общения в игровом клубе",
+        img: "moke/event-3.jpg",
+        spotsAvailable: 4
     }
 ]
 
@@ -82,59 +93,73 @@ export const MOCK_EVENTS: EventShort[] = [
 export const MOCK_CLUBS_FULL: Club[] = [
     {
         id: 1,
-        name: "Настольные игры",
-        slug: "board-games",
+        name: "Кружок Мышления",
+        slug: "thinking-club",
         description:
-            "Развиваем логику, стратегическое мышление и умение работать в команде через увлекательные настольные игры.",
+            "Развиваем логику, память и нестандартное мышление через авторские методики. За 20 лет педагог собрал лучшие задания, создал тренажёры полезных навыков и с удовольствием делится ими с детьми и взрослыми.",
         photo: "moke/club_1.jpg",
         teacher: { name: "Яков Леонидович Мордвинов", photo: "/moke/teacher_3.png" },
-        schedule: { days: ["Пн", "Ср", "Пт"], timeStart: "16:00", timeEnd: "17:00" },
-        age: { min: 6, max: 12 },
+        schedule: { days: ["Пн", "Вт", "Ср", "Чт", "Пт"], timeStart: "15:00", timeEnd: "18:00" },
+        age: { min: 6, max: 16 },
         price: 120000,
-        spots_total: 10,
-        spots_available: 6
+        spots_total: 6,
+        spots_available: 3
     },
     {
         id: 2,
-        name: "Рисование",
-        slug: "drawing",
+        name: "Английский язык",
+        slug: "english",
         description:
-            "Раскрываем творческий потенциал через живопись, графику и художественное творчество. Работаем с акварелью, гуашью и пастелью.",
+            "Изучаем язык через игры, живое общение и разбор реальных ситуаций. Группы формируются по уровню и возрасту: от первоклассников до подготовки к ОГЭ и ЕГЭ.",
         photo: "moke/club_2.jpg",
         teacher: { name: "Надежда Геннадьевна Макуха", photo: "/moke/teacher_1.png" },
-        schedule: { days: ["Вт", "Чт"], timeStart: "15:00", timeEnd: "16:30" },
-        age: { min: 4, max: 10 },
+        schedule: { days: ["Вт", "Ср", "Чт", "Пт", "Сб"], timeStart: "16:00", timeEnd: "18:00" },
+        age: { min: 6, max: 18 },
         price: 150000,
-        spots_total: 8,
+        spots_total: 6,
         spots_available: 2
     },
     {
         id: 3,
-        name: "Пианино",
-        slug: "piano",
+        name: "Творчество и Рукоделие",
+        slug: "creativity",
         description:
-            "Обучаем игре на фортепиано с нуля: нотная грамота, техника, разбор произведений классиков и современных авторов.",
+            "Раскрываем таланты через рисование, лепку и создание уникальных поделок. Работаем с акварелью, гуашью, пластилином и разными материалами.",
         photo: "moke/club_3.jpg",
         teacher: { name: "Надежда Геннадьевна Макуха", photo: "/moke/teacher_1.png" },
-        schedule: { days: ["Пн", "Чт"], timeStart: "17:00", timeEnd: "17:45" },
-        age: { min: 5, max: 14 },
-        price: 180000,
+        schedule: { days: ["Вт", "Ср"], timeStart: "15:00", timeEnd: "16:00" },
+        age: { min: 4, max: 12 },
+        price: 130000,
         spots_total: 6,
-        spots_available: 0
+        spots_available: 3
     },
     {
         id: 4,
-        name: "Каникулярная программа",
-        slug: "holidays",
+        name: "Подготовка к школе",
+        slug: "pre-school",
         description:
-            "Яркий и насыщенный досуг во время школьных каникул: мастер-классы, квесты, творческие мастерские и выездные мероприятия.",
-        photo: "moke/club_4.jpg",
+            "Комплексная подготовка к первому классу: чтение, письмо, счёт и развитие речи — всё в игровой форме по программе ГДЕЁЖ.",
+        photo: "moke/event-1.jpeg",
         teacher: { name: "Яков Леонидович Мордвинов", photo: "/moke/teacher_3.png" },
-        schedule: { days: ["Пн", "Вт", "Ср", "Чт", "Пт"], timeStart: "10:00", timeEnd: "14:00" },
-        age: { min: 6, max: 14 },
-        price: 250000,
-        spots_total: 15,
-        spots_available: 9
+        schedule: { days: ["Сб"], timeStart: "11:00", timeEnd: "13:30" },
+        age: { min: 5, max: 7 },
+        price: 180000,
+        spots_total: 6,
+        spots_available: 3
+    },
+    {
+        id: 5,
+        name: "Настольные игры",
+        slug: "board-games",
+        description:
+            "Развиваем стратегическое мышление, внимание и навыки общения через настольные игры. Подходит для всей семьи — по предварительной записи.",
+        photo: "moke/event-3.jpg",
+        teacher: { name: "Яков Леонидович Мордвинов", photo: "/moke/teacher_3.png" },
+        schedule: { days: ["Ср"], timeStart: "17:00", timeEnd: "18:00" },
+        age: { min: 6, max: 99 },
+        price: 100000,
+        spots_total: 6,
+        spots_available: 6
     }
 ]
 
@@ -472,17 +497,32 @@ export const MOCK_TEACHERS: Teacher[] = [
 ]
 
 export const MOCK_GALLERY_IMAGES: GalleryImage[] = [
-    { src: "moke/club_1.jpg", alt: "" },
+    { src: "moke/club_1.jpg", alt: "Занятие в кружке Мышления" },
     { src: "moke/event-1.jpeg", alt: "Театральные игры" },
-    { src: "moke/club_2.jpg", alt: "" },
+    { src: "moke/club_2.jpg", alt: "Урок английского языка" },
     { src: "moke/event-4.jpg", alt: "Космическая лекция" }
 ]
 
 export const MOCK_GALLERY_PHOTOS: GalleryPhoto[] = [
-    { id: 1, url: "/moke/club_1.jpg", thumbnail: "/moke/club_1.jpg", alt: "" },
+    {
+        id: 1,
+        url: "/moke/club_1.jpg",
+        thumbnail: "/moke/club_1.jpg",
+        alt: "Занятие в кружке Мышления"
+    },
     { id: 2, url: "/moke/event-1.jpeg", thumbnail: "/moke/event-1.jpeg", alt: "Театральные игры" },
-    { id: 3, url: "/moke/club_2.jpg", thumbnail: "/moke/club_2.jpg", alt: "Рисование" },
-    { id: 4, url: "/moke/event-4.jpg", thumbnail: "/moke/event-4.jpg", alt: "" },
-    { id: 5, url: "/moke/club_3.jpg", thumbnail: "/moke/club_3.jpg", alt: "" },
-    { id: 6, url: "/moke/club_4.jpg", thumbnail: "/moke/club_4.jpg", alt: "Каникулы" }
+    {
+        id: 3,
+        url: "/moke/club_2.jpg",
+        thumbnail: "/moke/club_2.jpg",
+        alt: "Урок английского языка"
+    },
+    { id: 4, url: "/moke/event-4.jpg", thumbnail: "/moke/event-4.jpg", alt: "Космическая лекция" },
+    {
+        id: 5,
+        url: "/moke/club_3.jpg",
+        thumbnail: "/moke/club_3.jpg",
+        alt: "Занятия по творчеству и рукоделию"
+    },
+    { id: 6, url: "/moke/club_4.jpg", thumbnail: "/moke/club_4.jpg", alt: "Каникулярная программа" }
 ]

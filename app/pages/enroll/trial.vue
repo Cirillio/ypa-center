@@ -19,7 +19,7 @@ const {
 <template>
     <div class="gradient-bg-ps flex min-h-dvh flex-col pt-32 pb-24">
         <UContainer class="grid gap-16 lg:grid-cols-2">
-            <SectionLeading subtitle="Запись" class="mr-auto shrink-0">
+            <SectionLeading as="h1" subtitle="Запись" class="mr-auto shrink-0">
                 <template #title>
                     <div class="text-primary">
                         Пробное <br />

@@ -63,7 +63,7 @@ const bgClass = computed(() => (props.bg === "white" ? "bg-white" : "bg-default"
                     <span class="text-primary text-2xl leading-tight font-bold">
                         Спасибо! Мы скоро перезвоним!
                     </span>
-                    <span class="text-default/75 text-lg font-semibold">
+                    <span class="text-default/95 text-lg font-semibold">
                         Выбранное время: {{ lastSelectedTimeLabel }}
                     </span>
                     <UButton
@@ -98,7 +98,7 @@ const bgClass = computed(() => (props.bg === "white" ? "bg-white" : "bg-default"
                 :class="bgClass"
                 :variant="'none'"
                 :ui="{
-                    base: 'md:text-lg focus-visible:ring-0 font-semibold text-default placeholder:text-default/50',
+                    base: 'md:text-lg focus-visible:ring-0 font-semibold text-default placeholder:text-default/75',
                     leadingIcon: 'md:ml-2 text-primary max-sm:size-5 ml-1'
                 }"
                 @maska="(e: MaskaDetailEvent) => (isFormCompleted = isMaskaCompleted(e))"
@@ -193,7 +193,7 @@ const bgClass = computed(() => (props.bg === "white" ? "bg-white" : "bg-default"
             </div>
         </form>
 
-        <span class="text-default/45 mt-2 px-4 text-xs leading-tight">
+        <span class="text-default/70 mt-2 px-4 text-xs leading-tight">
             Нажимая на кнопку, вы даете согласие на
             <NuxtLink
                 target="_blank"

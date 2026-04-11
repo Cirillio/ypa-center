@@ -14,6 +14,7 @@ export interface ClubShort {
     title: string
     shortDesc: string
     img: string
+    spotsAvailable?: number
 }
 
 export interface EventShort {

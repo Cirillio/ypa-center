@@ -13,8 +13,8 @@ defineProps<{
         />
         <span class="text-default text-2xl font-bold">Ваш выбор:</span>
         <span v-if="name" class="text-primary text-2xl font-bold">{{ name }}</span>
-        <span v-else class="text-default/30 text-2xl font-bold italic">Кружок не выбран</span>
+        <span v-else class="text-default/60 text-2xl font-bold italic">Кружок не выбран</span>
         <span v-if="dateTime" class="text-primary text-xl font-semibold">{{ dateTime }}</span>
-        <span v-else class="text-default/30 text-xl font-semibold italic">Время не выбрано</span>
+        <span v-else class="text-default/60 text-xl font-semibold italic">Время не выбрано</span>
     </div>
 </template>

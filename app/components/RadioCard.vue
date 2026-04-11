@@ -37,7 +37,7 @@ const isSelected = computed(() => selectedId.value === props.id)
             <UIcon v-else name="ph:circle-bold" class="text-primary/50 mt-0.5 size-5.5 shrink-0" />
         </div>
 
-        <div v-if="$slots.default" class="text-default/60 mt-1 text-base leading-tight font-medium">
+        <div v-if="$slots.default" class="text-default/85 mt-1 text-base leading-tight font-medium">
             <slot />
         </div>
     </label>

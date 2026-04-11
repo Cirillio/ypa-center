@@ -11,8 +11,7 @@ const DEFAULT_TRIAL_FORM: TrialRegistration = {
     telegram: "",
     phone: "",
     referralSource: "",
-    comments: "",
-    consent: false
+    comments: ""
 }
 
 function parseQueryParam(

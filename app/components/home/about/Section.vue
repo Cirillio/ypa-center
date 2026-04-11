@@ -6,28 +6,28 @@ const promo = appConfig.promo
 </script>
 
 <template>
-    <section class="relative z-10 flex w-full overflow-hidden bg-white py-12 md:py-20 lg:py-24">
+    <section class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20 lg:py-24">
         <UContainer
             class="relative z-10 grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16"
         >
             <!-- Left: text content -->
             <div class="flex h-full flex-col gap-6">
-                <SectionLeading subtitle="О нашем центре">
+                <SectionLeading subtitle="О нашем центре" icon="ph:heart-duotone">
                     <template #title>
                         <span class="text-secondary">
-                            Место, где каждый<br />
-                            ребёнок <span class="text-primary">раскрывается</span>
+                            Уже {{ appConfig.stats.studentsCount }} человек<br />
+                            <span class="text-primary">доверяют нам свой рост и досуг</span>
                         </span>
                     </template>
                     <template #description>
-                        «Улица Радости» — это центр умного развития для детей, где уютная атмосфера,
-                        внимательные педагоги и интересные занятия помогают каждому ребёнку найти
-                        своё призвание и поверить в себя.
+                        Наш центр — это экосистема непрерывного роста. Мы создали среду, в которой
+                        одинаково комфортно развивать таланты малышей и прокачивать собственные
+                        навыки, получая удовольствие от процесса.
                     </template>
                 </SectionLeading>
 
                 <div
-                    class="bg-default relative flex w-fit flex-col gap-1 overflow-hidden rounded-md p-2 md:gap-2 md:p-4"
+                    class="relative flex w-fit flex-col gap-1 overflow-hidden rounded-lg bg-white p-2 md:gap-2 md:p-4"
                 >
                     <UIcon
                         name="ph:map-pin-area-duotone"
@@ -47,7 +47,7 @@ const promo = appConfig.promo
                     </UButton>
                 </div>
 
-                <UButton to="/about" size="xl" class="group mt-auto w-fit px-5 py-2.5">
+                <UButton to="/about" size="xl" class="group mt-auto w-fit">
                     <span class="font-bold md:text-lg">Узнать больше</span>
                     <UIcon
                         name="ph:arrow-right-bold"

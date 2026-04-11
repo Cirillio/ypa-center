@@ -12,8 +12,7 @@ export const trialRegistrationSchema = z.object({
     phone: fields.phone,
     telegram: fields.telegram,
     referralSource: z.string().min(1, "Пожалуйста, укажите, откуда вы о нас узнали"),
-    comments: fields.comments,
-    consent: fields.consent
+    comments: fields.comments
 })
 
 export type TrialRegistration = z.infer<typeof trialRegistrationSchema>
