@@ -25,7 +25,6 @@ export interface EventShort {
     date: string
     time: string
     price: string | null
-    isPinned: boolean
 }
 
 export interface GalleryImage {
@@ -46,6 +45,8 @@ export interface Club {
     name: string
     description: string
     photo: string
+    skills: string[]
+    outcomes: string[]
     teacher: {
         name: string
         photo: string

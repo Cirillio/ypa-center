@@ -10,4 +10,26 @@
     .gradient-bg-ps {
         @apply from-primary/5 via-default to-secondary/10 bg-linear-to-br;
     }
+
+    /* Анимированный вариант с вращением */
+    .gradient-bg-ps-animated {
+        /* Изолируем контекст, чтобы фон не вылез за края компонента */
+        @apply relative isolate overflow-hidden;
+    }
+
+    .gradient-bg-ps-animated::before {
+        content: "";
+        /* Центрируем и убираем под контент */
+        @apply absolute top-1/2 left-1/2 -z-10;
+
+        /* Задаем избыточный размер */
+        width: 300%;
+        height: 300%;
+
+        /* Применяем твои цвета */
+        @apply from-primary/20 via-default to-secondary/25 bg-linear-to-br;
+
+        /* Запускаем анимацию на GPU */
+        @apply animate-spin-gradient;
+    }
 }

@@ -64,9 +64,9 @@ const {
                     :to="EnrollRoutesEnum.Subscription"
                     label="Собрать абонемент"
                     leading-icon="ph:puzzle-piece-bold"
-                    size="xl"
+                    size="lg"
                     color="secondary"
-                    class="w-fit justify-center px-5 text-xl font-bold"
+                    class="w-fit justify-center px-5 text-base font-bold md:text-xl"
                 />
             </div>
         </UContainer>
@@ -91,9 +91,12 @@ const {
                 </div>
 
                 <div class="flex flex-col gap-4 lg:col-span-5">
-                    <TrialSelectionSummary
-                        :name="selectedVariant?.name ?? null"
-                        :date-time="selectedVariant?.slot ?? null"
+                    <EnrollmentSummary
+                        :title="selectedVariant?.name ?? null"
+                        :subtitle="selectedVariant?.slot ?? null"
+                        icon="ph:person-simple-run-bold"
+                        empty-title="Кружок не выбран"
+                        empty-subtitle="Время не выбрано"
                     />
                     <TrialRegistrationForm
                         v-model="trialFormState"

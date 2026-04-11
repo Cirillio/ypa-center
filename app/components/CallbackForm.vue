@@ -12,6 +12,15 @@ import { isMaskaCompleted, type MaskaDetailEvent } from "~/utils/masks"
 // Проверка типа устройства для адаптивного UI
 const isMobile = useMediaQuery("(max-width: 767px)")
 
+// Состояние монтирования для предотвращения ошибок гидратации
+const isMounted = ref(false)
+onMounted(() => {
+    isMounted.value = true
+})
+
+// Безопасное значение isMobile для использования в шаблоне (на сервере всегда false)
+const isMobileSafe = computed(() => (isMounted.value ? isMobile.value : false))
+
 /**
  * Входные параметры компонента
  * @property {('white'|'default')} bg - Стиль фона для инпутов и кнопок
@@ -50,25 +59,26 @@ const bgClass = computed(() => (props.bg === "white" ? "bg-white" : "bg-default"
         <UModal
             v-model:open="modalOpen"
             :ui="{
-                content: 'ring-0 overflow-hidden shadow-none',
+                content: 'ring-0 overflow-hidden shadow-none rounded-sm',
                 overlay: 'bg-black/25 backdrop-blur-xs'
             }"
         >
             <template #content>
-                <div class="relative flex flex-col items-start space-y-1 px-12 py-8">
+                <div class="relative flex flex-col items-start space-y-1 p-4">
                     <UIcon
                         name="ph:sun-duotone"
                         class="text-primary absolute -right-8 -bottom-16 size-32 leading-tight opacity-50"
                     />
                     <span class="text-primary text-2xl leading-tight font-bold">
-                        Спасибо! Мы скоро перезвоним!
+                        Спасибо. <br />
+                        Мы скоро перезвоним!
                     </span>
                     <span class="text-default/95 text-lg font-semibold">
                         Выбранное время: {{ lastSelectedTimeLabel }}
                     </span>
                     <UButton
                         class="mt-3 text-base"
-                        size="xs"
+                        size="sm"
                         variant="soft"
                         label="Закрыть"
                         @click="modalOpen = false"
@@ -94,7 +104,7 @@ const bgClass = computed(() => (props.bg === "white" ? "bg-white" : "bg-default"
                 leading-icon="lucide:phone"
                 size="xl"
                 color="primary"
-                class="rounded-md text-lg md:py-2! md:pl-8! xl:rounded-none"
+                class="rounded-md pl-8 text-lg md:py-2! md:pl-10! xl:rounded-none"
                 :class="bgClass"
                 :variant="'none'"
                 :ui="{
@@ -125,7 +135,7 @@ const bgClass = computed(() => (props.bg === "white" ? "bg-white" : "bg-default"
                         text="Выберите удобное для вас время"
                     >
                         <UButton
-                            :label="isMobile ? form.time.label : form.time.time"
+                            :label="isMobileSafe ? form.time.label : form.time.time"
                             size="xl"
                             name="time"
                             color="secondary"
@@ -172,9 +182,8 @@ const bgClass = computed(() => (props.bg === "white" ? "bg-white" : "bg-default"
                         color="primary"
                         variant="soft"
                         type="submit"
-                        :block="isMobile"
                         label="Ожидайте..."
-                        class="font-semibold focus-visible:ring-0 md:w-fit xl:w-auto xl:rounded-none"
+                        class="w-full font-semibold focus-visible:ring-0 md:w-fit xl:w-auto xl:rounded-none"
                     />
                 </UTooltip>
 
@@ -186,9 +195,8 @@ const bgClass = computed(() => (props.bg === "white" ? "bg-white" : "bg-default"
                     color="primary"
                     variant="soft"
                     type="submit"
-                    :block="isMobile"
                     label="Жду звонка"
-                    class="font-semibold focus-visible:ring-0 md:w-fit xl:w-auto xl:rounded-none"
+                    class="w-full font-semibold focus-visible:ring-0 md:w-fit xl:w-auto xl:rounded-none"
                 />
             </div>
         </form>

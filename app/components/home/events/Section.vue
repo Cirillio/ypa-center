@@ -2,17 +2,11 @@
 import { MOCK_EVENTS } from "~/constants/mock"
 import { EnrollRoutesEnum } from "~/constants/nav"
 
-const currentEvents = computed(() => {
-    const pinned = MOCK_EVENTS.filter((e) => e.isPinned)
-    const regular = MOCK_EVENTS.filter((e) => !e.isPinned)
-    return [...pinned, ...regular]
-})
-
 const DEFAULT_VISIBLE = 3
 
 const showAllEvents = ref(false)
 const visibleEvents = computed(() =>
-    showAllEvents.value ? currentEvents.value : currentEvents.value.slice(0, DEFAULT_VISIBLE)
+    showAllEvents.value ? MOCK_EVENTS : MOCK_EVENTS.slice(0, DEFAULT_VISIBLE)
 )
 </script>
 
@@ -55,7 +49,7 @@ const visibleEvents = computed(() =>
             </div>
 
             <!-- Toggle button -->
-            <div v-if="currentEvents.length > DEFAULT_VISIBLE" class="flex justify-center pt-2">
+            <div v-if="MOCK_EVENTS.length > DEFAULT_VISIBLE" class="flex justify-center pt-2">
                 <UButton
                     size="xl"
                     variant="ghost"

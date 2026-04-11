@@ -22,7 +22,7 @@
 
             <!-- SUN -->
             <div
-                class="floating-element absolute -top-4 left-2/3 z-10 size-92 -translate-x-1/4 rotate-15"
+                class="floating-element absolute left-2/3 z-10 -translate-x-1/4 rotate-15 md:top-6 md:size-44 lg:top-0 lg:size-68 xl:-top-4 xl:size-92"
             >
                 <NuxtImg
                     src="/core/Sun.png"
@@ -36,7 +36,7 @@
 
             <!-- URA -->
             <div
-                class="floating-element absolute -top-36 left-1/2 z-10 size-64 -translate-x-1/6 -rotate-10"
+                class="floating-element absolute left-1/2 z-10 -translate-x-1/6 -rotate-10 md:-top-20 md:size-40 lg:-top-32 lg:size-54 xl:-top-36 xl:size-64"
             >
                 <NuxtImg
                     src="/core/URA.png"

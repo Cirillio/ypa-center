@@ -28,23 +28,23 @@ const CONTACT_LINKS: FooterLink[] = [
 
 <template>
     <footer class="bg-default z-10 flex flex-col items-center gap-12 py-12">
-        <UContainer class="flex flex-col items-center gap-8">
+        <UContainer class="flex flex-col items-center gap-4 md:gap-8">
             <NuxtImg
                 src="/core/Sun.png"
                 alt=""
-                class="floating-element-slow h-24 transition-transform duration-300 group-hover:rotate-10 md:h-28"
+                class="floating-element-slow h-20 transition-transform duration-300 group-hover:rotate-10 md:h-24 lg:h-28"
                 format="webp"
                 quality="90"
                 loading="lazy"
             />
 
-            <h4 class="text-primary text-3xl leading-tight font-bold">
+            <h3 class="text-primary text-center text-2xl leading-tight font-bold md:text-3xl">
                 Готовы к нам
                 <span class="text-secondary after:text-primary after:content-['?']"
                     >присоединиться</span
                 >
-            </h4>
-            <div class="flex gap-2">
+            </h3>
+            <div class="flex items-center gap-2 max-md:flex-col-reverse">
                 <UButton :to="EnrollRoutesEnum.Trial" variant="soft" size="md" class="group w-fit">
                     <span class="font-bold">Записаться на пробное</span>
                     <UIcon
