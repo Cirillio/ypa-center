@@ -25,7 +25,6 @@ export interface EventShort {
     date: string
     time: string
     price: string | null
-    isPinned: boolean
 }
 
 export interface GalleryImage {

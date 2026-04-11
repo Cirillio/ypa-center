@@ -14,7 +14,7 @@
     /* Анимированный вариант с вращением */
     .gradient-bg-ps-animated {
         /* Изолируем контекст, чтобы фон не вылез за края компонента */
-        @apply relative overflow-hidden isolate;
+        @apply relative isolate overflow-hidden;
     }
 
     .gradient-bg-ps-animated::before {

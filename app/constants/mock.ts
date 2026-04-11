@@ -55,8 +55,7 @@ export const MOCK_EVENTS: EventShort[] = [
         img: "moke/event-1.jpeg",
         date: "2026-04-12",
         time: "11:00",
-        price: "1500р",
-        isPinned: false
+        price: "1500р"
     },
     {
         id: "event-2",
@@ -65,8 +64,7 @@ export const MOCK_EVENTS: EventShort[] = [
         img: "moke/event-2.jpg",
         date: "2026-04-15",
         time: "10:00",
-        price: "300р",
-        isPinned: false
+        price: "300р"
     },
     {
         id: "event-3",
@@ -75,8 +73,7 @@ export const MOCK_EVENTS: EventShort[] = [
         img: "moke/event-3.jpg",
         date: "2026-04-18",
         time: "17:00",
-        price: null,
-        isPinned: false
+        price: null
     },
     {
         id: "event-4",
@@ -85,8 +82,7 @@ export const MOCK_EVENTS: EventShort[] = [
         img: "moke/event-4.jpg",
         date: "2026-04-20",
         time: "18:30",
-        price: "700р",
-        isPinned: true
+        price: "700р"
     }
 ]
 

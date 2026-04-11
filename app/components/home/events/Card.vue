@@ -24,12 +24,6 @@ const formattedDate = computed(() => {
             <div
                 class="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent"
             />
-            <div
-                v-if="isPinned"
-                class="bg-primary/90 absolute top-1.5 left-1.5 flex rounded-full p-1 backdrop-blur-sm lg:top-4 lg:left-4 lg:p-2"
-            >
-                <UIcon name="ph:push-pin-duotone" class="size-3.5 text-white lg:size-6" />
-            </div>
         </div>
 
         <!-- Content -->
