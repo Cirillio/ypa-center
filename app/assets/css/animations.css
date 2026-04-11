@@ -33,3 +33,27 @@
         transform: translateY(-8px) translateX(var(--tw-translate-x, 0));
     }
 }
+
+/* Gradient Animation */
+
+/* Gradient Animation */
+
+@theme {
+    /* Регистрируем долгую анимацию. 20 секунд обеспечат премиальное, медленное переливание */
+    --animate-spin-gradient: spin-gradient 12s linear infinite;
+}
+
+/* Описываем трансформацию. translate(-50%, -50%) удерживает якорь по центру */
+@keyframes spin-gradient {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    }
+    50% {
+        /* Половина оборота и увеличение на 20% */
+        transform: translate(-50%, -50%) rotate(180deg) scale(1.25);
+    }
+    100% {
+        /* Полный оборот и возврат к исходному размеру для идеальной склейки */
+        transform: translate(-50%, -50%) rotate(360deg) scale(1);
+    }
+}

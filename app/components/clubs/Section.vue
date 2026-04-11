@@ -49,7 +49,7 @@ import { EnrollRoutesEnum } from "~/constants/nav"
                             <UButton
                                 :to="EnrollRoutesEnum.Trial"
                                 size="lg"
-                                variant="ghost"
+                                variant="soft"
                                 class="group w-fit"
                             >
                                 <span class="font-semibold"

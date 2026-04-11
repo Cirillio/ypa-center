@@ -13,6 +13,8 @@ const selectedLessons = ref(tiers[1]!.lessons) // default: 8
 
 const selectedTier = computed(() => tiers.find((t) => t.lessons === selectedLessons.value)!)
 
+const lessonsPerWeek = computed(() => Math.round(selectedLessons.value / 4))
+
 const regularPrice = computed(() => selectedLessons.value * pricing.trialLesson)
 const savings = computed(() => regularPrice.value - selectedTier.value.price)
 const savingsPct = computed(() => Math.round((savings.value / regularPrice.value) * 100))
@@ -43,7 +45,7 @@ const fmt = (n: number) =>
 
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
                 <!-- Calculator -->
-                <div class="flex flex-col gap-4 rounded-md bg-white p-2 md:p-4">
+                <div class="flex flex-col gap-2 rounded-sm bg-white px-3 py-2 md:gap-4 md:p-4">
                     <h3 class="text-secondary text-xl font-extrabold md:text-3xl">
                         Посчитай выгоду
                     </h3>
@@ -60,12 +62,19 @@ const fmt = (n: number) =>
                                 size="xl"
                                 :variant="selectedLessons === tier.lessons ? 'solid' : 'soft'"
                                 :color="selectedLessons === tier.lessons ? 'primary' : 'secondary'"
-                                class="flex size-11 justify-center rounded-sm font-bold"
+                                class="flex size-9 justify-center rounded-sm font-bold md:size-11"
                                 @click="selectedLessons = tier.lessons"
                             >
                                 {{ tier.lessons }}
                             </UButton>
                         </div>
+                        <span class="text-default/50 text-xs font-medium">
+                            {{ selectedLessons }}
+                            {{ pluralize(selectedLessons, ["занятие", "занятия", "занятий"]) }} в
+                            месяц - {{ lessonsPerWeek }}
+                            {{ pluralize(lessonsPerWeek, ["занятие", "занятия", "занятий"]) }} в
+                            неделю
+                        </span>
                     </div>
 
                     <!-- Price comparison -->
@@ -79,16 +88,20 @@ const fmt = (n: number) =>
                             </span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-default/80 text-lg font-semibold">По абонементу</span>
-                            <span class="text-secondary text-xl font-extrabold">
+                            <span class="text-default/80 text-base font-semibold md:text-lg"
+                                >По абонементу</span
+                            >
+                            <span class="text-secondary text-base font-extrabold md:text-xl">
                                 {{ fmt(selectedTier.price) }}
                             </span>
                         </div>
                         <div
                             class="bg-primary/10 flex items-center justify-between rounded-sm px-3 py-2"
                         >
-                            <span class="text-primary text-lg font-bold">Ваша экономия</span>
-                            <span class="text-primary text-lg font-extrabold">
+                            <span class="text-primary text-base font-bold md:text-lg"
+                                >Ваша экономия</span
+                            >
+                            <span class="text-primary text-base font-extrabold md:text-lg">
                                 {{ fmt(savings) }}
                                 <span class="text-sm font-bold opacity-70">
                                     ({{ savingsPct }}%)
@@ -109,6 +122,13 @@ const fmt = (n: number) =>
                             class="size-3.5 transition group-hover:translate-x-1"
                         />
                     </UButton>
+                    <USeparator />
+
+                    <span
+                        class="before:text-error text-default/90 text-sm text-balance before:mr-1 before:font-semibold before:content-['*']"
+                        >Безлимит активируется при выборе более 20 занятий в месяц. В этом случае вы
+                        можете выбрать любое количество занятий.</span
+                    >
                 </div>
 
                 <!-- Subscription grid -->

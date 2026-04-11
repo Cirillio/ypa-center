@@ -46,6 +46,8 @@ export interface Club {
     name: string
     description: string
     photo: string
+    skills: string[]
+    outcomes: string[]
     teacher: {
         name: string
         photo: string

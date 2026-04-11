@@ -5,7 +5,7 @@ const steps = [
     {
         icon: "ph:compass-duotone",
         title: "Выбираешь кружки",
-        desc: "Смотришь расписание и выбираешь занятия, которые подходят по времени и интересам ребёнка."
+        desc: "Смотришь расписание и выбираешь занятия, которые подходят по времени и интересам."
     },
     {
         icon: "ph:puzzle-piece-duotone",
@@ -39,7 +39,7 @@ const steps = [
                 <div
                     v-for="(step, i) in steps"
                     :key="i"
-                    class="bg-default relative flex flex-col gap-2 overflow-hidden rounded-lg p-2 md:p-4"
+                    class="bg-default relative flex flex-col gap-2 overflow-hidden rounded-md px-3 py-2 md:p-4"
                 >
                     <!-- Decorative step number -->
                     <span
@@ -50,7 +50,7 @@ const steps = [
 
                     <!-- Icon -->
                     <div
-                        class="bg-primary/10 flex size-12 items-center justify-center rounded-full"
+                        class="bg-primary/10 flex size-10 items-center justify-center rounded-full md:size-12"
                     >
                         <UIcon :name="step.icon" class="text-primary size-6" />
                     </div>

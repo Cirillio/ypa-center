@@ -79,13 +79,10 @@ useHead({
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                 <UButton
                     to="/clubs#schedule"
-                    size="xl"
+                    size="lg"
                     label="Посмотреть расписание"
                     trailing-icon="ph:arrow-down-bold"
                     class="floating-element-slow text-base md:text-lg"
-                    :ui="{
-                        trailingIcon: 'max-md:size-4'
-                    }"
                 />
             </div>
         </div>

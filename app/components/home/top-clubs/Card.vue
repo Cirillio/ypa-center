@@ -17,9 +17,11 @@ const scarce = computed(() => props.spotsAvailable !== undefined && props.spotsA
         </div>
 
         <!-- Content -->
-        <div class="text-default flex flex-1 flex-col items-start gap-1 px-4 py-2 md:gap-2 md:p-4">
+        <div
+            class="text-default flex flex-1 flex-col items-start gap-1 px-3 py-2.5 md:gap-2 md:p-4"
+        >
             <h3
-                class="group-hover:text-primary text-secondary text-3xl font-bold transition xl:text-4xl"
+                class="group-hover:text-primary text-secondary text-2xl font-bold transition lg:text-3xl xl:text-4xl"
             >
                 {{ title }}
             </h3>
