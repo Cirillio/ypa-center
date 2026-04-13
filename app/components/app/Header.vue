@@ -17,7 +17,7 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
         :class="isScrolled || isMenuOpen ? 'bg-white/85 backdrop-blur-sm' : 'bg-transparent'"
     >
         <UContainer
-            class="relative flex h-(--header-height) w-full items-center justify-between p-2"
+            class="relative flex h-(--header-height) w-full items-center justify-between gap-4 p-2"
         >
             <!-- LOGO -->
             <NuxtLink
@@ -54,10 +54,10 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
                 </div>
             </NuxtLink>
 
-            <div class="header-right flex items-center gap-4">
+            <div class="flex flex-1 items-center gap-4 max-lg:justify-end">
                 <!-- NAV -->
-                <nav class="h-full max-lg:hidden" aria-label="Основная навигация">
-                    <ul class="flex list-none items-center gap-2">
+                <nav class="mx-auto h-full max-lg:hidden" aria-label="Основная навигация">
+                    <ul class="borer flex list-none items-center gap-4">
                         <li v-for="r in NAV_ROUTES" :key="r.label">
                             <UButton
                                 :label="r.label"
@@ -82,7 +82,6 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
 
                 <!-- BURGER -->
                 <UButton
-                    size="xl"
                     :color="isMenuOpen ? 'primary' : 'neutral'"
                     variant="ghost"
                     class="aspect-square transition-transform duration-500 lg:hidden"

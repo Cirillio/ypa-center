@@ -16,6 +16,7 @@ const selectedClubId = defineModel<string | undefined>({ required: true })
                 :key="club.id"
                 v-model:selected="selectedClubId"
                 :title="club.title"
+                :img="club.img"
                 radio-group="club"
             >
                 {{ club.shortDesc }}

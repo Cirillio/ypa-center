@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { fields } from "~/schemas/fields"
 
-export const trialRegistrationSchema = z.object({
+export const RegistrationSchema = z.object({
     childFullName: fields.fullName,
     birthDate: fields.birthDate,
     grade: z.union([
@@ -15,4 +15,4 @@ export const trialRegistrationSchema = z.object({
     comments: fields.comments
 })
 
-export type TrialRegistration = z.infer<typeof trialRegistrationSchema>
+export type RegistrationForm = z.infer<typeof RegistrationSchema>

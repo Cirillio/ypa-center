@@ -1,9 +1,9 @@
 import type { LocationQueryValue } from "vue-router"
 import type { FormSubmitEvent } from "@nuxt/ui"
-import { type TrialRegistration, trialRegistrationSchema } from "~/schemas/trial.schema"
+import type { RegistrationForm } from "~/schemas/registration.schema"
 import { MOCK_CLUBS_WITH_SLOTS } from "~/constants/mock"
 
-const DEFAULT_TRIAL_FORM: TrialRegistration = {
+const DEFAULT_TRIAL_FORM: RegistrationForm = {
     childFullName: "",
     birthDate: "",
     grade: "",
@@ -26,7 +26,7 @@ export function useTrialEnrollment() {
     const router = useRouter()
     const { formatSlotDate, getClosestDate } = useFormatDate()
 
-    const trialFormState = reactive<TrialRegistration>({ ...DEFAULT_TRIAL_FORM })
+    const trialFormState = reactive<RegistrationForm>({ ...DEFAULT_TRIAL_FORM })
     const selectedClubId = ref<string | undefined>(parseQueryParam(route.query.clubId))
     const selectedSlotId = ref<string | undefined>(parseQueryParam(route.query.slotId))
     const pid = ref<string | undefined>(parseQueryParam(route.query.pid))
@@ -47,6 +47,7 @@ export function useTrialEnrollment() {
             selectedClubSlots.value.find((s) => s.id === Number(selectedSlotId.value)) ?? null
         return {
             name: club?.title ?? null,
+            img: club?.img ?? null,
             slot: slot ? formatSlotDate(slot) : null
         }
     })
@@ -73,7 +74,7 @@ export function useTrialEnrollment() {
 
     onBeforeUnmount(() => resetSelection())
 
-    async function onSubmit(event: FormSubmitEvent<TrialRegistration>) {
+    async function onSubmit(event: FormSubmitEvent<RegistrationForm>) {
         console.log("Форма отправлена:", event.data)
         // API-запрос
     }
@@ -81,7 +82,7 @@ export function useTrialEnrollment() {
     return {
         clubs: MOCK_CLUBS_WITH_SLOTS,
         trialFormState,
-        trialRegistrationSchema,
+
         selectedClubId,
         selectedSlotId,
         pid,

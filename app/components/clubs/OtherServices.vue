@@ -48,7 +48,7 @@ const services: OtherService[] = [
                 <!-- Телефон -->
                 <a
                     :href="`mailto:${email}`"
-                    class="hover:ring-primary group flex w-fit shrink-0 items-center gap-3 rounded-lg bg-white px-5 py-4 transition-all duration-200 hover:ring-2 md:self-auto"
+                    class="hover:ring-primary group flex w-fit shrink-0 items-center gap-3 rounded-sm bg-white p-4 transition-all duration-200 hover:ring-2 md:self-auto"
                 >
                     <div
                         class="bg-primary/10 group-hover:bg-primary/20 flex size-10 items-center justify-center rounded-full transition-colors"
@@ -59,7 +59,7 @@ const services: OtherService[] = [
                         <span class="text-default/75 text-xs font-semibold"
                             >Запись по телефону или по почте:</span
                         >
-                        <span class="text-default text-xl font-extrabold">{{ email }}</span>
+                        <span class="text-default font-extrabold md:text-xl">{{ email }}</span>
                     </div>
                 </a>
             </div>
@@ -69,7 +69,7 @@ const services: OtherService[] = [
                 <div
                     v-for="service in services"
                     :key="service.name"
-                    class="flex items-start gap-4 rounded-lg bg-white p-4"
+                    class="flex items-start gap-4 rounded-sm bg-white p-4"
                 >
                     <div
                         class="bg-default flex size-10 shrink-0 items-center justify-center rounded-md"

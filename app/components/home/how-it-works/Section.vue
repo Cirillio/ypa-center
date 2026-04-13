@@ -68,7 +68,15 @@ const steps = [
                 </div>
             </div>
 
-            <div class="flex justify-center">
+            <div class="flex items-center gap-4">
+                <UButton
+                    to="/#subscription-calc"
+                    label="Калькулятор абонемента"
+                    size="xl"
+                    leading-icon="ph:arrow-down-bold"
+                    color="info"
+                    variant="soft"
+                />
                 <UButton
                     color="secondary"
                     :to="EnrollRoutesEnum.Subscription"

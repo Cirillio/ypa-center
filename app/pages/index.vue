@@ -66,5 +66,6 @@ useHead({
         <HomeGallerySection />
         <HomeSubscriptionsSection />
         <FaqSection />
+        <JoinUsPromo />
     </div>
 </template>

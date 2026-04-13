@@ -44,5 +44,6 @@ useHead({
         <AboutOwner />
         <AboutMap />
         <FaqSection />
+        <JoinUsPromo />
     </div>
 </template>

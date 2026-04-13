@@ -193,7 +193,7 @@ export const MOCK_WEEKLY_SLOTS: WeeklySlot[] = [
     // ПОНЕДЕЛЬНИК (dayOfWeek: 1)
     {
         id: 1,
-        activity: { id: 1, name: "Кружок Мышления" },
+        activity: { id: 1, name: "Кружок Мышления: Возвращение легенды" },
         dayOfWeek: 1,
         startTime: "15:00",
         endTime: "16:00",

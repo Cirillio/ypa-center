@@ -68,10 +68,14 @@ import { EnrollRoutesEnum } from "~/constants/nav"
             <SubscriptionsPromo>
                 <template #sub> Система абонементов </template>
                 <template #desc>
-                    Абонемент удобнее разовых оплат: не нужно каждый раз переводить деньги, а чем
-                    больше занятий — тем ниже цена за каждое. Выгода до&nbsp;50% против разового
-                    посещения.</template
-                >
+                    В нашей системе вы можете включить разные кружки в один абонемент:
+                    <br />
+                    - Чем <strong>больше</strong> кружков - тем <strong>выше скидка!</strong>
+                    <br />
+                    - Максимальная выгода: <strong>50%</strong>
+                    <br />
+                    - Абонемент оформляется на <strong>месяц</strong>
+                </template>
             </SubscriptionsPromo>
         </UContainer>
     </section>
