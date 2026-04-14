@@ -59,6 +59,7 @@ function navigate(to: string) {
                             label="Пробное занятие"
                             trailing-icon="ph:rocket-launch-duotone"
                             size="xl"
+                            variant="soft"
                             class="w-full justify-center py-3 text-base font-semibold"
                             :ui="{ trailingIcon: 'size-5' }"
                             @click="navigate(EnrollRoutesEnum.Trial)"

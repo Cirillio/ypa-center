@@ -28,7 +28,10 @@ const fmt = (n: number) =>
 </script>
 
 <template>
-    <section class="bg-default relative z-10 flex w-full py-12 md:py-20 lg:py-24">
+    <section
+        id="subscription-calc"
+        class="bg-default relative z-10 flex w-full py-12 md:py-20 lg:py-24"
+    >
         <UContainer class="flex flex-col gap-10 md:gap-14">
             <SectionLeading subtitle="Ценообразование" icon="ph:ticket-duotone">
                 <template #title>

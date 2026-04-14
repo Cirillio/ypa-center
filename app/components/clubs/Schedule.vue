@@ -5,48 +5,7 @@ const props = defineProps<{
     slots: WeeklySlot[]
 }>()
 
-// ─── Дни недели текущей недели ────────────────────────────────────────────────
-
-const DAY_SHORT = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"] as const
-
-interface WeekDay {
-    dow: number
-    dayShort: string
-    isToday: boolean
-}
-
-function buildWeekDays(): WeekDay[] {
-    const today = new Date()
-    const dow = today.getDay()
-    const monday = new Date(today)
-    monday.setDate(today.getDate() - (dow === 0 ? 6 : dow - 1))
-    return Array.from({ length: 7 }, (_, i) => {
-        const d = new Date(monday)
-        d.setDate(monday.getDate() + i)
-        return {
-            dow: d.getDay(),
-            dayShort: DAY_SHORT[d.getDay()]!,
-            isToday: d.toDateString() === today.toDateString()
-        }
-    })
-}
-
-const weekDays = buildWeekDays()
-
-// ─── Мобиль: выбранный день ───────────────────────────────────────────────────
-
-const todayDow = new Date().getDay()
-const defaultDay = weekDays.find((d) => d.dow === todayDow) ?? weekDays[0]!
-const selectedDay = ref<WeekDay>(defaultDay)
-
-const filteredSlots = computed(() =>
-    props.slots
-        .filter((s) => s.dayOfWeek === selectedDay.value.dow)
-        .slice()
-        .sort((a, b) => a.startTime.localeCompare(b.startTime))
-)
-
-// ─── Десктоп: слоты по дню ───────────────────────────────────────────────────
+const { weekDays, selectedDay } = useSchedule()
 
 function slotsForDay(dow: number): WeeklySlot[] {
     return props.slots
@@ -82,13 +41,13 @@ function slotsForDay(dow: number): WeeklySlot[] {
                             type="button"
                             :aria-label="'Показать расписание на ' + day.dayShort"
                             :aria-pressed="selectedDay.dow === day.dow"
-                            class="flex min-w-0 flex-1 cursor-pointer flex-col items-center gap-0.5 rounded-full border-2 px-3 py-2.5 transition-all duration-150"
+                            class="flex min-w-0 flex-1 cursor-pointer flex-col items-center gap-0.5 rounded-full px-3 py-2.5 transition-all duration-150"
                             :class="
                                 selectedDay.dow === day.dow
-                                    ? 'bg-primary border-primary text-white'
+                                    ? 'bg-primary text-white'
                                     : day.isToday
-                                      ? 'border-primary/40 text-default bg-default'
-                                      : 'text-default/95 active:border-primary/30 active:bg-primary/30 bg-default border-transparent'
+                                      ? 'text-secondary bg-secondary/15'
+                                      : 'text-default/95 active:bg-primary/15 active:text-primary bg-default'
                             "
                             @click="selectedDay = day"
                         >
@@ -101,12 +60,12 @@ function slotsForDay(dow: number): WeeklySlot[] {
 
                 <!-- Слоты выбранного дня -->
                 <div
-                    v-if="filteredSlots.length"
+                    v-if="slotsForDay(selectedDay.dow).length"
                     :key="selectedDay.dow"
                     class="mt-2 flex flex-col gap-2"
                 >
                     <ClubsScheduleCard
-                        v-for="slot in filteredSlots"
+                        v-for="slot in slotsForDay(selectedDay.dow)"
                         :key="slot.id"
                         :weekly-slot="slot"
                     />

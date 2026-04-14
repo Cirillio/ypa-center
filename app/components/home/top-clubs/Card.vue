@@ -1,14 +1,12 @@
 <script lang="ts" setup>
 import type { ClubShort } from "~/types"
 
-const props = defineProps<ClubShort>()
-
-const scarce = computed(() => props.spotsAvailable !== undefined && props.spotsAvailable <= 3)
+defineProps<ClubShort>()
 </script>
 
 <template>
     <article
-        class="focus-visible:outline-primary group bg-default relative flex flex-col overflow-hidden rounded-md"
+        class="focus-visible:outline-primary group relative flex flex-col overflow-hidden rounded-md bg-white"
     >
         <!-- Image -->
         <div class="relative h-3/5 min-h-0 overflow-hidden rounded-md">
@@ -28,13 +26,6 @@ const scarce = computed(() => props.spotsAvailable !== undefined && props.spotsA
             <p class="text-default/90 text-base leading-snug font-medium md:text-xl">
                 {{ shortDesc }}
             </p>
-
-            <div v-if="scarce" class="flex items-center gap-1">
-                <UIcon name="ph:dot-duotone" class="text-primary size-6 animate-pulse" />
-                <span class="text-secondary/85 mt-0.5 text-sm font-bold">
-                    Осталось {{ spotsAvailable }} {{ spotsAvailable === 1 ? "место" : "места" }}
-                </span>
-            </div>
         </div>
     </article>
 </template>

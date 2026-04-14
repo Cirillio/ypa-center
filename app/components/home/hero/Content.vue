@@ -16,7 +16,6 @@
             </p>
         </div>
 
-        <HomeHeroStats />
         <HomeHeroCta />
     </div>
 </template>

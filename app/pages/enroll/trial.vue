@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { EnrollRoutesEnum } from "~/constants/nav"
+import { RegistrationSchema } from "~/schemas/registration.schema"
 
 const { pricing, contactInfo } = useAppConfig()
 const telegramHref = contactInfo.socials.find((i) => i.label === "Telegram")?.href
@@ -7,13 +8,21 @@ const telegramHref = contactInfo.socials.find((i) => i.label === "Telegram")?.hr
 const {
     clubs,
     trialFormState,
-    trialRegistrationSchema,
     selectedClubId,
     selectedSlotId,
     selectedClubSlots,
     selectedVariant,
     onSubmit
 } = useTrialEnrollment()
+
+useSeoMeta({
+    title: "Пробное занятие — Улица Радости",
+    description:
+        "Запишите ребёнка на разовое пробное занятие в детском центре Улица Радости. 1 200 ₽. Выберите кружок и удобное время. Новосибирск.",
+    ogTitle: "Пробное занятие в кружке — Улица Радости",
+    ogDescription:
+        "Разовое занятие в любом кружке за 1 200 ₽. Познакомьтесь с педагогом и форматом перед оформлением абонемента."
+})
 </script>
 
 <template>
@@ -36,9 +45,6 @@ const {
                             Стоимость:
                             <span class="text-primary">{{ pricing.trialLesson }}</span>
                             руб.
-                        </span>
-                        <span class="text-default text-base font-bold md:text-lg xl:text-xl">
-                            Продолжительность: <span class="text-primary">60</span> мин.
                         </span>
                         <TelegramBotPromo :href="telegramHref" />
                     </div>
@@ -72,9 +78,13 @@ const {
         </UContainer>
 
         <UContainer>
-            <USeparator size="md" class="my-12" :ui="{ border: 'border-(--ui-text)/26' }">
+            <USeparator
+                size="sm"
+                class="my-12"
+                :ui="{ border: 'rounded-full border-(--ui-text)/26' }"
+            >
                 <template #default>
-                    <h2 class="text-primary text-3xl font-bold">Оформление</h2>
+                    <h2 class="text-primary text-xl font-bold md:text-3xl">Оформление</h2>
                 </template>
             </USeparator>
         </UContainer>
@@ -82,6 +92,16 @@ const {
         <UContainer class="w-full">
             <div class="grid grid-cols-1 gap-4 lg:grid-cols-12">
                 <div class="flex flex-col gap-4 lg:col-span-7">
+                    <EnrollmentSummary
+                        :title="selectedVariant?.name ?? null"
+                        :subtitle="selectedVariant?.slot ?? null"
+                        :img="selectedVariant?.img ?? null"
+                        :badge="pricing.trialLesson + 'р'"
+                        icon="ph:person-simple-run-bold"
+                        empty-title="Кружок не выбран"
+                        empty-subtitle="Время не выбрано"
+                    />
+
                     <TrialClubPicker v-model="selectedClubId" :clubs="clubs" />
                     <TrialSlotPicker
                         v-model="selectedSlotId"
@@ -90,17 +110,13 @@ const {
                     />
                 </div>
 
-                <div class="flex flex-col gap-4 lg:col-span-5">
-                    <EnrollmentSummary
-                        :title="selectedVariant?.name ?? null"
-                        :subtitle="selectedVariant?.slot ?? null"
-                        icon="ph:person-simple-run-bold"
-                        empty-title="Кружок не выбран"
-                        empty-subtitle="Время не выбрано"
-                    />
-                    <TrialRegistrationForm
+                <div
+                    class="sticky top-[calc(var(--header-height)+1rem)] h-fit rounded-sm bg-white px-6 py-4 lg:col-span-5"
+                >
+                    <h3 class="text-default mb-6 text-2xl font-bold">3. Заполните анкету</h3>
+                    <RegistrationForm
                         v-model="trialFormState"
-                        :schema="trialRegistrationSchema"
+                        :schema="RegistrationSchema"
                         @submit="onSubmit"
                     />
                 </div>

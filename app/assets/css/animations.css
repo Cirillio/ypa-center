@@ -57,3 +57,20 @@
         transform: translate(-50%, -50%) rotate(360deg) scale(1);
     }
 }
+
+.pending-dot {
+    @apply bg-primary block size-3 rounded-full;
+    animation: dot-pulse 0.9s ease-in-out infinite;
+}
+
+@keyframes dot-pulse {
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.35;
+    }
+    50% {
+        transform: scale(1.55);
+        opacity: 1;
+    }
+}

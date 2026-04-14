@@ -100,5 +100,6 @@ useHead({
         <ClubsSchedule :slots="slots" />
         <ClubsOtherServices />
         <FaqSection />
+        <JoinUsPromo />
     </div>
 </template>

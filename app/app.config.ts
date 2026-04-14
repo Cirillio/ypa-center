@@ -18,6 +18,11 @@ export default defineAppConfig({
             primary: "green",
             neutral: "taupe"
         },
+        separator: {
+            slots: {
+                border: "border-(--ui-text)/25!"
+            }
+        },
         container: {
             base: "max-w-[88rem]"
         },

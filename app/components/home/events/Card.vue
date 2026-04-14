@@ -14,7 +14,7 @@ const formattedDate = computed(() => {
 
 <template>
     <article
-        class="group/article hover:ring-primary flex flex-row gap-2 rounded-md bg-white p-2 ring-2 ring-transparent transition lg:flex-col lg:gap-4 lg:p-4"
+        class="group/article hover:ring-primary bg-default flex flex-row gap-2 rounded-md p-2 ring-2 ring-transparent transition lg:flex-col lg:gap-4 lg:p-4"
     >
         <!-- Image -->
         <div

@@ -67,21 +67,18 @@ const steps = [
                     </div>
                 </div>
             </div>
-
-            <div class="flex justify-center">
-                <UButton
-                    color="secondary"
-                    :to="EnrollRoutesEnum.Subscription"
-                    size="xl"
-                    class="group"
-                >
-                    <span class="font-bold md:text-lg">Собрать абонемент</span>
-                    <UIcon
-                        name="ph:arrow-right-bold"
-                        class="size-4 transition group-hover:translate-x-1 md:size-5"
-                    />
-                </UButton>
-            </div>
+            <UButton
+                color="secondary"
+                :to="EnrollRoutesEnum.Subscription"
+                size="xl"
+                class="group justify-center sm:w-fit"
+            >
+                <span class="font-bold md:text-lg">Собрать абонемент</span>
+                <UIcon
+                    name="ph:arrow-right-bold"
+                    class="size-4 transition group-hover:translate-x-1 md:size-5"
+                />
+            </UButton>
         </UContainer>
     </section>
 </template>
