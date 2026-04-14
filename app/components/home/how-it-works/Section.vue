@@ -67,29 +67,18 @@ const steps = [
                     </div>
                 </div>
             </div>
-
-            <div class="flex items-center gap-4">
-                <UButton
-                    to="/#subscription-calc"
-                    label="Калькулятор абонемента"
-                    size="xl"
-                    leading-icon="ph:arrow-down-bold"
-                    color="info"
-                    variant="soft"
+            <UButton
+                color="secondary"
+                :to="EnrollRoutesEnum.Subscription"
+                size="xl"
+                class="group justify-center sm:w-fit"
+            >
+                <span class="font-bold md:text-lg">Собрать абонемент</span>
+                <UIcon
+                    name="ph:arrow-right-bold"
+                    class="size-4 transition group-hover:translate-x-1 md:size-5"
                 />
-                <UButton
-                    color="secondary"
-                    :to="EnrollRoutesEnum.Subscription"
-                    size="xl"
-                    class="group"
-                >
-                    <span class="font-bold md:text-lg">Собрать абонемент</span>
-                    <UIcon
-                        name="ph:arrow-right-bold"
-                        class="size-4 transition group-hover:translate-x-1 md:size-5"
-                    />
-                </UButton>
-            </div>
+            </UButton>
         </UContainer>
     </section>
 </template>

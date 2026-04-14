@@ -20,7 +20,11 @@ defineProps<{
                 <!-- Image hero mode -->
                 <template v-if="img">
                     <div class="relative h-32 w-full overflow-hidden rounded-xs">
-                        <AppPhoto :src="img" :alt="imgAlt ?? name ?? ''" class="object-cover object-center" />
+                        <AppPhoto
+                            :src="img"
+                            :alt="imgAlt ?? name ?? ''"
+                            class="object-cover object-center"
+                        />
                         <div
                             class="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent"
                         />

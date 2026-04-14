@@ -4,14 +4,16 @@ withDefaults(
         enrollPath?: string
     }>(),
     {
-        enrollPath: '/enroll/trial'
+        enrollPath: "/enroll/trial"
     }
 )
 </script>
 
 <template>
-    <div class="flex min-h-64 flex-col items-center justify-center gap-6 rounded-sm bg-white px-6 py-10">
-        <UIcon name="ph:question-bold" class="text-default/25 -rotate-12 size-16" />
+    <div
+        class="flex min-h-64 flex-col items-center justify-center gap-6 rounded-sm bg-white px-6 py-10"
+    >
+        <UIcon name="ph:question-bold" class="text-default/25 size-16 -rotate-12" />
 
         <div class="space-y-1 text-center">
             <p class="text-default text-xl font-bold">Платёж не найден</p>

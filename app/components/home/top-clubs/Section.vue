@@ -3,7 +3,7 @@ import { MOCK_CLUBS } from "~/constants/mock"
 </script>
 
 <template>
-    <section class="relative z-10 flex w-full overflow-hidden bg-white py-12 md:py-20 lg:py-24">
+    <section class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20 lg:py-24">
         <UContainer class="relative z-10 flex flex-col gap-6 md:gap-12">
             <!-- Top: text content -->
             <SectionLeading subtitle="Для вашего ребёнка" icon="ph:star-duotone">
@@ -45,7 +45,7 @@ import { MOCK_CLUBS } from "~/constants/mock"
                 label="Учителя"
                 description="Профессионалы, которые вдохновляют детей и помогают найти призвание."
                 go-text="Познакомиться"
-                class="bg-default! max-md:relative! max-md:size-auto!"
+                class="max-md:relative! max-md:size-auto!"
             />
         </UContainer>
     </section>

@@ -18,25 +18,27 @@ onMounted(() => {
 })
 
 const REASON_MAP: Record<string, string> = {
-    expired_on_confirmation: 'Время оплаты истекло',
-    insufficient_funds: 'Недостаточно средств на карте',
-    card_expired: 'Карта недействительна',
-    '3d_secure_failed': 'Ошибка подтверждения 3D-Secure',
-    payment_method_rejected: 'Платёж отклонён банком',
-    fraud_suspected: 'Платёж отклонён',
-    internal_timeout: 'Технический сбой',
-    general_decline: 'Платёж отклонён'
+    expired_on_confirmation: "Время оплаты истекло",
+    insufficient_funds: "Недостаточно средств на карте",
+    card_expired: "Карта недействительна",
+    "3d_secure_failed": "Ошибка подтверждения 3D-Secure",
+    payment_method_rejected: "Платёж отклонён банком",
+    fraud_suspected: "Платёж отклонён",
+    internal_timeout: "Технический сбой",
+    general_decline: "Платёж отклонён"
 }
 
 const title = computed(() =>
-    props.reason ? (REASON_MAP[props.reason] ?? 'Платёж отменён') : 'Платёж отменён'
+    props.reason ? (REASON_MAP[props.reason] ?? "Платёж отменён") : "Платёж отменён"
 )
 
-const isFraud = computed(() => props.reason === 'fraud_suspected')
+const isFraud = computed(() => props.reason === "fraud_suspected")
 </script>
 
 <template>
-    <div class="flex min-h-64 flex-col items-center justify-center gap-6 rounded-sm bg-white px-6 py-10">
+    <div
+        class="flex min-h-64 flex-col items-center justify-center gap-6 rounded-sm bg-white px-6 py-10"
+    >
         <UIcon
             name="ph:x-circle-bold"
             :class="['size-16 text-red-400', { 'icon-shake': shaking }]"
@@ -45,17 +47,12 @@ const isFraud = computed(() => props.reason === 'fraud_suspected')
         <div class="space-y-1 text-center">
             <p class="text-default text-xl font-bold">{{ title }}</p>
             <p class="text-muted text-sm">
-                {{ isFraud ? 'Обратитесь в поддержку' : 'Вы можете попробовать снова' }}
+                {{ isFraud ? "Обратитесь в поддержку" : "Вы можете попробовать снова" }}
             </p>
         </div>
 
         <div class="flex w-full flex-col gap-2">
-            <UButton
-                v-if="!isFraud"
-                label="Попробовать снова"
-                block
-                @click="emit('retry')"
-            />
+            <UButton v-if="!isFraud" label="Попробовать снова" block @click="emit('retry')" />
             <UButton
                 :to="telegramHref"
                 target="_blank"

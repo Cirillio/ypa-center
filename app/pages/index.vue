@@ -36,7 +36,6 @@ useHead({
                 },
                 openingHours: "Mo-Fr 08:00-20:00",
                 sameAs: contactInfo.socials.map((s) => s.href),
-                // Добавляем оффер на пробное занятие
                 makesOffer: {
                     "@type": "Offer",
                     itemOffered: {
@@ -48,7 +47,6 @@ useHead({
                     priceCurrency: pricing.currency,
                     availability: "https://schema.org/InStock"
                 },
-                // Ключевые слова
                 keywords: `детский центр, кружки для детей, продленка, Новосибирск, ${stats.studentsCount} счастливых детей`
             })
         }
@@ -59,12 +57,12 @@ useHead({
 <template>
     <div class="flex w-full min-w-0 flex-col">
         <HomeHeroSection />
-        <HomeHowItWorksSection />
         <HomeAboutSection />
         <HomeTopClubsSection />
+        <HomeHowItWorksSection />
+        <HomeSubscriptionsSection />
         <HomeEventsSection />
         <HomeGallerySection />
-        <HomeSubscriptionsSection />
         <FaqSection />
         <JoinUsPromo />
     </div>
