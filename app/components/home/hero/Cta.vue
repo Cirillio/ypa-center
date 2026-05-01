@@ -1,41 +1,27 @@
 <template>
-    <div class="flex flex-col gap-3">
-        <div class="flex flex-col gap-1">
-            <UButton
-                :to="EnrollRoutesEnum.Subscription"
-                color="secondary"
-                size="lg"
-                class="group w-fit"
-            >
-                <span class="text-base font-bold md:text-lg">Собрать абонемент</span>
-                <UIcon
-                    name="ph:puzzle-piece-duotone"
-                    class="size-4.5 transition group-hover:scale-110 group-hover:rotate-6 md:size-5.5"
-                />
-            </UButton>
-            <span class="text-default/90 ml-1 text-xs font-bold">
-                Выгоднее разового — от <span class="text-primary">450 ₽</span> за занятие
-            </span>
-        </div>
-
+    <div class="max-md: flex flex-col items-start gap-4">
         <UButton
-            :to="EnrollRoutesEnum.Trial"
+            :to="EnrollRoutesEnum.Subscription"
+            color="secondary"
             size="lg"
-            color="primary"
-            variant="soft"
             class="group w-fit"
         >
-            <span class="font-semibold">Записаться на пробное</span>
             <UIcon
-                name="ph:arrow-right-bold"
-                class="size-3.5 transition group-hover:translate-x-1"
+                name="ph:puzzle-piece-duotone"
+                class="size-5 transition group-hover:scale-110 group-hover:rotate-6 md:size-6"
             />
+            <span class="text-lg font-bold md:text-xl">Собрать абонемент</span>
         </UButton>
 
-        <div class="flex flex-col gap-1.5">
-            <span class="text-default/70 ml-1 text-sm font-semibold">Или закажите звонок</span>
-            <CallbackForm bg="white" />
-        </div>
+        <UButton
+            leading-icon="ph:calendar-dot-bold"
+            :to="EnrollRoutesEnum.Trial"
+            variant="soft"
+            size="md"
+            class="text-base md:text-lg"
+        >
+            Разовое занятие
+        </UButton>
     </div>
 </template>
 

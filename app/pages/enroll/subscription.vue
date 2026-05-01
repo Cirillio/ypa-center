@@ -2,9 +2,6 @@
 import { EnrollRoutesEnum } from "~/constants/nav"
 import { RegistrationSchema } from "~/schemas/registration.schema"
 
-const { contactInfo } = useAppConfig()
-const telegramHref = contactInfo.socials.find((i) => i.label === "Telegram")?.href
-
 const {
     allSlots,
     formState,
@@ -53,7 +50,6 @@ useSeoMeta({
                         <span class="text-default text-base font-bold md:text-lg xl:text-xl">
                             Оформляется на <span class="text-primary">1 месяц</span>
                         </span>
-                        <TelegramBotPromo :href="telegramHref" />
                     </div>
                 </template>
             </SectionLeading>

@@ -57,7 +57,7 @@ onMounted(() => {
 
         <div class="space-y-1 text-center">
             <p class="text-default text-xl font-bold">Оплата прошла</p>
-            <p class="text-muted text-sm">Подтверждение придёт в Telegram</p>
+            <p class="text-muted text-sm">Подтверждение придёт на почту</p>
         </div>
 
         <slot />

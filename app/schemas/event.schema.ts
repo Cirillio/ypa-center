@@ -5,7 +5,7 @@ export const eventRegistrationSchema = z.object({
     participantName: fields.fullName,
     parentFullName: fields.fullName,
     phone: fields.phone,
-    telegram: fields.telegram,
+    email: fields.email,
     participants: z.string().min(1, "Укажите количество участников"),
     referralSource: z.string().min(1, "Пожалуйста, укажите, откуда вы о нас узнали"),
     comments: fields.comments

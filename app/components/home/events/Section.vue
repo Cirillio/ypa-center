@@ -1,13 +1,6 @@
 <script lang="ts" setup>
 import { MOCK_EVENTS } from "~/constants/mock"
 import { EnrollRoutesEnum } from "~/constants/nav"
-
-const DEFAULT_VISIBLE = 3
-
-const showAllEvents = ref(false)
-const visibleEvents = computed(() =>
-    showAllEvents.value ? MOCK_EVENTS : MOCK_EVENTS.slice(0, DEFAULT_VISIBLE)
-)
 </script>
 
 <template>
@@ -45,27 +38,7 @@ const visibleEvents = computed(() =>
 
             <!-- Events list / grid -->
             <div class="flex flex-col gap-2 lg:grid lg:grid-cols-3 lg:gap-4">
-                <LazyHomeEventsCard v-for="event in visibleEvents" :key="event.id" v-bind="event" />
-            </div>
-
-            <!-- Toggle button -->
-            <div v-if="MOCK_EVENTS.length > DEFAULT_VISIBLE" class="flex justify-center pt-2">
-                <UButton
-                    size="xl"
-                    variant="ghost"
-                    color="secondary"
-                    class="group px-8"
-                    @click="showAllEvents = !showAllEvents"
-                >
-                    <span class="text-lg font-bold">
-                        {{ showAllEvents ? "Скрыть" : "Все события" }}
-                    </span>
-                    <UIcon
-                        name="ph:caret-down-bold"
-                        class="size-5 transition-transform duration-300"
-                        :class="showAllEvents ? 'rotate-180' : ''"
-                    />
-                </UButton>
+                <LazyHomeEventsCard v-for="event in MOCK_EVENTS" :key="event.id" v-bind="event" />
             </div>
         </UContainer>
     </section>

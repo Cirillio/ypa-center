@@ -22,11 +22,11 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
             <!-- LOGO -->
             <NuxtLink
                 to="/"
-                class="group header-left focus-visible:ring-primary flex h-full cursor-pointer items-center gap-2 rounded-md ring-2 ring-transparent outline-0 focus-visible:opacity-90 max-md:py-2 md:gap-4"
+                class="group header-left focus-visible:ring-primary flex h-full cursor-pointer items-center gap-2 rounded-md ring-2 ring-transparent outline-0 focus-visible:opacity-90 max-md:py-2"
                 aria-label="На главную Улица Радости"
             >
                 <NuxtImg
-                    src="/core/Sun.png"
+                    src="/core/ClearSun.png"
                     alt="Логотип Улица Радости"
                     class="h-full transition-transform delay-75 duration-300 ease-in-out group-hover:rotate-10"
                     format="webp"
@@ -74,6 +74,7 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
                     :to="EnrollRoutesEnum.Subscription"
                     label="Собрать абонемент"
                     color="secondary"
+                    variant="soft"
                     leading-icon="ph:puzzle-piece-bold"
                     class="h-full px-2 py-2 text-base font-semibold max-lg:hidden xl:px-4"
                     aria-label="Записаться на абонемент"

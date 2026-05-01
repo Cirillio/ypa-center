@@ -17,12 +17,7 @@ export const fields = {
         .min(1, "Укажите телефон")
         .refine((v) => v.length === Maskas.Phone.length, "Неверно указан телефон"),
 
-    telegram: z
-        .string()
-        .min(1, "Укажите Telegram")
-        .min(6, "Никнейм должен быть длиннее 5 символов")
-        .max(33, "Telegram должен быть короче 32 символов")
-        .startsWith("@", "Никнейм должен начинаться с @"),
+    email: z.string().min(1, "Укажите почту").email("Некорректный адрес почты"),
 
     comments: z.string().max(500, "Комментарий слишком длинный").optional(),
 

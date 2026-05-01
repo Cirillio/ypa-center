@@ -8,7 +8,7 @@ const DEFAULT_EVENT_FORM: EventRegistration = {
     participantName: "",
     parentFullName: "",
     phone: "",
-    telegram: "",
+    email: "",
     participants: "1",
     referralSource: "",
     comments: ""

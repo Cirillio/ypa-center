@@ -39,6 +39,32 @@ export interface GalleryPhoto {
     thumbnail: string
 }
 
+export interface Subgroup {
+    id: number
+    name: string
+    slug: string
+    capacity: number
+}
+
+export interface Activity {
+    id: number
+    club_id: number
+    subgroup_id: number
+}
+
+export interface WeekdaySlot {
+    id: number
+    dayOfWeek: 0 | 1 | 2 | 3 | 4 | 5 | 6
+    startTime: string
+    endTime: string
+}
+
+export interface ScheduleSlot {
+    activity_id: number
+    weekday_slot_id: number
+    participants: number
+}
+
 export interface Club {
     id: number
     slug: string
@@ -50,11 +76,6 @@ export interface Club {
     teacher: {
         name: string
         photo: string
-    }
-    schedule: {
-        days: string[]
-        timeStart: string
-        timeEnd: string
     }
     age: {
         min: number

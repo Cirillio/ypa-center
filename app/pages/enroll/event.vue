@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-const { contactInfo } = useAppConfig()
-const telegramHref = contactInfo.socials.find((i) => i.label === "Telegram")?.href
-
 const {
     events,
     eventsStatus,
@@ -19,7 +16,7 @@ useSeoMeta({
         "Запишитесь на мероприятие детского центра Улица Радости: театральные игры, мастер-классы, лекции. Интерактивные события для детей в Новосибирске.",
     ogTitle: "Запись на событие — Улица Радости",
     ogDescription:
-        "Выберите мероприятие и заполните анкету. Мы подтвердим участие и напомним о дате в Telegram."
+        "Выберите мероприятие и заполните анкету. Мы подтвердим участие и напомним о дате по почте."
 })
 
 const eventSubtitle = computed(() => {
@@ -43,10 +40,7 @@ const eventSubtitle = computed(() => {
                 </template>
                 <template #description>
                     Выберите интересующее мероприятие и заполните короткую анкету — мы подтвердим
-                    участие и напомним о дате в Telegram.
-                </template>
-                <template #action>
-                    <TelegramBotPromo :href="telegramHref" />
+                    участие и напомним о дате по почте.
                 </template>
             </SectionLeading>
         </UContainer>

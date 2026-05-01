@@ -2,8 +2,7 @@
 import { EnrollRoutesEnum } from "~/constants/nav"
 import { RegistrationSchema } from "~/schemas/registration.schema"
 
-const { pricing, contactInfo } = useAppConfig()
-const telegramHref = contactInfo.socials.find((i) => i.label === "Telegram")?.href
+const { pricing } = useAppConfig()
 
 const {
     clubs,
@@ -46,7 +45,6 @@ useSeoMeta({
                             <span class="text-primary">{{ pricing.trialLesson }}</span>
                             руб.
                         </span>
-                        <TelegramBotPromo :href="telegramHref" />
                     </div>
                 </template>
             </SectionLeading>

@@ -6,24 +6,26 @@ defineProps<ClubShort>()
 
 <template>
     <article
-        class="focus-visible:outline-primary group relative flex flex-col overflow-hidden rounded-md bg-white"
+        class="focus-visible:outline-primary group relative flex flex-col overflow-hidden rounded-sm"
     >
         <!-- Image -->
-        <div class="relative h-3/5 min-h-0 overflow-hidden rounded-md">
+        <div class="relative h-full min-h-0 overflow-hidden">
             <AppPhoto :src="img" :class="'object-cover object-center'" :alt="'Кружок — ' + title" />
             <!-- Scarcity badge -->
         </div>
 
+        <div
+            class="absolute bottom-0 z-0 h-full w-full bg-linear-to-t from-black/80 to-transparent"
+        ></div>
+
         <!-- Content -->
         <div
-            class="text-default flex flex-1 flex-col items-start gap-1 px-3 py-2.5 md:gap-2 md:p-4"
+            class="text-default absolute bottom-0 z-10 flex flex-col items-start gap-1 px-3 py-4 md:gap-2 md:p-4"
         >
-            <h3
-                class="group-hover:text-primary text-secondary text-2xl font-bold transition lg:text-3xl xl:text-4xl"
-            >
+            <h3 class="text-2xl font-bold text-white transition lg:text-3xl xl:text-4xl">
                 {{ title }}
             </h3>
-            <p class="text-default/90 text-base leading-snug font-medium md:text-xl">
+            <p class="text-base leading-snug font-medium text-balance text-white/90 md:text-xl">
                 {{ shortDesc }}
             </p>
         </div>

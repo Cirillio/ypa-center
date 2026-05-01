@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { EnrollRoutesEnum } from "~/constants/nav"
-
 const steps = [
     {
         icon: "ph:compass-duotone",
@@ -35,50 +33,30 @@ const steps = [
                 </template>
             </SectionLeading>
 
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
+            <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
                 <div
                     v-for="(step, i) in steps"
                     :key="i"
-                    class="bg-default relative flex flex-col gap-2 overflow-hidden rounded-md px-3 py-2 md:p-4"
+                    class="bg-default flex flex-col gap-4 rounded-sm p-5 lg:p-6"
                 >
-                    <!-- Decorative step number -->
-                    <span
-                        class="text-primary/8 absolute -right-6 -bottom-6 text-[8rem] leading-none font-black select-none"
-                    >
-                        {{ String(i + 1).padStart(2, "0") }}
-                    </span>
-
-                    <!-- Icon -->
-                    <div
-                        class="bg-primary/10 flex size-10 items-center justify-center rounded-full md:size-12"
-                    >
-                        <UIcon :name="step.icon" class="text-primary size-6" />
+                    <div class="flex items-center gap-3">
+                        <span class="text-primary shrink-0 text-base font-black">
+                            {{ String(i + 1).padStart(2, "0") }}
+                        </span>
+                        <div class="bg-primary/15 h-px flex-1" />
+                        <UIcon :name="step.icon" class="text-primary/60 size-6 shrink-0" />
                     </div>
 
                     <div class="flex flex-col gap-2">
-                        <h3 class="text-secondary text-lg font-extrabold md:text-xl">
+                        <h3 class="text-secondary text-2xl font-extrabold md:text-3xl">
                             {{ step.title }}
                         </h3>
-                        <p
-                            class="text-default/70 relative text-sm leading-relaxed font-medium md:text-base"
-                        >
+                        <p class="text-default/65 text-base leading-relaxed font-medium md:text-lg">
                             {{ step.desc }}
                         </p>
                     </div>
                 </div>
             </div>
-            <UButton
-                color="secondary"
-                :to="EnrollRoutesEnum.Subscription"
-                size="xl"
-                class="group justify-center sm:w-fit"
-            >
-                <span class="font-bold md:text-lg">Собрать абонемент</span>
-                <UIcon
-                    name="ph:arrow-right-bold"
-                    class="size-4 transition group-hover:translate-x-1 md:size-5"
-                />
-            </UButton>
         </UContainer>
     </section>
 </template>

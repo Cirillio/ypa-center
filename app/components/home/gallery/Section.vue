@@ -22,11 +22,11 @@ import { MOCK_GALLERY_IMAGES } from "~/constants/mock"
             </SectionLeading>
 
             <!-- Gallery grid -->
-            <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+            <div class="grid grid-cols-2 gap-2 overflow-hidden rounded-md bg-white lg:grid-cols-4">
                 <div
                     v-for="(photo, i) in MOCK_GALLERY_IMAGES"
                     :key="photo.src"
-                    class="group overflow-hidden rounded-md sm:rounded-lg"
+                    class="group overflow-hidden rounded-sm"
                     :class="{
                         'col-span-2 row-span-2': i === 0,
                         'col-span-2': i === MOCK_GALLERY_IMAGES.length - 1
@@ -35,7 +35,7 @@ import { MOCK_GALLERY_IMAGES } from "~/constants/mock"
                     <LazyAppPhoto
                         :src="photo.src"
                         :alt="photo.alt"
-                        class="object-cover object-center"
+                        class="scale-105 object-cover object-center transition duration-300 group-hover:scale-100"
                         :class="i === 0 ? 'aspect-square' : 'aspect-4/3'"
                     />
                 </div>

@@ -19,7 +19,7 @@ import { MOCK_CLUBS } from "~/constants/mock"
                 </template>
                 <template #action>
                     <UButton to="/clubs" size="xl" class="group mt-auto w-fit">
-                        <span class="font-bold md:text-lg">Все кружки</span>
+                        <span class="font-bold md:text-lg">Смотреть все</span>
                         <UIcon
                             name="ph:arrow-right-bold"
                             class="size-4 transition group-hover:translate-x-1 md:size-5"
@@ -28,13 +28,16 @@ import { MOCK_CLUBS } from "~/constants/mock"
                 </template>
             </SectionLeading>
 
-            <!-- 2x2 Grid -->
-            <div class="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+            <!-- Grid: big card left, two square cards right -->
+            <div
+                class="grid w-full grid-cols-1 overflow-hidden rounded-md max-md:gap-4 md:aspect-2/1 md:grid-cols-[2fr_1fr] md:grid-rows-2 lg:gap-2"
+            >
                 <LazyHomeTopClubsCard
-                    v-for="club in MOCK_CLUBS"
+                    v-for="(club, i) in MOCK_CLUBS.slice(0, 3)"
                     :key="club.title"
                     v-bind="club"
-                    class="h-80 md:h-108"
+                    class="h-80 md:h-auto"
+                    :class="{ 'md:row-span-2 *:*:last:md:text-2xl *:*:first:xl:text-6xl': i === 0 }"
                 />
             </div>
             <!-- Floating promo card -->

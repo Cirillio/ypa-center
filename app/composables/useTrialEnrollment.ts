@@ -8,7 +8,7 @@ const DEFAULT_TRIAL_FORM: RegistrationForm = {
     birthDate: "",
     grade: "",
     parentFullName: "",
-    telegram: "",
+    email: "",
     phone: "",
     referralSource: "",
     comments: ""

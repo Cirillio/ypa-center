@@ -13,6 +13,8 @@ function slotsForDay(dow: number): WeeklySlot[] {
         .slice()
         .sort((a, b) => a.startTime.localeCompare(b.startTime))
 }
+
+const isSunday = new Date().getDay() === 0
 </script>
 
 <template>
@@ -73,7 +75,8 @@ function slotsForDay(dow: number): WeeklySlot[] {
                 <div
                     v-else
                     :key="`empty-${selectedDay.dow}`"
-                    class="bg-default flex aspect-5/3 flex-col items-center justify-center gap-1.5 rounded-md opacity-35 transition active:opacity-100"
+                    :class="isSunday ? 'ring-primary' : 'ring-transparent'"
+                    class="bg-default flex aspect-5/3 flex-col items-center justify-center gap-1.5 rounded-md opacity-35 ring-2 transition active:opacity-100"
                 >
                     <UIcon name="ph:coffee-duotone" class="text-default size-10" />
                     <span class="text-default font-semibold">Выходной</span>
@@ -107,10 +110,15 @@ function slotsForDay(dow: number): WeeklySlot[] {
                     <!-- Выходной -->
                     <div
                         v-else
-                        class="bg-default flex aspect-square flex-col items-center justify-center gap-1.5 rounded-md opacity-35 transition hover:opacity-100"
+                        :class="
+                            isSunday
+                                ? 'ring-primary text-secondary'
+                                : 'text-default opacity-35 ring-transparent transition hover:opacity-100'
+                        "
+                        class="bg-default flex aspect-square flex-col items-center justify-center gap-1.5 rounded-md ring-2"
                     >
-                        <UIcon name="ph:coffee-duotone" class="text-default size-8" />
-                        <span class="text-default text-base font-semibold">Выходной</span>
+                        <UIcon name="ph:coffee-duotone" class="size-8" />
+                        <span class="text-base font-semibold">Выходной</span>
                     </div>
                 </div>
             </div>

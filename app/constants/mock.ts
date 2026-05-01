@@ -1,11 +1,15 @@
 import type {
+    Activity,
     Club,
     ClubShort,
     ClubWithSlots,
     EventShort,
     GalleryImage,
     GalleryPhoto,
+    ScheduleSlot,
+    Subgroup,
     Teacher,
+    WeekdaySlot,
     WeeklySlot
 } from "~/types"
 
@@ -86,6 +90,92 @@ export const MOCK_EVENTS: EventShort[] = [
     }
 ]
 
+export const MOCK_SUBGROUPS: Subgroup[] = [
+    { id: 1, name: "КМ — младшие (6–9 лет)", slug: "km-junior", capacity: 6 },
+    { id: 2, name: "КМ — старшие (10–16 лет)", slug: "km-senior", capacity: 6 },
+    { id: 3, name: "АЯ — первоклашки (1 кл.)", slug: "en-grade1", capacity: 6 },
+    { id: 4, name: "АЯ — начальная школа (2–6 кл.)", slug: "en-primary", capacity: 6 },
+    { id: 5, name: "АЯ — подростки (7–9 кл.)", slug: "en-teens", capacity: 6 },
+    { id: 6, name: "АЯ — экзамены (ОГЭ/ЕГЭ)", slug: "en-exams", capacity: 6 },
+    { id: 7, name: "Творчество (4–8 лет)", slug: "art-kids", capacity: 6 },
+    { id: 8, name: "Рукоделие (8–12 лет)", slug: "craft-kids", capacity: 6 },
+    { id: 9, name: "ГДЕЁЖ (5–7 лет)", slug: "preschool-main", capacity: 6 },
+    { id: 10, name: "Настолки (6+)", slug: "boardgames-all", capacity: 8 }
+]
+
+export const MOCK_ACTIVITIES: Activity[] = [
+    { id: 1, club_id: 1, subgroup_id: 1 },
+    { id: 2, club_id: 1, subgroup_id: 2 },
+    { id: 3, club_id: 2, subgroup_id: 3 },
+    { id: 4, club_id: 2, subgroup_id: 4 },
+    { id: 5, club_id: 2, subgroup_id: 5 },
+    { id: 6, club_id: 2, subgroup_id: 6 },
+    { id: 7, club_id: 3, subgroup_id: 7 },
+    { id: 8, club_id: 3, subgroup_id: 8 },
+    { id: 9, club_id: 4, subgroup_id: 9 },
+    { id: 10, club_id: 5, subgroup_id: 10 }
+]
+
+export const MOCK_WEEKDAY_SLOTS: WeekdaySlot[] = [
+    { id: 1, dayOfWeek: 1, startTime: "15:00", endTime: "16:00" },
+    { id: 2, dayOfWeek: 1, startTime: "16:00", endTime: "17:00" },
+    { id: 3, dayOfWeek: 1, startTime: "17:00", endTime: "18:00" },
+    { id: 4, dayOfWeek: 2, startTime: "15:00", endTime: "16:00" },
+    { id: 5, dayOfWeek: 2, startTime: "16:00", endTime: "17:00" },
+    { id: 6, dayOfWeek: 2, startTime: "17:00", endTime: "18:00" },
+    { id: 7, dayOfWeek: 3, startTime: "15:00", endTime: "16:00" },
+    { id: 8, dayOfWeek: 3, startTime: "16:00", endTime: "17:00" },
+    { id: 9, dayOfWeek: 3, startTime: "17:00", endTime: "18:00" },
+    { id: 10, dayOfWeek: 4, startTime: "15:00", endTime: "16:00" },
+    { id: 11, dayOfWeek: 4, startTime: "16:00", endTime: "17:00" },
+    { id: 12, dayOfWeek: 4, startTime: "17:00", endTime: "18:00" },
+    { id: 13, dayOfWeek: 5, startTime: "15:00", endTime: "16:00" },
+    { id: 14, dayOfWeek: 5, startTime: "16:00", endTime: "17:00" },
+    { id: 15, dayOfWeek: 5, startTime: "17:00", endTime: "18:00" },
+    { id: 16, dayOfWeek: 6, startTime: "10:00", endTime: "11:00" },
+    { id: 17, dayOfWeek: 6, startTime: "11:00", endTime: "13:30" }
+]
+
+export const MOCK_SCHEDULE_SLOTS: ScheduleSlot[] = [
+    // Кружок Мышления — КМ-мл (activity 1)
+    { activity_id: 1, weekday_slot_id: 1, participants: 5 },
+    { activity_id: 1, weekday_slot_id: 4, participants: 5 },
+    { activity_id: 1, weekday_slot_id: 7, participants: 5 },
+    { activity_id: 1, weekday_slot_id: 10, participants: 4 },
+    { activity_id: 1, weekday_slot_id: 13, participants: 6 },
+    // Кружок Мышления — КМ-ст (activity 2)
+    { activity_id: 2, weekday_slot_id: 2, participants: 2 },
+    { activity_id: 2, weekday_slot_id: 3, participants: 2 },
+    { activity_id: 2, weekday_slot_id: 5, participants: 4 },
+    { activity_id: 2, weekday_slot_id: 6, participants: 0 },
+    { activity_id: 2, weekday_slot_id: 8, participants: 1 },
+    { activity_id: 2, weekday_slot_id: 11, participants: 2 },
+    { activity_id: 2, weekday_slot_id: 12, participants: 0 },
+    { activity_id: 2, weekday_slot_id: 14, participants: 3 },
+    { activity_id: 2, weekday_slot_id: 15, participants: 4 },
+    // Английский — первоклашки (activity 3)
+    { activity_id: 3, weekday_slot_id: 16, participants: 3 },
+    // Английский — начальная школа (activity 4)
+    { activity_id: 4, weekday_slot_id: 4, participants: 3 },
+    { activity_id: 4, weekday_slot_id: 5, participants: 2 },
+    { activity_id: 4, weekday_slot_id: 8, participants: 5 },
+    { activity_id: 4, weekday_slot_id: 14, participants: 5 },
+    // Английский — подростки (activity 5)
+    { activity_id: 5, weekday_slot_id: 6, participants: 6 },
+    { activity_id: 5, weekday_slot_id: 12, participants: 6 },
+    { activity_id: 5, weekday_slot_id: 15, participants: 3 },
+    // Английский — экзамены (activity 6)
+    { activity_id: 6, weekday_slot_id: 11, participants: 5 },
+    // Творчество (activity 7)
+    { activity_id: 7, weekday_slot_id: 4, participants: 3 },
+    // Рукоделие (activity 8)
+    { activity_id: 8, weekday_slot_id: 7, participants: 6 },
+    // Подготовка к школе (activity 9)
+    { activity_id: 9, weekday_slot_id: 17, participants: 3 },
+    // Настольные игры (activity 10)
+    { activity_id: 10, weekday_slot_id: 9, participants: 0 }
+]
+
 export const MOCK_CLUBS_FULL: Club[] = [
     {
         id: 1,
@@ -96,12 +186,13 @@ export const MOCK_CLUBS_FULL: Club[] = [
         photo: "moke/club_1.jpg",
         skills: ["Логическое мышление", "Память", "Концентрация", "Решение задач"],
         outcomes: [
-            "Улучшение успеваемости в школе по точным наукам",
-            "Навык находить выход из нестандартных ситуаций",
-            "Повышение скорости обработки информации"
+            "Улучшение успеваемости по точным наукам без дополнительного репетиторства",
+            "Навык находить нестандартный выход там, где другие заходят в тупик",
+            "Повышение скорости и точности обработки информации",
+            "Устойчивая концентрация внимания на протяжении всего урока",
+            "Умение методично разбирать сложные задачи на простые шаги"
         ],
         teacher: { name: "Яков Леонидович Мордвинов", photo: "/moke/teacher_3.png" },
-        schedule: { days: ["Пн", "Вт", "Ср", "Чт", "Пт"], timeStart: "15:00", timeEnd: "18:00" },
         age: { min: 6, max: 16 },
         price: 120000,
         spots_total: 6,
@@ -116,12 +207,13 @@ export const MOCK_CLUBS_FULL: Club[] = [
         photo: "moke/club_2.jpg",
         skills: ["Разговорная речь", "Грамматика", "Восприятие на слух"],
         outcomes: [
-            "Преодоление языкового барьера за 2 месяца",
-            "Понимание речи носителей на слух",
-            "Словарный запас под реальные жизненные ситуации"
+            "Преодоление языкового барьера и первая уверенная речь уже за 2 месяца",
+            "Понимание речи носителей на слух без субтитров",
+            "Словарный запас под реальные жизненные ситуации, а не учебник",
+            "Готовность к школьным олимпиадам и международным экзаменам",
+            "Способность читать и смотреть контент на английском для удовольствия"
         ],
         teacher: { name: "Надежда Геннадьевна Макуха", photo: "/moke/teacher_1.png" },
-        schedule: { days: ["Вт", "Ср", "Чт", "Пт", "Сб"], timeStart: "16:00", timeEnd: "18:00" },
         age: { min: 6, max: 18 },
         price: 150000,
         spots_total: 6,
@@ -136,12 +228,13 @@ export const MOCK_CLUBS_FULL: Club[] = [
         photo: "moke/club_3.jpg",
         skills: ["Мелкая моторика", "Цветовосприятие", "Креативность"],
         outcomes: [
-            "Создание собственных художественных проектов",
-            "Уверенность в своих творческих силах",
-            "Навык работы с различными материалами и техниками"
+            "Создание законченных художественных проектов, которыми можно гордиться",
+            "Уверенность в своих творческих силах без страха «сделать неправильно»",
+            "Владение акварелью, гуашью, лепкой и работой с тканями и природными материалами",
+            "Развитая мелкая моторика и усидчивость, которая помогает в учёбе",
+            "Сформированный художественный вкус и чувство цвета и композиции"
         ],
         teacher: { name: "Надежда Геннадьевна Макуха", photo: "/moke/teacher_1.png" },
-        schedule: { days: ["Вт", "Ср"], timeStart: "15:00", timeEnd: "16:00" },
         age: { min: 4, max: 12 },
         price: 130000,
         spots_total: 6,
@@ -156,12 +249,13 @@ export const MOCK_CLUBS_FULL: Club[] = [
         photo: "moke/event-1.jpeg",
         skills: ["Чтение", "Письмо", "Базовая математика", "Социализация"],
         outcomes: [
-            "Полная готовность к школьной программе",
-            "Навык усидчивости и работы в коллективе",
-            "Развитие фонематического слуха и грамотности"
+            "Полная готовность к школьной программе: чтение, письмо, счёт",
+            "Усидчивость и умение работать в коллективе с первого дня в классе",
+            "Развитый фонематический слух — основа грамотного письма",
+            "Уверенное владение базовыми математическими операциями в игровой форме",
+            "Психологическая готовность: ребёнок идёт в школу с интересом, а не со страхом"
         ],
         teacher: { name: "Яков Леонидович Мордвинов", photo: "/moke/teacher_3.png" },
-        schedule: { days: ["Сб"], timeStart: "11:00", timeEnd: "13:30" },
         age: { min: 5, max: 7 },
         price: 180000,
         spots_total: 6,
@@ -176,12 +270,13 @@ export const MOCK_CLUBS_FULL: Club[] = [
         photo: "moke/event-3.jpg",
         skills: ["Стратегия", "Командная работа", "Эмоциональный интеллект"],
         outcomes: [
-            "Умение просчитывать ходы наперед",
-            "Навык конструктивного общения и переговоров",
-            "Спортивное поведение: умение выигрывать и проигрывать"
+            "Умение просчитывать ходы наперёд и строить многоходовые стратегии",
+            "Навык конструктивного общения, переговоров и принятия совместных решений",
+            "Спортивное поведение: достойно выигрывать и не опускать руки при поражении",
+            "Развитое критическое мышление через анализ игровых ситуаций",
+            "Социализация и новые друзья в среде с общими интересами"
         ],
         teacher: { name: "Яков Леонидович Мордвинов", photo: "/moke/teacher_3.png" },
-        schedule: { days: ["Ср"], timeStart: "17:00", timeEnd: "18:00" },
         age: { min: 6, max: 99 },
         price: 100000,
         spots_total: 6,

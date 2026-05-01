@@ -36,8 +36,8 @@ const fmt = (n: number) =>
             <SectionLeading subtitle="Ценообразование" icon="ph:ticket-duotone">
                 <template #title>
                     <span class="text-secondary">
-                        Один абонемент —<br />
-                        <span class="text-primary">любые кружки</span>
+                        Калькулятор<br />
+                        <span class="text-primary">Абонемента</span>
                     </span>
                 </template>
                 <template #description>
@@ -81,7 +81,7 @@ const fmt = (n: number) =>
                     </div>
 
                     <!-- Price comparison -->
-                    <div class="flex flex-col gap-3 border-t border-neutral-100 pt-4">
+                    <div class="flex flex-col gap-3 border-y border-neutral-100 py-4">
                         <div class="flex items-center justify-between">
                             <span class="text-default/60 text-sm font-medium">
                                 Разово ({{ selectedLessons }} × {{ fmt(pricing.trialLesson) }})
@@ -116,30 +116,26 @@ const fmt = (n: number) =>
                     <UButton
                         :to="EnrollRoutesEnum.Subscription"
                         color="secondary"
-                        size="xl"
+                        size="lg"
                         class="group w-fit"
                     >
-                        <span class="font-bold">Перейти к составлению</span>
+                        <span class="text-base font-bold lg:text-lg">Перейти к составлению</span>
                         <UIcon
                             name="ph:arrow-right-bold"
-                            class="size-3.5 transition group-hover:translate-x-1"
+                            class="size-4.5 transition group-hover:translate-x-1"
                         />
                     </UButton>
-                    <USeparator />
-
-                    <span
-                        class="before:text-error text-default/90 text-sm text-balance before:mr-1 before:font-semibold before:content-['*']"
-                        >Безлимит активируется при выборе более 20 занятий в месяц. В этом случае вы
-                        можете выбрать любое количество занятий.</span
-                    >
                 </div>
 
                 <!-- Subscription grid -->
                 <SubscriptionsPromo>
                     <template #sub>Все тарифы</template>
                     <template #desc>
-                        Абонемент действует на любые кружки центра — можно комбинировать занятия как
-                        угодно.
+                        • Абонемент действует на <strong>любые</strong> кружки центра — можно
+                        комбинировать занятия как угодно.<br />
+                        • Безлимит активируется при выборе более <strong>20</strong> занятий в
+                        месяц. В этом случае вы можете выбрать <strong>любое</strong> количество
+                        занятий.
                     </template>
                 </SubscriptionsPromo>
             </div>

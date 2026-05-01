@@ -10,7 +10,7 @@ export const RegistrationSchema = z.object({
     ]),
     parentFullName: fields.fullName,
     phone: fields.phone,
-    telegram: fields.telegram,
+    email: fields.email,
     referralSource: z.string().min(1, "Пожалуйста, укажите, откуда вы о нас узнали"),
     comments: fields.comments
 })

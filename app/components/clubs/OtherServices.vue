@@ -12,17 +12,20 @@ const services: OtherService[] = [
     {
         icon: "ph:house-simple-duotone",
         name: "Продлёнка",
-        description: "Присмотр и уход за детьми после школы до 20:00. Питание, помощь с уроками."
+        description:
+            "Ребёнок под присмотром до 20:00: помощь с домашним заданием, питание и время для игр. Спокойный вечер для родителей — без лишних договорённостей."
     },
     {
         icon: "ph:books-duotone",
         name: "Подготовка к школе",
-        description: "Индивидуальные и групповые занятия для дошкольников от 5 лет."
+        description:
+            "Программа ГДЕЁЖ для детей от 5 лет. Буквы и цифры — через игру, движение и живой разговор. К первому классу — уверенно и с интересом к учёбе."
     },
     {
         icon: "ph:pencil-ruler-duotone",
         name: "Репетиторство",
-        description: "Индивидуальные занятия по школьным предметам с опытными педагогами."
+        description:
+            "Индивидуальные занятия по школьным предметам с педагогами, которые умеют объяснять. Без зубрёжки — с пониманием."
     }
 ]
 </script>
@@ -64,26 +67,25 @@ const services: OtherService[] = [
                 </a>
             </div>
 
-            <!-- Сетка услуг -->
-            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                <div
-                    v-for="service in services"
-                    :key="service.name"
-                    class="flex items-start gap-4 rounded-sm bg-white p-4"
-                >
-                    <div
-                        class="bg-default flex size-10 shrink-0 items-center justify-center rounded-md"
-                    >
-                        <UIcon :name="service.icon" class="text-secondary size-5" />
-                    </div>
-                    <div class="flex flex-col gap-1">
-                        <span class="text-default text-base font-bold">{{ service.name }}</span>
-                        <span class="text-default/80 text-sm leading-snug font-medium">{{
-                            service.description
-                        }}</span>
+            <UCarousel
+                v-slot="{ item }"
+                :items="services"
+                :ui="{
+                    container: 'ms-0 gap-4 items-stretch',
+                    item: 'sm:basis-[40%] basis-[80%] ps-0  min-h-full select-none cursor-pointer'
+                }"
+            >
+                <div class="flex h-full flex-col gap-4 rounded-sm bg-white p-5 lg:p-6">
+                    <UIcon :name="item.icon" class="text-primary/70 size-8" />
+                    <div class="flex flex-col gap-2">
+                        <span class="text-secondary text-xl font-extrabold">{{ item.name }}</span>
+                        <span
+                            class="text-default/65 text-sm leading-relaxed font-medium md:text-base"
+                            >{{ item.description }}</span
+                        >
                     </div>
                 </div>
-            </div>
+            </UCarousel>
         </UContainer>
     </section>
 </template>

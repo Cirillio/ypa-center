@@ -22,7 +22,7 @@ const cardClass = computed(() => [
             <!-- Название -->
             <span
                 :title="weeklySlot.activity.name"
-                class="line-clamp-2 flex-1 text-base leading-tight font-extrabold xl:line-clamp-3 xl:text-xl"
+                class="line-clamp-2 flex-1 text-base leading-[1.3rem] font-extrabold xl:line-clamp-3 xl:text-xl"
                 :class="style.title"
             >
                 {{ weeklySlot.activity.name }}
@@ -50,7 +50,10 @@ const cardClass = computed(() => [
             <div
                 :title="
                     props.weeklySlot.available
-                        ? 'Доступных мест: ' + props.weeklySlot.available
+                        ? 'Доступных мест: ' +
+                          props.weeklySlot.available +
+                          '/' +
+                          props.weeklySlot.maxCapacity
                         : 'Мест нет'
                 "
                 class="flex w-fit items-center gap-1 rounded-md bg-white px-1.5 py-0.5 text-xs font-bold md:gap-1.5 lg:px-2.5 lg:py-1 lg:text-sm xl:text-base"
@@ -58,7 +61,7 @@ const cardClass = computed(() => [
             >
                 <UIcon name="ph:users-bold" class="mb-0.5 size-4 md:size-4.5" />
                 Мест:
-                {{ props.weeklySlot.available }}
+                {{ props.weeklySlot.available }}/{{ props.weeklySlot.maxCapacity }}
             </div>
         </div>
     </div>

@@ -64,20 +64,17 @@ const participantItems = ["1", "2", "3", "4", "5"]
                 />
             </UFormField>
 
-            <UFormField label="Telegram (Имя пользователя)" name="telegram" required>
+            <UFormField label="Электронная почта" name="email" required>
                 <UInput
-                    v-model="state.telegram"
-                    v-maska="{
-                        mask: Maskas.Telegram,
-                        tokens: { '*': { pattern: /[a-zA-Z0-9_]/, repeated: true } }
-                    }"
-                    placeholder="прим. @ivanIvanoff"
+                    v-model="state.email"
+                    placeholder="ivan@mail.ru"
+                    type="email"
                     class="w-full"
                     variant="soft"
                 />
             </UFormField>
 
-            <UFormField label="Количество участников" name="participants" required>
+            <UFormField label="Количество участников (кто придёт)" name="participants" required>
                 <USelect
                     v-model="state.participants"
                     variant="soft"
@@ -141,7 +138,7 @@ const participantItems = ["1", "2", "3", "4", "5"]
                         { icon: 'ph:shield-check-duotone', text: 'Безопасный платёж через ЮКассу' },
                         {
                             icon: 'ph:calendar-check-duotone',
-                            text: 'Подтверждение придёт в Telegram'
+                            text: 'Подтверждение придёт на почту'
                         },
                         { icon: 'ph:percent-duotone', text: 'Без скрытых комиссий' }
                     ]"

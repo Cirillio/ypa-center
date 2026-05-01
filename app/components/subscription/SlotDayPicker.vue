@@ -108,7 +108,9 @@ function isSelected(id: number) {
                     <div class="flex items-center justify-between gap-0.5">
                         <div
                             :title="
-                                slot.available ? 'Доступных мест: ' + slot.available : 'Мест нет'
+                                slot.available
+                                    ? 'Доступных мест: ' + slot.available + '/' + slot.maxCapacity
+                                    : 'Мест нет'
                             "
                             class="flex w-fit items-center gap-1 rounded-md bg-white px-1.5 py-0.5 text-xs font-bold lg:px-2.5 lg:py-1 lg:text-sm"
                             :class="
@@ -121,7 +123,7 @@ function isSelected(id: number) {
                                 name="ph:users-bold"
                                 class="mb-0.5 size-4 shrink-0 md:size-4.5"
                             />
-                            Мест: {{ slot.available }}
+                            Мест: {{ slot.available }}/{{ slot.maxCapacity }}
                         </div>
 
                         <!-- Чекбокс -->

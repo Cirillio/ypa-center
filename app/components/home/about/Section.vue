@@ -1,13 +1,6 @@
 <script lang="ts" setup>
 const { stats, pricing } = useAppConfig()
 
-const photos = [
-    "/moke/club_1.jpg",
-    "/moke/club_2.jpg",
-    "/moke/teacher_1.png",
-    "/moke/teacher_3.png"
-]
-
 const CENTER_STATS = [
     {
         icon: "ph:mask-happy-duotone",
@@ -29,21 +22,33 @@ const CENTER_STATS = [
     }
 ]
 
-const [card1, card2, card3] = [
+const AUDIENCE_CARDS = [
     {
         tag: "5–7 лет",
+        icon: "ph:shooting-star-duotone",
+        accent: "border-amber-400",
+        iconColor: "text-amber-400",
         title: "Дошкольники",
-        desc: "Программа ГДЕЁЖ — это не репетиторство и не строгие прописи. Буквы, цифры и звуки осваиваются через движение, игру и живой разговор. Ребёнок не «проходит материал» — он исследует. К моменту первого звонка он уже знает: учиться — не страшно."
+        desc: "До школы — не прописи, а фундамент. Программа ГДЕЁЖ учит читать через движение, считать через игру, говорить — без страха. К сентябрю ребёнок знает главное: учиться не страшно. Это стоит больше, чем выученный алфавит.",
+        highlight: "Программа ГДЕЁЖ"
     },
     {
         tag: "7–14 лет",
+        icon: "ph:student-duotone",
+        accent: "border-emerald-400",
+        iconColor: "text-emerald-500",
         title: "Школьники",
-        desc: "Маленькие группы, домашняя обстановка, педагоги которые знают каждого по имени. Кружок мышления учит не фактам, а способу думать. Английский строится на живом общении. Умная продлёнка — место где можно отдохнуть, сделать домашку и поиграть в настолки."
+        desc: "Не репетитор — второй дом. Маленькие группы: педагог видит каждого. Кружок мышления учит задавать правильные вопросы. Английский — через живой диалог, без зубрёжки. Умная продлёнка: домашка сделана, настолки в ходу, день прожит с пользой.",
+        highlight: "Кружок мышления · Английский · Продлёнка"
     },
     {
         tag: "Для родителей",
-        title: "Родители которые выбирают осознанно",
-        desc: "Надежда — монтессори-педагог и преподаватель английского в СУНЦ НГУ. Яков — кандидат физико-математических наук, более двадцати лет занимается развитием мышления у детей. Здесь нет потока из сотни учеников. Каждый ребёнок виден, каждый прогресс замечен."
+        icon: "ph:users-duotone",
+        accent: "border-cyan-400",
+        iconColor: "text-cyan-500",
+        title: "Осознанный выбор",
+        desc: "Надежда — монтессори-практик, преподаватель СУНЦ НГУ. Яков — кандидат физмат. наук, 20 лет формирует мышление у детей. Здесь нет конвейера из сотни учеников. Есть внимание к каждому — и прогресс, который вы заметите сами.",
+        highlight: "Педагоги с настоящей экспертизой"
     }
 ]
 </script>
@@ -51,9 +56,7 @@ const [card1, card2, card3] = [
 <template>
     <section class="relative z-10 flex w-full bg-white py-12 md:py-20 lg:py-24">
         <UContainer class="flex flex-col gap-10 md:gap-14">
-            <!-- Header row: stats left, SectionLeading right -->
             <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-                <!-- Section heading -->
                 <SectionLeading subtitle="Для кого мы работаем" icon="ph:users-duotone">
                     <template #title>
                         <span class="text-secondary">
@@ -69,101 +72,52 @@ const [card1, card2, card3] = [
                     </template>
                 </SectionLeading>
 
-                <!-- Stats -->
-                <div class="flex gap-3 max-[360px]:flex-col min-[361px]:flex-wrap md:gap-4">
+                <div class="grid grid-cols-3 gap-2 md:gap-4 lg:shrink-0">
                     <div
                         v-for="stat in CENTER_STATS"
                         :key="stat.label"
-                        class="bg-default flex flex-col gap-1.5 rounded-sm px-3 py-2.5 max-[360px]:flex-auto max-sm:flex-2/5"
+                        class="bg-default flex flex-col items-center gap-2 rounded-sm px-5 py-4 text-center sm:px-3"
                     >
-                        <span class="flex items-center gap-1.5">
-                            <UIcon
-                                :name="stat.icon"
-                                class="size-4 shrink-0"
-                                :class="stat.textColor"
-                            />
-                            <span class="text-default/60 text-xs font-semibold">{{
-                                stat.label
-                            }}</span>
-                        </span>
-                        <span class="text-secondary text-xl leading-none font-extrabold">{{
-                            stat.value
+                        <UIcon :name="stat.icon" class="size-5 shrink-0" :class="stat.textColor" />
+                        <span
+                            class="text-secondary text-xl leading-none font-extrabold md:text-2xl"
+                            >{{ stat.value }}</span
+                        >
+                        <span class="text-default/55 text-xs leading-tight font-medium">{{
+                            stat.label
                         }}</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Main content: sticky carousel left + cards grid right -->
-            <div class="grid grid-cols-1 gap-8 lg:grid-cols-[2fr_3fr] lg:items-start lg:gap-10">
-                <!-- Left: Sticky Carousel -->
-                <div class="grid">
-                    <UCarousel
-                        v-slot="{ item }"
-                        :items="photos"
-                        dots
-                        loop
-                        :autoplay="{ delay: 3000 }"
-                        class="h-80 w-full overflow-hidden rounded-sm lg:h-full lg:max-h-140 xl:max-h-120"
-                        :ui="{
-                            viewport: 'h-full',
-                            container: 'h-full ms-0',
-                            item: 'h-full ps-0',
-                            dots: 'bottom-4 w-fit left-4',
-                            dot: 'bg-white/75 shadow-sm backdrop-blur-sm data-[state=active]:shadow-none data-[state=active]:bg-white'
-                        }"
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div
+                    v-for="card in AUDIENCE_CARDS"
+                    :key="card.tag"
+                    class="bg-default flex flex-col gap-4 rounded-sm border-t-4 p-6 lg:p-8"
+                    :class="card.accent"
+                >
+                    <div class="flex items-center gap-2">
+                        <UIcon :name="card.icon" class="size-5 shrink-0" :class="card.iconColor" />
+                        <span
+                            class="text-default/50 text-xs font-semibold tracking-wider uppercase"
+                        >
+                            {{ card.tag }}
+                        </span>
+                    </div>
+                    <h3 class="text-secondary text-2xl leading-snug font-extrabold lg:text-3xl">
+                        {{ card.title }}
+                    </h3>
+                    <p
+                        class="text-default/70 grow text-sm leading-relaxed font-medium md:text-base"
                     >
-                        <AppPhoto
-                            :src="item"
-                            :quality="75"
-                            alt="Фото центра"
-                            class="min-h-full w-full object-cover object-center"
-                        />
-                    </UCarousel>
-                </div>
-
-                <!-- Right: Cards Grid -->
-                <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:content-start">
-                    <div class="bg-default flex flex-col gap-2 rounded-sm p-4">
-                        <span
-                            class="text-default/50 text-xs font-semibold tracking-wider uppercase"
-                        >
-                            {{ card1.tag }}
-                        </span>
-                        <h3 class="text-secondary text-lg leading-snug font-extrabold md:text-2xl">
-                            {{ card1.title }}
-                        </h3>
-                        <p class="text-default/70 text-sm leading-snug font-medium md:text-base">
-                            {{ card1.desc }}
-                        </p>
-                    </div>
-
-                    <div class="bg-default flex flex-col gap-2 rounded-sm p-4">
-                        <span
-                            class="text-default/50 text-xs font-semibold tracking-wider uppercase"
-                        >
-                            {{ card2.tag }}
-                        </span>
-                        <h3 class="text-secondary text-lg leading-snug font-extrabold md:text-2xl">
-                            {{ card2.title }}
-                        </h3>
-                        <p class="text-default/70 text-sm leading-snug font-medium md:text-base">
-                            {{ card2.desc }}
-                        </p>
-                    </div>
-
-                    <div class="bg-default flex flex-col gap-2 rounded-sm p-4 lg:col-span-2">
-                        <span
-                            class="text-default/50 text-xs font-semibold tracking-wider uppercase"
-                        >
-                            {{ card3.tag }}
-                        </span>
-                        <h3 class="text-secondary text-lg leading-snug font-extrabold md:text-2xl">
-                            {{ card3.title }}
-                        </h3>
-                        <p class="text-default/70 text-sm leading-snug font-medium md:text-base">
-                            {{ card3.desc }}
-                        </p>
-                    </div>
+                        {{ card.desc }}
+                    </p>
+                    <span
+                        class="text-default/40 mt-auto text-xs font-semibold tracking-wide uppercase"
+                    >
+                        {{ card.highlight }}
+                    </span>
                 </div>
             </div>
         </UContainer>

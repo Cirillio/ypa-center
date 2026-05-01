@@ -5,8 +5,6 @@ const appConfig = useAppConfig()
 
 const contacts = appConfig.contactInfo
 
-const telegramHref = appConfig.contactInfo.socials.find((i) => i.label === "Telegram")?.href
-
 interface FooterLink {
     label: string
     to: string
@@ -77,16 +75,6 @@ const CONTACT_LINKS: FooterLink[] = [
                             </NuxtLink>
                         </nav>
                     </div>
-
-                    <UButton
-                        title="Перейти в телеграм-бота"
-                        color="info"
-                        variant="soft"
-                        class="w-fit"
-                        label="Личный кабинет"
-                        :to="telegramHref"
-                        leading-icon="ph:user-bold"
-                    />
                 </div>
 
                 <!-- Brand + socials (right column) -->

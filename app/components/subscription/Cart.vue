@@ -167,12 +167,6 @@ const slotsToNext = computed(() => {
                         </button>
                     </div>
                 </div>
-                <span
-                    class="text-default/90 mt-4 grid grid-cols-[auto_1fr_auto] items-baseline gap-2 px-2 text-xl font-semibold"
-                    ><span>Итого кружков:</span>
-                    <div class="border-b-2 border-dotted opacity-50"></div>
-                    <span class="text-primary font-bold"> {{ selectedSlots.length }}</span>
-                </span>
             </template>
             <!-- Пустое состояние -->
             <div

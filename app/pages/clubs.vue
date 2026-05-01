@@ -1,12 +1,51 @@
 <script lang="ts" setup>
-import { MOCK_CLUBS_FULL, MOCK_WEEKLY_SLOTS } from "~/constants/mock"
+import {
+    MOCK_ACTIVITIES,
+    MOCK_CLUBS_FULL,
+    MOCK_SCHEDULE_SLOTS,
+    MOCK_SUBGROUPS,
+    MOCK_WEEKDAY_SLOTS,
+    MOCK_WEEKLY_SLOTS
+} from "~/constants/mock"
+import type { Subgroup } from "~/types"
 
 const { subscriptions, contactInfo, seo } = useAppConfig()
 const siteUrl = seo.siteUrl
 
-// TODO: заменить на useFetch после реализации GET /clubs/ и GET /schedule/ на бэке
-const clubs = MOCK_CLUBS_FULL
+// TODO: заменить на useFetch после реализации GET /clubs/, GET /schedule/, GET /activities/ на бэке
 const slots = MOCK_WEEKLY_SLOTS
+
+const DAY_NAMES = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"] as const
+
+function getClubSubgroups(clubId: number): Subgroup[] {
+    const subgroupIds = MOCK_ACTIVITIES.filter((a) => a.club_id === clubId).map(
+        (a) => a.subgroup_id
+    )
+    return MOCK_SUBGROUPS.filter((s) => subgroupIds.includes(s.id))
+}
+
+function getScheduledDays(clubId: number): string[] {
+    const actIds = MOCK_ACTIVITIES.filter((a) => a.club_id === clubId).map((a) => a.id)
+    const wdSlotIds = [
+        ...new Set(
+            MOCK_SCHEDULE_SLOTS.filter((ss) => actIds.includes(ss.activity_id)).map(
+                (ss) => ss.weekday_slot_id
+            )
+        )
+    ]
+    const dows = [
+        ...new Set(
+            MOCK_WEEKDAY_SLOTS.filter((ws) => wdSlotIds.includes(ws.id)).map((ws) => ws.dayOfWeek)
+        )
+    ].sort() as (0 | 1 | 2 | 3 | 4 | 5 | 6)[]
+    return dows.map((d) => DAY_NAMES[d])
+}
+
+const enrichedClubs = MOCK_CLUBS_FULL.map((club) => ({
+    club,
+    subgroups: getClubSubgroups(club.id),
+    scheduledDays: getScheduledDays(club.id)
+}))
 
 useSeoMeta({
     title: "Кружки — Улица Радости",
@@ -91,9 +130,9 @@ useHead({
             <UContainer class="flex w-full flex-col gap-6 md:gap-8">
                 <div class="flex items-center justify-between gap-4">
                     <h2 class="text-secondary text-2xl font-extrabold md:text-3xl">Все кружки</h2>
-                    <span class="text-primary text-lg font-bold">{{ clubs.length }}</span>
+                    <span class="text-primary text-lg font-bold">{{ enrichedClubs.length }}</span>
                 </div>
-                <ClubsGrid :clubs="clubs" />
+                <ClubsGrid :enriched-clubs="enrichedClubs" />
             </UContainer>
         </section>
 

@@ -83,14 +83,11 @@ const referralItems = [
             />
         </UFormField>
 
-        <UFormField label="Telegram (Имя пользователя)" name="telegram" required>
+        <UFormField label="Электронная почта" name="email" required>
             <UInput
-                v-model="state.telegram"
-                v-maska="{
-                    mask: Maskas.Telegram,
-                    tokens: { '*': { pattern: /[a-zA-Z0-9_]/, repeated: true } }
-                }"
-                placeholder="прим. @ivanIvanoff"
+                v-model="state.email"
+                placeholder="ivan@mail.ru"
+                type="email"
                 class="w-full"
                 variant="soft"
             />

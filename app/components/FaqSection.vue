@@ -57,7 +57,7 @@ useHead({
                         root: 'space-y-4',
                         item: 'border-0 bg-default rounded-md',
                         trigger:
-                            'md:p-4 p-3 max-md:gap-3 text-base md:text-lg font-bold text-secondary hover:text-primary transition-colors rounded-t-md cursor-pointer',
+                            'md:p-4 p-3 max-md:gap-3 gap-4 leading-tight! text-base md:text-lg font-bold text-secondary hover:text-primary transition-colors rounded-t-md cursor-pointer',
                         body: 'text-default/80 font-medium text-sm md:text-base leading-relaxed px-6 pb-6 pt-4 border-t-2 border-white'
                     }"
                 />
