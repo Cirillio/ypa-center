@@ -75,6 +75,14 @@ const CONTACT_LINKS: FooterLink[] = [
                             </NuxtLink>
                         </nav>
                     </div>
+                    <UButton
+                        label="Мой статус"
+                        color="info"
+                        to="/my-status"
+                        size="lg"
+                        class="w-fit text-base"
+                        leading-icon="ph:user-bold"
+                    />
                 </div>
 
                 <!-- Brand + socials (right column) -->

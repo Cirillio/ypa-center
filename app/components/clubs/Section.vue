@@ -3,9 +3,7 @@ import { EnrollRoutesEnum } from "~/constants/nav"
 </script>
 
 <template>
-    <section
-        class="gradient-bg-ps relative z-0 flex w-full overflow-hidden pt-[calc(var(--header-height)+3rem)] pb-16 md:pt-40 md:pb-24"
-    >
+    <PageSection class="gradient-bg-ps">
         <UContainer
             class="relative z-10 grid grid-cols-1 items-start gap-12 lg:grid-cols-2 lg:gap-16"
         >
@@ -78,5 +76,5 @@ import { EnrollRoutesEnum } from "~/constants/nav"
                 </template>
             </SubscriptionsPromo>
         </UContainer>
-    </section>
+    </PageSection>
 </template>

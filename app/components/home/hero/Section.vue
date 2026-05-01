@@ -1,6 +1,6 @@
 <template>
     <section
-        class="gradient-bg-ps-animated z-0 flex h-dvh w-full items-center overflow-hidden py-(--header-height)"
+        class="gradient-bg-ps-animated z-0 flex min-h-dvh w-full items-center overflow-hidden py-(--header-height)"
     >
         <UPageHero as="div" orientation="horizontal" class="w-full">
             <template #headline>

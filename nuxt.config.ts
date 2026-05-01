@@ -40,6 +40,7 @@ export default defineNuxtConfig({
         "/": { ssr: true },
         "/clubs": { ssr: true },
         "/gallery": { ssr: true },
+
         "/about": { prerender: true },
         "/teachers": { prerender: true },
         "/privacy": { prerender: true },
@@ -48,6 +49,8 @@ export default defineNuxtConfig({
         "/enroll/trial": { ssr: true },
         "/enroll/event": { ssr: true },
         "/enroll/subscription": { ssr: true },
+
+        "my-status": { ssr: false },
 
         "/**": {
             ssr: true,
@@ -116,21 +119,21 @@ export default defineNuxtConfig({
         plugins: ["relativeTime", "utc", "timezone", "customParseFormat"]
     },
 
-    eslint: {
-        config: {
-            // Stylistic settings removed in favor of Prettier
-        }
-    },
-
     googleFonts: {
         families: {
             Nunito: "200..1000"
         },
         display: "swap",
-        download: true,
+        download: false,
         preload: true,
         base64: false,
         inject: true,
         stylePath: "css/fonts.css"
+    },
+
+    fonts: {
+        providers: {
+            fontsource: false
+        }
     }
 })

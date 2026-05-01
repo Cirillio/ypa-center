@@ -72,12 +72,22 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
                 <!-- ACTION -->
                 <UButton
                     :to="EnrollRoutesEnum.Subscription"
-                    label="Собрать абонемент"
+                    label="Абонемент"
                     color="secondary"
                     variant="soft"
                     leading-icon="ph:puzzle-piece-bold"
                     class="h-full px-2 py-2 text-base font-semibold max-lg:hidden xl:px-4"
                     aria-label="Записаться на абонемент"
+                    :ui="{ trailingIcon: 'size-5' }"
+                />
+
+                <UButton
+                    to="/my-status"
+                    label="Мой статус"
+                    color="info"
+                    leading-icon="ph:user-bold"
+                    class="h-full px-2 py-2 text-base font-semibold max-lg:hidden xl:px-4"
+                    aria-label="Узнать свой баланс"
                     :ui="{ trailingIcon: 'size-5' }"
                 />
 

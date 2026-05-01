@@ -7,11 +7,7 @@ const centerTelegram =
 </script>
 
 <template>
-    <section
-        class="relative z-10 flex w-full overflow-hidden pt-[calc(var(--header-height)+3rem)] pb-16 md:pt-40 md:pb-24"
-    >
-        <!-- Декоративная иконка -->
-
+    <PageSection>
         <UContainer class="relative z-10 flex flex-col gap-8">
             <SectionLeading as="h1" subtitle="Наши моменты" icon="ph:aperture-duotone" center>
                 <template #title>
@@ -34,7 +30,6 @@ const centerTelegram =
                 description="Ищите в нашей группе Вконтакте."
                 :external="true"
                 :target="'_blank'"
-            />
-        </UContainer>
-    </section>
+            /> </UContainer
+    ></PageSection>
 </template>
