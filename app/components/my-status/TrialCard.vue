@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { MOCK_TRIAL_TYPE } from "~/pages/my-status.vue"
+import type { StatusTrial } from "~/types/status"
 
-const record = defineProps<MOCK_TRIAL_TYPE>()
+const record = defineProps<StatusTrial>()
 
 const isPast = computed(() => new Date(record.dateTime.date) < new Date())
 </script>

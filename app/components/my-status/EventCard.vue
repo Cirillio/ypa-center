@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { MOCK_EVENT_TYPE } from "~/pages/my-status.vue"
+import type { StatusEvent } from "~/types/status"
 
-const record = defineProps<MOCK_EVENT_TYPE>()
+const record = defineProps<StatusEvent>()
 
 const isPast = computed(() => new Date(record.dateTime.date) < new Date())
 </script>

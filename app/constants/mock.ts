@@ -1,3 +1,4 @@
+import type { StatusData } from "~/types/status"
 import type {
     Activity,
     Club,
@@ -596,6 +597,184 @@ export const MOCK_CLUBS_WITH_SLOTS: ClubWithSlots[] = [
         slots: MOCK_WEEKLY_SLOTS.filter((s) => s.activity.id === 7)
     }
 ]
+
+export const MOCK_STATUS_DATA: StatusData = {
+    parent: {
+        name: "Иванова Ольга Евгеньевна",
+        phone: "+7 (999) 999-99-99",
+        email: "olga.e@example.com"
+    },
+    children: [
+        {
+            name: "Иванов Иван",
+            birthdate: "12.03.2015"
+        },
+        {
+            name: "Иванова Марья",
+            birthdate: "11.06.2017"
+        }
+    ],
+    subscriptions: [
+        {
+            id: "FSA32-7JH3",
+            createdAt: "2024-05-20T14:30:00Z",
+            isExpired: false,
+            sum: "12.000",
+            participant: {
+                name: "Иванов Иван"
+            },
+            clubs: [
+                {
+                    name: "Кружок мышления",
+                    subgroup: {
+                        name: "Общая",
+                        capacity: 6
+                    },
+                    weeklySlot: {
+                        dayOfWeek: "Пн",
+                        startTime: "16:00",
+                        endTime: "17:00"
+                    },
+                    left: 2,
+                    maxUses: 4
+                },
+                {
+                    name: "Английский язык",
+                    subgroup: {
+                        name: "Начинающие",
+                        capacity: 8
+                    },
+                    weeklySlot: {
+                        dayOfWeek: "Ср",
+                        startTime: "17:30",
+                        endTime: "18:30"
+                    },
+                    left: 0,
+                    maxUses: 4
+                },
+                {
+                    name: "Шахматы",
+                    subgroup: {
+                        name: "Продвинутые",
+                        capacity: 10
+                    },
+                    weeklySlot: {
+                        dayOfWeek: "Пт",
+                        startTime: "15:00",
+                        endTime: "16:00"
+                    },
+                    left: 4,
+                    maxUses: 4
+                }
+            ]
+        },
+        {
+            id: "KLS99-2XP1",
+            createdAt: "2024-06-01T10:00:00Z",
+            isExpired: false,
+            sum: "8.500",
+            participant: {
+                name: "Иванова Марья"
+            },
+            clubs: [
+                {
+                    name: "Рисование",
+                    subgroup: {
+                        name: "Младшая",
+                        capacity: 12
+                    },
+                    weeklySlot: {
+                        dayOfWeek: "Вт",
+                        startTime: "15:00",
+                        endTime: "16:00"
+                    },
+                    left: 3,
+                    maxUses: 4
+                },
+                {
+                    name: "Танцы",
+                    subgroup: {
+                        name: "Ритмика",
+                        capacity: 15
+                    },
+                    weeklySlot: {
+                        dayOfWeek: "Чт",
+                        startTime: "16:30",
+                        endTime: "17:30"
+                    },
+                    left: 4,
+                    maxUses: 4
+                }
+            ]
+        },
+        {
+            id: "EXP00-9ZZ9",
+            createdAt: "2023-12-15T09:00:00Z",
+            isExpired: true,
+            sum: "5.000",
+            participant: {
+                name: "Иванов Иван"
+            },
+            clubs: [
+                {
+                    name: "Робототехника",
+                    subgroup: {
+                        name: "Базовая",
+                        capacity: 10
+                    },
+                    weeklySlot: {
+                        dayOfWeek: "Сб",
+                        startTime: "10:00",
+                        endTime: "11:30"
+                    },
+                    left: 0,
+                    maxUses: 8
+                }
+            ]
+        }
+    ],
+    trials: [
+        {
+            id: "AR90-5HP1",
+            participant: {
+                name: "Иванов Иван"
+            },
+            sum: "1200",
+            createdAt: "2026-05-10T14:30:00Z",
+            club: {
+                name: "Английский язык",
+                subgroup: {
+                    name: "Начинающие",
+                    capacity: 8
+                }
+            },
+            dateTime: {
+                date: "2026-05-15",
+                startTime: "17:30",
+                endTime: "18:30"
+            }
+        }
+    ],
+    events: [
+        {
+            id: "UH65-GP10",
+            participant: {
+                name: "Иванова Ольга"
+            },
+            sum: "1200",
+            createdAt: "2026-05-11T15:33:11Z",
+            event: {
+                name: "Настольные игры",
+                capacity: 9
+            },
+            dateTime: {
+                date: "2026-05-21",
+                startTime: "19:00",
+                endTime: "22:00"
+            }
+        }
+    ]
+}
 
 export const MOCK_TEACHERS: Teacher[] = [
     {

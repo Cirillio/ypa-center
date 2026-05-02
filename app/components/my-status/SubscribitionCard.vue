@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { MOCK_SUBSCIBITION_TYPE } from "~/pages/my-status.vue"
+import type { StatusSubscription } from "~/types/status"
 
-const sub = defineProps<MOCK_SUBSCIBITION_TYPE>()
+const sub = defineProps<StatusSubscription>()
 
 const clubsSortedByLeft = computed(() => [...sub.clubs].sort((a, b) => b.left - a.left))
 
@@ -16,9 +16,9 @@ const toggleClubsShown = () => {
     <div class="bg-default relative overflow-hidden rounded-lg p-4">
         <div
             v-if="sub.isExpired"
-            class="bg-error/10 text-error absolute top-6 -right-12 rotate-45 px-12 py-1 text-xs font-bold tracking-wider uppercase"
+            class="bg-error/10 text-error absolute top-7.5 -right-12 rotate-45 px-12 py-1 text-xs font-bold tracking-wider uppercase"
         >
-            Пройдено
+            Завершено
         </div>
 
         <div class="flex flex-col gap-4" :class="{ 'opacity-75': sub.isExpired }">

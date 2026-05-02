@@ -1,11 +1,11 @@
-export type OtpEmailStep = "email" | "code" | "accepted"
+import { MOCK_STATUS_DATA } from "~/constants/mock"
 
-export const OTP_EMAIL_STEPS: OtpEmailStep[] = ["email", "code", "accepted"] as const
+export type OtpEmailStep = "email" | "code" | "accepted"
 
 const DEFAULT_STEP: OtpEmailStep = "email"
 
-export const useMailConfirm = <T>() => {
-    const { secondsLeft, canResend, startTimer, resetTimer } = useOtpTimer(5)
+export const useMailConfirm = <T>({ cooldown = 5 }: { cooldown?: number }) => {
+    const { secondsLeft, canResend, startTimer, resetTimer } = useOtpTimer(cooldown)
 
     const email = ref<string>("")
     const code = ref<string>("")
@@ -28,8 +28,6 @@ export const useMailConfirm = <T>() => {
         try {
             const resp = await new Promise((rs) => {
                 const _timeout = setTimeout(() => {
-                    console.log(email.value)
-                    // rj("rejected")
                     rs(true)
                     clearTimeout(_timeout)
                 }, 2000)
@@ -40,9 +38,9 @@ export const useMailConfirm = <T>() => {
             }
         } catch (e: unknown) {
             error.value = e instanceof Error ? e.message : String(e)
-            console.log(e)
+        } finally {
+            isLoading.value = false
         }
-        isLoading.value = false
     }
 
     async function executeConfirm() {
@@ -51,19 +49,19 @@ export const useMailConfirm = <T>() => {
         try {
             const resp = await new Promise((rs) => {
                 const _timeout = setTimeout(() => {
-                    console.log(code.value)
                     rs(true)
                     clearTimeout(_timeout)
                 }, 2000)
             })
             if (resp) {
+                data.value = MOCK_STATUS_DATA
                 setStep("accepted")
             }
         } catch (e: unknown) {
             error.value = e instanceof Error ? e.message : String(e)
-            console.log(e)
+        } finally {
+            isLoading.value = false
         }
-        isLoading.value = false
     }
 
     const handleOtp = async () => {

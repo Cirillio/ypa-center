@@ -27,6 +27,9 @@ defineProps<CodeConfirmationProps>()
         <div class="relative">
             <UInput
                 v-model="modelValueEmail"
+                name="email"
+                type="email"
+                :autocomplete="'email'"
                 :disabled="isLoading || currentStep === 'accepted'"
                 class="max-w-sm"
                 placeholder="your-email@mail.ru"
