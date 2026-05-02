@@ -180,7 +180,7 @@ const upcomingActivities = computed<UpcomingActivityItem[] | undefined>(() => {
                 displayDate: formatDisplayDate(nextDate),
                 displayTime: `${club.weeklySlot.startTime}-${club.weeklySlot.endTime}`,
                 participant: sub.participant.name,
-                metaLabel: `Абонемент #${sub.id}`
+                metaLabel: `#${sub.id}`
             })
         })
     })
@@ -278,7 +278,7 @@ const upcomingActivities = computed<UpcomingActivityItem[] | undefined>(() => {
 
                     <div
                         v-else-if="upcomingActivities"
-                        class="flex max-h-240 flex-col gap-4 overflow-y-scroll px-6"
+                        class="grid max-h-240 gap-4 overflow-y-scroll px-6"
                     >
                         <template v-if="upcomingActivities.length > 0">
                             <MyStatusUpcomingActivityCard
