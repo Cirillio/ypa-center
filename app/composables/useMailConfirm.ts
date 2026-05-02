@@ -26,7 +26,7 @@ export const useMailConfirm = <T>() => {
         error.value = null
 
         try {
-            const resp = await new Promise((rs, rj) => {
+            const resp = await new Promise((rs) => {
                 const _timeout = setTimeout(() => {
                     console.log(email.value)
                     // rj("rejected")
@@ -38,8 +38,8 @@ export const useMailConfirm = <T>() => {
                 setStep("code")
                 startTimer()
             }
-        } catch (e: any) {
-            error.value = e
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : String(e)
             console.log(e)
         }
         isLoading.value = false
@@ -49,7 +49,7 @@ export const useMailConfirm = <T>() => {
         isLoading.value = true
         error.value = null
         try {
-            const resp = await new Promise((rs, _) => {
+            const resp = await new Promise((rs) => {
                 const _timeout = setTimeout(() => {
                     console.log(code.value)
                     rs(true)
@@ -59,8 +59,8 @@ export const useMailConfirm = <T>() => {
             if (resp) {
                 setStep("accepted")
             }
-        } catch (e: any) {
-            error.value = e
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : String(e)
             console.log(e)
         }
         isLoading.value = false
