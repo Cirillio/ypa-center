@@ -13,6 +13,7 @@ useHead({
 })
 
 const goHome = () => clearError({ redirect: "/" })
+const goBack = () => useRouter().back()
 const reload = () => window.location.reload()
 
 onMounted(() => window.scrollTo({ top: 0, behavior: "instant" }))
@@ -26,9 +27,9 @@ onMounted(() => window.scrollTo({ top: 0, behavior: "instant" }))
             class="gradient-bg-ps flex min-h-dvh w-full items-center justify-center pt-(--header-height)"
         >
             <UContainer
-                class="flex items-center justify-center gap-10 max-md:flex-col max-md:py-12 md:gap-12"
+                class="flex items-center justify-center gap-10 max-md:flex-col max-md:py-12 md:gap-16"
             >
-                <div class="relative grid aspect-4/3 h-60 justify-center md:h-120">
+                <div class="grid aspect-square h-60 justify-center md:h-120">
                     <div
                         class="group hover:ring-error flex items-center justify-center overflow-hidden rounded-md ring-4 ring-transparent transition"
                     >
@@ -36,15 +37,6 @@ onMounted(() => window.scrollTo({ top: 0, behavior: "instant" }))
                             src="/core/404_page.png"
                             alt="404"
                             class="h-full w-full object-contain transition duration-500 group-hover:scale-110 group-hover:rotate-6"
-                        />
-                    </div>
-
-                    <div class="absolute top-4 right-8 translate-x-1/2 -translate-y-1/2 rotate-30">
-                        <UBadge
-                            label="404"
-                            size="xl"
-                            class="floating-element-slow rounded-full text-2xl font-extrabold text-white md:px-5 md:py-2.5 md:text-5xl"
-                            color="error"
                         />
                     </div>
                 </div>
@@ -55,21 +47,33 @@ onMounted(() => window.scrollTo({ top: 0, behavior: "instant" }))
                             class="text-secondary flex flex-col space-y-0.5 text-4xl font-extrabold sm:text-5xl lg:text-6xl"
                         >
                             <span> Страница </span>
-                            <span> потерялась </span>
+                            <span class="text-primary"> потерялась </span>
                         </h1>
                         <p class="text-default/90 max-w-sm text-xl leading-snug font-semibold">
-                            Кажется, эта страница уехала на каникулы — зато на главной всё самое
-                            интересное.
+                            Кажется, Вы забрели не туда! Но не переживайте, мы поможем Вам найти
+                            правильный путь.
                         </p>
                     </div>
+                    <div class="flex items-center gap-2">
+                        <UButton
+                            label="Вернуться"
+                            leading-icon="ph:arrow-left-bold"
+                            size="lg"
+                            color="secondary"
+                            variant="ghost"
+                            class="w-fit px-6 text-xl font-bold"
+                            @click="goBack"
+                        />
 
-                    <UButton
-                        label="На главную"
-                        trailing-icon="ph:arrow-right-bold"
-                        size="xl"
-                        class="w-fit px-6 text-xl font-bold"
-                        @click="goHome"
-                    />
+                        <UButton
+                            label="На главную"
+                            trailing-icon="ph:arrow-right-bold"
+                            size="lg"
+                            variant="ghost"
+                            class="w-fit px-6 text-xl font-bold"
+                            @click="goHome"
+                        />
+                    </div>
                 </div>
             </UContainer>
         </section>

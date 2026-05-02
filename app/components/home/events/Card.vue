@@ -34,12 +34,14 @@ const router = useRouter()
             <!-- Title & description -->
             <div class="grid gap-1">
                 <h3
+                    :title="label"
                     class="text-secondary focus-within:text-primary group-active:text-primary group-hover:text-primary line-clamp-2 text-lg leading-tight font-bold transition sm:text-2xl lg:leading-[1.1] xl:text-3xl"
                 >
                     {{ label }}
                 </h3>
                 <p
-                    class="text-default/90 line-clamp-2 text-xs leading-relaxed font-medium sm:text-base"
+                    :title="description"
+                    class="text-default/90 line-clamp-3 text-xs leading-snug font-medium sm:text-base lg:line-clamp-5"
                 >
                     {{ description }}
                 </p>

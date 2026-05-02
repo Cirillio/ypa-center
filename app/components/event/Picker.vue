@@ -46,7 +46,7 @@ function formatDate(dateStr: string): string {
                     radio-group="event"
                 >
                     <div class="flex flex-col gap-1.5">
-                        <p class="text-default/70 line-clamp-2 text-sm leading-relaxed font-medium">
+                        <p class="text-default/70 line-clamp-3 text-sm leading-tight font-medium">
                             {{ event.description }}
                         </p>
                         <div class="flex items-center justify-between text-sm font-bold">

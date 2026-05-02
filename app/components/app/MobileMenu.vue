@@ -56,6 +56,19 @@ function navigate(to: string) {
                 <Transition name="actions">
                     <div v-if="isMenuOpen" class="mt-auto flex flex-col gap-3 pb-4">
                         <UButton
+                            to="/my-status"
+                            label="Мой статус"
+                            color="info"
+                            size="xl"
+                            trailing-icon="ph:user-bold"
+                            class="w-full justify-center py-3 text-base font-semibold"
+                            aria-label="Узнать свой баланс"
+                            :ui="{ trailingIcon: 'size-5' }"
+                        />
+
+                        <USeparator color="secondary" />
+
+                        <UButton
                             label="Пробное занятие"
                             trailing-icon="ph:rocket-launch-duotone"
                             size="xl"
