@@ -669,6 +669,73 @@ export const MOCK_STATUS_DATA: StatusData = {
             ]
         },
         {
+            id: "BIG-SUB-777",
+            createdAt: "2024-07-01T12:00:00Z",
+            isExpired: false,
+            sum: "25.000",
+            participant: {
+                name: "Иванов Иван"
+            },
+            clubs: [
+                {
+                    name: "Кружок мышления",
+                    subgroup: { name: "Общая", capacity: 6 },
+                    weeklySlot: { dayOfWeek: "Пн", startTime: "16:00", endTime: "17:00" },
+                    left: 4,
+                    maxUses: 4
+                },
+                {
+                    name: "Английский язык",
+                    subgroup: { name: "Начинающие", capacity: 8 },
+                    weeklySlot: { dayOfWeek: "Вт", startTime: "17:00", endTime: "18:00" },
+                    left: 4,
+                    maxUses: 4
+                },
+                {
+                    name: "Шахматы",
+                    subgroup: { name: "Продвинутые", capacity: 10 },
+                    weeklySlot: { dayOfWeek: "Ср", startTime: "15:00", endTime: "16:00" },
+                    left: 4,
+                    maxUses: 4
+                },
+                {
+                    name: "Робототехника",
+                    subgroup: { name: "Базовая", capacity: 10 },
+                    weeklySlot: { dayOfWeek: "Чт", startTime: "16:00", endTime: "17:30" },
+                    left: 4,
+                    maxUses: 4
+                },
+                {
+                    name: "Рисование",
+                    subgroup: { name: "Младшая", capacity: 12 },
+                    weeklySlot: { dayOfWeek: "Пт", startTime: "15:00", endTime: "16:00" },
+                    left: 4,
+                    maxUses: 4
+                },
+                {
+                    name: "Танцы",
+                    subgroup: { name: "Ритмика", capacity: 15 },
+                    weeklySlot: { dayOfWeek: "Сб", startTime: "11:00", endTime: "12:00" },
+                    left: 4,
+                    maxUses: 4
+                },
+                {
+                    name: "Гитара",
+                    subgroup: { name: "Индивидуально", capacity: 1 },
+                    weeklySlot: { dayOfWeek: "Вс", startTime: "12:00", endTime: "13:00" },
+                    left: 4,
+                    maxUses: 4
+                },
+                {
+                    name: "Программирование",
+                    subgroup: { name: "Python", capacity: 8 },
+                    weeklySlot: { dayOfWeek: "Пн", startTime: "18:00", endTime: "19:30" },
+                    left: 4,
+                    maxUses: 4
+                }
+            ]
+        },
+        {
             id: "KLS99-2XP1",
             createdAt: "2024-06-01T10:00:00Z",
             isExpired: false,

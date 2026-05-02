@@ -81,3 +81,15 @@ export type StatusData = {
     readonly trials: readonly StatusTrial[]
     readonly events: readonly StatusEvent[]
 }
+
+export type UpcomingActivityItem = {
+    readonly id: string
+    readonly type: "subscription" | "trial" | "event"
+    readonly title: string
+    readonly subtitle: string
+    readonly timestamp: number
+    readonly displayDate: string
+    readonly displayTime: string
+    readonly participant: string
+    readonly metaLabel?: string
+}
