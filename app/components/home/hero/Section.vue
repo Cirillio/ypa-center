@@ -40,40 +40,24 @@
                 <HomeHeroCta />
             </template>
 
-            <div class="relative">
-                <UCarousel
-                    v-slot="{ item }"
-                    v-bind="carousel"
-                    class="hover:ring-primary ml-auto aspect-square max-h-140 overflow-hidden rounded-lg shadow-lg ring-4 ring-white transition"
-                    :ui="{
-                        container: '-ms-0',
-                        item: 'ps-0',
-                        dots: 'px-3 py-2 rounded-lg bg-default/75 bottom-4 w-fit gap-2 left-4 backdrop-blur-sm',
-                        dot: 'bg-white shadow-sm data-[state=active]:ring-primary/25 data-[state=active]:ring-2 backdrop-blur-sm data-[state=active]:shadow-none data-[state=active]:bg-primary/75 size-3'
-                    }"
-                >
-                    <AppPhoto
-                        :src="item"
-                        :quality="75"
-                        alt="Фото центра"
-                        class="aspect-square h-full w-full object-cover object-center"
-                    />
-                </UCarousel>
-
-                <div
-                    class="floating-element-slow absolute -top-16 -right-16 flex size-38 rotate-15 max-md:hidden"
-                >
-                    <NuxtImg
-                        src="/core/ClearSun.png"
-                        alt=""
-                        class="object-contain"
-                        format="webp"
-                        quality="90"
-                        loading="eager"
-                        draggable="false"
-                    />
-                </div>
-            </div>
+            <UCarousel
+                v-slot="{ item }"
+                v-bind="carousel"
+                class="hover:ring-primary ml-auto aspect-square max-h-140 overflow-hidden rounded-lg shadow-lg ring-4 ring-white transition"
+                :ui="{
+                    container: '-ms-0',
+                    item: 'ps-0',
+                    dots: 'px-3 py-2 rounded-lg bg-default/75 bottom-4 w-fit gap-2 left-4 backdrop-blur-sm',
+                    dot: 'bg-white shadow-sm data-[state=active]:ring-primary/25 data-[state=active]:ring-2 backdrop-blur-sm data-[state=active]:shadow-none data-[state=active]:bg-primary/75 size-3'
+                }"
+            >
+                <AppPhoto
+                    :src="item"
+                    :quality="75"
+                    alt="Фото центра"
+                    class="aspect-square h-full w-full object-cover object-center"
+                />
+            </UCarousel>
         </UPageHero>
     </section>
 </template>

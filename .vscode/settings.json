@@ -1,8 +1,12 @@
 {
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": "explicit"
+        "source.fixAll.eslint": "explicit",
+        "source.organizeImports": "explicit"
     },
-    "editor.formatOnSave": false,
     "eslint.validate": [
         "javascript",
         "javascriptreact",
@@ -16,5 +20,8 @@
             "mode": "auto"
         }
     ],
+    "[vue]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
     "claudeCodeChat.permissions.yoloMode": false
 }

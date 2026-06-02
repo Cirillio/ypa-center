@@ -16,17 +16,30 @@ defineProps<{
         </div>
 
         <!-- Контент -->
-        <div class="flex flex-1 flex-col gap-2 md:gap-4">
-            <UBadge
-                :label="teacher.role"
-                color="secondary"
-                variant="soft"
-                size="xl"
-                class="mt-2 w-fit text-sm font-semibold md:text-base"
-            />
-            <h3 class="text-secondary text-2xl leading-tight font-extrabold sm:text-3xl">
-                {{ teacher.name }}
-            </h3>
+        <div class="flex flex-1 flex-col gap-2 py-2 md:gap-4">
+            <div class="flex flex-col gap-2">
+                <h3 class="text-secondary text-2xl leading-tight font-extrabold sm:text-3xl">
+                    {{ teacher.name }}
+                </h3>
+
+                <!-- Направления -->
+                <div
+                    v-if="teacher.clubs?.length"
+                    class="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-1"
+                >
+                    <UBadge
+                        v-for="club in teacher.clubs"
+                        :key="club"
+                        variant="soft"
+                        color="neutral"
+                        size="lg"
+                        class="bg-default shrink-0 font-semibold"
+                    >
+                        {{ club }}
+                    </UBadge>
+                </div>
+            </div>
+
             <blockquote
                 class="border-primary/30 text-primary before:text-primary/30 after:text-primary/30 border-l-2 pl-3 text-base font-semibold italic before:text-xl before:content-['«'] after:text-xl after:content-['»'] md:text-lg"
             >

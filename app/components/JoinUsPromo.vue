@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { EnrollRoutesEnum } from "~/constants/nav"
+import { EnrollRoutesEnum } from "~/constants/nav";
 </script>
 
 <template>
@@ -8,9 +8,9 @@ import { EnrollRoutesEnum } from "~/constants/nav"
     >
         <UContainer class="flex flex-col items-center gap-4 md:gap-8">
             <NuxtImg
-                src="/core/Sun.png"
+                src="/core/FullLogo.png"
                 alt=""
-                class="floating-element-slow h-20 transition-transform duration-300 group-hover:rotate-10 md:h-24 lg:h-28"
+                class="floating-element-slow h-24 transition-transform duration-300 group-hover:rotate-10 md:h-28 lg:h-32"
                 format="webp"
                 quality="90"
                 loading="lazy"

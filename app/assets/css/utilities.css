@@ -32,4 +32,12 @@
         /* Запускаем анимацию на GPU */
         @apply animate-spin-gradient;
     }
+
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
 }

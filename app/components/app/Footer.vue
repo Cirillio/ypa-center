@@ -76,12 +76,13 @@ const CONTACT_LINKS: FooterLink[] = [
                         </nav>
                     </div>
                     <UButton
-                        label="Мой статус"
+                        label="Мой кабинет"
                         color="info"
                         to="/my-status"
                         size="lg"
-                        class="w-fit text-base"
+                        class="text-info w-fit text-base"
                         leading-icon="ph:user-bold"
+                        variant="soft"
                     />
                 </div>
 

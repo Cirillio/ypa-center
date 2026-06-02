@@ -20,7 +20,7 @@ export default defineNuxtConfig({
         // }
     ],
 
-    devtools: { enabled: false },
+    devtools: { enabled: true },
 
     css: ["~/assets/css/main.css"],
 
@@ -124,7 +124,7 @@ export default defineNuxtConfig({
             Nunito: "200..1000"
         },
         display: "swap",
-        download: false,
+        download: true,
         preload: true,
         base64: false,
         inject: true,

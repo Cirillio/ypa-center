@@ -1,18 +1,22 @@
 <script lang="ts" setup>
 import { EnrollRoutesEnum } from "~/constants/nav"
+
+defineProps<{
+    clubsLength: number | null
+}>()
 </script>
 
 <template>
-    <PageSection class="gradient-bg-ps">
+    <PageSection class="gradient-bg-ps flex flex-col gap-16">
         <UContainer
-            class="relative z-10 grid grid-cols-1 items-start gap-12 lg:grid-cols-2 lg:gap-16"
+            class="relative z-10 grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16"
         >
             <div class="flex flex-col gap-8">
                 <SectionLeading as="h1" subtitle="Наши кружки" icon="ph:compass-duotone">
                     <template #title>
                         <span class="text-secondary">
-                            Найдите занятие <br />
-                            <span class="text-primary">для себя и своего ребёнка</span>
+                            Место, где таланты<br />
+                            <span class="text-primary">становятся навыками</span>
                         </span>
                     </template>
                     <template #description>
@@ -63,18 +67,22 @@ import { EnrollRoutesEnum } from "~/constants/nav"
                 </SectionLeading>
             </div>
 
-            <SubscriptionsPromo>
-                <template #sub> Система абонементов </template>
-                <template #desc>
-                    В нашей системе вы можете включить разные кружки в один абонемент:
-                    <br />
-                    - Чем <strong>больше</strong> кружков - тем <strong>выше скидка!</strong>
-                    <br />
-                    - Максимальная выгода: <strong>50%</strong>
-                    <br />
-                    - Абонемент оформляется на <strong>месяц</strong>
-                </template>
-            </SubscriptionsPromo>
+            <picture
+                class="flex h-96 w-full items-center justify-center overflow-hidden rounded-lg max-lg:max-w-140 max-sm:h-72 lg:h-120"
+            >
+                <AppPhoto
+                    src="/core/clubs-main.jpg"
+                    :quality="100"
+                    :preload="{ fetchPriority: 'high' }"
+                    :is-preload="true"
+                    :height="480"
+                    :width="470"
+                    class="flex size-full object-cover"
+                />
+            </picture>
+        </UContainer>
+        <UContainer>
+            <ClubsSectionCTA city="Академгородок" :clubs-quantity="clubsLength || 0" :min-age="6" />
         </UContainer>
     </PageSection>
 </template>

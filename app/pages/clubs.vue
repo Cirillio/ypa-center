@@ -113,26 +113,26 @@ useHead({
 
 <template>
     <div class="flex w-full min-w-0 flex-col">
-        <ClubsSection />
-        <div class="relative z-20 h-0 w-full">
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                <UButton
-                    to="/clubs#schedule"
-                    size="lg"
-                    label="Посмотреть расписание"
-                    trailing-icon="ph:arrow-down-bold"
-                    class="floating-element-slow text-base md:text-lg"
-                />
-            </div>
-        </div>
+        <ClubsSection :clubs-length="enrichedClubs.length" />
 
         <section class="bg-default relative z-10 flex w-full py-12 md:py-20 lg:py-24">
             <UContainer class="flex w-full flex-col gap-6 md:gap-8">
                 <div class="flex items-center justify-between gap-4">
                     <h2 class="text-secondary text-2xl font-extrabold md:text-3xl">Все кружки</h2>
-                    <span class="text-primary text-lg font-bold">{{ enrichedClubs.length }}</span>
+                    <UButton
+                        to="/clubs#schedule"
+                        label="Расписание"
+                        trailing-icon="ph:calendar-dots-bold"
+                        class="text-base"
+                        variant="soft"
+                    />
                 </div>
                 <ClubsGrid :enriched-clubs="enrichedClubs" />
+                <span class="text-default/95 text-xs font-semibold md:text-sm"
+                    >• Узнать какие учителя занимаются направлениями можно на
+                    <NuxtLink to="/teachers" class="text-primary">странице учителей</NuxtLink
+                    >.</span
+                >
             </UContainer>
         </section>
 

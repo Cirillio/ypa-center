@@ -7,6 +7,7 @@ export interface Teacher {
     description: string
     photo: string
     quote: string
+    clubs?: string[]
 }
 
 export interface ClubShort {
@@ -73,10 +74,6 @@ export interface Club {
     photo: string
     skills: string[]
     outcomes: string[]
-    teacher: {
-        name: string
-        photo: string
-    }
     age: {
         min: number
         max: number

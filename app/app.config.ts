@@ -24,7 +24,7 @@ export default defineAppConfig({
             }
         },
         container: {
-            base: "max-w-[80rem]"
+            base: "max-w-[84rem]"
         },
         button: {
             slots: {

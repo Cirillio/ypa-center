@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { Club, Subgroup } from "~/types"
-import { EnrollRoutesEnum } from "~/constants/nav"
+import { EnrollRoutesEnum } from "~/constants/nav";
+import type { Club, Subgroup } from "~/types";
 
 const props = defineProps<{
     club: Club
@@ -61,25 +61,6 @@ const tabs: { id: Tab; label: string }[] = [
 
         <!-- Основной контент -->
         <div class="col-span-6 flex min-w-0 flex-col gap-4 px-3 py-4 md:p-6">
-            <!-- Строка 1: педагог -->
-            <div class="flex shrink-0 items-center gap-2">
-                <div
-                    class="flex size-6 items-center justify-center overflow-hidden rounded-full md:size-8"
-                >
-                    <AppPhoto
-                        :quality="25"
-                        :src="club.teacher.photo"
-                        :alt="club.teacher.name"
-                        class="object-cover object-center"
-                    />
-                </div>
-                <span
-                    :title="club.teacher.name"
-                    class="text-default/90 text-base font-semibold md:text-lg"
-                    >{{ club.teacher.name }}</span
-                >
-            </div>
-
             <!-- Строка 2: описание -->
             <p
                 :title="club.description"
@@ -96,11 +77,11 @@ const tabs: { id: Tab; label: string }[] = [
                         v-for="tab in tabs"
                         :key="tab.id"
                         type="button"
-                        class="flex-1 cursor-pointer rounded-sm bg-white px-3 py-2 text-sm font-semibold transition-all duration-150 sm:text-base"
+                        class="flex-1 cursor-pointer rounded-sm bg-white px-3 py-2 text-sm font-semibold transition duration-150 ease-in-out sm:text-base"
                         :class="
                             activeTab === tab.id
                                 ? 'text-primary ring-primary/75 ring-2'
-                                : 'text-default hover:ring-primary/25 ring-default/75 ring-2'
+                                : 'text-default hover:ring-primary/50 ring-2 ring-transparent'
                         "
                         @click="activeTab = tab.id"
                     >

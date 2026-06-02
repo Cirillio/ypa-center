@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useWindowScroll } from "@vueuse/core"
-import { NAV_ROUTES, EnrollRoutesEnum } from "~/constants/nav"
+import { EnrollRoutesEnum, NAV_ROUTES } from "~/constants/nav"
 import { useMobileMenuStore } from "~/store/mobile-menu-store"
 
 const SCROLL_THRESHOLD = 10
@@ -73,7 +73,7 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
 
                 <UButton
                     to="/my-status"
-                    label="Мой статус"
+                    label="Мой кабинет"
                     color="info"
                     variant="soft"
                     leading-icon="ph:user-bold"
@@ -84,7 +84,7 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
 
                 <UButton
                     :to="EnrollRoutesEnum.Subscription"
-                    label="Абонемент"
+                    label="Оформить"
                     color="secondary"
                     leading-icon="ph:puzzle-piece-bold"
                     class="h-full px-2 py-2 text-base font-semibold max-lg:hidden xl:px-4"

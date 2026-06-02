@@ -23,7 +23,7 @@
             v-show="!hasError"
             :src="src"
             :alt="alt"
-            loading="lazy"
+            :loading="isPreload ? 'eager' : 'lazy'"
             format="webp"
             :quality="quality"
             class="h-full w-full"
@@ -35,19 +35,22 @@
 </template>
 
 <script lang="ts" setup>
-const props = withDefaults(
-    defineProps<{
-        src: string
-        alt?: string
-        quality?: number
-        class?: string
-    }>(),
-    {
-        alt: "",
-        class: "",
-        quality: 85
-    }
-)
+interface PhotoProps {
+    src: string
+    alt?: string
+    class?: string
+    quality?: number
+    width?: string | number
+    height?: string | number
+    isPreload?: boolean
+}
+
+const props = withDefaults(defineProps<PhotoProps>(), {
+    alt: "",
+    class: "",
+    quality: 85,
+    isPreload: false
+})
 
 const isLoaded = ref(false)
 const hasError = ref(false)
