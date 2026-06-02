@@ -9,9 +9,9 @@ defineProps<{
 
 <template>
     <section class="flex flex-col gap-4">
-        <h2 class="text-primary ml-4 text-xl font-bold">Наши абонементы</h2>
+        <h2 class="text-primary ml-4 text-xl font-bold">Абонементы</h2>
         <template v-if="subscriptions">
-            <MyStatusSubscribitionCard v-for="sub in subscriptions" :key="sub.id" v-bind="sub" />
+            <MyCabinetSubscribitionCard v-for="sub in subscriptions" :key="sub.id" v-bind="sub" />
         </template>
         <template v-else>
             <div

@@ -15,6 +15,13 @@ const {
     data
 } = useMailConfirm<StatusData>({ cooldown: 5 })
 
+const {
+    children: cabinetChildren,
+    isSaving: isChildSaving,
+    addChild,
+    removeChild
+} = useCabinetChildren(() => data.value)
+
 const handleOtpFlow = async () => {
     if (step.value === "email" || step.value === "code") await handleOtp()
     else if (step.value === "accepted") modalOpen.value = true
@@ -84,6 +91,7 @@ const isProcessing = computed(() => isLoading.value)
 const isInitial = computed(
     () => step.value === "email" || (step.value === "code" && !isLoading.value)
 )
+const isAuthed = computed(() => step.value === "accepted")
 const showData = computed(() => step.value === "accepted" && data.value && !isLoading.value)
 
 const dayMap: Record<string, number> = {
@@ -187,6 +195,20 @@ const upcomingActivities = computed<UpcomingActivityItem[] | undefined>(() => {
 
     return items.sort((a, b) => a.timestamp - b.timestamp)
 })
+
+// Группировка ближайших активностей по дате (date-divider в сайдбаре).
+const groupedUpcoming = computed(() => {
+    const items = upcomingActivities.value
+    if (!items) return undefined
+
+    const groups: { date: string; items: UpcomingActivityItem[] }[] = []
+    for (const item of items) {
+        const last = groups[groups.length - 1]
+        if (last && last.date === item.displayDate) last.items.push(item)
+        else groups.push({ date: item.displayDate, items: [item] })
+    }
+    return groups
+})
 </script>
 
 <template>
@@ -219,103 +241,123 @@ const upcomingActivities = computed<UpcomingActivityItem[] | undefined>(() => {
                 </div>
             </template>
         </UModal>
-        <MyStatusSection>
-            <MyStatusCodeConfirmation
-                v-model:email="email"
-                v-model:code="code"
-                :current-step="step"
-                :is-loading="isLoading"
-                :error="error || ''"
-                :seconds-left="secondsLeft"
-                :can-resend="canResend"
-                @resend-code="resend"
-                @reset="resetFlow"
-                @handle-otp="handleOtpFlow"
-            />
-        </MyStatusSection>
+
+        <MyCabinetSection :is-authed="isAuthed" @logout="modalOpen = true" />
+
         <main class="pb-16">
-            <UContainer class="grid w-full grid-cols-11 gap-4">
-                <div class="col-span-7 flex h-fit flex-col rounded-lg bg-white">
-                    <MyStatusInitialPlaceholder v-if="isInitial" class="mx-auto max-h-120" />
+            <UContainer class="flex w-full flex-col gap-4">
+                <!-- Гость: блок входа -->
+                <MyCabinetGuestGate
+                    v-if="isInitial"
+                    v-model:email="email"
+                    v-model:code="code"
+                    :current-step="step"
+                    :is-loading="isLoading"
+                    :error="error || ''"
+                    :seconds-left="secondsLeft"
+                    :can-resend="canResend"
+                    @resend-code="resend"
+                    @reset="resetFlow"
+                    @handle-otp="handleOtpFlow"
+                />
 
-                    <div v-else class="flex flex-col space-y-4 p-6">
-                        <MyStatusParentInfo
-                            :parent="showData ? data!.parent : undefined"
-                            :is-processing="isProcessing"
-                        />
+                <!-- Авторизован / загрузка -->
+                <template v-else>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="rounded-lg bg-white p-6">
+                            <MyCabinetParentInfo
+                                :parent="showData ? data!.parent : undefined"
+                                :is-processing="isProcessing"
+                            />
+                        </div>
+                        <div class="rounded-lg bg-white p-6">
+                            <MyCabinetChildrenInfo
+                                :children="showData ? cabinetChildren : undefined"
+                                :is-processing="isProcessing"
+                                :is-saving="isChildSaving"
+                                @add="addChild"
+                                @remove="removeChild"
+                            />
+                        </div>
+                    </div>
 
-                        <MyStatusChildrenInfo
-                            :children="showData ? data!.children : undefined"
-                            :is-processing="isProcessing"
-                        />
-
-                        <div class="mt-4 grid grid-cols-2 gap-4">
-                            <MyStatusSubscriptionsList
+                    <div class="grid w-full grid-cols-11 gap-4">
+                        <div class="col-span-7 flex h-fit flex-col gap-6 rounded-lg bg-white p-6">
+                            <MyCabinetSubscriptionsList
                                 :subscriptions="sortedSubscriptions"
                                 :is-processing="isProcessing"
                             />
-                            <MyStatusRecordsList
+                            <MyCabinetRecordsList
                                 :records="sortedRecords"
                                 :is-processing="isProcessing"
                             />
                         </div>
-                    </div>
-                </div>
-                <div
-                    class="top-(calc(var(--header-height)+1rem)) sticky col-span-4 flex h-fit min-h-120 flex-col gap-6 rounded-lg bg-white py-6"
-                >
-                    <h2 class="text-primary ml-4 px-6 text-xl font-bold">Ближайшие активности</h2>
 
-                    <div
-                        v-if="isInitial"
-                        class="flex flex-1 flex-col items-center justify-center px-6 py-8 text-center"
-                    >
-                        <UIcon name="ph:calendar-heart-bold" class="text-default/10 size-16" />
-                        <p class="text-default/50 mt-4 text-sm">
-                            Войдите, чтобы увидеть<br />свой график занятий
-                        </p>
-                    </div>
-
-                    <div
-                        v-else-if="upcomingActivities"
-                        class="grid max-h-240 gap-4 overflow-y-scroll px-6"
-                    >
-                        <template v-if="upcomingActivities.length > 0">
-                            <MyStatusUpcomingActivityCard
-                                v-for="activity in upcomingActivities"
-                                :key="activity.id"
-                                :item="activity"
-                            />
-                        </template>
-                        <div v-else class="flex flex-col items-center py-8 text-center">
-                            <UIcon name="ph:calendar-x-bold" class="text-default/10 size-16" />
-                            <p class="text-default/50 mt-4 text-sm italic">
-                                Нет запланированных<br />занятий на ближайшее время
-                            </p>
-                        </div>
-                    </div>
-
-                    <div v-else class="flex flex-col gap-4 px-6">
                         <div
-                            v-for="i in 3"
-                            :key="i"
-                            class="flex h-36 flex-col gap-3 rounded-lg p-4"
-                            :class="
-                                isProcessing ? 'bg-secondary/10 animate-pulse' : 'bg-mauve-500/5'
-                            "
+                            class="top-(calc(var(--header-height)+1rem)) sticky col-span-4 flex h-fit min-h-120 flex-col gap-6 rounded-lg bg-white py-6"
                         >
-                            <div class="flex items-center gap-2">
-                                <div class="bg-default/10 size-7 rounded-full" />
-                                <div class="bg-default/10 h-3 w-20 rounded-md" />
+                            <h2 class="text-primary ml-4 px-6 text-xl font-bold">
+                                Ближайшие активности
+                            </h2>
+
+                            <div
+                                v-if="groupedUpcoming"
+                                class="grid max-h-240 gap-4 overflow-y-auto px-6"
+                            >
+                                <template v-if="groupedUpcoming.length > 0">
+                                    <div
+                                        v-for="group in groupedUpcoming"
+                                        :key="group.date"
+                                        class="flex flex-col gap-2"
+                                    >
+                                        <div
+                                            class="text-default/50 text-xs font-bold tracking-wider uppercase"
+                                        >
+                                            {{ group.date }}
+                                        </div>
+                                        <MyCabinetUpcomingActivityCard
+                                            v-for="activity in group.items"
+                                            :key="activity.id"
+                                            :item="activity"
+                                        />
+                                    </div>
+                                </template>
+                                <div v-else class="flex flex-col items-center py-8 text-center">
+                                    <UIcon
+                                        name="ph:calendar-x-bold"
+                                        class="text-default/10 size-16"
+                                    />
+                                    <p class="text-default/50 mt-4 text-sm italic">
+                                        Нет запланированных<br />занятий на ближайшее время
+                                    </p>
+                                </div>
                             </div>
-                            <div class="flex flex-col gap-1.5">
-                                <div class="bg-default/20 h-4 w-3/4 rounded-md" />
-                                <div class="bg-default/10 h-3 w-1/2 rounded-md" />
+
+                            <div v-else class="flex flex-col gap-4 px-6">
+                                <div
+                                    v-for="i in 3"
+                                    :key="i"
+                                    class="flex h-36 flex-col gap-3 rounded-lg p-4"
+                                    :class="
+                                        isProcessing
+                                            ? 'bg-secondary/10 animate-pulse'
+                                            : 'bg-mauve-500/5'
+                                    "
+                                >
+                                    <div class="flex items-center gap-2">
+                                        <div class="bg-default/10 size-7 rounded-full" />
+                                        <div class="bg-default/10 h-3 w-20 rounded-md" />
+                                    </div>
+                                    <div class="flex flex-col gap-1.5">
+                                        <div class="bg-default/20 h-4 w-3/4 rounded-md" />
+                                        <div class="bg-default/10 h-3 w-1/2 rounded-md" />
+                                    </div>
+                                    <div class="bg-default/10 mt-auto h-6 w-full rounded-md" />
+                                </div>
                             </div>
-                            <div class="bg-default/10 mt-auto h-6 w-full rounded-md" />
                         </div>
                     </div>
-                </div>
+                </template>
             </UContainer>
         </main>
     </div>

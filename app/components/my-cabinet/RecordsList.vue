@@ -11,11 +11,11 @@ defineProps<{
 
 <template>
     <section class="flex flex-col gap-4">
-        <h2 class="text-primary ml-4 text-xl font-bold">Наши записи</h2>
+        <h2 class="text-primary ml-4 text-xl font-bold">Разовые занятия</h2>
         <template v-if="records">
             <template v-for="record in records" :key="record.id">
-                <MyStatusTrialCard v-if="record.type === 'trial'" v-bind="record" />
-                <MyStatusEventCard v-else-if="record.type === 'event'" v-bind="record" />
+                <MyCabinetTrialCard v-if="record.type === 'trial'" v-bind="record" />
+                <MyCabinetEventCard v-else-if="record.type === 'event'" v-bind="record" />
             </template>
         </template>
         <template v-else>

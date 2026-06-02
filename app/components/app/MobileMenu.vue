@@ -56,7 +56,7 @@ function navigate(to: string) {
                 <Transition name="actions">
                     <div v-if="isMenuOpen" class="mt-auto flex flex-col gap-3 pb-4">
                         <UButton
-                            to="/my-status"
+                            to="/my-cabinet"
                             label="Мой статус"
                             color="info"
                             size="xl"

@@ -9,6 +9,15 @@ export type StatusChild = {
     readonly birthdate: string
 }
 
+/**
+ * Ребёнок в контексте кабинета: стабильный id для списков/удаления и
+ * признак привязки к покупке (вычисляется на клиенте, на бэке флага нет).
+ */
+export type CabinetChild = StatusChild & {
+    readonly id: string
+    readonly isLinked: boolean
+}
+
 export type StatusSubscriptionClub = {
     readonly name: string
     readonly subgroup: {

@@ -78,7 +78,7 @@ const CONTACT_LINKS: FooterLink[] = [
                     <UButton
                         label="Мой кабинет"
                         color="info"
-                        to="/my-status"
+                        to="/my-cabinet"
                         size="lg"
                         class="text-info w-fit text-base"
                         leading-icon="ph:user-bold"

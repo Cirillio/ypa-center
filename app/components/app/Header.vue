@@ -72,7 +72,7 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
                 <!-- ACTION -->
 
                 <UButton
-                    to="/my-status"
+                    to="/my-cabinet"
                     label="Мой кабинет"
                     color="info"
                     variant="soft"
