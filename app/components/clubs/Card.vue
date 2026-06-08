@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { EnrollRoutesEnum } from "~/constants/nav";
-import type { Club, Subgroup } from "~/types";
+import { EnrollRoutesEnum } from "~/constants/nav"
+import type { Club, Subgroup } from "~/types"
 
 const props = defineProps<{
     club: Club

@@ -49,7 +49,9 @@ const props = withDefaults(defineProps<PhotoProps>(), {
     alt: "",
     class: "",
     quality: 85,
-    isPreload: false
+    isPreload: false,
+    width: 100,
+    height: 100
 })
 
 const isLoaded = ref(false)

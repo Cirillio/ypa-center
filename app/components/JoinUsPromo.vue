@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { EnrollRoutesEnum } from "~/constants/nav";
+import { EnrollRoutesEnum } from "~/constants/nav"
 </script>
 
 <template>
