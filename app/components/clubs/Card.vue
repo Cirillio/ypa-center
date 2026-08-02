@@ -62,10 +62,7 @@ const tabs: { id: Tab; label: string }[] = [
         <!-- Основной контент -->
         <div class="col-span-6 flex min-w-0 flex-col gap-4 px-3 py-4 md:p-6">
             <!-- Строка 2: описание -->
-            <p
-                :title="club.description"
-                class="text-default/90 text-base font-medium lg:line-clamp-7 lg:text-lg xl:text-xl"
-            >
+            <p class="text-default/90 text-base font-medium lg:line-clamp-7 lg:text-lg xl:text-xl">
                 {{ club.description }}
             </p>
 
