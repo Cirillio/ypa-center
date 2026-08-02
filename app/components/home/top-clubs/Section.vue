@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { MOCK_CLUBS } from "~/constants/mock"
+import type { ActivityPopular } from "~/types"
+
+const { apiFetch } = useApi()
+const { data } = await useAsyncData("popular-clubs", () =>
+    apiFetch<ActivityPopular[]>("/v1/public/activities/popular/")
+)
+const clubs = computed(() => data.value ?? [])
 </script>
 
 <template>
@@ -33,8 +39,8 @@ import { MOCK_CLUBS } from "~/constants/mock"
                 class="grid w-full grid-cols-1 overflow-hidden rounded-md max-md:gap-4 md:aspect-2/1 md:grid-cols-[2fr_1fr] md:grid-rows-2 lg:gap-2"
             >
                 <LazyHomeTopClubsCard
-                    v-for="(club, i) in MOCK_CLUBS.slice(0, 3)"
-                    :key="club.title"
+                    v-for="(club, i) in clubs"
+                    :key="club.id"
                     v-bind="club"
                     class="h-80 md:h-auto"
                     :class="{ 'md:row-span-2 *:*:last:md:text-2xl *:*:first:xl:text-6xl': i === 0 }"

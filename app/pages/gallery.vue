@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { GalleryPhoto } from "~/types"
-import { MOCK_GALLERY_PHOTOS } from "~/constants/mock"
 
 const { seo } = useAppConfig()
 const { siteUrl } = seo
@@ -42,13 +41,12 @@ useHead({
     ]
 })
 
-// Получение данных с бэка
-const { data, pending, error } = await useFetch<GalleryPhoto[]>("/api/gallery/photos/")
-
-// Используем данные с бэка или моки
-const photos = computed(() =>
-    data.value && data.value.length > 0 ? data.value : MOCK_GALLERY_PHOTOS
+const { apiFetch } = useApi()
+const { data, pending, error } = await useAsyncData("gallery", () =>
+    apiFetch<GalleryPhoto[]>("/v1/public/gallery/")
 )
+
+const photos = computed(() => data.value ?? [])
 </script>
 
 <template>

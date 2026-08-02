@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { MOCK_GALLERY_IMAGES } from "~/constants/mock"
+import type { GalleryPhoto } from "~/types"
+
+const { apiFetch } = useApi()
+const { data } = await useAsyncData("home-gallery", () =>
+    apiFetch<GalleryPhoto[]>("/v1/public/gallery/")
+)
+const photos = computed(() => (data.value ?? []).slice(0, 5))
 </script>
 
 <template>
@@ -24,17 +30,17 @@ import { MOCK_GALLERY_IMAGES } from "~/constants/mock"
             <!-- Gallery grid -->
             <div class="grid grid-cols-2 gap-2 overflow-hidden rounded-md bg-white lg:grid-cols-4">
                 <div
-                    v-for="(photo, i) in MOCK_GALLERY_IMAGES"
-                    :key="photo.src"
+                    v-for="(photo, i) in photos"
+                    :key="photo.id"
                     class="group overflow-hidden rounded-sm"
                     :class="{
                         'col-span-2 row-span-2': i === 0,
-                        'col-span-2': i === MOCK_GALLERY_IMAGES.length - 1
+                        'col-span-2': i === photos.length - 1
                     }"
                 >
                     <LazyAppPhoto
-                        :src="photo.src"
-                        :alt="photo.alt"
+                        :src="photo.image_url"
+                        :alt="'Фото ' + (i + 1) + ' из центра'"
                         class="scale-105 object-cover object-center transition duration-300 group-hover:scale-100"
                         :class="i === 0 ? 'aspect-square' : 'aspect-4/3'"
                     />

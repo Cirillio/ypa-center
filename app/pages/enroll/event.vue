@@ -21,10 +21,10 @@ useSeoMeta({
 
 const eventSubtitle = computed(() => {
     if (!selectedEvent.value) return null
-    const date = new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long" }).format(
-        new Date(selectedEvent.value.date)
-    )
-    return `${date} · ${selectedEvent.value.time}`
+    const dt = new Date(selectedEvent.value.start_datetime)
+    const date = new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long" }).format(dt)
+    const time = new Intl.DateTimeFormat("ru-RU", { hour: "2-digit", minute: "2-digit" }).format(dt)
+    return `${date} · ${time}`
 })
 </script>
 
@@ -57,11 +57,17 @@ const eventSubtitle = computed(() => {
             <div class="grid grid-cols-1 gap-4 lg:grid-cols-12">
                 <div class="space-y-4 lg:col-span-7">
                     <EnrollmentSummary
-                        :title="selectedEvent?.label ?? null"
+                        :title="selectedEvent?.title ?? null"
                         :subtitle="eventSubtitle"
-                        :img="selectedEvent?.img ?? null"
-                        :img-alt="selectedEvent?.label"
-                        :badge="selectedEvent ? (selectedEvent.price ?? 'Бесплатно') : undefined"
+                        :img="selectedEvent?.cover_image ?? null"
+                        :img-alt="selectedEvent?.title"
+                        :badge="
+                            selectedEvent
+                                ? selectedEvent.is_free
+                                    ? 'Бесплатно'
+                                    : formatRub(selectedEvent.price ?? 0)
+                                : undefined
+                        "
                         icon="ph:calendar-star-bold"
                         empty-title="Событие не выбрано"
                         empty-subtitle="Выберите мероприятие слева"

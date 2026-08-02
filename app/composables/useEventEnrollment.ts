@@ -1,8 +1,7 @@
 import type { LocationQueryValue } from "vue-router"
 import type { FormSubmitEvent } from "@nuxt/ui"
 import { type EventRegistration, eventRegistrationSchema } from "~/schemas/event.schema"
-import { MOCK_EVENTS } from "~/constants/mock"
-import type { EventShort } from "~/types"
+import type { EventItem } from "~/types"
 
 const DEFAULT_EVENT_FORM: EventRegistration = {
     participantName: "",
@@ -24,15 +23,10 @@ function parseQueryParam(
 export function useEventEnrollment() {
     const route = useRoute()
     const router = useRouter()
+    const { apiFetch } = useApi()
 
-    // TODO: заменить на $fetch<EventShort[]>('/api/events')
-    const { data: eventsData, status: eventsStatus } = useAsyncData(
-        "enrollment:events",
-        async (): Promise<EventShort[]> => {
-            // Имитация задержки сети
-            await new Promise((resolve) => setTimeout(resolve, 1000))
-            return MOCK_EVENTS
-        }
+    const { data: eventsData, status: eventsStatus } = useAsyncData("enrollment:events", () =>
+        apiFetch<EventItem[]>("/v1/public/events/")
     )
 
     const events = computed(() => eventsData.value ?? [])
@@ -42,7 +36,7 @@ export function useEventEnrollment() {
     const isSubmitting = ref(false)
 
     const selectedEvent = computed(
-        () => events.value.find((e) => e.id === selectedEventId.value) ?? null
+        () => events.value.find((e) => String(e.id) === selectedEventId.value) ?? null
     )
 
     watch(selectedEventId, (id) => {

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { EventShort } from "~/types"
+import type { EventItem } from "~/types"
 
 defineProps<{
-    event: EventShort | null
+    event: EventItem | null
 }>()
 
 function formatDate(dateStr: string): string {
@@ -10,6 +10,12 @@ function formatDate(dateStr: string): string {
         day: "numeric",
         month: "long"
     }).format(new Date(dateStr))
+}
+
+function formatTime(dateStr: string): string {
+    return new Intl.DateTimeFormat("ru-RU", { hour: "2-digit", minute: "2-digit" }).format(
+        new Date(dateStr)
+    )
 }
 </script>
 
@@ -25,8 +31,8 @@ function formatDate(dateStr: string): string {
             <div v-if="event" :key="event.id" class="mt-2 flex flex-col gap-2">
                 <div class="relative h-32 w-full overflow-hidden rounded-xs">
                     <AppPhoto
-                        :src="event.img"
-                        :alt="event.label"
+                        :src="event.cover_image ?? ''"
+                        :alt="event.title"
                         class="object-cover object-center"
                     />
                     <div
@@ -38,18 +44,18 @@ function formatDate(dateStr: string): string {
                         <span
                             class="line-clamp-2 text-base leading-tight font-bold text-white drop-shadow"
                         >
-                            {{ event.label }}
+                            {{ event.title }}
                         </span>
                         <span
                             class="bg-primary/90 shrink-0 rounded-full px-2.5 py-0.5 text-sm font-bold text-white backdrop-blur-sm"
                         >
-                            {{ event.price ?? "Бесплатно" }}
+                            {{ event.is_free ? "Бесплатно" : formatRub(event.price ?? 0) }}
                         </span>
                     </div>
                 </div>
                 <span class="text-default/80 flex items-center gap-1.5 text-base font-semibold">
                     <UIcon name="ph:calendar-blank" class="text-primary/70 size-4.5 shrink-0" />
-                    {{ formatDate(event.date) }} · {{ event.time }}
+                    {{ formatDate(event.start_datetime) }} · {{ formatTime(event.start_datetime) }}
                 </span>
             </div>
 

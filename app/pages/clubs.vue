@@ -1,51 +1,24 @@
 <script lang="ts" setup>
-import {
-    MOCK_ACTIVITIES,
-    MOCK_CLUBS_FULL,
-    MOCK_SCHEDULE_SLOTS,
-    MOCK_SUBGROUPS,
-    MOCK_WEEKDAY_SLOTS,
-    MOCK_WEEKLY_SLOTS
-} from "~/constants/mock"
-import type { Subgroup } from "~/types"
+// TODO: /public/schedule/ пока не подключен — блок расписания внизу страницы остаётся на моках
+import { MOCK_WEEKLY_SLOTS } from "~/constants/mock"
+import type { Activity } from "~/types"
 
 const { subscriptions, contactInfo, seo } = useAppConfig()
 const siteUrl = seo.siteUrl
+const { apiFetch } = useApi()
 
-// TODO: заменить на useFetch после реализации GET /clubs/, GET /schedule/, GET /activities/ на бэке
 const slots = MOCK_WEEKLY_SLOTS
 
-const DAY_NAMES = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"] as const
+const { data: activitiesData } = await useAsyncData("clubs", () =>
+    apiFetch<Activity[]>("/v1/public/activities/")
+)
 
-function getClubSubgroups(clubId: number): Subgroup[] {
-    const subgroupIds = MOCK_ACTIVITIES.filter((a) => a.club_id === clubId).map(
-        (a) => a.subgroup_id
-    )
-    return MOCK_SUBGROUPS.filter((s) => subgroupIds.includes(s.id))
-}
-
-function getScheduledDays(clubId: number): string[] {
-    const actIds = MOCK_ACTIVITIES.filter((a) => a.club_id === clubId).map((a) => a.id)
-    const wdSlotIds = [
-        ...new Set(
-            MOCK_SCHEDULE_SLOTS.filter((ss) => actIds.includes(ss.activity_id)).map(
-                (ss) => ss.weekday_slot_id
-            )
-        )
-    ]
-    const dows = [
-        ...new Set(
-            MOCK_WEEKDAY_SLOTS.filter((ws) => wdSlotIds.includes(ws.id)).map((ws) => ws.dayOfWeek)
-        )
-    ].sort() as (0 | 1 | 2 | 3 | 4 | 5 | 6)[]
-    return dows.map((d) => DAY_NAMES[d])
-}
-
-const enrichedClubs = MOCK_CLUBS_FULL.map((club) => ({
-    club,
-    subgroups: getClubSubgroups(club.id),
-    scheduledDays: getScheduledDays(club.id)
-}))
+const enrichedClubs = computed(() =>
+    (activitiesData.value ?? []).map((activity) => ({
+        activity,
+        scheduledDays: [...new Set(activity.groups.map((g) => g.day_of_week_display))]
+    }))
+)
 
 useSeoMeta({
     title: "Кружки — Улица Радости",

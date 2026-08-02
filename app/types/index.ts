@@ -1,87 +1,21 @@
 // Глобальные типы приложения
+import type { components } from "./api.d.ts"
 
-export interface Teacher {
-    id: number
-    name: string
-    role: string
-    description: string
-    photo: string
-    quote: string
-    clubs?: string[]
-}
+// Публичный каталог кружков — GET /public/activities/ (список = ActivityDetail[])
+export type Activity = components["schemas"]["ActivityDetail"]
+// GET /public/activities/popular/ — урезанная форма без groups/description
+export type ActivityPopular = components["schemas"]["ActivityCard"]
+export type ActivityGroup = components["schemas"]["ScheduleGroupPublic"]
 
-export interface ClubShort {
-    id: string
-    title: string
-    shortDesc: string
-    img: string
-    spotsAvailable?: number
-}
+// GET /public/events/
+export type EventItem = components["schemas"]["EventPublic"]
 
-export interface EventShort {
-    id: string
-    label: string
-    description: string
-    img: string
-    date: string
-    time: string
-    price: string | null
-}
+// GET /public/gallery/
+export type GalleryPhoto = components["schemas"]["GalleryImagePublic"]
 
-export interface GalleryImage {
-    src: string
-    alt: string
-}
-
-export interface GalleryPhoto {
-    id: number
-    url: string
-    alt: string
-    thumbnail: string
-}
-
-export interface Subgroup {
-    id: number
-    name: string
-    slug: string
-    capacity: number
-}
-
-export interface Activity {
-    id: number
-    club_id: number
-    subgroup_id: number
-}
-
-export interface WeekdaySlot {
-    id: number
-    dayOfWeek: 0 | 1 | 2 | 3 | 4 | 5 | 6
-    startTime: string
-    endTime: string
-}
-
-export interface ScheduleSlot {
-    activity_id: number
-    weekday_slot_id: number
-    participants: number
-}
-
-export interface Club {
-    id: number
-    slug: string
-    name: string
-    description: string
-    photo: string
-    skills: string[]
-    outcomes: string[]
-    age: {
-        min: number
-        max: number
-    }
-    price: number
-    spots_total: number
-    spots_available: number
-}
+// GET /public/teachers/
+export type Teacher = components["schemas"]["TeacherPublic"]
+export type TeacherActivity = components["schemas"]["TeacherActivityNested"]
 
 export interface WeeklySlot {
     id: number
@@ -111,7 +45,13 @@ export enum SchoolClasses {
     C11 = "11"
 }
 
-export interface ClubWithSlots extends ClubShort {
+// Используется только trial-флоу (useTrialEnrollment/ClubPicker), вне текущего захода
+export interface ClubWithSlots {
+    id: string
+    title: string
+    shortDesc: string
+    img: string
+    spotsAvailable?: number
     slots: WeeklySlot[]
 }
 

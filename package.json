@@ -10,7 +10,7 @@
         "postinstall": "nuxt prepare",
         "lint": "eslint .",
         "typecheck": "nuxt typecheck",
-        "schema:update": "openapi-typescript http://127.0.0.1:8000/api/schema/ -o ./types/api.d.ts",
+        "schema:update": "openapi-typescript http://127.0.0.1:8000/api/schema/ -o ./app/types/api.d.ts",
         "prepare": "husky"
     },
     "dependencies": {

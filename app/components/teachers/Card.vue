@@ -12,30 +12,34 @@ defineProps<{
     >
         <!-- Фото -->
         <div class="w-full overflow-hidden rounded-md max-md:h-76 md:aspect-4/5 md:w-76">
-            <AppPhoto :src="teacher.photo" :alt="teacher.name" class="object-cover object-center" />
+            <AppPhoto
+                :src="teacher.photo_url ?? ''"
+                :alt="teacher.full_name"
+                class="object-cover object-center"
+            />
         </div>
 
         <!-- Контент -->
         <div class="flex flex-1 flex-col gap-2 py-2 md:gap-4">
             <div class="flex flex-col gap-2">
                 <h3 class="text-secondary text-2xl leading-tight font-extrabold sm:text-3xl">
-                    {{ teacher.name }}
+                    {{ teacher.full_name }}
                 </h3>
 
                 <!-- Направления -->
                 <div
-                    v-if="teacher.clubs?.length"
+                    v-if="teacher.activities.length"
                     class="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-1"
                 >
                     <UBadge
-                        v-for="club in teacher.clubs"
-                        :key="club"
+                        v-for="activity in teacher.activities"
+                        :key="activity.id"
                         variant="soft"
                         color="neutral"
                         size="lg"
                         class="bg-default shrink-0 font-semibold"
                     >
-                        {{ club }}
+                        {{ activity.name }}
                     </UBadge>
                 </div>
             </div>
@@ -48,7 +52,7 @@ defineProps<{
             <p
                 class="text-default/85 text-base leading-relaxed font-semibold md:line-clamp-7 md:text-lg"
             >
-                {{ teacher.description }}
+                {{ teacher.bio }}
             </p>
         </div>
     </article>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { ClubShort } from "~/types"
+import type { ActivityPopular } from "~/types"
 
-defineProps<ClubShort>()
+defineProps<ActivityPopular>()
 </script>
 
 <template>
@@ -10,7 +10,11 @@ defineProps<ClubShort>()
     >
         <!-- Image -->
         <div class="relative h-full min-h-0 overflow-hidden">
-            <AppPhoto :src="img" :class="'object-cover object-center'" :alt="'Кружок — ' + title" />
+            <AppPhoto
+                :src="cover_image ?? ''"
+                :class="'object-cover object-center'"
+                :alt="'Кружок — ' + name"
+            />
             <!-- Scarcity badge -->
         </div>
 
@@ -23,10 +27,10 @@ defineProps<ClubShort>()
             class="text-default absolute bottom-0 z-10 flex flex-col items-start gap-1 px-3 py-4 md:gap-2 md:p-4"
         >
             <h3 class="text-2xl font-bold text-white transition lg:text-3xl xl:text-4xl">
-                {{ title }}
+                {{ name }}
             </h3>
             <p class="text-base leading-snug font-medium text-balance text-white/90 md:text-xl">
-                {{ shortDesc }}
+                {{ short_description }}
             </p>
         </div>
     </article>

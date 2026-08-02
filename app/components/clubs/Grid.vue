@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { Club, Subgroup } from "~/types"
+import type { Activity } from "~/types"
 
 defineProps<{
-    enrichedClubs: Array<{ club: Club; subgroups: Subgroup[]; scheduledDays: string[] }>
+    enrichedClubs: Array<{ activity: Activity; scheduledDays: string[] }>
 }>()
 </script>
 
@@ -10,10 +10,9 @@ defineProps<{
     <div class="grid w-full gap-4">
         <ClubsCard
             v-for="(item, i) in enrichedClubs"
-            :key="item.club.id"
-            :club="item.club"
+            :key="item.activity.id"
+            :activity="item.activity"
             :index="i"
-            :subgroups="item.subgroups"
             :scheduled-days="item.scheduledDays"
         />
     </div>

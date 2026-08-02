@@ -64,9 +64,9 @@ onUnmounted(() => {
                     <Transition name="photo-fade">
                         <AppPhoto
                             v-if="currentPhoto"
-                            :key="currentPhoto.url"
-                            :src="currentPhoto.url"
-                            :alt="currentPhoto.alt"
+                            :key="currentPhoto.image_url"
+                            :src="currentPhoto.image_url"
+                            :alt="'Фото ' + ((currentPhoto.order ?? 0) + 1) + ' из галереи центра'"
                             class="h-full w-full object-contain! object-center"
                         />
                     </Transition>
@@ -74,7 +74,7 @@ onUnmounted(() => {
 
                 <GalleryModalControls
                     class="controls-bar bg-black/80 text-sm text-white/75"
-                    :alt="currentPhoto?.alt"
+                    :alt="currentPhoto ? 'Фото ' + ((currentPhoto.order ?? 0) + 1) : undefined"
                     :prev="hasPrev ? () => emit('prev') : undefined"
                     :next="hasNext ? () => emit('next') : undefined"
                     :close="() => (isOpen = false)"
@@ -87,9 +87,9 @@ onUnmounted(() => {
                     <Transition name="photo-fade">
                         <AppPhoto
                             v-if="currentPhoto"
-                            :key="currentPhoto.url"
-                            :src="currentPhoto.url"
-                            :alt="currentPhoto.alt"
+                            :key="currentPhoto.image_url"
+                            :src="currentPhoto.image_url"
+                            :alt="'Фото ' + ((currentPhoto.order ?? 0) + 1) + ' из галереи центра'"
                             class="h-fit! w-full object-contain! object-center"
                         />
                     </Transition>
@@ -97,7 +97,7 @@ onUnmounted(() => {
 
                 <GalleryModalControls
                     class="text-default/80 text-xl"
-                    :alt="currentPhoto?.alt"
+                    :alt="currentPhoto ? 'Фото ' + ((currentPhoto.order ?? 0) + 1) : undefined"
                     :prev="hasPrev ? () => emit('prev') : undefined"
                     :next="hasNext ? () => emit('next') : undefined"
                     :close="() => (isOpen = false)"

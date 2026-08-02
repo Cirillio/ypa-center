@@ -1,6 +1,12 @@
 <script lang="ts" setup>
-import { MOCK_EVENTS } from "~/constants/mock"
+import type { EventItem } from "~/types"
 import { EnrollRoutesEnum } from "~/constants/nav"
+
+const { apiFetch } = useApi()
+const { data } = await useAsyncData("home-events", () =>
+    apiFetch<EventItem[]>("/v1/public/events/")
+)
+const events = computed(() => data.value ?? [])
 </script>
 
 <template>
@@ -38,7 +44,7 @@ import { EnrollRoutesEnum } from "~/constants/nav"
 
             <!-- Events list / grid -->
             <div class="flex flex-col gap-2 lg:grid lg:grid-cols-3 lg:gap-4">
-                <LazyHomeEventsCard v-for="event in MOCK_EVENTS" :key="event.id" v-bind="event" />
+                <LazyHomeEventsCard v-for="event in events" :key="event.id" v-bind="event" />
             </div>
         </UContainer>
     </section>

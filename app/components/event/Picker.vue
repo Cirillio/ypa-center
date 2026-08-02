@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { EventShort } from "~/types"
+import type { EventItem } from "~/types"
 
-defineProps<{ events: EventShort[]; loading?: boolean }>()
+defineProps<{ events: EventItem[]; loading?: boolean }>()
 
 const selectedEventId = defineModel<string | undefined>({ required: true })
 
@@ -14,6 +14,12 @@ function formatDate(dateStr: string): string {
         month: "long",
         weekday: "short"
     }).format(new Date(dateStr))
+}
+
+function formatTime(dateStr: string): string {
+    return new Intl.DateTimeFormat("ru-RU", { hour: "2-digit", minute: "2-digit" }).format(
+        new Date(dateStr)
+    )
 }
 </script>
 
@@ -37,12 +43,12 @@ function formatDate(dateStr: string): string {
             <template v-else-if="events.length > 0">
                 <RadioCard
                     v-for="event in events"
-                    :id="event.id"
+                    :id="String(event.id)"
                     :key="event.id"
                     v-model:selected="selectedEventId"
-                    :title="event.label"
-                    :img="event.img"
-                    :img-alt="event.label"
+                    :title="event.title"
+                    :img="event.cover_image"
+                    :img-alt="event.title"
                     radio-group="event"
                 >
                     <div class="flex flex-col gap-1.5">
@@ -55,9 +61,12 @@ function formatDate(dateStr: string): string {
                                     name="ph:calendar-blank"
                                     class="text-primary/70 size-4 shrink-0"
                                 />
-                                {{ formatDate(event.date) }} · {{ event.time }}
+                                {{ formatDate(event.start_datetime) }} ·
+                                {{ formatTime(event.start_datetime) }}
                             </span>
-                            <span class="text-primary">{{ event.price ?? "Бесплатно" }}</span>
+                            <span class="text-primary">{{
+                                event.is_free ? "Бесплатно" : formatRub(event.price ?? 0)
+                            }}</span>
                         </div>
                     </div>
                 </RadioCard>
