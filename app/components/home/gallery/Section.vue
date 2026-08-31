@@ -1,15 +1,19 @@
 <script lang="ts" setup>
 import type { GalleryPhoto } from "~/types"
 
+// Раскладка сетки ниже детерминирована и рассчитана ровно на 5 фото
+const HOME_GALLERY_LIMIT = 5
+
 const { apiFetch } = useApi()
 const { data } = await useAsyncData("home-gallery", () =>
     apiFetch<GalleryPhoto[]>("/v1/public/gallery/")
 )
-const photos = computed(() => (data.value ?? []).slice(0, 5))
+const photos = computed(() => (data.value ?? []).slice(0, HOME_GALLERY_LIMIT))
 </script>
 
 <template>
     <section
+        v-if="photos.length === HOME_GALLERY_LIMIT"
         id="gallery"
         class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20 lg:py-24"
     >
@@ -28,21 +32,19 @@ const photos = computed(() => (data.value ?? []).slice(0, 5))
             </SectionLeading>
 
             <!-- Gallery grid -->
-            <div class="grid grid-cols-2 gap-2 overflow-hidden rounded-md bg-white lg:grid-cols-4">
+            <div class="grid grid-cols-2 gap-2 overflow-hidden lg:grid-cols-4">
                 <div
                     v-for="(photo, i) in photos"
                     :key="photo.id"
                     class="group overflow-hidden rounded-sm"
                     :class="{
-                        'col-span-2 row-span-2': i === 0,
-                        'col-span-2': i === photos.length - 1
+                        'col-span-2 row-span-2 aspect-square': i === 0
                     }"
                 >
                     <LazyAppPhoto
                         :src="photo.image_url"
                         :alt="'Фото ' + (i + 1) + ' из центра'"
-                        class="scale-105 object-cover object-center transition duration-300 group-hover:scale-100"
-                        :class="i === 0 ? 'aspect-square' : 'aspect-4/3'"
+                        class="h-full w-full scale-105 object-cover object-center transition duration-300 group-hover:scale-100"
                     />
                 </div>
             </div>
