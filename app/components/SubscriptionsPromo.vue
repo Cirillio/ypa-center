@@ -64,9 +64,11 @@
 </template>
 
 <script lang="ts" setup>
-const { subscriptions: tiers } = useAppConfig()
+import type { PlanTier } from "~/composables/useSubscriptionPlans"
 
-type Tier = (typeof tiers)[number]
+const { tiers } = useSubscriptionPlans()
+
+type Tier = PlanTier
 
 function perLesson(tier: Tier): string {
     if (tier.lessons === null) return "неограниченно — один платёж"

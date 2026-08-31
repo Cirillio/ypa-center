@@ -1,17 +1,22 @@
 <script lang="ts" setup>
 import { EnrollRoutesEnum } from "~/constants/nav"
+import type { PlanTier } from "~/composables/useSubscriptionPlans"
 
-const { subscriptions, pricing } = useAppConfig()
+const { pricing } = useAppConfig()
+const { tiers: allTiers } = useSubscriptionPlans()
 
-const tiers = subscriptions.filter((t) => t.lessons !== null) as Array<{
-    lessons: number
-    price: number
-    label?: string
-}>
+type FiniteTier = PlanTier & { lessons: number }
 
-const selectedLessons = ref(tiers[1]!.lessons) // default: 8
+// Калькулятор работает только с конечными тарифами, безлимит исключаем
+const tiers = computed<FiniteTier[]>(() =>
+    allTiers.value.filter((t): t is FiniteTier => t.lessons !== null)
+)
 
-const selectedTier = computed(() => tiers.find((t) => t.lessons === selectedLessons.value)!)
+const selectedLessons = ref(tiers.value[1]?.lessons ?? 8) // default: 8
+
+const selectedTier = computed(
+    () => tiers.value.find((t) => t.lessons === selectedLessons.value) ?? tiers.value[0]!
+)
 
 const lessonsPerWeek = computed(() => Math.round(selectedLessons.value / 4))
 

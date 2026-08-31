@@ -21,6 +21,9 @@ export type TeacherActivity = components["schemas"]["TeacherActivityNested"]
 export type WeekGridResponse = components["schemas"]["WeekGridResponse"]
 export type WeekScheduleSlot = components["schemas"]["WeekSlot"]
 
+// GET /public/plans/ — тарифы абонементов (сырой ответ, до маппинга в PlanTier)
+export type SubscriptionPlanPublic = components["schemas"]["SubscriptionPlanPublic"]
+
 export interface WeeklySlot {
     id: number
     activity: {
