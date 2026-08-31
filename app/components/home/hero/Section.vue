@@ -43,7 +43,7 @@
             <UCarousel
                 v-slot="{ item }"
                 v-bind="carousel"
-                class="hover:ring-primary ml-auto aspect-square max-h-140 overflow-hidden rounded-lg shadow-lg ring-4 ring-white transition"
+                class="ml-auto aspect-square max-h-140 overflow-hidden rounded-lg shadow-lg transition"
                 :ui="{
                     container: '-ms-0',
                     item: 'ps-0',

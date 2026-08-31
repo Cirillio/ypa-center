@@ -4,8 +4,8 @@
  * Делегирует бизнес-логику композаблу useCallbackForm.
  */
 
-import { vMaska } from "maska/vue"
 import { useMediaQuery } from "@vueuse/core"
+import { vMaska } from "maska/vue"
 import { Maskas } from "~/constants/masks"
 import { isMaskaCompleted, type MaskaDetailEvent } from "~/utils/masks"
 
@@ -121,8 +121,7 @@ const bgClass = computed(() => (props.bg === "white" ? "bg-white" : "bg-default"
                     :content="{ align: 'start' }"
                     :ui="{
                         content:
-                            'shadow-none ring-2 ring-transparent hover:ring-primary transition duration-150 ease-out ' +
-                            bgClass
+                            'ring-transparent shadow-sm transition duration-150 ease-out ' + bgClass
                     }"
                 >
                     <UTooltip
