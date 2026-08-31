@@ -2,10 +2,36 @@
 import type { ActivityPopular } from "~/types"
 
 const { apiFetch } = useApi()
-const { data } = await useAsyncData("popular-clubs", () =>
+const { data, error } = await useAsyncData("popular-clubs", () =>
     apiFetch<ActivityPopular[]>("/v1/public/activities/popular/")
 )
-const clubs = computed(() => data.value ?? [])
+
+// Бэк лимитирует выдачу тремя, но контракт на «ровно 3» не гарантирован —
+// >4 обрезаем сами, раскладка ниже рассчитана на 2..4
+const clubs = computed(() => (data.value ?? []).slice(0, 4))
+
+type Variant = "empty" | "duo" | "trio" | "quad"
+
+const variant = computed<Variant>(() => {
+    if (error.value) return "empty"
+    switch (clubs.value.length) {
+        case 4:
+            return "quad"
+        case 3:
+            return "trio"
+        case 2:
+            return "duo"
+        default:
+            return "empty"
+    }
+})
+
+// Раскладка grid-контейнера по числу карточек (мобила всегда столбик — grid-cols-1)
+const GRID_CLASS: Record<Exclude<Variant, "empty">, string> = {
+    duo: "md:aspect-2/1 md:grid-cols-2 md:grid-rows-1",
+    trio: "md:aspect-2/1 md:grid-cols-[2fr_1fr] md:grid-rows-2",
+    quad: "md:aspect-square md:grid-cols-2 md:grid-rows-2"
+}
 </script>
 
 <template>
@@ -34,18 +60,27 @@ const clubs = computed(() => data.value ?? [])
                 </template>
             </SectionLeading>
 
-            <!-- Grid: big card left, two square cards right -->
+            <!-- Мало кружков или ошибка загрузки — приглашение в каталог вместо сетки -->
+            <HomeTopClubsEmpty v-if="variant === 'empty'" />
+
+            <!-- Grid: раскладка зависит от числа карточек (2/3/4) -->
             <div
-                class="grid w-full grid-cols-1 overflow-hidden rounded-md max-md:gap-4 md:aspect-2/1 md:grid-cols-[2fr_1fr] md:grid-rows-2 lg:gap-2"
+                v-else
+                class="grid w-full grid-cols-1 overflow-hidden rounded-md max-md:gap-4 lg:gap-2"
+                :class="GRID_CLASS[variant]"
             >
                 <LazyHomeTopClubsCard
                     v-for="(club, i) in clubs"
                     :key="club.id"
-                    v-bind="club"
+                    :name="club.name"
+                    :short-description="club.short_description ?? ''"
+                    :cover-image="club.cover_image"
+                    :featured="variant === 'trio' && i === 0"
                     class="h-80 md:h-auto"
-                    :class="{ 'md:row-span-2 *:*:last:md:text-2xl *:*:first:xl:text-6xl': i === 0 }"
+                    :class="{ 'md:row-span-2': variant === 'trio' && i === 0 }"
                 />
             </div>
+
             <!-- Floating promo card -->
             <FloatPromoCard
                 to="/teachers"
