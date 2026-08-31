@@ -1,16 +1,21 @@
 <script lang="ts" setup>
-// TODO: /public/schedule/ пока не подключен — блок расписания внизу страницы остаётся на моках
-import { MOCK_WEEKLY_SLOTS } from "~/constants/mock"
-import type { Activity } from "~/types"
+import type { Activity, WeekGridResponse } from "~/types"
 
 const { subscriptions, contactInfo, seo } = useAppConfig()
 const siteUrl = seo.siteUrl
 const { apiFetch } = useApi()
 
-const slots = MOCK_WEEKLY_SLOTS
-
 const { data: activitiesData } = await useAsyncData("clubs", () =>
     apiFetch<Activity[]>("/v1/public/activities/")
+)
+
+const { data: scheduleData } = await useAsyncData("clubs-schedule", () =>
+    apiFetch<WeekGridResponse>("/v1/public/schedule/")
+)
+
+// Отменённые слоты (is_cancelled) в сетке не показываем
+const slots = computed(() =>
+    (scheduleData.value?.slots ?? []).filter((s) => !s.is_cancelled).map(toWeeklySlot)
 )
 
 const enrichedClubs = computed(() =>
@@ -109,7 +114,7 @@ useHead({
             </UContainer>
         </section>
 
-        <ClubsSchedule :slots="slots" />
+        <ClubsSchedule v-if="slots.length" :slots="slots" />
         <ClubsOtherServices />
         <FaqSection />
         <JoinUsPromo />

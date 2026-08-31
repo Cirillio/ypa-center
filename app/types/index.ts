@@ -17,6 +17,10 @@ export type GalleryPhoto = components["schemas"]["GalleryImagePublic"]
 export type Teacher = components["schemas"]["TeacherPublic"]
 export type TeacherActivity = components["schemas"]["TeacherActivityNested"]
 
+// GET /public/schedule/ — недельная сетка (сырой ответ бэка, до маппинга в WeeklySlot)
+export type WeekGridResponse = components["schemas"]["WeekGridResponse"]
+export type WeekScheduleSlot = components["schemas"]["WeekSlot"]
+
 export interface WeeklySlot {
     id: number
     activity: {

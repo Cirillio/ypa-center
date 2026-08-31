@@ -711,6 +711,7 @@ export interface components {
             readonly start_time: string
             /** Format: time */
             readonly end_time: string
+            readonly group_name: string
             readonly activity: components["schemas"]["ActivityNested"]
             readonly teacher: components["schemas"]["TeacherNested"] | null
             readonly room: components["schemas"]["RoomNested"] | null
