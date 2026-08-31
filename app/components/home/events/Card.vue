@@ -1,38 +1,62 @@
 <script lang="ts" setup>
-import type { EventItem } from "~/types"
 import { EnrollRoutesEnum } from "~/constants/nav"
 
-const props = defineProps<EventItem>()
+const props = withDefaults(
+    defineProps<{
+        id: number
+        title: string
+        description?: string
+        coverImage?: string
+        startDatetime: string
+        price?: number | null
+        isFree: boolean
+    }>(),
+    {
+        description: "",
+        coverImage: "",
+        price: null
+    }
+)
 
+// Обложка опциональна на бэке — пустой src в AppPhoto даёт состояние ошибки
+const FALLBACK_COVER = "/core/clubs-main.jpg"
+
+// Фиксация таймзоны исключает SSR hydration mismatch между сервером (UTC) и клиентом
 const formattedDate = computed(() => {
     return new Intl.DateTimeFormat("ru-RU", {
         day: "2-digit",
-        month: "2-digit"
-    }).format(new Date(props.start_datetime))
+        month: "2-digit",
+        timeZone: "Asia/Novosibirsk"
+    }).format(new Date(props.startDatetime))
 })
 
 const formattedTime = computed(() => {
     return new Intl.DateTimeFormat("ru-RU", {
         hour: "2-digit",
-        minute: "2-digit"
-    }).format(new Date(props.start_datetime))
+        minute: "2-digit",
+        timeZone: "Asia/Novosibirsk"
+    }).format(new Date(props.startDatetime))
 })
 
-const formattedPrice = computed(() => (props.is_free ? "Бесплатно" : formatRub(props.price ?? 0)))
-
-const router = useRouter()
+const formattedPrice = computed(() =>
+    props.isFree ? "Бесплатно" : props.price != null ? formatRub(props.price) : ""
+)
 </script>
 
 <template>
-    <article
-        class="group bg-default/50 hover:bg-default active:bg-default flex cursor-pointer flex-row overflow-hidden rounded-sm transition duration-300 lg:flex-col"
-        @click="router.push({ path: EnrollRoutesEnum.Event, query: { eventId: String(id) } })"
+    <NuxtLink
+        :to="{ path: EnrollRoutesEnum.Event, query: { eventId: String(id) } }"
+        class="group bg-default/50 hover:bg-default active:bg-default focus-visible:outline-primary flex flex-row overflow-hidden rounded-sm transition duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 lg:flex-col"
     >
         <!-- Image -->
         <div
             class="relative aspect-square w-20 shrink-0 overflow-hidden min-[340px]:w-24 sm:w-32 lg:aspect-4/3 lg:w-auto"
         >
-            <AppPhoto :src="cover_image ?? ''" :alt="title" class="object-cover object-center" />
+            <AppPhoto
+                :src="coverImage || FALLBACK_COVER"
+                :alt="title"
+                class="object-cover object-center transition duration-300 group-hover:scale-105"
+            />
             <div
                 class="group-hover:from-default/30 absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent transition"
             />
@@ -43,13 +67,11 @@ const router = useRouter()
             <!-- Title & description -->
             <div class="grid gap-1">
                 <h3
-                    :title="title"
                     class="text-secondary focus-within:text-primary group-active:text-primary group-hover:text-primary line-clamp-2 text-lg leading-tight font-bold transition sm:text-2xl lg:leading-[1.1] xl:text-3xl"
                 >
                     {{ title }}
                 </h3>
                 <p
-                    :title="description"
                     class="text-default/90 line-clamp-3 text-xs leading-snug font-medium sm:text-base lg:line-clamp-5"
                 >
                     {{ description }}
@@ -57,7 +79,6 @@ const router = useRouter()
             </div>
 
             <!-- Meta -->
-
             <div
                 class="flex items-center justify-between text-xs uppercase max-lg:mt-2 max-md:gap-0.5 sm:text-base"
             >
@@ -80,5 +101,5 @@ const router = useRouter()
                 <span class="text-primary truncate font-bold">{{ formattedPrice }}</span>
             </div>
         </div>
-    </article>
+    </NuxtLink>
 </template>

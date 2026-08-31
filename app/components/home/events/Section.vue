@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { EventItem } from "~/types"
 import { EnrollRoutesEnum } from "~/constants/nav"
+import type { EventItem } from "~/types"
 
 const { apiFetch } = useApi()
-const { data } = await useAsyncData("home-events", () =>
+const { data, error } = await useAsyncData("home-events", () =>
     apiFetch<EventItem[]>("/v1/public/events/")
 )
 const events = computed(() => data.value ?? [])
@@ -42,9 +42,22 @@ const events = computed(() => data.value ?? [])
                 </template>
             </SectionLeading>
 
+            <!-- Пустое состояние или ошибка загрузки -->
+            <HomeEventsEmpty v-if="error || events.length === 0" />
+
             <!-- Events list / grid -->
-            <div class="flex flex-col gap-2 lg:grid lg:grid-cols-3 lg:gap-4">
-                <LazyHomeEventsCard v-for="event in events" :key="event.id" v-bind="event" />
+            <div v-else class="flex flex-col gap-2 lg:grid lg:grid-cols-3 lg:gap-4">
+                <LazyHomeEventsCard
+                    v-for="event in events"
+                    :id="event.id"
+                    :key="event.id"
+                    :title="event.title"
+                    :description="event.description"
+                    :cover-image="event.cover_image"
+                    :start-datetime="event.start_datetime"
+                    :price="event.price"
+                    :is-free="event.is_free"
+                />
             </div>
         </UContainer>
     </section>
