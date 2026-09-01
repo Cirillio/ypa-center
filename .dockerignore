@@ -1,0 +1,15 @@
+.git
+.github
+node_modules
+.output
+.nuxt
+.data
+dist
+.env
+.env.*
+*.log
+.DS_Store
+.vscode
+.idea
+docs
+README.md

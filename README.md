@@ -59,6 +59,26 @@ bun run lint           # ESLint
 bun run schema:update
 ```
 
+### Docker
+
+Бэкенд на сборку не нужен (все роуты `ssr`, `prerender` нет). Нужен только при
+работе приложения — по адресу из `NUXT_PUBLIC_API_BASE`.
+
+```bash
+# бэкенд поднят на localhost:8000
+docker compose up --build          # → http://localhost:3000
+```
+
+`docker-compose.yml` использует `network_mode: host` (Linux) — SSR внутри
+контейнера и браузер ходят к бэкенду по одному адресу. Для Docker Desktop
+(macOS / Windows) см. комментарии в `docker-compose.yml`.
+
+Если бэкенд не на `localhost:8000`:
+
+```bash
+NUXT_PUBLIC_API_BASE=http://192.168.1.10:8000/api docker compose up --build
+```
+
 ## Стратегия рендеринга
 
 `routeRules` в `nuxt.config.ts`:

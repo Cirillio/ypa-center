@@ -1,0 +1,26 @@
+services:
+    frontend:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: ypa-center-frontend
+        restart: unless-stopped
+
+        # network_mode: host — SSR внутри контейнера и браузер обращаются к
+        # бэкенду по ОДНОМУ адресу (localhost:8000). Nuxt public runtimeConfig
+        # один на сервер и клиент, поэтому адрес должен быть достижим с обеих
+        # сторон. На Linux это самый простой рабочий вариант.
+        #
+        # Docker Desktop (macOS / Windows): host-сети нет. Убери network_mode,
+        # раскомментируй ports + extra_hosts и поставь
+        #   NUXT_PUBLIC_API_BASE=http://host.docker.internal:8000/api
+        network_mode: host
+
+        environment:
+            PORT: 3000
+            NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-http://localhost:8000/api}
+
+        # ports:
+        #   - "3000:3000"
+        # extra_hosts:
+        #   - "host.docker.internal:host-gateway"
