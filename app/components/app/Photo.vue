@@ -24,6 +24,9 @@
             :src="src"
             :alt="alt"
             :loading="isPreload ? 'eager' : 'lazy'"
+            :preload="isPreload"
+            :width="width"
+            :height="height"
             format="webp"
             :quality="quality"
             class="h-full w-full"
@@ -50,8 +53,8 @@ const props = withDefaults(defineProps<PhotoProps>(), {
     class: "",
     quality: 85,
     isPreload: false,
-    width: 100,
-    height: 100
+    width: undefined,
+    height: undefined
 })
 
 const isLoaded = ref(false)

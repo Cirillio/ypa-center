@@ -91,7 +91,9 @@ const CONTACT_LINKS: FooterLink[] = [
                     <NuxtImg
                         src="/core/Sun.png"
                         alt=""
-                        class="h-20 rotate-5 md:h-24"
+                        width="128"
+                        height="96"
+                        class="h-20 w-auto rotate-5 md:h-24"
                         format="webp"
                         quality="90"
                         loading="lazy"

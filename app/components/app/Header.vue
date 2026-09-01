@@ -34,7 +34,9 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
                 <NuxtImg
                     src="/core/ClearSun.png"
                     alt="Логотип Улица Радости"
-                    class="h-full transition-transform delay-75 duration-300 ease-in-out group-hover:rotate-10"
+                    width="48"
+                    height="48"
+                    class="h-full w-auto transition-transform delay-75 duration-300 ease-in-out group-hover:rotate-10"
                     format="webp"
                     quality="90"
                     loading="eager"

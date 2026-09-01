@@ -55,7 +55,7 @@
             >
                 <AppPhoto
                     :src="item"
-                    :quality="index === 0 ? 100 : 75"
+                    :quality="75"
                     alt="Фото центра"
                     class="aspect-square h-full w-full object-cover object-center"
                     :is-preload="index === 0"
