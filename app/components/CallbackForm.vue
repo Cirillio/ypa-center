@@ -81,7 +81,11 @@ const bgClass = computed(() => (props.bg === "white" ? "bg-white" : "bg-default"
                         size="sm"
                         variant="soft"
                         label="Закрыть"
-                        @click="modalOpen = false"
+                        @click="
+                            () => {
+                                modalOpen = false
+                            }
+                        "
                     />
                 </div>
             </template>
@@ -101,7 +105,7 @@ const bgClass = computed(() => (props.bg === "white" ? "bg-white" : "bg-default"
                 type="tel"
                 autocomplete="tel"
                 inputmode="decimal"
-                leading-icon="lucide:phone"
+                leading-icon="ph:phone"
                 size="xl"
                 color="primary"
                 class="rounded-md pl-8 text-lg md:py-2! md:pl-10! xl:rounded-none"
