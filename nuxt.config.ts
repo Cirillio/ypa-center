@@ -4,20 +4,12 @@ export default defineNuxtConfig({
         "@nuxt/eslint",
         "@nuxt/ui",
         "@nuxt/image",
-        "@nuxtjs/google-fonts",
         "@nuxt/a11y",
         "@pinia/nuxt",
         "@nuxtjs/sitemap",
         "@nuxtjs/robots",
         "dayjs-nuxt",
         "nuxt-openapi-docs-module"
-        // {
-        //     folder: "./docs/openapi",
-        //     name: "OpenApiDocs",
-        //     files: function () {
-        //         return { "News-API": "News API" }
-        //     }
-        // }
     ],
 
     devtools: { enabled: true },
@@ -86,7 +78,6 @@ export default defineNuxtConfig({
 
     vite: {
         server: process.env.NODE_ENV === "development" ? { allowedHosts: true } : undefined,
-        // Добавляем этот блок:
         optimizeDeps: {
             include: [
                 "@vue/devtools-core",
@@ -119,21 +110,14 @@ export default defineNuxtConfig({
         plugins: ["relativeTime", "utc", "timezone", "customParseFormat"]
     },
 
-    googleFonts: {
-        families: {
-            Nunito: "200..1000"
-        },
-        display: "swap",
-        download: true,
-        preload: true,
-        base64: false,
-        inject: true,
-        stylePath: "css/fonts.css"
-    },
-
     fonts: {
-        providers: {
-            fontsource: false
-        }
+        families: [
+            {
+                name: "Nunito",
+                provider: "google",
+                weights: [400, 500, 600, 700, 800, 900],
+                styles: ["normal"]
+            }
+        ]
     }
 })
