@@ -6,7 +6,17 @@ const { apiFetch } = useApi()
 const { data, error } = await useAsyncData("home-events", () =>
     apiFetch<EventItem[]>("/v1/public/events/")
 )
-const events = computed(() => data.value ?? [])
+const events = computed(() => {
+    const raw = data.value ?? []
+    return raw.toSorted((a, b) => {
+        // 1. Актуальные события (is_upcoming === true) в начале, прошедшие — в самый конец
+        if (a.is_upcoming !== b.is_upcoming) {
+            return a.is_upcoming ? -1 : 1
+        }
+        // 2. Внутри каждой группы — хронологический порядок (от ближайших к дальним)
+        return new Date(a.start_datetime).getTime() - new Date(b.start_datetime).getTime()
+    })
+})
 </script>
 
 <template>
@@ -46,19 +56,24 @@ const events = computed(() => data.value ?? [])
             <HomeEventsEmpty v-if="error || events.length === 0" />
 
             <!-- Events list / grid -->
-            <div v-else class="flex flex-col gap-2 lg:grid lg:grid-cols-3 lg:gap-4">
-                <LazyHomeEventsCard
+            <ul v-else class="flex flex-col gap-2 lg:grid lg:grid-cols-3 lg:gap-4">
+                <li
                     v-for="event in events"
-                    :id="event.id"
-                    :key="event.id"
-                    :title="event.title"
-                    :description="event.description"
-                    :cover-image="event.cover_image"
-                    :start-datetime="event.start_datetime"
-                    :price="event.price"
-                    :is-free="event.is_free"
-                />
-            </div>
+                    :key="event.id + event.title + event.start_datetime"
+                    class="flex"
+                >
+                    <LazyHomeEventsCard
+                        :id="event.id"
+                        :title="event.title"
+                        :description="event.description"
+                        :cover-image="event.cover_image"
+                        :start-datetime="event.start_datetime"
+                        :price="event.price"
+                        :is-free="event.is_free"
+                        :is-upcoming="event.is_upcoming"
+                    />
+                </li>
+            </ul>
         </UContainer>
     </section>
 </template>

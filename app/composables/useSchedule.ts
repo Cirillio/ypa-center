@@ -8,8 +8,15 @@ export interface WeekDay {
     isToday: boolean
 }
 
+const TIMEZONE = "Asia/Novosibirsk"
+
+// Текущая дата в таймзоне центра (Новосибирск, UTC+7) для исключения SSR hydration mismatch
+function getNovosibirskDate(d = new Date()): Date {
+    return new Date(d.toLocaleString("en-US", { timeZone: TIMEZONE }))
+}
+
 function buildWeekDays(): WeekDay[] {
-    const today = new Date()
+    const today = getNovosibirskDate()
     const dow = today.getDay()
     const monday = new Date(today)
     monday.setDate(today.getDate() - (dow === 0 ? 6 : dow - 1))
@@ -28,7 +35,7 @@ function buildWeekDays(): WeekDay[] {
 export function useSchedule() {
     const weekDays = buildWeekDays()
 
-    const todayDow = new Date().getDay()
+    const todayDow = getNovosibirskDate().getDay()
     const defaultDay = weekDays.find((d) => d.dow === todayDow) ?? weekDays[0]!
     const selectedDay = ref<WeekDay>(defaultDay)
 

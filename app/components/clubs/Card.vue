@@ -26,7 +26,7 @@ const tabs: { id: Tab; label: string }[] = [
 
 <template>
     <article
-        :id="activity.slug"
+        :id="`club-${activity.id}`"
         class="group relative flex w-full grid-cols-9 rounded-sm bg-white max-md:flex-col md:grid"
     >
         <!-- Фото с декоративным номером -->
@@ -40,6 +40,7 @@ const tabs: { id: Tab; label: string }[] = [
                 :src="activity.cover_image ?? ''"
                 :alt="activity.name"
                 class="object-cover object-center"
+                :quality="90"
             />
             <div class="absolute bottom-2 z-20 flex flex-col gap-2 p-2 md:bottom-4 md:p-4">
                 <h3

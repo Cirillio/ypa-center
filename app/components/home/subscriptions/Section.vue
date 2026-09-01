@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { EnrollRoutesEnum } from "~/constants/nav"
 import type { PlanTier } from "~/composables/useSubscriptionPlans"
+import { EnrollRoutesEnum } from "~/constants/nav"
 
 const { pricing } = useAppConfig()
 const { tiers: allTiers } = useSubscriptionPlans()
@@ -71,7 +71,11 @@ const fmt = (n: number) =>
                                 :variant="selectedLessons === tier.lessons ? 'solid' : 'soft'"
                                 :color="selectedLessons === tier.lessons ? 'primary' : 'secondary'"
                                 class="flex size-9 justify-center rounded-sm font-bold md:size-11"
-                                @click="selectedLessons = tier.lessons"
+                                @click="
+                                    () => {
+                                        selectedLessons = tier.lessons
+                                    }
+                                "
                             >
                                 {{ tier.lessons }}
                             </UButton>

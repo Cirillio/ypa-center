@@ -7,30 +7,25 @@
         @apply max-w-400;
     }
 
+    /* Фон страниц: один тёплый радиальный отблеск сверху на плоском фоне.
+       Без второго цвета и без анимации — не «градиент», а мягкий свет. */
     .gradient-bg-ps {
-        @apply from-primary/5 via-default to-secondary/10 bg-linear-to-br;
+        background-color: var(--ui-bg);
+        background-image: radial-gradient(
+            75% 55% at 50% 0%,
+            color-mix(in oklab, var(--ui-primary) 9%, transparent),
+            transparent 72%
+        );
     }
 
-    /* Анимированный вариант с вращением */
-    .gradient-bg-ps-animated {
-        /* Изолируем контекст, чтобы фон не вылез за края компонента */
-        @apply relative isolate overflow-hidden;
-    }
-
-    .gradient-bg-ps-animated::before {
-        content: "";
-        /* Центрируем и убираем под контент */
-        @apply absolute top-1/2 left-1/2 -z-10;
-
-        /* Задаем избыточный размер */
-        width: 300%;
-        height: 300%;
-
-        /* Применяем твои цвета */
-        @apply from-primary/20 via-default to-secondary/25 bg-linear-to-br;
-
-        /* Запускаем анимацию на GPU */
-        @apply animate-spin-gradient;
+    /* Герой: тот же приём, чуть заметнее и смещён в угол */
+    .gradient-bg-ps-hero {
+        background-color: var(--ui-bg);
+        background-image: radial-gradient(
+            80% 65% at 12% -5%,
+            color-mix(in oklab, var(--ui-primary) 14%, transparent),
+            transparent 62%
+        );
     }
 
     .no-scrollbar::-webkit-scrollbar {

@@ -18,8 +18,7 @@ const FALLBACK_COVER = "/core/clubs-main.jpg"
 </script>
 
 <template>
-    <NuxtLink
-        to="/clubs"
+    <div
         class="focus-visible:outline-primary group relative flex flex-col overflow-hidden rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2"
     >
         <div class="relative h-full min-h-0 overflow-hidden">
@@ -50,5 +49,5 @@ const FALLBACK_COVER = "/core/clubs-main.jpg"
                 {{ shortDescription }}
             </p>
         </div>
-    </NuxtLink>
+    </div>
 </template>

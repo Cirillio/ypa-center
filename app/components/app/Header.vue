@@ -3,6 +3,8 @@ import { useWindowScroll } from "@vueuse/core"
 import { EnrollRoutesEnum, NAV_ROUTES } from "~/constants/nav"
 import { useMobileMenuStore } from "~/store/mobile-menu-store"
 
+const { isHydrated } = useIsHydrated()
+
 const SCROLL_THRESHOLD = 10
 const { y } = useWindowScroll()
 const isScrolled = computed(() => y.value > SCROLL_THRESHOLD)
@@ -14,7 +16,11 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
 <template>
     <header
         class="fixed top-0 right-0 left-0 z-99 flex justify-center transition-all duration-300"
-        :class="isScrolled || isMenuOpen ? 'bg-white/85 backdrop-blur-sm' : 'bg-transparent'"
+        :class="
+            isScrolled || isMenuOpen || !isHydrated
+                ? 'bg-white/85 backdrop-blur-sm'
+                : 'bg-transparent'
+        "
     >
         <UContainer
             class="relative flex h-(--header-height) w-full items-center justify-between gap-4 p-2"
