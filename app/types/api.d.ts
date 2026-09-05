@@ -267,7 +267,10 @@ export interface paths {
             path?: never
             cookie?: never
         }
-        /** Опубликованные фото галереи */
+        /**
+         * Опубликованные фото галереи
+         * @description Без query-параметров — весь список массивом (обратная совместимость). С ?limit=N (опц. &offset=M) — постраничная выдача в конверте {count, next, previous, results} для подгрузки по кнопке/скроллу.
+         */
         get: operations["public_gallery_list"]
         put?: never
         post?: never
@@ -543,6 +546,21 @@ export interface components {
         OverrideNested: {
             readonly original_start_time: string
             readonly reason: string
+        }
+        PaginatedGalleryImagePublicList: {
+            /** @example 123 */
+            count: number
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?offset=400&limit=100
+             */
+            next?: string | null
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?offset=200&limit=100
+             */
+            previous?: string | null
+            results: components["schemas"]["GalleryImagePublic"][]
         }
         PatchedChildRequest: {
             /** ФИО */
@@ -1138,7 +1156,12 @@ export interface operations {
     }
     public_gallery_list: {
         parameters: {
-            query?: never
+            query?: {
+                /** @description Number of results to return per page. */
+                limit?: number
+                /** @description The initial index from which to return the results. */
+                offset?: number
+            }
             header?: never
             path?: never
             cookie?: never
@@ -1150,7 +1173,7 @@ export interface operations {
                     [name: string]: unknown
                 }
                 content: {
-                    "application/json": components["schemas"]["GalleryImagePublic"][]
+                    "application/json": components["schemas"]["PaginatedGalleryImagePublicList"]
                 }
             }
         }

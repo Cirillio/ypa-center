@@ -1,11 +1,34 @@
 <script lang="ts" setup>
+import { useIntersectionObserver } from "@vueuse/core"
 import type { GalleryPhoto } from "~/types"
 
 const props = defineProps<{
     photos: GalleryPhoto[]
     pending?: boolean
     error?: boolean
+    hasMore?: boolean
+    loadingMore?: boolean
+    loadMoreError?: boolean
 }>()
+
+const emit = defineEmits<{
+    loadMore: []
+}>()
+
+// Автоматическая подгрузка при скролле
+const sentinelRef = ref<HTMLElement | null>(null)
+
+useIntersectionObserver(
+    sentinelRef,
+    ([entry]) => {
+        if (entry?.isIntersecting && props.hasMore && !props.loadingMore && !props.loadMoreError) {
+            emit("loadMore")
+        }
+    },
+    {
+        rootMargin: "300px"
+    }
+)
 
 // Состояние модалки
 const activeIndex = ref<number | null>(null)
@@ -84,6 +107,26 @@ const openPhoto = (index: number) => {
                     <UIcon name="ph:magnifying-glass-plus-duotone" class="size-8 text-white" />
                 </div>
             </button>
+        </div>
+
+        <!-- Сентинел для бесконечного скролла -->
+        <div v-if="hasMore" ref="sentinelRef" class="pointer-events-none h-4 w-full" />
+
+        <!-- Кнопка «Показать ещё» -->
+        <div v-if="hasMore" class="mt-8 flex flex-col items-center justify-center gap-2 sm:mt-12">
+            <UButton
+                label="Показать ещё"
+                variant="soft"
+                color="secondary"
+                size="xl"
+                class="cursor-pointer font-semibold"
+                :loading="loadingMore"
+                :disabled="loadingMore"
+                @click="emit('loadMore')"
+            />
+            <p v-if="loadMoreError" class="text-error text-sm font-medium">
+                Не удалось загрузить фотографии, попробуйте ещё раз
+            </p>
         </div>
 
         <!-- Модалка -->

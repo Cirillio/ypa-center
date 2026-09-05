@@ -12,6 +12,7 @@ export type EventItem = components["schemas"]["EventPublic"]
 
 // GET /public/gallery/
 export type GalleryPhoto = components["schemas"]["GalleryImagePublic"]
+export type GalleryPage = components["schemas"]["PaginatedGalleryImagePublicList"]
 
 // GET /public/teachers/
 export type Teacher = components["schemas"]["TeacherPublic"]
