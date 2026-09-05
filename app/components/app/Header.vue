@@ -15,7 +15,7 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
 
 <template>
     <header
-        class="fixed top-0 right-0 left-0 z-99 flex justify-center transition-all duration-300"
+        class="fixed! top-0 right-0 left-0 z-99 flex justify-center transition-all duration-300"
         :class="
             isScrolled || isMenuOpen || !isMounted
                 ? 'bg-white/85 backdrop-blur-sm'
