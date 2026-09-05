@@ -103,7 +103,7 @@ const onSelectTime = (option: ContactTimeOption) => {
                 <UInput
                     v-model="form.name"
                     :disabled="isLoading"
-                    name="phone"
+                    name="name"
                     placeholder="Как к вам обращаться?"
                     autocomplete="name"
                     type="text"

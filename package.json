@@ -10,6 +10,10 @@
         "postinstall": "nuxt prepare",
         "lint": "eslint .",
         "typecheck": "nuxt typecheck",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "ci": "bun run format:check && bun run lint && bun run typecheck && bun run build",
+        "check": "bun run ci",
         "schema:update": "openapi-typescript http://127.0.0.1:8000/api/schema/ -o ./app/types/api.d.ts",
         "prepare": "husky"
     },

@@ -33,25 +33,18 @@ export const useCallbackForm = (options: UseCallbackFormOptions = {}) => {
 
     const COOLDOWN_MINUTES = 5
     const DEFAULT_FORM_STATE: ContactCallbackForm = {
+        name: "",
         phone: "",
         time: contactTimeOptions[0]!
     }
 
     const form = reactive<ContactCallbackForm>({ ...DEFAULT_FORM_STATE })
-    const isFormCompleted = computed<boolean>({
-        get() {
-            const name = form.name
+    const isFormCompleted = computed<boolean>(() => {
+        const phoneCompleted = new Mask({ mask: Maskas.Phone }).completed(form.phone)
+        // Имя опционально, но если введено — валидируем от 2 символов
+        const nameValid = !form.name?.trim() || form.name.trim().length >= 2
 
-            if (name === undefined) return false
-
-            const nameCompleted = name.length >= 2
-            const phoneCompleted = new Mask({ mask: Maskas.Phone }).completed(form.phone)
-
-            return nameCompleted && phoneCompleted
-        },
-        set(newValue) {
-            return newValue
-        }
+        return phoneCompleted && nameValid
     })
     const captchaToken = ref("")
     const isLoading = ref(false)
@@ -76,7 +69,6 @@ export const useCallbackForm = (options: UseCallbackFormOptions = {}) => {
      */
     const resetForm = () => {
         Object.assign(form, { ...DEFAULT_FORM_STATE })
-        isFormCompleted.value = false
         error.value = null
     }
 

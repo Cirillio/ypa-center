@@ -21,7 +21,7 @@ jobs:
               run: bun install --frozen-lockfile
 
             - name: Prettier check
-              run: bun run prettier --check .
+              run: bun run format:check
 
             - name: Lint check
               run: bun run lint
