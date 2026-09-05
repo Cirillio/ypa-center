@@ -73,6 +73,7 @@ const GRID_CLASS: Record<Exclude<Variant, "empty">, string> = {
                     v-for="(club, i) in clubs"
                     :key="club.id"
                     :name="club.name"
+                    :slug="club.slug"
                     :short-description="club.short_description ?? ''"
                     :cover-image="club.cover_image"
                     :featured="variant === 'trio' && i === 0"

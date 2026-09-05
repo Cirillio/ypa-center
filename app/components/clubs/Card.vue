@@ -26,8 +26,8 @@ const tabs: { id: Tab; label: string }[] = [
 
 <template>
     <article
-        :id="`club-${activity.id}`"
-        class="group relative flex w-full grid-cols-9 rounded-sm bg-white max-md:flex-col md:grid"
+        :id="`${activity.slug}`"
+        class="group relative flex w-full scroll-mt-[calc(var(--ui-header-height)+0.5rem)] grid-cols-9 rounded-sm bg-white max-md:flex-col md:grid"
     >
         <!-- Фото с декоративным номером -->
         <div
