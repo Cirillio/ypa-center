@@ -67,3 +67,22 @@ export interface ContactTimeOption {
     time: string
     value: string
 }
+
+// POST /public/callback/ — заявка на обратный звонок
+export type CallbackRequestPayload = components["schemas"]["CallbackRequestCreateRequest"]
+export type CallbackRequestResponse = components["schemas"]["SubmissionAccepted"]
+export type PreferredTimeWindow = components["schemas"]["PreferredTimeWindowEnum"]
+
+export interface ProblemDetail {
+    type: string // "urn:problem-type:validationerror"
+    title: string // "Validation Error", "NotFound", "Throttled"
+    status: number // HTTP-статус
+    detail: string // Человекочитаемое сообщение на русском
+    extensions?: {
+        request_id?: string // UUID запроса
+        invalid_params?: Array<{
+            name: string
+            reason: string
+        }> // Только при 422
+    }
+}

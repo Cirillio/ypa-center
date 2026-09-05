@@ -14,7 +14,7 @@ import { EnrollRoutesEnum } from "~/constants/nav"
                 height="105"
                 class="floating-element-slow h-24 w-auto transition-transform duration-300 group-hover:rotate-10 md:h-28 lg:h-32"
                 format="webp"
-                quality="90"
+                quality="100"
                 loading="lazy"
             />
 

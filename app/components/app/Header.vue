@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { useWindowScroll } from "@vueuse/core"
+import { useMounted, useWindowScroll } from "@vueuse/core"
 import { EnrollRoutesEnum, NAV_ROUTES } from "~/constants/nav"
 import { useMobileMenuStore } from "~/store/mobile-menu-store"
 
-const { isHydrated } = useIsHydrated()
+const isMounted = useMounted()
 
 const SCROLL_THRESHOLD = 10
 const { y } = useWindowScroll()
@@ -17,7 +17,7 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
     <header
         class="fixed top-0 right-0 left-0 z-99 flex justify-center transition-all duration-300"
         :class="
-            isScrolled || isMenuOpen || !isHydrated
+            isScrolled || isMenuOpen || !isMounted
                 ? 'bg-white/85 backdrop-blur-sm'
                 : 'bg-transparent'
         "
@@ -38,7 +38,7 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
                     height="48"
                     class="h-full w-auto transition-transform delay-75 duration-300 ease-in-out group-hover:rotate-10"
                     format="webp"
-                    quality="90"
+                    quality="100"
                     loading="eager"
                     fetchpriority="high"
                 />

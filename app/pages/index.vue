@@ -2,10 +2,10 @@
 const { contactInfo, seo, stats, pricing } = useAppConfig()
 
 useSeoMeta({
-    title: `${seo.siteName} — Центр умного развития детей в Новосибирске`,
+    title: `${seo.siteName} —  Центр умного развития в Новосибирске`,
     description:
         "Кружки, продлёнка и каникулярные программы для детей школьного возраста. Настольные игры, рисование, пианино и многое другое. Запишитесь онлайн.",
-    ogTitle: `${seo.siteName} — Центр умного развития`,
+    ogTitle: `${seo.siteName} —  Центр умного развития`,
     ogDescription: `Место, где дети учатся думать, творить и верить в себя. ${contactInfo.address}.`,
     ogType: "website",
     ogImage: seo.ogImage

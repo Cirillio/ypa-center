@@ -4,57 +4,59 @@
  * Делегирует бизнес-логику композаблу useCallbackForm.
  */
 
-import { useMediaQuery } from "@vueuse/core"
+import { useMounted } from "@vueuse/core"
 import { vMaska } from "maska/vue"
 import { Maskas } from "~/constants/masks"
-import { isMaskaCompleted, type MaskaDetailEvent } from "~/utils/masks"
+import type { ContactTimeOption } from "~/types"
 
-// Проверка типа устройства для адаптивного UI
-const isMobile = useMediaQuery("(max-width: 767px)")
+// UI-состояния компонента
+const modalOpen = ref(false)
+const popoverOpen = ref(false)
+const lastSelectedTimeLabel = ref("")
 
-// Состояние монтирования для предотвращения ошибок гидратации
-const isMounted = ref(false)
-onMounted(() => {
-    isMounted.value = true
-})
-
-// Безопасное значение isMobile для использования в шаблоне (на сервере всегда false)
-const isMobileSafe = computed(() => (isMounted.value ? isMobile.value : false))
-
-/**
- * Входные параметры компонента
- * @property {('white'|'default')} bg - Стиль фона для инпутов и кнопок
- */
-const props = withDefaults(
-    defineProps<{
-        bg?: "white" | "default"
-    }>(),
-    {
-        bg: "white"
-    }
-)
+const toast = useToast()
 
 // Использование композабла для управления логикой формы
 const {
     form,
     isFormCompleted,
+    captchaToken,
     isLoading,
-    modalOpen,
-    popoverOpen,
     isSpamBlocked,
     isSubmitDisabled,
-    lastSelectedTimeLabel,
     contactTimeOptions,
     setContactTime,
     submitForm
-} = useCallbackForm()
+} = useCallbackForm({
+    onSuccess: (selectedTime) => {
+        lastSelectedTimeLabel.value = selectedTime.time
+        modalOpen.value = true
+        turnstileRef.value?.reset()
+    },
+    onError: (err) => {
+        toast.add({
+            title: err.title,
+            description: err.description,
+            icon: "ph:x-circle-bold",
+            color: "error"
+        })
+        turnstileRef.value?.reset()
+    }
+})
 
-// Динамический класс фона на основе пропсов
-const bgClass = computed(() => (props.bg === "white" ? "bg-white" : "bg-default"))
+const turnstileRef = ref()
+
+const isMounted = useMounted()
+
+// Выбор времени и закрытие поповера в UI
+const onSelectTime = (option: ContactTimeOption) => {
+    setContactTime(option)
+    popoverOpen.value = false
+}
 </script>
 
 <template>
-    <div class="flex max-w-xs flex-col xl:max-w-xl">
+    <div class="bg-default flex max-w-xs flex-col rounded-lg p-2 sm:p-6 xl:max-w-sm">
         <!-- Модальное окно подтверждения успешной отправки -->
         <UModal
             v-model:open="modalOpen"
@@ -91,41 +93,66 @@ const bgClass = computed(() => (props.bg === "white" ? "bg-white" : "bg-default"
             </template>
         </UModal>
 
-        <form
-            id="callbackForm"
-            class="flex max-xl:flex-col max-xl:gap-2 xl:overflow-hidden xl:rounded-full"
-            @submit.prevent="submitForm"
-        >
-            <UInput
-                v-model="form.phone"
-                v-maska="Maskas.Phone"
-                :disabled="isLoading"
-                name="phone"
-                :placeholder="Maskas.Phone"
-                type="tel"
-                autocomplete="tel"
-                inputmode="decimal"
-                leading-icon="ph:phone"
-                size="xl"
-                color="primary"
-                class="rounded-md pl-8 text-lg md:py-2! md:pl-10! xl:rounded-none"
-                :class="bgClass"
-                :variant="'none'"
-                :ui="{
-                    base: 'md:text-lg focus-visible:ring-0 font-semibold text-default placeholder:text-default/75',
-                    leadingIcon: 'md:ml-2 text-primary max-sm:size-5 ml-1'
-                }"
-                @maska="(e: MaskaDetailEvent) => (isFormCompleted = isMaskaCompleted(e))"
-            />
-
-            <div class="flex *:px-4 *:py-2 max-xl:gap-2 max-md:flex-col md:*:text-lg">
-                <!-- Выбор времени звонка -->
+        <form id="callbackForm" class="flex flex-col gap-2" @submit.prevent="submitForm">
+            <div class="flex items-center gap-2">
+                <div
+                    class="bg-primary/10 flex aspect-square size-10 items-center justify-center rounded-full"
+                >
+                    <Icon name="ph:user" class="text-primary size-6" />
+                </div>
+                <UInput
+                    v-model="form.name"
+                    :disabled="isLoading"
+                    name="phone"
+                    placeholder="Как к вам обращаться?"
+                    autocomplete="name"
+                    type="text"
+                    size="xl"
+                    color="secondary"
+                    class="text-lg"
+                    variant="subtle"
+                    :ui="{
+                        base: 'md:text-lg !text-base bg-white font-semibold text-default placeholder:text-default/75'
+                    }"
+                />
+            </div>
+            <div class="flex items-center gap-2">
+                <div
+                    class="bg-primary/10 flex aspect-square size-10 items-center justify-center rounded-full"
+                >
+                    <Icon name="ph:phone" class="text-primary size-6" />
+                </div>
+                <UInput
+                    v-model="form.phone"
+                    v-maska="Maskas.Phone"
+                    :disabled="isLoading"
+                    name="phone"
+                    :placeholder="Maskas.Phone"
+                    type="tel"
+                    autocomplete="tel"
+                    inputmode="decimal"
+                    size="xl"
+                    color="secondary"
+                    class="text-lg"
+                    variant="subtle"
+                    :ui="{
+                        base: 'md:text-lg !text-base bg-white font-semibold text-default placeholder:text-default/75'
+                    }"
+                />
+            </div>
+            <!-- Выбор времени звонка -->
+            <div class="flex items-center gap-2">
+                <div
+                    class="bg-primary/10 flex aspect-square size-10 items-center justify-center rounded-full"
+                >
+                    <Icon name="ph:clock" class="text-primary size-6" />
+                </div>
                 <UPopover
                     v-model:open="popoverOpen"
                     :content="{ align: 'start' }"
                     :ui="{
                         content:
-                            'ring-transparent shadow-sm transition duration-150 ease-out ' + bgClass
+                            'ring-transparent shadow-sm transition duration-150 ease-out bg-default'
                     }"
                 >
                     <UTooltip
@@ -138,15 +165,17 @@ const bgClass = computed(() => (props.bg === "white" ? "bg-white" : "bg-default"
                         text="Выберите удобное для вас время"
                     >
                         <UButton
-                            :label="isMobileSafe ? form.time.label : form.time.time"
+                            :label="form.time.label"
                             size="xl"
                             name="time"
                             color="secondary"
                             :disabled="isLoading"
                             type="button"
-                            class="w-full justify-between focus-visible:ring-0 xl:w-auto xl:rounded-none"
-                            :class="bgClass"
-                            :variant="'ghost'"
+                            class="w-full justify-between max-md:text-base!"
+                            :ui="{
+                                base: 'truncate'
+                            }"
+                            variant="soft"
                             :trailing-icon="'ph:caret-down-bold'"
                         />
                     </UTooltip>
@@ -161,47 +190,45 @@ const bgClass = computed(() => (props.bg === "white" ? "bg-white" : "bg-default"
                                 type="button"
                                 class="font-semibold"
                                 :disabled="isLoading"
-                                @click="setContactTime(option)"
+                                @click="onSelectTime(option)"
                             />
                         </div>
                     </template>
                 </UPopover>
-
-                <!-- Кнопка отправки с подсказкой при блокировке спама -->
-                <UTooltip
-                    v-if="isSpamBlocked"
-                    :ui="{
-                        content:
-                            'ring-0 shadow-none bg-primary md:text-lg md:px-4 font-semibold md:py-3.5 text-white'
-                    }"
-                    :delay-duration="75"
-                    :content="{ side: 'top' }"
-                    text="Вы недавно уже отправляли заявку. Пожалуйста, подождите."
-                >
-                    <UButton
-                        :disabled="isSubmitDisabled"
-                        :loading="isLoading"
-                        size="xl"
-                        color="primary"
-                        variant="soft"
-                        type="submit"
-                        label="Ожидайте..."
-                        class="w-full font-semibold focus-visible:ring-0 md:w-fit xl:w-auto xl:rounded-none"
-                    />
-                </UTooltip>
-
-                <UButton
-                    v-else
-                    :disabled="isSubmitDisabled"
-                    :loading="isLoading"
-                    size="xl"
-                    color="primary"
-                    variant="soft"
-                    type="submit"
-                    label="Жду звонка"
-                    class="w-full font-semibold focus-visible:ring-0 md:w-fit xl:w-auto xl:rounded-none"
-                />
             </div>
+
+            <!-- Кнопка отправки с подсказкой при блокировке спама -->
+            <UTooltip
+                :ui="{
+                    content:
+                        'ring-0 shadow-none bg-primary md:text-lg md:px-4 font-semibold md:py-3.5 text-white'
+                }"
+                :delay-duration="75"
+                :content="{ side: 'top' }"
+                :text="
+                    isSpamBlocked
+                        ? 'Вы недавно уже отправляли заявку. Пожалуйста, подождите.'
+                        : undefined
+                "
+            >
+                <UButton
+                    :disabled="isSubmitDisabled || !isMounted"
+                    :loading="isLoading || isSpamBlocked || !isMounted"
+                    color="primary"
+                    type="submit"
+                    :label="
+                        !isMounted ? 'Загрузка...' : isSpamBlocked ? 'Ожидайте...' : 'Жду звонка'
+                    "
+                    :variant="isFormCompleted && !isSpamBlocked ? 'solid' : 'soft'"
+                    class="w-full justify-center text-lg font-semibold focus-visible:ring-0"
+                />
+            </UTooltip>
+
+            <NuxtTurnstile
+                ref="turnstileRef"
+                v-model="captchaToken"
+                :options="{ appearance: 'interaction-only' }"
+            />
         </form>
 
         <span class="text-default/70 mt-2 px-4 text-xs leading-tight">

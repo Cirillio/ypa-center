@@ -43,11 +43,11 @@
             <UCarousel
                 v-slot="{ item, index }"
                 v-bind="carousel"
-                class="ml-auto aspect-square max-h-140 overflow-hidden rounded-lg shadow-lg transition"
+                class="aspect-square max-h-124 overflow-hidden rounded-lg shadow-lg transition lg:ml-auto"
                 :ui="{
                     container: '-ms-0',
                     item: 'ps-0',
-                    dots: isHydrated
+                    dots: isMounted
                         ? 'px-3 py-2 rounded-lg bg-default/75 bottom-4 w-fit gap-2 left-4 backdrop-blur-sm'
                         : 'hidden',
                     dot: 'bg-white shadow-sm data-[state=active]:ring-primary/25 data-[state=active]:ring-2 backdrop-blur-sm data-[state=active]:shadow-none data-[state=active]:bg-primary/75 size-3'
@@ -66,6 +66,8 @@
 </template>
 
 <script lang="ts" setup>
+import { useMounted } from "@vueuse/core"
+
 const photos = [
     "/core/default.png",
     "/moke/club_1.jpg",
@@ -76,7 +78,7 @@ const photos = [
 
 const carouselDelay = 5000
 
-const { isHydrated } = useIsHydrated()
+const isMounted = useMounted()
 
 // Автопрокрутка отключается при prefers-reduced-motion для a11y и до гидратации
 const carousel = computed(() => {
@@ -88,7 +90,7 @@ const carousel = computed(() => {
         dots: true,
         loop: true,
         autoplay:
-            isHydrated.value && !isReducedMotion
+            isMounted.value && !isReducedMotion
                 ? {
                       delay: carouselDelay,
                       stopOnInteraction: false,

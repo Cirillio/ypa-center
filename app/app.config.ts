@@ -63,6 +63,11 @@ export default defineAppConfig({
                 container: "mt-1.5"
             }
         },
+        toast: {
+            slots: {
+                root: "ring-0 shadow-sm rounded-sm"
+            }
+        },
 
         input: {
             slots: {
@@ -83,7 +88,8 @@ export default defineAppConfig({
             ],
             variants: {
                 variant: {
-                    soft: "bg-default/50 text-default hover:bg-default focus-visible:bg-default"
+                    soft: "bg-default/50 text-default hover:bg-default focus-visible:bg-default",
+                    subtle: "ring-primary/0 focus-visible:ring-primary! ring-2"
                 }
             }
         },

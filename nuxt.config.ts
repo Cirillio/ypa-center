@@ -9,23 +9,26 @@ export default defineNuxtConfig({
         "@nuxtjs/sitemap",
         "@nuxtjs/robots",
         "dayjs-nuxt",
-        "nuxt-openapi-docs-module"
+        "nuxt-openapi-docs-module",
+        "@nuxtjs/turnstile"
     ],
 
     devtools: { enabled: true },
 
     css: ["~/assets/css/main.css"],
 
-    colorMode: {
-        preference: "light",
-        classSuffix: "", // по умолчанию там 'mode', из-за этого класс может быть 'light-mode' вместо 'light'
-        dataValue: "theme" // записывает data-theme="light" на <html>
+    ui: {
+        colorMode: false
     },
 
     runtimeConfig: {
         public: {
             apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:8000/api"
         }
+    },
+
+    turnstile: {
+        siteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"
     },
 
     routeRules: {
@@ -50,7 +53,7 @@ export default defineNuxtConfig({
             ssr: true,
             headers: {
                 "Content-Security-Policy":
-                    "frame-src 'self' https://vk.com https://vkvideo.ru https://yandex.ru"
+                    "frame-src 'self' https://vk.com https://vkvideo.ru https://yandex.ru https://challenges.cloudflare.com"
             }
         }
     },

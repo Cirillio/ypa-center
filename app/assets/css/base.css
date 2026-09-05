@@ -22,8 +22,4 @@
             scroll-behavior: auto !important;
         }
     }
-
-    *:focus-visible {
-        @apply outline-primary ring-0! outline-2 outline-offset-2;
-    }
 }

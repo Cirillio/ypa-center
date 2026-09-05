@@ -1,44 +1,61 @@
 import { useStorage } from "@vueuse/core"
-import { FetchError } from "ofetch"
-import type { ContactTimeOption } from "~/types"
+import type { ContactTimeOption, PreferredTimeWindow } from "~/types"
+import { useCallbackService } from "~/services/callback.service"
+import { useDayjs } from "#dayjs"
+import { Mask } from "maska"
+import { Maskas } from "~/constants/masks"
 
 /**
  * Интерфейс данных формы обратного звонка
  */
 export interface ContactCallbackForm {
+    name?: string
     phone: string
     time: ContactTimeOption
 }
 
+export interface UseCallbackFormOptions {
+    onSuccess?: (selectedTime: ContactTimeOption) => void
+    onError?: (error: ApiError) => void
+}
+
 /**
  * Композабл для управления логикой формы обратного звонка.
- * Включает в себя:
+ * Зона ответственности:
  * - Состояние полей формы
- * - Валидацию (через маску)
- * - Систему Anti-Spam (кулдаун)
- * - Интеграцию с API
+ * - Валидация
+ * - Anti-Spam кулдаун
+ * - Делегирование отправки сервису
  */
-export const useCallbackForm = () => {
+export const useCallbackForm = (options: UseCallbackFormOptions = {}) => {
     const { contactTimeOptions } = useAppConfig()
+    const { sendCallbackRequest } = useCallbackService()
 
-    /**
-     * Константы и настройки
-     */
     const COOLDOWN_MINUTES = 5
     const DEFAULT_FORM_STATE: ContactCallbackForm = {
         phone: "",
         time: contactTimeOptions[0]!
     }
 
-    /**
-     * Реактивные состояния
-     */
     const form = reactive<ContactCallbackForm>({ ...DEFAULT_FORM_STATE })
-    const isFormCompleted = ref(false)
+    const isFormCompleted = computed<boolean>({
+        get() {
+            const name = form.name
+
+            if (name === undefined) return false
+
+            const nameCompleted = name.length >= 2
+            const phoneCompleted = new Mask({ mask: Maskas.Phone }).completed(form.phone)
+
+            return nameCompleted && phoneCompleted
+        },
+        set(newValue) {
+            return newValue
+        }
+    })
+    const captchaToken = ref("")
     const isLoading = ref(false)
-    const modalOpen = ref(false)
-    const popoverOpen = ref(false)
-    const lastSelectedTimeLabel = ref("")
+    const error = ref<unknown>(null)
 
     /**
      * Anti-Spam: Хранение времени окончания блокировки в LocalStorage
@@ -50,7 +67,8 @@ export const useCallbackForm = () => {
      * Валидация и доступность отправки
      */
     const isSubmitDisabled = computed(
-        () => !isFormCompleted.value || isSpamBlocked.value || isLoading.value
+        () =>
+            !isFormCompleted.value || !captchaToken.value || isSpamBlocked.value || isLoading.value
     )
 
     /**
@@ -59,6 +77,7 @@ export const useCallbackForm = () => {
     const resetForm = () => {
         Object.assign(form, { ...DEFAULT_FORM_STATE })
         isFormCompleted.value = false
+        error.value = null
     }
 
     /**
@@ -66,43 +85,42 @@ export const useCallbackForm = () => {
      */
     const setContactTime = (option: ContactTimeOption) => {
         form.time = option
-        popoverOpen.value = false
-    }
-
-    /**
-     * Заглушка API для DRF
-     */
-    const mockApiCall = async (payload: ContactCallbackForm): Promise<void> => {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                console.log("Form Submitted:", { ...payload })
-                resolve()
-            }, 1200)
-        })
     }
 
     /**
      * Обработчик отправки формы
      */
-    const submitForm = async () => {
-        if (isSubmitDisabled.value) return
+    const submitForm = async (): Promise<boolean> => {
+        if (isSubmitDisabled.value) return false
 
         isLoading.value = true
+        error.value = null
+
         try {
-            await mockApiCall(form)
+            const selectedTime = form.time
+            const preferredTimeWindow = selectedTime.value.toUpperCase() as PreferredTimeWindow
 
-            // Успешная отправка
+            const dayjs = useDayjs(),
+                formattedDate = dayjs().tz("Asia/Novosibirsk").format("DD.MM.YYYY HH:mm")
+            const userName = form.name?.trim() || `Аноним от ${formattedDate}`
+
+            await sendCallbackRequest({
+                name: userName,
+                phone: form.phone,
+                preferred_time_window: preferredTimeWindow,
+                captcha_token: captchaToken.value
+            })
+
             cooldownUntil.value = Date.now() + COOLDOWN_MINUTES * 60 * 1000
-            lastSelectedTimeLabel.value = form.time.time
-            modalOpen.value = true
-
+            options.onSuccess?.(selectedTime)
             resetForm()
-        } catch (error: unknown) {
-            if (error instanceof FetchError) {
-                console.error("API Error:", error.data?.message || error.message)
-            } else {
-                console.error("Unexpected Error:", error)
-            }
+            return true
+        } catch (err: unknown) {
+            const parsedError: ApiError = parseApiError(err)
+            error.value = parsedError
+            options.onError?.(parsedError)
+
+            return false
         } finally {
             isLoading.value = false
         }
@@ -112,12 +130,11 @@ export const useCallbackForm = () => {
         // State
         form,
         isFormCompleted,
+        captchaToken,
         isLoading,
-        modalOpen,
-        popoverOpen,
+        error,
         isSpamBlocked,
         isSubmitDisabled,
-        lastSelectedTimeLabel,
         contactTimeOptions,
 
         // Actions

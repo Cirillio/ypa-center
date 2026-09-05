@@ -32,11 +32,11 @@ const photos = computed(() => (data.value ?? []).slice(0, HOME_GALLERY_LIMIT))
             </SectionLeading>
 
             <!-- Gallery grid -->
-            <div class="grid grid-cols-2 gap-2 overflow-hidden lg:grid-cols-4">
+            <div class="grid grid-cols-2 gap-2 lg:grid-cols-4">
                 <div
                     v-for="(photo, i) in photos"
                     :key="photo.id"
-                    class="group overflow-hidden rounded-sm"
+                    class="group overflow-hidden rounded-sm shadow-sm"
                     :class="{
                         'col-span-2 row-span-2 aspect-square': i === 0
                     }"

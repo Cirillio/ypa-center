@@ -46,7 +46,7 @@ useHead({
                     </template>
                 </SectionLeading>
 
-                <CallbackForm bg="default" />
+                <CallbackForm />
             </div>
 
             <div class="py-4">
