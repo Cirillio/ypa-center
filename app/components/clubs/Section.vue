@@ -3,6 +3,7 @@ import { EnrollRoutesEnum } from "~/constants/nav"
 
 defineProps<{
     clubsLength: number | null
+    minAge: number | null
 }>()
 </script>
 
@@ -15,8 +16,10 @@ defineProps<{
                 <SectionLeading as="h1" subtitle="Наши кружки" icon="ph:compass-duotone">
                     <template #title>
                         <span class="text-secondary">
-                            Место, где таланты<br />
-                            <span class="text-primary">становятся навыками</span>
+                            Место, где <br />
+                            <span class="text-primary"> таланты </span>
+                            <br />
+                            становятся <span class="text-primary">навыками</span>
                         </span>
                     </template>
                     <template #description>
@@ -26,7 +29,7 @@ defineProps<{
                     </template>
 
                     <template #action>
-                        <div class="flex flex-col gap-3">
+                        <div class="flex flex-col gap-6">
                             <div class="flex flex-col gap-1">
                                 <UButton
                                     :to="EnrollRoutesEnum.Subscription"
@@ -43,36 +46,40 @@ defineProps<{
                                     />
                                 </UButton>
                                 <span class="text-default/90 ml-1 text-xs font-bold">
-                                    От <span class="text-primary">450 ₽</span> за занятие — выгоднее
-                                    разового
+                                    От <span class="text-primary">450 ₽</span> за занятие в
+                                    абонементе — выгоднее разового
                                 </span>
                             </div>
 
-                            <UButton
-                                :to="EnrollRoutesEnum.Trial"
-                                size="lg"
-                                variant="soft"
-                                class="group w-fit"
-                            >
-                                <span class="font-semibold"
-                                    >Или записаться на пробное — 1 200 ₽</span
+                            <div class="flex flex-col gap-1">
+                                <UButton
+                                    :to="EnrollRoutesEnum.Trial"
+                                    size="lg"
+                                    variant="soft"
+                                    class="group w-fit"
                                 >
-                                <UIcon
-                                    name="ph:arrow-right-bold"
-                                    class="size-3.5 transition group-hover:translate-x-1"
-                                />
-                            </UButton>
+                                    <span class="font-semibold">Записаться на пробное занятие</span>
+                                    <UIcon
+                                        name="ph:arrow-right-bold"
+                                        class="size-3.5 transition group-hover:translate-x-1"
+                                    />
+                                </UButton>
+                                <span class="text-default/90 ml-1 text-xs font-bold">
+                                    Разово, <span class="text-primary">1 200 ₽</span> — без
+                                    абонемента
+                                </span>
+                            </div>
                         </div>
                     </template>
                 </SectionLeading>
             </div>
 
             <picture
-                class="flex h-96 w-full items-center justify-center overflow-hidden rounded-lg max-lg:max-w-140 max-sm:h-72 lg:h-120"
+                class="flex h-96 w-full items-center justify-center overflow-hidden rounded-lg shadow-sm max-lg:max-w-140 max-sm:h-72 lg:h-120"
             >
                 <AppPhoto
-                    src="/core/clubs-main.jpg"
-                    :quality="100"
+                    src="/moke/clubs-page-hero.jpeg"
+                    :quality="75"
                     :preload="{ fetchPriority: 'high' }"
                     :is-preload="true"
                     :height="480"
@@ -82,7 +89,11 @@ defineProps<{
             </picture>
         </UContainer>
         <UContainer>
-            <ClubsSectionCTA city="Академгородок" :clubs-quantity="clubsLength || 0" :min-age="6" />
+            <ClubsSectionCTA
+                city="Академгородок"
+                :clubs-quantity="clubsLength || 0"
+                :min-age="minAge"
+            />
         </UContainer>
     </PageSection>
 </template>

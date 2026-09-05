@@ -25,6 +25,14 @@ const enrichedClubs = computed(() =>
     }))
 )
 
+// Минимальный возраст по реальным группам расписания, а не захардкоженное число
+const minAge = computed(() => {
+    const ages = (activitiesData.value ?? [])
+        .flatMap((activity) => activity.groups.map((g) => g.age_min))
+        .filter((age): age is number => age != null)
+    return ages.length ? Math.min(...ages) : null
+})
+
 useSeoMeta({
     title: "Кружки — Улица Радости",
     description:
@@ -91,7 +99,7 @@ useHead({
 
 <template>
     <div class="flex w-full min-w-0 flex-col">
-        <ClubsSection :clubs-length="enrichedClubs.length" />
+        <ClubsSection :clubs-length="enrichedClubs.length" :min-age="minAge" />
 
         <section class="bg-default relative z-10 flex w-full py-12 md:py-20 lg:py-24">
             <UContainer class="flex w-full flex-col gap-6 md:gap-8">
