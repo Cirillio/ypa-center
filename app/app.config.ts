@@ -161,7 +161,8 @@ export default defineAppConfig({
             variants: {
                 variant: {
                     outline:
-                        "bg-default ring ring-inset ring-accented hover:ring-primary/40 focus-visible:ring-2 focus-visible:ring-primary"
+                        "bg-default ring ring-inset ring-accented hover:ring-primary/40 focus-visible:ring-2 focus-visible:ring-primary",
+                    subtle: "ring-primary/0 focus-visible:ring-primary! ring-2"
                 }
             },
             defaultVariants: {

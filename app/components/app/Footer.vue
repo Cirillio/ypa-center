@@ -75,15 +75,18 @@ const CONTACT_LINKS: FooterLink[] = [
                             </NuxtLink>
                         </nav>
                     </div>
-                    <UButton
-                        label="Мой кабинет"
-                        color="info"
-                        to="/my-cabinet"
-                        size="lg"
-                        class="text-info w-fit text-base"
-                        leading-icon="ph:user-bold"
-                        variant="soft"
-                    />
+                    <div class="flex flex-wrap gap-3">
+                        <UButton
+                            label="Мой кабинет"
+                            color="info"
+                            to="/my-cabinet"
+                            size="lg"
+                            class="text-info w-fit text-base"
+                            leading-icon="ph:user-bold"
+                            variant="soft"
+                        />
+                        <FeedbackModal />
+                    </div>
                 </div>
 
                 <!-- Brand + socials (right column) -->

@@ -73,6 +73,10 @@ export type CallbackRequestPayload = components["schemas"]["CallbackRequestCreat
 export type CallbackRequestResponse = components["schemas"]["SubmissionAccepted"]
 export type PreferredTimeWindow = components["schemas"]["PreferredTimeWindowEnum"]
 
+// POST /public/feedback/ — форма обратной связи
+export type FeedbackRequestPayload = components["schemas"]["FeedbackRequestCreateRequest"]
+export type FeedbackRequestResponse = components["schemas"]["SubmissionAccepted"]
+
 export interface ProblemDetail {
     type: string // "urn:problem-type:validationerror"
     title: string // "Validation Error", "NotFound", "Throttled"
