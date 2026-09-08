@@ -12,6 +12,10 @@
         scroll-behavior: smooth;
     }
 
+    strong {
+        color: var(--ui-primary);
+    }
+
     @media (prefers-reduced-motion: reduce) {
         *,
         *::before,

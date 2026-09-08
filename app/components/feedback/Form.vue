@@ -56,11 +56,7 @@ const inputUi = {
         "
     >
         <div class="flex items-start gap-2">
-            <div
-                class="bg-primary/10 flex aspect-square size-10 shrink-0 items-center justify-center rounded-full max-sm:hidden"
-            >
-                <Icon name="ph:user" class="text-primary size-6" />
-            </div>
+            <RoundIcon name="ph:user" class="max-sm:hidden" />
             <UFormField name="name" class="w-full">
                 <UInput
                     v-model="form.name"
@@ -79,11 +75,7 @@ const inputUi = {
         </div>
 
         <div class="flex items-start gap-2">
-            <div
-                class="bg-primary/10 flex aspect-square size-10 shrink-0 items-center justify-center rounded-full max-sm:hidden"
-            >
-                <Icon name="ph:envelope-simple" class="text-primary size-6" />
-            </div>
+            <RoundIcon name="ph:envelope-simple" class="max-sm:hidden" />
             <UFormField name="email" class="w-full">
                 <UInput
                     v-model="form.email"
@@ -102,11 +94,7 @@ const inputUi = {
         </div>
 
         <div class="flex items-start gap-2">
-            <div
-                class="bg-primary/10 flex aspect-square size-10 shrink-0 items-center justify-center rounded-full max-sm:hidden"
-            >
-                <Icon name="ph:chat-circle-text" class="text-primary size-6" />
-            </div>
+            <RoundIcon name="ph:chat-circle-text" class="max-sm:hidden" />
             <UFormField name="message" class="w-full">
                 <UTextarea
                     v-model="form.message"

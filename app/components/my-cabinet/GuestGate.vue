@@ -45,7 +45,8 @@ const teaser = [
 </script>
 
 <template>
-    <section class="flex w-full max-w-xs flex-col items-center text-center">
+    <section class="flex h-fit w-full max-w-xs flex-col items-center text-center">
+        <RoundIcon name="ph:book-open-text-bold" class="mb-6 max-sm:hidden" />
         <h1 class="text-primary text-3xl font-bold sm:text-4xl">
             Мой <span class="text-secondary">кабинет</span>
         </h1>
@@ -55,11 +56,7 @@ const teaser = [
 
         <form class="mt-6 flex w-full flex-col gap-3" @submit.prevent="onHandleOtp">
             <div class="flex items-center gap-2">
-                <div
-                    class="bg-primary/10 flex aspect-square size-10 shrink-0 items-center justify-center rounded-full max-sm:hidden"
-                >
-                    <Icon name="ph:envelope-bold" class="text-primary size-6" />
-                </div>
+                <RoundIcon name="ph:envelope-bold" class="max-sm:hidden" />
                 <UInput
                     v-model="modelValueEmail"
                     name="email"
@@ -78,11 +75,7 @@ const teaser = [
 
             <template v-if="currentStep === 'code'">
                 <div class="flex items-center gap-2">
-                    <div
-                        class="bg-primary/10 flex aspect-square size-10 shrink-0 items-center justify-center rounded-full max-sm:hidden"
-                    >
-                        <UIcon name="ph:lock-key-bold" class="text-primary size-6" />
-                    </div>
+                    <RoundIcon name="ph:lock-key-bold" class="max-sm:hidden" />
                     <UPinInput
                         v-model="pinValue"
                         :length="6"
@@ -130,7 +123,7 @@ const teaser = [
             Аккаунт создаётся автоматически после первой покупки — абонемента или разового занятия.
         </p>
 
-        <div class="mt-7 grid w-full grid-cols-3 gap-3 border-t border-(--ui-border) pt-6">
+        <div class="border-default mt-7 grid w-full grid-cols-3 gap-3 border-t pt-6">
             <div
                 v-for="item in teaser"
                 :key="item.title"

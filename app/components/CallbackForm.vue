@@ -95,11 +95,7 @@ const onSelectTime = (option: ContactTimeOption) => {
 
         <form id="callbackForm" class="flex flex-col gap-2" @submit.prevent="submitForm">
             <div class="flex items-center gap-2">
-                <div
-                    class="bg-primary/10 flex aspect-square size-10 items-center justify-center rounded-full"
-                >
-                    <Icon name="ph:user" class="text-primary size-6" />
-                </div>
+                <RoundIcon name="ph:user" />
                 <UInput
                     v-model="form.name"
                     :disabled="isLoading"
@@ -117,11 +113,7 @@ const onSelectTime = (option: ContactTimeOption) => {
                 />
             </div>
             <div class="flex items-center gap-2">
-                <div
-                    class="bg-primary/10 flex aspect-square size-10 items-center justify-center rounded-full"
-                >
-                    <Icon name="ph:phone" class="text-primary size-6" />
-                </div>
+                <RoundIcon name="ph:phone" />
                 <UInput
                     v-model="form.phone"
                     v-maska="Maskas.Phone"
@@ -142,11 +134,7 @@ const onSelectTime = (option: ContactTimeOption) => {
             </div>
             <!-- Выбор времени звонка -->
             <div class="flex items-center gap-2">
-                <div
-                    class="bg-primary/10 flex aspect-square size-10 items-center justify-center rounded-full"
-                >
-                    <Icon name="ph:clock" class="text-primary size-6" />
-                </div>
+                <RoundIcon name="ph:clock" />
                 <UPopover
                     v-model:open="popoverOpen"
                     :content="{ align: 'start' }"

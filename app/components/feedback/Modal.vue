@@ -10,8 +10,7 @@ const isOpen = ref(false)
     <UButton
         label="Написать нам"
         variant="soft"
-        size="lg"
-        class="w-fit text-base"
+        class="w-fit"
         leading-icon="ph:envelope-simple-bold"
         @click="void (isOpen = true)"
     />
