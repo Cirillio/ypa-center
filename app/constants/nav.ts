@@ -16,3 +16,8 @@ export enum EnrollRoutesEnum {
     Event = "/enroll/event",
     Subscription = "/enroll/subscription"
 }
+
+export enum CabinetRoutesEnum {
+    Login = "/login",
+    Me = "/me"
+}

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { CabinetRoutesEnum } from "~/constants/nav"
+
 const currentYear = new Date().getFullYear()
 
 const appConfig = useAppConfig()
@@ -75,13 +77,12 @@ const CONTACT_LINKS: FooterLink[] = [
                             </NuxtLink>
                         </nav>
                     </div>
-                    <div class="flex flex-wrap gap-3">
+                    <div class="flex flex-wrap items-center gap-3">
                         <UButton
                             label="Мой кабинет"
                             color="info"
-                            to="/my-cabinet"
-                            size="lg"
-                            class="text-info w-fit text-base"
+                            :to="CabinetRoutesEnum.Me"
+                            class="text-info w-fit"
                             leading-icon="ph:user-bold"
                             variant="soft"
                         />

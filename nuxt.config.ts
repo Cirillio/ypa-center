@@ -47,7 +47,8 @@ export default defineNuxtConfig({
         "/enroll/event": { ssr: true },
         "/enroll/subscription": { ssr: true },
 
-        "my-status": { ssr: false },
+        "/login": { ssr: false },
+        "/me": { ssr: false },
 
         "/**": {
             ssr: true,

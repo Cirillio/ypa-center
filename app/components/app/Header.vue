@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useMounted, useWindowScroll } from "@vueuse/core"
-import { EnrollRoutesEnum, NAV_ROUTES } from "~/constants/nav"
+import { CabinetRoutesEnum, EnrollRoutesEnum, NAV_ROUTES } from "~/constants/nav"
 import { useMobileMenuStore } from "~/store/mobile-menu-store"
 
 const isMounted = useMounted()
@@ -80,7 +80,7 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
                 <!-- ACTION -->
 
                 <UButton
-                    to="/my-cabinet"
+                    :to="CabinetRoutesEnum.Me"
                     label="Мой кабинет"
                     color="info"
                     variant="soft"

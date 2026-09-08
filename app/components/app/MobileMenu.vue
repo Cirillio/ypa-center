@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { NAV_ROUTES, EnrollRoutesEnum } from "~/constants/nav"
+import { CabinetRoutesEnum, EnrollRoutesEnum, NAV_ROUTES } from "~/constants/nav"
 import { useMobileMenuStore } from "~/store/mobile-menu-store"
 
 const mobileMenuStore = useMobileMenuStore()
@@ -56,7 +56,7 @@ function navigate(to: string) {
                 <Transition name="actions">
                     <div v-if="isMenuOpen" class="mt-auto flex flex-col gap-3 pb-4">
                         <UButton
-                            to="/my-cabinet"
+                            :to="CabinetRoutesEnum.Me"
                             label="Мой статус"
                             color="info"
                             size="xl"

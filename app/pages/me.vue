@@ -1,19 +1,10 @@
 <script lang="ts" setup>
-import type { StatusData, UpcomingActivityItem } from "~/types/status"
+import type { UpcomingActivityItem } from "~/types/status"
 
-const {
-    handleOtp,
-    resendCode,
-    secondsLeft,
-    canResend,
-    isLoading,
-    error,
-    resetFlow,
-    step,
-    email,
-    code,
-    data
-} = useMailConfirm<StatusData>({ cooldown: 5 })
+definePageMeta({ middleware: "auth" })
+
+const authStore = useAuthStore()
+const { data, isLoading } = storeToRefs(authStore)
 
 const {
     children: cabinetChildren,
@@ -22,54 +13,20 @@ const {
     removeChild
 } = useCabinetChildren(() => data.value)
 
-const handleOtpFlow = async () => {
-    if (step.value === "email" || step.value === "code") await handleOtp()
-    else if (step.value === "accepted") modalOpen.value = true
-}
-
-const resend = async () => {
-    resetFlow()
-    await resendCode()
-}
-
 const modalOpen = ref<boolean>(false)
-const isLeaveConfirmed = ref<boolean>(false)
-const resolveLeave = ref<((v: boolean) => void) | null>(null)
-
-onBeforeRouteLeave(async () => {
-    if (isLeaveConfirmed.value || !email.value || step.value === "email") return true
-
-    modalOpen.value = true
-
-    const confirmed = await new Promise<boolean>((resolve) => {
-        resolveLeave.value = resolve
-    })
-
-    if (confirmed) {
-        isLeaveConfirmed.value = true
-        return true
-    }
-
-    return false
-})
-
-onBeforeUnmount(() => {
-    resetFlow()
-})
 
 const handleStay = () => {
     modalOpen.value = false
-    resolveLeave.value?.(false)
 }
 
-const handleLeave = () => {
+const handleLogout = async () => {
     modalOpen.value = false
-    if (resolveLeave.value) {
-        resolveLeave.value(true)
-    } else {
-        resetFlow()
-    }
+    authStore.resetFlow()
+    await navigateTo("/login")
 }
+
+const isProcessing = computed(() => isLoading.value)
+const showData = computed(() => data.value !== null && !isLoading.value)
 
 const sortedSubscriptions = computed(() => {
     if (!showData.value) return undefined
@@ -86,13 +43,6 @@ const sortedRecords = computed(() => {
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
 })
-
-const isProcessing = computed(() => isLoading.value)
-const isInitial = computed(
-    () => step.value === "email" || (step.value === "code" && !isLoading.value)
-)
-const isAuthed = computed(() => step.value === "accepted")
-const showData = computed(() => step.value === "accepted" && data.value && !isLoading.value)
 
 const dayMap: Record<string, number> = {
     пн: 1,
@@ -226,45 +176,25 @@ const groupedUpcoming = computed(() => {
                         Вы уверены, что хотите выйти?
                     </p>
                     <div class="flex justify-end gap-3">
-                        <UButton class="text-lg font-semibold" @click="handleStay">
-                            Остаться
-                        </UButton>
                         <UButton
                             color="error"
                             variant="ghost"
                             class="text-lg font-semibold"
-                            @click="handleLeave"
+                            @click="handleLogout"
                         >
                             Уйти
+                        </UButton>
+                        <UButton class="text-lg font-semibold" @click="handleStay">
+                            Остаться
                         </UButton>
                     </div>
                 </div>
             </template>
         </UModal>
 
-        <MyCabinetSection v-if="isAuthed" :is-authed="isAuthed" @logout="modalOpen = true" />
+        <MyCabinetSection :is-authed="true" @logout="modalOpen = true" />
 
-        <!-- Гость: блок входа -->
-        <main
-            v-if="isInitial"
-            class="flex min-h-[calc(100dvh-var(--ui-header-height))] items-center justify-center px-4 py-8"
-        >
-            <MyCabinetGuestGate
-                v-model:email="email"
-                v-model:code="code"
-                :current-step="step"
-                :is-loading="isLoading"
-                :error="error || ''"
-                :seconds-left="secondsLeft"
-                :can-resend="canResend"
-                @resend-code="resend"
-                @reset="resetFlow"
-                @handle-otp="handleOtpFlow"
-            />
-        </main>
-
-        <!-- Авторизован / загрузка -->
-        <main v-else class="pb-16">
+        <main class="pb-16">
             <UContainer class="flex w-full flex-col gap-4">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="rounded-lg bg-white p-6">
