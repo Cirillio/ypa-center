@@ -28,10 +28,10 @@ const rows = computed(() => [
     { label: "Дата покупки", value: formattedCreatedAt.value }
 ])
 
-const status = computed(() =>
+const stamp = computed(() =>
     sub.isExpired
-        ? { text: "Завершён", variant: "done" as const }
-        : { text: "Активен", variant: "live" as const }
+        ? { text: "Завершён", class: "border-default/20 text-default/40 bg-default/5" }
+        : { text: "Активен", class: "border-secondary/40 text-secondary bg-secondary/5" }
 )
 
 const isClubsShown = ref<boolean>(false)
@@ -41,41 +41,78 @@ const toggleClubsShown = () => {
 </script>
 
 <template>
-    <MyCabinetActivityCard
-        :id="sub.id"
-        type-badge="Абонемент"
-        color="rose"
-        icon="ph:star-bold"
-        :rows="rows"
-        :status="status"
-    >
-        <template #expand>
-            <UButton
-                class="w-fit"
-                :variant="isClubsShown ? 'ghost' : 'soft'"
-                @click="toggleClubsShown"
-            >
-                {{ isClubsShown ? "Скрыть" : `Показать кружки (${sub.clubs.length})` }}
-            </UButton>
-            <div v-if="isClubsShown" class="flex flex-col gap-2">
-                <MyCabinetActivityItem
-                    v-for="(club, idx) in clubsSortedByLeft"
-                    :key="idx"
-                    :title="club.name"
-                    :desc="club.subgroup.name"
-                    :datetime="`${club.weeklySlot.dayOfWeek} ${club.weeklySlot.startTime}-${club.weeklySlot.endTime}`"
-                    :is-active="club.left > 0"
-                >
-                    <template #trailing>
-                        <span class="text-primary text-lg leading-tight font-bold">
-                            <span :class="club.left > 0 ? 'text-secondary' : 'text-default/25'">
-                                {{ club.left }}
-                            </span>
-                            /{{ club.maxUses }}
+    <div class="relative overflow-hidden rounded-lg">
+        <!-- Статусная «печать» в углу -->
+        <div
+            class="absolute top-3.5 right-3.5 z-20 -rotate-6 rounded-md border px-2.5 py-0.5 text-xs font-bold tracking-wider uppercase"
+            :class="stamp.class"
+        >
+            {{ stamp.text }}
+        </div>
+
+        <div
+            :class="{ 'opacity-75': sub.isExpired }"
+            class="via-default to-default from-default hover:from-secondary/80 hover:to-primary/80 bg-linear-to-tl p-px transition-colors duration-150 ease-in"
+        >
+            <div class="bg-default flex flex-col gap-4 rounded-lg p-3.75">
+                <!-- Шапка: тип + номер -->
+                <div class="flex items-center gap-4">
+                    <MyCabinetActivityTypeBadge type="subscription" />
+                    <div class="grid">
+                        <span class="text-default/75 text-base leading-tight">Абонемент</span>
+                        <span class="text-default text-lg leading-tight font-semibold">
+                            #{{ sub.id }}
                         </span>
-                    </template>
-                </MyCabinetActivityItem>
+                    </div>
+                </div>
+
+                <USeparator />
+
+                <!-- Сводка -->
+                <dl class="flex flex-col gap-2">
+                    <div
+                        v-for="row in rows"
+                        :key="row.label"
+                        class="flex items-center justify-between gap-2 px-1"
+                    >
+                        <dt class="text-default/70 text-sm font-medium">{{ row.label }}</dt>
+                        <dd
+                            class="text-default text-end text-sm font-semibold"
+                            :class="{ 'text-default/40': row.muted }"
+                        >
+                            {{ row.value }}
+                        </dd>
+                    </div>
+                </dl>
+
+                <!-- Кружки абонемента -->
+                <UButton
+                    class="w-fit"
+                    :variant="isClubsShown ? 'ghost' : 'soft'"
+                    @click="toggleClubsShown"
+                >
+                    {{ isClubsShown ? "Скрыть" : `Показать кружки (${sub.clubs.length})` }}
+                </UButton>
+                <div v-if="isClubsShown" class="grid gap-2 sm:grid-cols-2">
+                    <MyCabinetActivityItem
+                        v-for="(club, idx) in clubsSortedByLeft"
+                        :key="idx"
+                        :title="club.name"
+                        :desc="club.subgroup.name"
+                        :datetime="`${club.weeklySlot.dayOfWeek} ${club.weeklySlot.startTime}-${club.weeklySlot.endTime}`"
+                        :is-active="club.left > 0"
+                    >
+                        <template #trailing>
+                            <span class="text-primary text-lg leading-tight font-bold">
+                                <span :class="club.left > 0 ? 'text-secondary' : 'text-default/25'">
+                                    {{ club.left }}
+                                </span>
+                                /{{ club.maxUses }}
+                            </span>
+                        </template>
+                    </MyCabinetActivityItem>
+                </div>
             </div>
-        </template>
-    </MyCabinetActivityCard>
+        </div>
+    </div>
 </template>

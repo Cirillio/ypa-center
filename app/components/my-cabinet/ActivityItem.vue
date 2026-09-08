@@ -8,30 +8,29 @@ defineProps<{
 </script>
 
 <template>
-    <div class="flex gap-4" :class="{ 'opacity-75': !isActive }">
-        <!-- Indicator Dot -->
+    <div class="flex gap-3" :class="{ 'opacity-75': !isActive }">
+        <!-- Индикатор активности -->
         <div
-            class="relative my-auto flex h-10 min-h-0 w-1 min-w-0 shrink-0"
+            class="w-1 shrink-0 self-stretch rounded-full"
             :class="isActive ? 'bg-secondary/50 animate-pulse' : 'bg-black/25'"
         ></div>
 
-        <!-- Content -->
-        <div class="grid flex-1">
-            <span class="text-default line-clamp-1 text-lg leading-tight font-medium">
+        <div class="flex min-w-0 flex-1 flex-col gap-1">
+            <span class="text-default line-clamp-1 text-base leading-tight font-semibold">
                 {{ title }}
             </span>
             <span v-if="desc" class="text-default/75 line-clamp-1 text-sm leading-tight">
                 {{ desc }}
             </span>
-        </div>
 
-        <span class="text-default/75 mt-auto line-clamp-1 text-base leading-tight">
-            {{ datetime }}
-        </span>
-
-        <!-- Trailing Slot -->
-        <div v-if="$slots.trailing" class="mt-auto leading-tight">
-            <slot name="trailing" />
+            <div class="mt-0.5 flex items-center justify-between gap-2">
+                <span class="text-default/75 line-clamp-1 text-sm leading-tight">
+                    {{ datetime }}
+                </span>
+                <div v-if="$slots.trailing" class="shrink-0 leading-tight">
+                    <slot name="trailing" />
+                </div>
+            </div>
         </div>
     </div>
 </template>
