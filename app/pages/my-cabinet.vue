@@ -242,122 +242,121 @@ const groupedUpcoming = computed(() => {
             </template>
         </UModal>
 
-        <MyCabinetSection :is-authed="isAuthed" @logout="modalOpen = true" />
+        <MyCabinetSection v-if="isAuthed" :is-authed="isAuthed" @logout="modalOpen = true" />
 
-        <main class="pb-16">
+        <!-- Гость: блок входа -->
+        <main
+            v-if="isInitial"
+            class="flex min-h-[calc(100dvh-var(--ui-header-height))] items-center justify-center px-4 py-8"
+        >
+            <MyCabinetGuestGate
+                v-model:email="email"
+                v-model:code="code"
+                :current-step="step"
+                :is-loading="isLoading"
+                :error="error || ''"
+                :seconds-left="secondsLeft"
+                :can-resend="canResend"
+                @resend-code="resend"
+                @reset="resetFlow"
+                @handle-otp="handleOtpFlow"
+            />
+        </main>
+
+        <!-- Авторизован / загрузка -->
+        <main v-else class="pb-16">
             <UContainer class="flex w-full flex-col gap-4">
-                <!-- Гость: блок входа -->
-                <MyCabinetGuestGate
-                    v-if="isInitial"
-                    v-model:email="email"
-                    v-model:code="code"
-                    :current-step="step"
-                    :is-loading="isLoading"
-                    :error="error || ''"
-                    :seconds-left="secondsLeft"
-                    :can-resend="canResend"
-                    @resend-code="resend"
-                    @reset="resetFlow"
-                    @handle-otp="handleOtpFlow"
-                />
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="rounded-lg bg-white p-6">
+                        <MyCabinetParentInfo
+                            :parent="showData ? data!.parent : undefined"
+                            :is-processing="isProcessing"
+                        />
+                    </div>
+                    <div class="rounded-lg bg-white p-6">
+                        <MyCabinetChildrenInfo
+                            :children="showData ? cabinetChildren : undefined"
+                            :is-processing="isProcessing"
+                            :is-saving="isChildSaving"
+                            @add="addChild"
+                            @remove="removeChild"
+                        />
+                    </div>
+                </div>
 
-                <!-- Авторизован / загрузка -->
-                <template v-else>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="rounded-lg bg-white p-6">
-                            <MyCabinetParentInfo
-                                :parent="showData ? data!.parent : undefined"
-                                :is-processing="isProcessing"
-                            />
-                        </div>
-                        <div class="rounded-lg bg-white p-6">
-                            <MyCabinetChildrenInfo
-                                :children="showData ? cabinetChildren : undefined"
-                                :is-processing="isProcessing"
-                                :is-saving="isChildSaving"
-                                @add="addChild"
-                                @remove="removeChild"
-                            />
-                        </div>
+                <div class="grid w-full grid-cols-11 gap-4">
+                    <div class="col-span-7 flex h-fit flex-col gap-6 rounded-lg bg-white p-6">
+                        <MyCabinetSubscriptionsList
+                            :subscriptions="sortedSubscriptions"
+                            :is-processing="isProcessing"
+                        />
+                        <MyCabinetRecordsList
+                            :records="sortedRecords"
+                            :is-processing="isProcessing"
+                        />
                     </div>
 
-                    <div class="grid w-full grid-cols-11 gap-4">
-                        <div class="col-span-7 flex h-fit flex-col gap-6 rounded-lg bg-white p-6">
-                            <MyCabinetSubscriptionsList
-                                :subscriptions="sortedSubscriptions"
-                                :is-processing="isProcessing"
-                            />
-                            <MyCabinetRecordsList
-                                :records="sortedRecords"
-                                :is-processing="isProcessing"
-                            />
-                        </div>
+                    <div
+                        class="top-(calc(var(--header-height)+1rem)) sticky col-span-4 flex h-fit min-h-120 flex-col gap-6 rounded-lg bg-white py-6"
+                    >
+                        <h2 class="text-primary ml-4 px-6 text-xl font-bold">
+                            Ближайшие активности
+                        </h2>
 
                         <div
-                            class="top-(calc(var(--header-height)+1rem)) sticky col-span-4 flex h-fit min-h-120 flex-col gap-6 rounded-lg bg-white py-6"
+                            v-if="groupedUpcoming"
+                            class="grid max-h-240 gap-4 overflow-y-auto px-6"
                         >
-                            <h2 class="text-primary ml-4 px-6 text-xl font-bold">
-                                Ближайшие активности
-                            </h2>
-
-                            <div
-                                v-if="groupedUpcoming"
-                                class="grid max-h-240 gap-4 overflow-y-auto px-6"
-                            >
-                                <template v-if="groupedUpcoming.length > 0">
-                                    <div
-                                        v-for="group in groupedUpcoming"
-                                        :key="group.date"
-                                        class="flex flex-col gap-2"
-                                    >
-                                        <div
-                                            class="text-default/50 text-xs font-bold tracking-wider uppercase"
-                                        >
-                                            {{ group.date }}
-                                        </div>
-                                        <MyCabinetUpcomingActivityCard
-                                            v-for="activity in group.items"
-                                            :key="activity.id"
-                                            :item="activity"
-                                        />
-                                    </div>
-                                </template>
-                                <div v-else class="flex flex-col items-center py-8 text-center">
-                                    <UIcon
-                                        name="ph:calendar-x-bold"
-                                        class="text-default/10 size-16"
-                                    />
-                                    <p class="text-default/50 mt-4 text-sm italic">
-                                        Нет запланированных<br />занятий на ближайшее время
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div v-else class="flex flex-col gap-4 px-6">
+                            <template v-if="groupedUpcoming.length > 0">
                                 <div
-                                    v-for="i in 3"
-                                    :key="i"
-                                    class="flex h-36 flex-col gap-3 rounded-lg p-4"
-                                    :class="
-                                        isProcessing
-                                            ? 'bg-secondary/10 animate-pulse'
-                                            : 'bg-mauve-500/5'
-                                    "
+                                    v-for="group in groupedUpcoming"
+                                    :key="group.date"
+                                    class="flex flex-col gap-2"
                                 >
-                                    <div class="flex items-center gap-2">
-                                        <div class="bg-default/10 size-7 rounded-full" />
-                                        <div class="bg-default/10 h-3 w-20 rounded-md" />
+                                    <div
+                                        class="text-default/50 text-xs font-bold tracking-wider uppercase"
+                                    >
+                                        {{ group.date }}
                                     </div>
-                                    <div class="flex flex-col gap-1.5">
-                                        <div class="bg-default/20 h-4 w-3/4 rounded-md" />
-                                        <div class="bg-default/10 h-3 w-1/2 rounded-md" />
-                                    </div>
-                                    <div class="bg-default/10 mt-auto h-6 w-full rounded-md" />
+                                    <MyCabinetUpcomingActivityCard
+                                        v-for="activity in group.items"
+                                        :key="activity.id"
+                                        :item="activity"
+                                    />
                                 </div>
+                            </template>
+                            <div v-else class="flex flex-col items-center py-8 text-center">
+                                <UIcon name="ph:calendar-x-bold" class="text-default/10 size-16" />
+                                <p class="text-default/50 mt-4 text-sm italic">
+                                    Нет запланированных<br />занятий на ближайшее время
+                                </p>
+                            </div>
+                        </div>
+
+                        <div v-else class="flex flex-col gap-4 px-6">
+                            <div
+                                v-for="i in 3"
+                                :key="i"
+                                class="flex h-36 flex-col gap-3 rounded-lg p-4"
+                                :class="
+                                    isProcessing
+                                        ? 'bg-secondary/10 animate-pulse'
+                                        : 'bg-mauve-500/5'
+                                "
+                            >
+                                <div class="flex items-center gap-2">
+                                    <div class="bg-default/10 size-7 rounded-full" />
+                                    <div class="bg-default/10 h-3 w-20 rounded-md" />
+                                </div>
+                                <div class="flex flex-col gap-1.5">
+                                    <div class="bg-default/20 h-4 w-3/4 rounded-md" />
+                                    <div class="bg-default/10 h-3 w-1/2 rounded-md" />
+                                </div>
+                                <div class="bg-default/10 mt-auto h-6 w-full rounded-md" />
                             </div>
                         </div>
                     </div>
-                </template>
+                </div>
             </UContainer>
         </main>
     </div>

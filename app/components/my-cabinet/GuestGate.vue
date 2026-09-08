@@ -13,7 +13,29 @@ type GuestGateProps = {
 const modelValueEmail = defineModel<string>("email")
 const modelValueCode = defineModel<string>("code")
 
-defineProps<GuestGateProps>()
+const props = defineProps<GuestGateProps>()
+
+const pinValue = computed<number[]>({
+    get: () =>
+        modelValueCode.value
+            ? modelValueCode.value
+                  .split("")
+                  .map(Number)
+                  .filter((n) => !Number.isNaN(n))
+            : [],
+    set: (val: number[]) => {
+        modelValueCode.value = val
+            .filter((n) => typeof n === "number" && !Number.isNaN(n))
+            .join("")
+            .slice(0, 6)
+    }
+})
+
+const handleAutoSubmit = () => {
+    if (props.currentStep === "code" && !props.isLoading) {
+        props.onHandleOtp()
+    }
+}
 
 const teaser = [
     { icon: "ph:star-bold", title: "Абонементы", desc: "История и состав кружков" },
@@ -23,52 +45,73 @@ const teaser = [
 </script>
 
 <template>
-    <section
-        class="mx-auto flex w-full max-w-xl flex-col items-center rounded-lg bg-white p-8 text-center"
-    >
-        <div class="bg-primary/5 text-primary flex items-center justify-center rounded-full p-3.5">
-            <UIcon name="ph:lock-key-bold" class="size-8" />
-        </div>
-
-        <p class="text-secondary mt-5 text-sm font-semibold tracking-wide uppercase">
-            Доступ к кабинету
-        </p>
-        <h2 class="text-primary mt-1 text-3xl font-bold">Войдите по почте</h2>
-        <p class="text-default/70 mt-2 max-w-md text-base">
-            Укажите e-mail — мы отправим одноразовый код для входа. Пароль не нужен.
+    <section class="flex w-full max-w-xs flex-col items-center text-center">
+        <h1 class="text-primary text-3xl font-bold sm:text-4xl">
+            Мой <span class="text-secondary">кабинет</span>
+        </h1>
+        <p class="text-default/70 mt-2 text-base">
+            Войдите по почте — пришлём одноразовый код, пароль не нужен.
         </p>
 
         <form class="mt-6 flex w-full flex-col gap-3" @submit.prevent="onHandleOtp">
-            <UInput
-                v-model="modelValueEmail"
-                name="email"
-                type="email"
-                autocomplete="email"
-                size="xl"
-                :disabled="isLoading"
-                placeholder="your-email@mail.ru"
-                class="w-full"
-            />
+            <div class="flex items-center gap-2">
+                <div
+                    class="bg-primary/10 flex aspect-square size-10 shrink-0 items-center justify-center rounded-full max-sm:hidden"
+                >
+                    <Icon name="ph:envelope-bold" class="text-primary size-6" />
+                </div>
+                <UInput
+                    v-model="modelValueEmail"
+                    name="email"
+                    type="email"
+                    variant="subtle"
+                    autocomplete="email"
+                    size="xl"
+                    :disabled="isLoading"
+                    placeholder="your-email@mail.ru"
+                    class="w-full"
+                    :ui="{
+                        base: 'bg-white shadow-sm'
+                    }"
+                />
+            </div>
 
             <template v-if="currentStep === 'code'">
-                <UInput
-                    v-model="modelValueCode"
-                    size="xl"
-                    color="secondary"
-                    :disabled="isLoading"
-                    placeholder="Код из письма (###-###)"
-                    class="w-full"
-                />
-                <div class="flex items-center justify-center gap-2 text-sm">
-                    <span class="text-default/70">Код не пришёл?</span>
-                    <button
-                        type="button"
-                        :disabled="!canResend"
-                        class="text-primary/80 disabled:text-primary/20 hover:text-primary cursor-pointer font-semibold transition"
-                        @click="onResendCode"
+                <div class="flex items-center gap-2">
+                    <div
+                        class="bg-primary/10 flex aspect-square size-10 shrink-0 items-center justify-center rounded-full max-sm:hidden"
                     >
-                        Отправить заново <span v-if="secondsLeft > 0">({{ secondsLeft }})</span>
-                    </button>
+                        <UIcon name="ph:lock-key-bold" class="text-primary size-6" />
+                    </div>
+                    <UPinInput
+                        v-model="pinValue"
+                        :length="6"
+                        type="number"
+                        otp
+                        variant="subtle"
+                        color="secondary"
+                        size="xl"
+                        :disabled="isLoading"
+                        class="w-full justify-center"
+                        :ui="{
+                            base: 'size-9 text-secondary text-base md:text-lg font-semibold rounded-xs ring-2 ring-transparent shadow-sm focus-visible:ring-primary bg-white [&:nth-child(3)]:mr-2.5'
+                        }"
+                        @complete="handleAutoSubmit"
+                    />
+                </div>
+                <div class="flex flex-col items-center gap-2 text-center">
+                    <p class="text-default/60 text-xs">Введите 6 цифр из письма</p>
+                    <div class="flex items-center justify-center gap-2 text-sm">
+                        <span class="text-default/70">Код не пришёл?</span>
+                        <button
+                            type="button"
+                            :disabled="!canResend"
+                            class="text-primary/80 disabled:text-primary/20 hover:text-primary cursor-pointer font-semibold transition"
+                            @click="onResendCode"
+                        >
+                            Отправить заново <span v-if="secondsLeft > 0">({{ secondsLeft }})</span>
+                        </button>
+                    </div>
                 </div>
             </template>
 
@@ -77,10 +120,9 @@ const teaser = [
             <UButton
                 type="submit"
                 :loading="isLoading"
-                size="lg"
                 block
                 class="mt-1 text-lg font-semibold"
-                :label="currentStep === 'email' ? 'Получить код' : 'Подтвердить'"
+                :label="currentStep === 'email' ? 'Получить код' : 'Войти'"
             />
         </form>
 
@@ -92,7 +134,7 @@ const teaser = [
             <div
                 v-for="item in teaser"
                 :key="item.title"
-                class="flex flex-col items-center gap-1.5"
+                class="flex flex-col items-center gap-1.5 text-center"
             >
                 <div
                     class="bg-secondary/5 text-secondary flex items-center justify-center rounded-full p-2"
