@@ -9,7 +9,14 @@ defineProps<{
 
 <template>
     <section class="flex flex-col gap-4">
-        <h2 class="text-primary ml-4 text-xl font-bold">Абонементы</h2>
+        <div class="flex items-center gap-3">
+            <div
+                class="bg-primary/5 text-primary flex items-center justify-center rounded-full p-2"
+            >
+                <UIcon name="ph:star-bold" class="size-5" />
+            </div>
+            <h2 class="text-primary text-xl font-bold">Абонементы</h2>
+        </div>
         <template v-if="subscriptions">
             <MyCabinetSubscribitionCard v-for="sub in subscriptions" :key="sub.id" v-bind="sub" />
         </template>

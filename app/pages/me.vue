@@ -35,14 +35,20 @@ const sortedSubscriptions = computed(() => {
     )
 })
 
-const sortedRecords = computed(() => {
-    if (!showData.value) return undefined
-    const trials = data.value!.trials.map((t) => ({ ...t, type: "trial" as const }))
-    const events = data.value!.events.map((e) => ({ ...e, type: "event" as const }))
-    return [...trials, ...events].sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    )
-})
+const PAGE_SIZE = 5
+const subscriptionsShown = ref(PAGE_SIZE)
+const upcomingShown = ref(PAGE_SIZE)
+
+const visibleSubscriptions = computed(() =>
+    sortedSubscriptions.value?.slice(0, subscriptionsShown.value)
+)
+const hasMoreSubscriptions = computed(
+    () => (sortedSubscriptions.value?.length ?? 0) > subscriptionsShown.value
+)
+const visibleUpcoming = computed(() => upcomingActivities.value?.slice(0, upcomingShown.value))
+const hasMoreUpcoming = computed(
+    () => (upcomingActivities.value?.length ?? 0) > upcomingShown.value
+)
 
 const dayMap: Record<string, number> = {
     пн: 1,
@@ -148,7 +154,7 @@ const upcomingActivities = computed<UpcomingActivityItem[] | undefined>(() => {
 
 // Группировка ближайших активностей по дате (date-divider в сайдбаре).
 const groupedUpcoming = computed(() => {
-    const items = upcomingActivities.value
+    const items = visibleUpcoming.value
     if (!items) return undefined
 
     const groups: { date: string; items: UpcomingActivityItem[] }[] = []
@@ -162,7 +168,7 @@ const groupedUpcoming = computed(() => {
 </script>
 
 <template>
-    <div class="gradient-bg-ps min-h-dvh">
+    <div class="gradient-bg-ps min-h-dvh pt-[var(--ui-header-height)]">
         <UModal
             v-model:open="modalOpen"
             :ui="{
@@ -192,51 +198,60 @@ const groupedUpcoming = computed(() => {
             </template>
         </UModal>
 
-        <MyCabinetSection :is-authed="true" @logout="modalOpen = true" />
+        <MyCabinetSection :parent-name="data?.parent.name" @logout="modalOpen = true" />
 
         <main class="pb-16">
-            <UContainer class="flex w-full flex-col gap-4">
-                <div class="grid grid-cols-2 gap-4">
+            <UContainer class="grid gap-4 lg:grid-cols-7">
+                <div class="flex flex-col gap-4 lg:col-span-5">
+                    <!-- 2a совмещённый профиль+дети -->
                     <div class="rounded-lg bg-white p-6">
-                        <MyCabinetParentInfo
-                            :parent="showData ? data!.parent : undefined"
+                        <div class="grid gap-6 md:grid-cols-2">
+                            <MyCabinetParentInfo
+                                :parent="showData ? data!.parent : undefined"
+                                :is-processing="isProcessing"
+                            />
+                            <MyCabinetChildrenInfo
+                                :children="showData ? cabinetChildren : undefined"
+                                :is-processing="isProcessing"
+                                :is-saving="isChildSaving"
+                                class="border-default border-t pt-6 md:border-t-0 md:border-l md:pt-0 md:pl-6"
+                                @add="addChild"
+                                @remove="removeChild"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- 2b абонементы + Показать ещё -->
+                    <div class="flex flex-col gap-6 rounded-lg bg-white p-6">
+                        <MyCabinetSubscriptionsList
+                            :subscriptions="visibleSubscriptions"
                             :is-processing="isProcessing"
                         />
-                    </div>
-                    <div class="rounded-lg bg-white p-6">
-                        <MyCabinetChildrenInfo
-                            :children="showData ? cabinetChildren : undefined"
-                            :is-processing="isProcessing"
-                            :is-saving="isChildSaving"
-                            @add="addChild"
-                            @remove="removeChild"
+                        <UButton
+                            v-if="hasMoreSubscriptions"
+                            variant="soft"
+                            block
+                            label="Показать ещё"
+                            @click="subscriptionsShown += PAGE_SIZE"
                         />
                     </div>
                 </div>
 
-                <div class="grid w-full grid-cols-11 gap-4">
-                    <div class="col-span-7 flex h-fit flex-col gap-6 rounded-lg bg-white p-6">
-                        <MyCabinetSubscriptionsList
-                            :subscriptions="sortedSubscriptions"
-                            :is-processing="isProcessing"
-                        />
-                        <MyCabinetRecordsList
-                            :records="sortedRecords"
-                            :is-processing="isProcessing"
-                        />
-                    </div>
-
+                <div class="lg:col-span-2">
+                    <!-- 2c лента активностей, sticky -->
                     <div
-                        class="top-(calc(var(--header-height)+1rem)) sticky col-span-4 flex h-fit min-h-120 flex-col gap-6 rounded-lg bg-white py-6"
+                        class="sticky top-[calc(var(--ui-header-height)+1rem)] flex flex-col gap-6 rounded-lg bg-white p-6"
                     >
-                        <h2 class="text-primary ml-4 px-6 text-xl font-bold">
-                            Ближайшие активности
-                        </h2>
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="bg-primary/5 text-primary flex items-center justify-center rounded-full p-2"
+                            >
+                                <UIcon name="ph:calendar-dot-bold" class="size-5" />
+                            </div>
+                            <h2 class="text-primary text-xl font-bold">Ближайшие активности</h2>
+                        </div>
 
-                        <div
-                            v-if="groupedUpcoming"
-                            class="grid max-h-240 gap-4 overflow-y-auto px-6"
-                        >
+                        <div v-if="groupedUpcoming" class="flex flex-col gap-4">
                             <template v-if="groupedUpcoming.length > 0">
                                 <div
                                     v-for="group in groupedUpcoming"
@@ -254,6 +269,14 @@ const groupedUpcoming = computed(() => {
                                         :item="activity"
                                     />
                                 </div>
+
+                                <UButton
+                                    v-if="hasMoreUpcoming"
+                                    variant="soft"
+                                    block
+                                    label="Показать ещё"
+                                    @click="upcomingShown += PAGE_SIZE"
+                                />
                             </template>
                             <div v-else class="flex flex-col items-center py-8 text-center">
                                 <UIcon name="ph:calendar-x-bold" class="text-default/10 size-16" />
@@ -263,7 +286,7 @@ const groupedUpcoming = computed(() => {
                             </div>
                         </div>
 
-                        <div v-else class="flex flex-col gap-4 px-6">
+                        <div v-else class="flex flex-col gap-4">
                             <div
                                 v-for="i in 3"
                                 :key="i"

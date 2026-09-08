@@ -1,43 +1,45 @@
 <script lang="ts" setup>
-defineProps<{
-    isAuthed: boolean
-}>()
+interface MyCabinetSectionProps {
+    parentName?: string
+}
+
+const props = defineProps<MyCabinetSectionProps>()
 
 defineEmits<{
     logout: []
 }>()
+
+const firstName = computed(() => {
+    if (!props.parentName) return ""
+    const trimmed = props.parentName.trim()
+    if (!trimmed) return ""
+    return trimmed.split(/\s+/)[0] ?? ""
+})
 </script>
 
 <template>
-    <PageSection>
-        <UContainer class="flex items-start justify-between">
-            <SectionLeading icon="ph:user-bold" subtitle="Личный кабинет" as="h1">
-                <template #title>
-                    <span class="text-primary"
-                        >Мой <span class="text-secondary">кабинет</span></span
-                    >
-                </template>
+    <UContainer class="flex items-center justify-between gap-4 py-6">
+        <div class="flex items-center gap-3">
+            <RoundIcon name="ph:book-open-text-bold" />
+            <div v-if="firstName" class="flex flex-col">
+                <span
+                    class="text-secondary text-sm leading-tight font-semibold tracking-wide uppercase"
+                >
+                    Личный кабинет
+                </span>
+                <h1 class="text-primary text-2xl leading-tight font-bold">
+                    Здравствуйте, {{ firstName }}
+                </h1>
+            </div>
+            <h1 v-else class="text-primary text-2xl leading-tight font-bold">Личный кабинет</h1>
+        </div>
 
-                <template #description>
-                    <template v-if="isAuthed">
-                        Здесь собраны ваши абонементы, разовые занятия и расписание ближайших
-                        активностей.
-                    </template>
-                    <template v-else>
-                        Вы не вошли в аккаунт. Войдите, чтобы увидеть свои абонементы и расписание.
-                    </template>
-                </template>
-            </SectionLeading>
-            <UButton
-                v-if="isAuthed"
-                color="error"
-                variant="soft"
-                trailing-icon="ph:sign-out-bold"
-                class="w-fit text-lg font-semibold"
-                @click="$emit('logout')"
-            >
-                Выйти
-            </UButton>
-        </UContainer>
-    </PageSection>
+        <UButton
+            color="error"
+            variant="soft"
+            trailing-icon="ph:sign-out-bold"
+            label="Выйти"
+            @click="$emit('logout')"
+        />
+    </UContainer>
 </template>
