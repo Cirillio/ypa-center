@@ -17,8 +17,8 @@ export const useOtpTimer = (initialSeconds = 5) => {
         { immediate: false }
     )
 
-    const startTimer = () => {
-        secondsLeft.value = initialSeconds
+    const startTimer = (seconds?: number) => {
+        secondsLeft.value = seconds ?? initialSeconds
         resume()
     }
 

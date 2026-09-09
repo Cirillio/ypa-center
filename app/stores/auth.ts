@@ -1,64 +1,120 @@
-import { MOCK_STATUS_DATA } from "~/constants/mock"
-import type { StatusData } from "~/types/status"
+import type { AuthTokens } from "~/utils/auth-tokens"
 
 export type OtpEmailStep = "email" | "code" | "accepted"
 
-const DEFAULT_STEP: OtpEmailStep = "email"
+interface OTPRequestResponse {
+    status: string
+    resend_available_in: number
+    code_ttl: number
+}
+
+function extractErrorMessage(err: unknown, fallback: string): string {
+    if (typeof err === "object" && err !== null && "data" in err) {
+        const data = (err as { data?: unknown }).data
+        if (typeof data === "object" && data !== null) {
+            if ("detail" in data && typeof (data as { detail: unknown }).detail === "string") {
+                return (data as { detail: string }).detail
+            }
+            if ("email" in data && Array.isArray((data as { email: unknown }).email)) {
+                return String((data as { email: unknown[] }).email[0] ?? fallback)
+            }
+            if ("code" in data && Array.isArray((data as { code: unknown }).code)) {
+                return String((data as { code: unknown[] }).code[0] ?? fallback)
+            }
+        }
+    }
+    if (err instanceof Error && err.message) {
+        return err.message
+    }
+    return fallback
+}
 
 export const useAuthStore = defineStore("auth", () => {
-    const { secondsLeft, canResend, startTimer, resetTimer } = useOtpTimer(5)
+    const { apiFetch } = useApi()
+    const { secondsLeft, canResend, startTimer, resetTimer } = useOtpTimer(60)
 
     const email = ref<string>("")
     const code = ref<string>("")
-    const step = ref<OtpEmailStep>(DEFAULT_STEP)
+    const step = ref<OtpEmailStep>("email")
 
-    const data = ref<StatusData | null>(null)
     const isLoading = ref<boolean>(false)
     const error = ref<string | null>(null)
+    const isAuthed = ref<boolean>(import.meta.client ? hasTokens() : false)
 
-    const isAuthed = computed(() => step.value === "accepted" && data.value !== null)
+    function hydrate() {
+        isAuthed.value = hasTokens()
+    }
 
     async function requestOtp() {
-        if (!canResend.value) return
+        if (!canResend.value && step.value === "code") {
+            error.value = `Повторная отправка доступна через ${secondsLeft.value} сек.`
+            return
+        }
+
+        const trimmedEmail = email.value.trim()
+        if (!trimmedEmail) {
+            error.value = "Введите email"
+            return
+        }
 
         isLoading.value = true
         error.value = null
 
         try {
-            const resp = await new Promise<boolean>((resolve) => {
-                const timeout = setTimeout(() => {
-                    resolve(true)
-                    clearTimeout(timeout)
-                }, 2000)
+            const res = await apiFetch<OTPRequestResponse>("/v1/auth/otp/request/", {
+                method: "POST",
+                body: { email: trimmedEmail }
             })
-            if (resp) {
-                step.value = "code"
-                startTimer()
+            step.value = "code"
+            startTimer(res.resend_available_in)
+        } catch (err: unknown) {
+            const status = getFetchStatus(err)
+
+            if (status === 429) {
+                error.value = extractErrorMessage(err, "Повторный запрос возможен позже")
+            } else if (status === 400) {
+                error.value = extractErrorMessage(err, "Некорректный формат email")
+            } else {
+                error.value = extractErrorMessage(err, "Не удалось отправить код. Попробуйте снова")
             }
-        } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : String(e)
         } finally {
             isLoading.value = false
         }
     }
 
     async function verifyOtp() {
+        const trimmedCode = code.value.trim()
+        if (!trimmedCode) {
+            error.value = "Введите проверочный код"
+            return
+        }
+
         isLoading.value = true
         error.value = null
 
         try {
-            const resp = await new Promise<boolean>((resolve) => {
-                const timeout = setTimeout(() => {
-                    resolve(true)
-                    clearTimeout(timeout)
-                }, 2000)
+            const res = await apiFetch<AuthTokens>("/v1/auth/otp/verify/", {
+                method: "POST",
+                body: {
+                    email: email.value.trim(),
+                    code: trimmedCode
+                }
             })
-            if (resp) {
-                data.value = MOCK_STATUS_DATA
-                step.value = "accepted"
+            setTokens(res)
+            isAuthed.value = true
+            step.value = "accepted"
+        } catch (err: unknown) {
+            const status = getFetchStatus(err)
+
+            if (status === 401) {
+                error.value = "Неверный или истёкший код"
+            } else if (status === 429) {
+                error.value = "Превышен лимит попыток. Запросите код заново"
+            } else if (status === 400) {
+                error.value = extractErrorMessage(err, "Проверьте введённые данные")
+            } else {
+                error.value = extractErrorMessage(err, "Ошибка при проверке кода")
             }
-        } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : String(e)
         } finally {
             isLoading.value = false
         }
@@ -78,11 +134,27 @@ export const useAuthStore = defineStore("auth", () => {
         await requestOtp()
     }
 
+    async function logout() {
+        const refresh = getRefreshToken()
+        if (refresh) {
+            try {
+                await apiFetch("/v1/auth/logout/", {
+                    method: "POST",
+                    body: { refresh }
+                })
+            } catch {
+                // Best-effort: ошибку глотаем
+            }
+        }
+        clearTokens()
+        isAuthed.value = false
+        resetFlow()
+    }
+
     function resetFlow() {
         step.value = "email"
         email.value = ""
         code.value = ""
-        data.value = null
         error.value = null
         resetTimer()
     }
@@ -93,7 +165,6 @@ export const useAuthStore = defineStore("auth", () => {
         step,
         isLoading,
         error,
-        data,
         isAuthed,
         secondsLeft,
         canResend,
@@ -101,6 +172,8 @@ export const useAuthStore = defineStore("auth", () => {
         verifyOtp,
         submit,
         resendCode,
-        resetFlow
+        logout,
+        resetFlow,
+        hydrate
     }
 })

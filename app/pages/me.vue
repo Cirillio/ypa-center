@@ -1,10 +1,14 @@
 <script lang="ts" setup>
-import type { UpcomingActivityItem } from "~/types/status"
+import { MOCK_STATUS_DATA } from "~/constants/mock"
+import type { StatusData, UpcomingActivityItem } from "~/types/status"
 
 definePageMeta({ middleware: "auth" })
 
 const authStore = useAuthStore()
-const { data, isLoading } = storeToRefs(authStore)
+const { isLoading } = storeToRefs(authStore)
+
+// ВРЕМЕННО: мок изолирован в странице до Задачи 2 (расмокивание me.vue)
+const data = ref<StatusData | null>(MOCK_STATUS_DATA)
 
 const {
     children: cabinetChildren,
@@ -15,13 +19,12 @@ const {
 
 const modalOpen = ref<boolean>(false)
 
-const handleStay = () => {
-    modalOpen.value = false
+const openConfirmModal = () => {
+    modalOpen.value = true
 }
 
 const handleLogout = async () => {
-    modalOpen.value = false
-    authStore.resetFlow()
+    await authStore.logout()
     await navigateTo("/login")
 }
 
@@ -49,45 +52,6 @@ const visibleUpcoming = computed(() => upcomingActivities.value?.slice(0, upcomi
 const hasMoreUpcoming = computed(
     () => (upcomingActivities.value?.length ?? 0) > upcomingShown.value
 )
-
-const dayMap: Record<string, number> = {
-    пн: 1,
-    вт: 2,
-    ср: 3,
-    чт: 4,
-    пт: 5,
-    сб: 6,
-    вс: 0
-}
-
-function getNextOccurrence(dayName: string, timeStr: string): Date {
-    const targetDay = dayMap[dayName.toLowerCase()] ?? 0
-    const [hours, minutes] = timeStr.split(":").map(Number)
-    const h = hours ?? 0
-    const m = minutes ?? 0
-    const now = new Date()
-
-    let daysUntil = (targetDay - now.getDay() + 7) % 7
-
-    const activityTime = new Date(now)
-    activityTime.setHours(h, m, 0, 0)
-
-    if (daysUntil === 0 && now.getTime() >= activityTime.getTime()) {
-        daysUntil = 7
-    }
-
-    const result = new Date(now)
-    result.setDate(now.getDate() + daysUntil)
-    result.setHours(h, m, 0, 0)
-    return result
-}
-
-function formatDisplayDate(date: Date): string {
-    return date.toLocaleDateString("ru-RU", {
-        month: "long",
-        day: "numeric"
-    })
-}
 
 const upcomingActivities = computed<UpcomingActivityItem[] | undefined>(() => {
     if (!showData.value || !data.value) return undefined
@@ -168,37 +132,10 @@ const groupedUpcoming = computed(() => {
 </script>
 
 <template>
-    <div class="gradient-bg-ps min-h-dvh pt-[var(--ui-header-height)]">
-        <UModal
-            v-model:open="modalOpen"
-            :ui="{
-                overlay: 'bg-black/25 backdrop-blur-xs',
-                content: 'ring-0 shadow-none'
-            }"
-        >
-            <template #content>
-                <div class="p-6">
-                    <p class="text-default mb-6 text-xl font-medium">
-                        Вы уверены, что хотите выйти?
-                    </p>
-                    <div class="flex justify-end gap-3">
-                        <UButton
-                            color="error"
-                            variant="ghost"
-                            class="text-lg font-semibold"
-                            @click="handleLogout"
-                        >
-                            Уйти
-                        </UButton>
-                        <UButton class="text-lg font-semibold" @click="handleStay">
-                            Остаться
-                        </UButton>
-                    </div>
-                </div>
-            </template>
-        </UModal>
+    <div class="gradient-bg-ps min-h-dvh pt-(--ui-header-height)">
+        <MeLeaveConfirm v-model="modalOpen" @on-confirm="handleLogout" />
 
-        <MyCabinetSection :parent-name="data?.parent.name" @logout="modalOpen = true" />
+        <MeSection :parent-name="data?.parent.name" @on-confirm-logout="openConfirmModal" />
 
         <main class="pb-16">
             <UContainer class="grid gap-4 lg:grid-cols-7">
@@ -206,11 +143,11 @@ const groupedUpcoming = computed(() => {
                     <!-- 2a совмещённый профиль+дети -->
                     <div class="rounded-lg bg-white p-6">
                         <div class="grid gap-6 md:grid-cols-2">
-                            <MyCabinetParentInfo
+                            <MeParentInfo
                                 :parent="showData ? data!.parent : undefined"
                                 :is-processing="isProcessing"
                             />
-                            <MyCabinetChildrenInfo
+                            <MeChildrenInfo
                                 :children="showData ? cabinetChildren : undefined"
                                 :is-processing="isProcessing"
                                 :is-saving="isChildSaving"
@@ -223,7 +160,7 @@ const groupedUpcoming = computed(() => {
 
                     <!-- 2b абонементы + Показать ещё -->
                     <div class="flex flex-col gap-6 rounded-lg bg-white p-6">
-                        <MyCabinetSubscriptionsList
+                        <MeSubscriptionsList
                             :subscriptions="visibleSubscriptions"
                             :is-processing="isProcessing"
                         />
@@ -232,7 +169,7 @@ const groupedUpcoming = computed(() => {
                             variant="soft"
                             block
                             label="Показать ещё"
-                            @click="subscriptionsShown += PAGE_SIZE"
+                            @click="void (subscriptionsShown += PAGE_SIZE)"
                         />
                     </div>
                 </div>
@@ -263,7 +200,7 @@ const groupedUpcoming = computed(() => {
                                     >
                                         {{ group.date }}
                                     </div>
-                                    <MyCabinetUpcomingActivityCard
+                                    <MeUpcomingActivityCard
                                         v-for="activity in group.items"
                                         :key="activity.id"
                                         :item="activity"
@@ -275,7 +212,7 @@ const groupedUpcoming = computed(() => {
                                     variant="soft"
                                     block
                                     label="Показать ещё"
-                                    @click="upcomingShown += PAGE_SIZE"
+                                    @click="void (upcomingShown += PAGE_SIZE)"
                                 />
                             </template>
                             <div v-else class="flex flex-col items-center py-8 text-center">

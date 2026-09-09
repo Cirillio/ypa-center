@@ -32,3 +32,8 @@ export function parseApiError(
         description: problem.detail || fallbackMessage
     }
 }
+
+export function getFetchStatus(err: unknown): number | undefined {
+    const fetchError = err as FetchError | undefined
+    return fetchError?.status ?? fetchError?.statusCode ?? fetchError?.response?.status
+}
