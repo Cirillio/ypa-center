@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+    "/api/v1/auth/logout/": {
+        parameters: {
+            query?: never
+            header?: never
+            path?: never
+            cookie?: never
+        }
+        get?: never
+        put?: never
+        /** Выход из системы (аннулирование refresh-токена) */
+        post: operations["v1_auth_logout_create"]
+        delete?: never
+        options?: never
+        head?: never
+        patch?: never
+        trace?: never
+    }
     "/api/v1/auth/otp/request/": {
         parameters: {
             query?: never
@@ -32,6 +49,27 @@ export interface paths {
         put?: never
         /** Верификация OTP-кода */
         post: operations["v1_auth_otp_verify_create"]
+        delete?: never
+        options?: never
+        head?: never
+        patch?: never
+        trace?: never
+    }
+    "/api/v1/auth/token/refresh/": {
+        parameters: {
+            query?: never
+            header?: never
+            path?: never
+            cookie?: never
+        }
+        get?: never
+        put?: never
+        /**
+         * Обновление access-токена
+         * @description Takes a refresh type JSON web token and returns an access type JSON web
+         *     token if the refresh token is valid.
+         */
+        post: operations["v1_auth_token_refresh_create"]
         delete?: never
         options?: never
         head?: never
@@ -426,12 +464,18 @@ export interface components {
         CheckoutResponse: {
             /** Format: uuid */
             transaction_id: string
-            status: components["schemas"]["StatusEnum"]
+            status: components["schemas"]["CheckoutResponseStatusEnum"]
             /** Format: uri */
             payment_url: string | null
             /** Format: date-time */
             expires_at: string | null
         }
+        /**
+         * @description * `PENDING_PAYMENT` - PENDING_PAYMENT
+         *     * `CONFIRMED` - CONFIRMED
+         * @enum {string}
+         */
+        CheckoutResponseStatusEnum: "PENDING_PAYMENT" | "CONFIRMED"
         CheckoutSubscriptionRequest: {
             plan_id: number
             student_id: number
@@ -526,6 +570,10 @@ export interface components {
             image_url: string
             /** Порядок */
             order?: number
+        }
+        LogoutRequest: {
+            /** @description Refresh-токен для аннулирования */
+            refresh: string
         }
         OTPRequestRequest: {
             /**
@@ -624,12 +672,6 @@ export interface components {
             max_capacity?: number
             readonly seats_free: number
         }
-        /**
-         * @description * `PENDING_PAYMENT` - PENDING_PAYMENT
-         *     * `CONFIRMED` - CONFIRMED
-         * @enum {string}
-         */
-        StatusEnum: "PENDING_PAYMENT" | "CONFIRMED"
         SubmissionAccepted: {
             status: string
         }
@@ -649,19 +691,14 @@ export interface components {
             readonly schedule_id: number
             readonly activity_name: string
             readonly group_name: string
-            readonly day_of_week: number
-            /** Format: time */
-            readonly start_time: string
-            /** Format: time */
-            readonly end_time: string
-            readonly student_id: number
-            readonly student_name: string
+            readonly schedule: string
             readonly remaining_sessions: number
+            readonly total_sessions: number
         }
         SubscriptionView: {
             readonly id: number
             readonly display_id: string
-            readonly status: string
+            readonly status: components["schemas"]["SubscriptionViewStatusEnum"]
             readonly student_name: string
             readonly purchase_price: number
             /** Format: date-time */
@@ -670,8 +707,17 @@ export interface components {
             readonly start_date: string | null
             /** Format: date-time */
             readonly expires_at: string | null
+            readonly total_remaining: number
             readonly slots: components["schemas"]["SubscriptionSlotView"][]
         }
+        /**
+         * @description * `PENDING` - Ожидает оплаты
+         *     * `ACTIVE` - Активен
+         *     * `EXPIRED` - Истёк
+         *     * `CANCELED` - Отменён
+         * @enum {string}
+         */
+        SubscriptionViewStatusEnum: "PENDING" | "ACTIVE" | "EXPIRED" | "CANCELED"
         TeacherActivityNested: {
             readonly id: number
             readonly name: string
@@ -696,14 +742,17 @@ export interface components {
             bio?: string
             readonly activities: components["schemas"]["TeacherActivityNested"][]
         }
+        TokenRefreshRequest: {
+            refresh: string
+        }
+        TokenRefreshResponse: {
+            access: string
+            refresh: string
+        }
         UpcomingItem: {
             readonly kind: string
-            /** Format: date */
             readonly date: string
-            /** Format: time */
-            readonly start_time: string
-            /** Format: time */
-            readonly end_time: string | null
+            readonly time: string
             readonly student_id: number | null
             readonly student_name: string | null
             readonly activity_name: string | null
@@ -754,6 +803,44 @@ export interface components {
 }
 export type $defs = Record<string, never>
 export interface operations {
+    v1_auth_logout_create: {
+        parameters: {
+            query?: never
+            header?: never
+            path?: never
+            cookie?: never
+        }
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LogoutRequest"]
+                "application/x-www-form-urlencoded": components["schemas"]["LogoutRequest"]
+                "multipart/form-data": components["schemas"]["LogoutRequest"]
+            }
+        }
+        responses: {
+            /** @description Успешный выход, токен аннулирован */
+            205: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content?: never
+            }
+            /** @description Ошибка валидации формата полей */
+            400: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content?: never
+            }
+            /** @description Невалидный или истёкший токен */
+            401: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content?: never
+            }
+        }
+    }
     v1_auth_otp_request_create: {
         parameters: {
             query?: never
@@ -830,6 +917,38 @@ export interface operations {
             }
             /** @description Превышен лимит попыток */
             429: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content?: never
+            }
+        }
+    }
+    v1_auth_token_refresh_create: {
+        parameters: {
+            query?: never
+            header?: never
+            path?: never
+            cookie?: never
+        }
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TokenRefreshRequest"]
+                "application/x-www-form-urlencoded": components["schemas"]["TokenRefreshRequest"]
+                "multipart/form-data": components["schemas"]["TokenRefreshRequest"]
+            }
+        }
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content: {
+                    "application/json": components["schemas"]["TokenRefreshResponse"]
+                }
+            }
+            /** @description Невалидный или истёкший refresh-токен */
+            401: {
                 headers: {
                     [name: string]: unknown
                 }
