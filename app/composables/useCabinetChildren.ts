@@ -1,39 +1,28 @@
-import type { ApiProfile, ApiSubscriptionView, MeChildVM } from "~/types/me"
-import { toChildVM } from "~/types/me"
+import type { MeChild, MeProfile, NewChild } from "~/types"
 
+/**
+ * Управление списком детей в кабинете.
+ * Список — производное от профиля; композабл владеет только состоянием сохранения.
+ */
 export const useCabinetChildren = (
-    getProfile: () => ApiProfile | null | undefined,
-    getSubscriptions?: () => ApiSubscriptionView[] | null | undefined,
+    getProfile: () => MeProfile | null | undefined,
     onRefreshProfile?: () => Promise<unknown>
 ) => {
-    const { apiFetch } = useApi()
+    const me = useMeService()
 
     const isSaving = ref<boolean>(false)
     const error = ref<string | null>(null)
 
-    const children = computed<MeChildVM[]>(() => {
-        const profile = getProfile()
-        if (!profile?.children) return []
-        const subs = getSubscriptions?.() ?? []
-        return profile.children.map((child) => toChildVM(child, subs))
-    })
+    const children = computed<MeChild[]>(() => getProfile()?.children ?? [])
 
-    const addChild = async (payload: { name: string; birthdate: string }) => {
+    const addChild = async (payload: NewChild) => {
         if (isSaving.value) return
 
         isSaving.value = true
         error.value = null
         try {
-            await apiFetch("/v1/me/children/", {
-                method: "POST",
-                body: {
-                    full_name: payload.name.trim(),
-                    dob: payload.birthdate
-                }
-            })
-            if (onRefreshProfile) {
-                await onRefreshProfile()
-            }
+            await me.addChild(payload)
+            await onRefreshProfile?.()
         } catch (e: unknown) {
             error.value = e instanceof Error ? e.message : String(e)
             throw e
@@ -41,8 +30,6 @@ export const useCabinetChildren = (
             isSaving.value = false
         }
     }
-
-    // TODO backend: нет DELETE /api/v1/me/children/{id}/, удаление временно не поддерживается бэкендом.
 
     return {
         children,

@@ -1,10 +1,6 @@
 <script lang="ts" setup>
-import type { Teacher } from "~/types"
-
-const { apiFetch } = useApi()
-const { data, pending, error } = await useAsyncData("teachers", () =>
-    apiFetch<Teacher[]>("/v1/public/teachers/")
-)
+const teachersService = useTeachersService()
+const { data, pending, error } = await useAsyncData("teachers", () => teachersService.getAll())
 
 const teachers = computed(() => data.value ?? [])
 

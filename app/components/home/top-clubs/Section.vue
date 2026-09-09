@@ -1,10 +1,6 @@
 <script lang="ts" setup>
-import type { ActivityPopular } from "~/types"
-
-const { apiFetch } = useApi()
-const { data, error } = await useAsyncData("popular-clubs", () =>
-    apiFetch<ActivityPopular[]>("/v1/public/activities/popular/")
-)
+const activities = useActivitiesService()
+const { data, error } = await useAsyncData("popular-clubs", () => activities.getPopular())
 
 // Бэк лимитирует выдачу тремя, но контракт на «ровно 3» не гарантирован —
 // >4 обрезаем сами, раскладка ниже рассчитана на 2..4

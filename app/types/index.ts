@@ -25,6 +25,18 @@ export type WeekScheduleSlot = components["schemas"]["WeekSlot"]
 // GET /public/plans/ — тарифы абонементов (сырой ответ, до маппинга в PlanTier)
 export type SubscriptionPlanPublic = components["schemas"]["SubscriptionPlanPublic"]
 
+/**
+ * UI-модель карточки тарифа. Совместима по форме с фолбэком из app.config
+ * (subscriptions), чтобы шаблоны карточек не менялись при недоступности API.
+ */
+export interface PlanTier {
+    id: number | null
+    lessons: number | null // null = безлимит
+    price: number // рубли (API отдаёт копейки)
+    label: string | null // задан только для безлимита; иначе шаблон показывает число занятий
+    highlight: boolean
+}
+
 export interface WeeklySlot {
     id: number
     activity: {
@@ -77,6 +89,77 @@ export type PreferredTimeWindow = components["schemas"]["PreferredTimeWindowEnum
 // POST /public/feedback/ — форма обратной связи
 export type FeedbackRequestPayload = components["schemas"]["FeedbackRequestCreateRequest"]
 export type FeedbackRequestResponse = components["schemas"]["SubmissionAccepted"]
+
+// ─── Личный кабинет ───────────────────────────────────────────────────────────
+// Сырые ответы бэка (до маппинга в Me*-модели внутри me.service)
+export type Profile = components["schemas"]["Profile"]
+export type ProfileChild = components["schemas"]["Child"]
+export type SubscriptionView = components["schemas"]["SubscriptionView"]
+export type SubscriptionSlotView = components["schemas"]["SubscriptionSlotView"]
+export type UpcomingItem = components["schemas"]["UpcomingItem"]
+export type SubscriptionStatus = components["schemas"]["SubscriptionViewStatusEnum"]
+
+export interface MeParent {
+    name: string
+    phone: string
+    email: string
+}
+
+export interface MeChild {
+    id: string
+    name: string
+    birthdate: string
+}
+
+export interface MeProfile {
+    parent: MeParent
+    children: MeChild[]
+}
+
+// POST /me/children/ — входная модель добавления ребёнка
+export interface NewChild {
+    name: string
+    birthdate: string
+}
+
+export interface MeSubscriptionSlot {
+    scheduleId: number
+    activityName: string
+    groupName: string
+    schedule: string // готовая строка вида "СБ 16:00-17:00"
+    remaining: number
+    total: number
+}
+
+export interface MeSubscription {
+    id: number
+    displayId: string
+    status: SubscriptionStatus
+    createdAt: string
+    formattedCreatedAt: string
+    studentName: string
+    sum: number // рубли (API отдаёт копейки)
+    totalRemaining: number
+    totalMax: number
+    slots: MeSubscriptionSlot[]
+}
+
+export interface MeUpcoming {
+    id: string
+    type: "subscription" | "event"
+    title: string
+    subtitle: string
+    displayDate: string // "31.12.2001"
+    displayTime: string // "16:00-17:00"
+    participant: string
+    metaLabel?: string
+}
+
+// ─── Авторизация ──────────────────────────────────────────────────────────────
+export interface OtpRequestResult {
+    resendAvailableIn: number
+    codeTtl: number
+}
 
 export interface ProblemDetail {
     type: string // "urn:problem-type:validationerror"

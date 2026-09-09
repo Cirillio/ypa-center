@@ -1,3 +1,4 @@
+import type { ApiFetch } from "~/composables/useApi"
 import type { FeedbackRequestPayload, FeedbackRequestResponse } from "~/types"
 
 export interface SendFeedbackDto {
@@ -7,14 +8,14 @@ export interface SendFeedbackDto {
     captcha_token: string
 }
 
-export function useFeedbackService() {
-    const { apiFetch } = useApi()
+/**
+ * Форма обратной связи.
+ * Эндпоинт: POST /api/v1/public/feedback/
+ */
+export class FeedbackService {
+    constructor(private readonly fetch: ApiFetch) {}
 
-    /**
-     * Отправка формы обратной связи.
-     * Эндпоинт: POST /api/v1/public/feedback/
-     */
-    async function sendFeedbackRequest(dto: SendFeedbackDto): Promise<FeedbackRequestResponse> {
+    send(dto: SendFeedbackDto): Promise<FeedbackRequestResponse> {
         const payload: FeedbackRequestPayload = {
             name: dto.name?.trim() || undefined,
             email: dto.email,
@@ -23,13 +24,11 @@ export function useFeedbackService() {
             captcha_token: dto.captcha_token
         }
 
-        return apiFetch<FeedbackRequestResponse>("/v1/public/feedback/", {
+        return this.fetch<FeedbackRequestResponse>("/v1/public/feedback/", {
             method: "POST",
             body: payload
         })
     }
-
-    return {
-        sendFeedbackRequest
-    }
 }
+
+export const useFeedbackService = () => new FeedbackService(useApi().apiFetch)

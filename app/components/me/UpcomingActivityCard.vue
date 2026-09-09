@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { MeUpcomingVM } from "~/types/me"
+import type { MeUpcoming } from "~/types"
 
 defineProps<{
-    item: MeUpcomingVM
+    item: MeUpcoming
 }>()
 </script>
 

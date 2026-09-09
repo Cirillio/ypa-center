@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { PlanTier } from "~/composables/useSubscriptionPlans"
+import type { PlanTier } from "~/types"
 import { EnrollRoutesEnum } from "~/constants/nav"
 
 const { pricing } = useAppConfig()

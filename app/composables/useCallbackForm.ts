@@ -1,6 +1,5 @@
 import { useStorage } from "@vueuse/core"
 import type { ContactTimeOption, PreferredTimeWindow } from "~/types"
-import { useCallbackService } from "~/services/callback.service"
 import { useDayjs } from "#dayjs"
 import { Mask } from "maska"
 import { Maskas } from "~/constants/masks"
@@ -29,7 +28,7 @@ export interface UseCallbackFormOptions {
  */
 export const useCallbackForm = (options: UseCallbackFormOptions = {}) => {
     const { contactTimeOptions } = useAppConfig()
-    const { sendCallbackRequest } = useCallbackService()
+    const callback = useCallbackService()
 
     const COOLDOWN_MINUTES = 5
     const DEFAULT_FORM_STATE: ContactCallbackForm = {
@@ -96,7 +95,7 @@ export const useCallbackForm = (options: UseCallbackFormOptions = {}) => {
                 formattedDate = dayjs().tz("Asia/Novosibirsk").format("DD.MM.YYYY HH:mm")
             const userName = form.name?.trim() || `Аноним от ${formattedDate}`
 
-            await sendCallbackRequest({
+            await callback.send({
                 name: userName,
                 phone: form.phone,
                 preferred_time_window: preferredTimeWindow,

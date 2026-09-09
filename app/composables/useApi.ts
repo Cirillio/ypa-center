@@ -1,5 +1,13 @@
 import type { AuthTokens } from "~/utils/auth-tokens"
 
+/**
+ * Транспорт, который сервисы получают в конструктор.
+ *
+ * WHY отдельный тип: useApi()/useRuntimeConfig() резолвятся только в setup-контексте,
+ * поэтому сервис-классы не зовут композабл внутри методов, а принимают готовый fetch.
+ */
+export type ApiFetch = <T>(path: string, opts?: Parameters<typeof $fetch<T>>[1]) => Promise<T>
+
 let refreshPromise: Promise<AuthTokens> | null = null
 
 async function requestTokenRefresh(apiBase: string): Promise<AuthTokens> {

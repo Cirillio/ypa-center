@@ -1,7 +1,6 @@
 import type { LocationQueryValue } from "vue-router"
 import type { FormSubmitEvent } from "@nuxt/ui"
 import { type EventRegistration, eventRegistrationSchema } from "~/schemas/event.schema"
-import type { EventItem } from "~/types"
 
 const DEFAULT_EVENT_FORM: EventRegistration = {
     participantName: "",
@@ -23,10 +22,10 @@ function parseQueryParam(
 export function useEventEnrollment() {
     const route = useRoute()
     const router = useRouter()
-    const { apiFetch } = useApi()
+    const eventsService = useEventsService()
 
     const { data: eventsData, status: eventsStatus } = useAsyncData("enrollment:events", () =>
-        apiFetch<EventItem[]>("/v1/public/events/")
+        eventsService.getAll()
     )
 
     const events = computed(() => eventsData.value ?? [])

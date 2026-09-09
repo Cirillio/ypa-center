@@ -1,11 +1,8 @@
 <script lang="ts" setup>
 import { EnrollRoutesEnum } from "~/constants/nav"
-import type { EventItem } from "~/types"
 
-const { apiFetch } = useApi()
-const { data, error } = await useAsyncData("home-events", () =>
-    apiFetch<EventItem[]>("/v1/public/events/")
-)
+const eventsService = useEventsService()
+const { data, error } = await useAsyncData("home-events", () => eventsService.getAll())
 const events = computed(() => {
     const raw = data.value ?? []
     return raw.toSorted((a, b) => {

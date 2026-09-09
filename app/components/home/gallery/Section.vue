@@ -1,13 +1,9 @@
 <script lang="ts" setup>
-import type { GalleryPhoto } from "~/types"
-
 // Раскладка сетки ниже детерминирована и рассчитана ровно на 5 фото
 const HOME_GALLERY_LIMIT = 5
 
-const { apiFetch } = useApi()
-const { data } = await useAsyncData("home-gallery", () =>
-    apiFetch<GalleryPhoto[]>("/v1/public/gallery/")
-)
+const gallery = useGalleryService()
+const { data } = await useAsyncData("home-gallery", () => gallery.getAll())
 const photos = computed(() => (data.value ?? []).slice(0, HOME_GALLERY_LIMIT))
 </script>
 

@@ -1,22 +1,14 @@
 <script lang="ts" setup>
-import type { Activity, WeekGridResponse } from "~/types"
-
 const { subscriptions, contactInfo, seo } = useAppConfig()
 const siteUrl = seo.siteUrl
-const { apiFetch } = useApi()
+const activities = useActivitiesService()
+const schedule = useScheduleService()
 
-const { data: activitiesData } = await useAsyncData("clubs", () =>
-    apiFetch<Activity[]>("/v1/public/activities/")
-)
+const { data: activitiesData } = await useAsyncData("clubs", () => activities.getAll())
 
-const { data: scheduleData } = await useAsyncData("clubs-schedule", () =>
-    apiFetch<WeekGridResponse>("/v1/public/schedule/")
-)
+const { data: scheduleData } = await useAsyncData("clubs-schedule", () => schedule.getWeek())
 
-// Отменённые слоты (is_cancelled) в сетке не показываем
-const slots = computed(() =>
-    (scheduleData.value?.slots ?? []).filter((s) => !s.is_cancelled).map(toWeeklySlot)
-)
+const slots = computed(() => scheduleData.value ?? [])
 
 const enrichedClubs = computed(() =>
     (activitiesData.value ?? []).map((activity) => ({

@@ -1,6 +1,5 @@
 import { useStorage } from "@vueuse/core"
 import type { FormSubmitEvent } from "@nuxt/ui"
-import { useFeedbackService } from "~/services/feedback.service"
 import type { FeedbackFormState } from "~/schemas/feedback.schema"
 
 export interface UseFeedbackFormOptions {
@@ -13,7 +12,7 @@ export interface UseFeedbackFormOptions {
  * Зона ответственности: состояние полей, Anti-Spam кулдаун, делегирование отправки сервису.
  */
 export const useFeedbackForm = (options: UseFeedbackFormOptions = {}) => {
-    const { sendFeedbackRequest } = useFeedbackService()
+    const feedback = useFeedbackService()
 
     const COOLDOWN_MINUTES = 5
     const DEFAULT_FORM_STATE: FeedbackFormState = { name: "", email: "", message: "" }
@@ -43,7 +42,7 @@ export const useFeedbackForm = (options: UseFeedbackFormOptions = {}) => {
         error.value = null
 
         try {
-            await sendFeedbackRequest({
+            await feedback.send({
                 name: event.data.name,
                 email: event.data.email,
                 message: event.data.message,

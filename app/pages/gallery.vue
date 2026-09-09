@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { GalleryPage, GalleryPhoto } from "~/types"
+import type { GalleryPhoto } from "~/types"
 
 const { seo } = useAppConfig()
 const { siteUrl } = seo
@@ -43,12 +43,10 @@ useHead({
 
 const PAGE_SIZE = 12
 
-const { apiFetch } = useApi()
+const gallery = useGalleryService()
 const toast = useToast()
 
-const { data, pending, error } = await useAsyncData("gallery", () =>
-    apiFetch<GalleryPage>(`/v1/public/gallery/?limit=${PAGE_SIZE}`)
-)
+const { data, pending, error } = await useAsyncData("gallery", () => gallery.getPage(PAGE_SIZE))
 
 const photos = ref<GalleryPhoto[]>([...(data.value?.results ?? [])])
 const total = ref(data.value?.count ?? 0)
@@ -64,9 +62,7 @@ const loadMore = async () => {
     loadMoreError.value = false
 
     try {
-        const res = await apiFetch<GalleryPage>(
-            `/v1/public/gallery/?limit=${PAGE_SIZE}&offset=${photos.value.length}`
-        )
+        const res = await gallery.getPage(PAGE_SIZE, photos.value.length)
         photos.value.push(...(res.results ?? []))
         total.value = res.count
     } catch {

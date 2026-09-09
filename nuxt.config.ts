@@ -13,9 +13,14 @@ export default defineNuxtConfig({
         "@nuxtjs/turnstile"
     ],
 
-    devtools: { enabled: true },
+    devtools: { enabled: false },
 
     css: ["~/assets/css/main.css"],
+
+    // Сервисы автоимпортируются наравне с композаблами: useMeService(), useGalleryService()…
+    imports: {
+        dirs: ["services"]
+    },
 
     ui: {
         colorMode: false
@@ -101,7 +106,10 @@ export default defineNuxtConfig({
 
     typescript: {
         strict: true,
-        typeCheck: true,
+        // type-check вынесен из dev-сервера: гонять vue-tsc в процессе nuxt dev
+        // слишком дорого по памяти. Проверка типов — отдельной командой:
+        // npx nuxi typecheck
+        typeCheck: false,
         tsConfig: {
             compilerOptions: {
                 types: ["node"]

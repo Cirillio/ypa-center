@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { MeSubscriptionVM } from "~/types/me"
+import type { MeSubscription } from "~/types"
 
 const props = defineProps<{
-    sub: MeSubscriptionVM
+    sub: MeSubscription
 }>()
 
 const rows = computed(() => [

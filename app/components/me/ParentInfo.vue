@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { MeParentVM } from "~/types/me"
+import type { MeParent } from "~/types"
 
 defineProps<{
-    parent?: MeParentVM
+    parent?: MeParent
     isProcessing: boolean
 }>()
 

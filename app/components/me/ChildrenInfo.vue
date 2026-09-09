@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { MeChildVM } from "~/types/me"
+import type { MeChild } from "~/types"
 
 defineProps<{
-    children?: readonly MeChildVM[]
+    children?: readonly MeChild[]
     isProcessing: boolean
     isSaving: boolean
 }>()

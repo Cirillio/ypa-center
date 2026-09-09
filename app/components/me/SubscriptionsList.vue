@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { MeSubscriptionVM } from "~/types/me"
+import type { MeSubscription } from "~/types"
 
 defineProps<{
-    subscriptions?: MeSubscriptionVM[]
+    subscriptions?: MeSubscription[]
     isProcessing: boolean
 }>()
 </script>

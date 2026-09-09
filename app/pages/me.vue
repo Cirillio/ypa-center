@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import type { MeUpcomingVM } from "~/types/me"
-import { toParentVM, toSubscriptionVM, toUpcomingVM } from "~/types/me"
+import type { MeUpcoming } from "~/types"
 
 definePageMeta({ middleware: "auth" })
 
 const authStore = useAuthStore()
 
-// 1. Слой данных
+// 1. Слой данных (сервисы отдают уже доменные модели)
 const { data: profileData, pending: isProfilePending, refresh: refreshProfile } = useMeProfile()
 
 const { data: subscriptionsData, pending: isSubsPending } = useMeSubscriptions()
@@ -22,11 +21,7 @@ const {
     children: cabinetChildren,
     isSaving: isChildSaving,
     addChild
-} = useCabinetChildren(
-    () => profileData.value,
-    () => subscriptionsData.value,
-    refreshProfile
-)
+} = useCabinetChildren(() => profileData.value, refreshProfile)
 
 // Модалка выхода
 const modalOpen = ref<boolean>(false)
@@ -40,21 +35,16 @@ const handleLogout = async () => {
     await navigateTo("/login")
 }
 
-// 2. View-models
-const parentVM = computed(() => (profileData.value ? toParentVM(profileData.value) : undefined))
-
-const subscriptionsVM = computed(() => subscriptionsData.value?.map(toSubscriptionVM))
+const parent = computed(() => profileData.value?.parent)
 
 const sortedSubscriptions = computed(() => {
-    if (!subscriptionsVM.value) return undefined
-    return [...subscriptionsVM.value].sort(
+    if (!subscriptionsData.value) return undefined
+    return [...subscriptionsData.value].sort(
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
 })
 
-const upcomingActivities = computed<MeUpcomingVM[] | undefined>(() =>
-    upcomingData.value?.map(toUpcomingVM)
-)
+const upcomingActivities = computed(() => upcomingData.value)
 
 // Пагинация списков
 const PAGE_SIZE = 5
@@ -78,7 +68,7 @@ const groupedUpcoming = computed(() => {
     const items = visibleUpcoming.value
     if (!items) return undefined
 
-    const groups: { date: string; items: MeUpcomingVM[] }[] = []
+    const groups: { date: string; items: MeUpcoming[] }[] = []
     for (const item of items) {
         const last = groups[groups.length - 1]
         if (last && last.date === item.displayDate) {
@@ -95,7 +85,7 @@ const groupedUpcoming = computed(() => {
     <div class="gradient-bg-ps min-h-dvh pt-(--ui-header-height)">
         <MeLeaveConfirm v-model="modalOpen" @on-confirm="handleLogout" />
 
-        <MeSection :parent-name="profileData?.full_name" @on-confirm-logout="openConfirmModal" />
+        <MeSection :parent-name="parent?.name" @on-confirm-logout="openConfirmModal" />
 
         <main class="pb-16">
             <UContainer class="grid gap-4 lg:grid-cols-7">
@@ -103,7 +93,7 @@ const groupedUpcoming = computed(() => {
                     <!-- 2a совмещённый профиль+дети -->
                     <div class="rounded-lg bg-white p-6">
                         <div class="grid gap-6 md:grid-cols-2">
-                            <MeParentInfo :parent="parentVM" :is-processing="isProcessing" />
+                            <MeParentInfo :parent="parent" :is-processing="isProcessing" />
                             <MeChildrenInfo
                                 :children="profileData ? cabinetChildren : undefined"
                                 :is-processing="isProcessing"

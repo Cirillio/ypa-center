@@ -1,12 +1,4 @@
-import type { AuthTokens } from "~/utils/auth-tokens"
-
 export type OtpEmailStep = "email" | "code" | "accepted"
-
-interface OTPRequestResponse {
-    status: string
-    resend_available_in: number
-    code_ttl: number
-}
 
 function extractErrorMessage(err: unknown, fallback: string): string {
     if (typeof err === "object" && err !== null && "data" in err) {
@@ -30,7 +22,7 @@ function extractErrorMessage(err: unknown, fallback: string): string {
 }
 
 export const useAuthStore = defineStore("auth", () => {
-    const { apiFetch } = useApi()
+    const auth = useAuthService()
     const { secondsLeft, canResend, startTimer, resetTimer } = useOtpTimer(60)
 
     const email = ref<string>("")
@@ -61,12 +53,9 @@ export const useAuthStore = defineStore("auth", () => {
         error.value = null
 
         try {
-            const res = await apiFetch<OTPRequestResponse>("/v1/auth/otp/request/", {
-                method: "POST",
-                body: { email: trimmedEmail }
-            })
+            const res = await auth.requestOtp(trimmedEmail)
             step.value = "code"
-            startTimer(res.resend_available_in)
+            startTimer(res.resendAvailableIn)
         } catch (err: unknown) {
             const status = getFetchStatus(err)
 
@@ -93,13 +82,7 @@ export const useAuthStore = defineStore("auth", () => {
         error.value = null
 
         try {
-            const res = await apiFetch<AuthTokens>("/v1/auth/otp/verify/", {
-                method: "POST",
-                body: {
-                    email: email.value.trim(),
-                    code: trimmedCode
-                }
-            })
+            const res = await auth.verifyOtp(email.value, trimmedCode)
             setTokens(res)
             isAuthed.value = true
             step.value = "accepted"
@@ -138,10 +121,7 @@ export const useAuthStore = defineStore("auth", () => {
         const refresh = getRefreshToken()
         if (refresh) {
             try {
-                await apiFetch("/v1/auth/logout/", {
-                    method: "POST",
-                    body: { refresh }
-                })
+                await auth.logout(refresh)
             } catch {
                 // Best-effort: ошибку глотаем
             }

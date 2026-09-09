@@ -64,7 +64,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { PlanTier } from "~/composables/useSubscriptionPlans"
+import type { PlanTier } from "~/types"
 
 const { tiers } = useSubscriptionPlans()
 
