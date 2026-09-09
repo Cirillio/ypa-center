@@ -1,25 +1,9 @@
 export type OtpEmailStep = "email" | "code" | "accepted"
 
-function extractErrorMessage(err: unknown, fallback: string): string {
-    if (typeof err === "object" && err !== null && "data" in err) {
-        const data = (err as { data?: unknown }).data
-        if (typeof data === "object" && data !== null) {
-            if ("detail" in data && typeof (data as { detail: unknown }).detail === "string") {
-                return (data as { detail: string }).detail
-            }
-            if ("email" in data && Array.isArray((data as { email: unknown }).email)) {
-                return String((data as { email: unknown[] }).email[0] ?? fallback)
-            }
-            if ("code" in data && Array.isArray((data as { code: unknown }).code)) {
-                return String((data as { code: unknown[] }).code[0] ?? fallback)
-            }
-        }
-    }
-    if (err instanceof Error && err.message) {
-        return err.message
-    }
-    return fallback
-}
+// Стор сам подбирает текст по статусу (401/429/400); от парсера нужен только
+// человекочитаемый detail из RFC 9457 как фолбэк.
+const errorMessage = (err: unknown, fallback: string): string =>
+    parseApiError(err, fallback).description ?? fallback
 
 export const useAuthStore = defineStore("auth", () => {
     const auth = useAuthService()
@@ -60,11 +44,11 @@ export const useAuthStore = defineStore("auth", () => {
             const status = getFetchStatus(err)
 
             if (status === 429) {
-                error.value = extractErrorMessage(err, "Повторный запрос возможен позже")
+                error.value = errorMessage(err, "Повторный запрос возможен позже")
             } else if (status === 400) {
-                error.value = extractErrorMessage(err, "Некорректный формат email")
+                error.value = errorMessage(err, "Некорректный формат email")
             } else {
-                error.value = extractErrorMessage(err, "Не удалось отправить код. Попробуйте снова")
+                error.value = errorMessage(err, "Не удалось отправить код. Попробуйте снова")
             }
         } finally {
             isLoading.value = false
@@ -94,9 +78,9 @@ export const useAuthStore = defineStore("auth", () => {
             } else if (status === 429) {
                 error.value = "Превышен лимит попыток. Запросите код заново"
             } else if (status === 400) {
-                error.value = extractErrorMessage(err, "Проверьте введённые данные")
+                error.value = errorMessage(err, "Проверьте введённые данные")
             } else {
-                error.value = extractErrorMessage(err, "Ошибка при проверке кода")
+                error.value = errorMessage(err, "Ошибка при проверке кода")
             }
         } finally {
             isLoading.value = false
