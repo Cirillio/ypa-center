@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-interface MyCabinetSectionProps {
+interface MeSectionProps {
     parentName?: string
 }
 
-const props = defineProps<MyCabinetSectionProps>()
+const props = defineProps<MeSectionProps>()
 
 defineEmits<{
-    logout: []
+    onConfirmLogout: []
 }>()
 
 const firstName = computed(() => {
@@ -18,7 +18,7 @@ const firstName = computed(() => {
 </script>
 
 <template>
-    <UContainer class="flex items-center justify-between gap-4 py-6">
+    <UContainer class="flex items-center justify-between gap-4 px-12! py-6">
         <div class="flex items-center gap-3">
             <RoundIcon name="ph:book-open-text-bold" />
             <div v-if="firstName" class="flex flex-col">
@@ -36,10 +36,10 @@ const firstName = computed(() => {
 
         <UButton
             color="error"
-            variant="soft"
+            variant="ghost"
             trailing-icon="ph:sign-out-bold"
             label="Выйти"
-            @click="$emit('logout')"
+            @click="$emit('onConfirmLogout')"
         />
     </UContainer>
 </template>

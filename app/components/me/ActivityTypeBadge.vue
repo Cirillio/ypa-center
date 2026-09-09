@@ -28,7 +28,16 @@ const badge = computed(() => MAP[props.type])
 </script>
 
 <template>
-    <UTooltip :text="badge.label">
+    <UTooltip
+        :text="badge.label"
+        :delay-duration="150"
+        :content="{
+            side: 'top'
+        }"
+        :ui="{
+            content: 'text-base ring-0'
+        }"
+    >
         <span
             class="flex shrink-0 items-center justify-center rounded-full p-2"
             :class="badge.tint"

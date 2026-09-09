@@ -10,7 +10,7 @@ defineProps<{
     <div
         class="bg-default/3 hover:bg-default/5 flex items-center gap-3 rounded-lg p-3 transition-colors"
     >
-        <MyCabinetActivityTypeBadge :type="item.type" />
+        <MeActivityTypeBadge :type="item.type" />
 
         <div class="min-w-0 flex-1">
             <div class="text-default truncate text-base leading-tight font-bold">

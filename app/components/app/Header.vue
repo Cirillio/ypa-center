@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useMounted, useWindowScroll } from "@vueuse/core"
 import { CabinetRoutesEnum, EnrollRoutesEnum, NAV_ROUTES } from "~/constants/nav"
-import { useMobileMenuStore } from "~/store/mobile-menu-store"
+import { useMobileMenuStore } from "~/stores/mobile-menu-store"
 
 const isMounted = useMounted()
 

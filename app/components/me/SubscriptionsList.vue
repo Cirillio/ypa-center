@@ -18,7 +18,7 @@ defineProps<{
             <h2 class="text-primary text-xl font-bold">Абонементы</h2>
         </div>
         <template v-if="subscriptions">
-            <MyCabinetSubscribitionCard v-for="sub in subscriptions" :key="sub.id" v-bind="sub" />
+            <MeSubscribitionCard v-for="sub in subscriptions" :key="sub.id" v-bind="sub" />
         </template>
         <template v-else>
             <div

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { CabinetRoutesEnum, EnrollRoutesEnum, NAV_ROUTES } from "~/constants/nav"
-import { useMobileMenuStore } from "~/store/mobile-menu-store"
+import { useMobileMenuStore } from "~/stores/mobile-menu-store"
 
 const mobileMenuStore = useMobileMenuStore()
 const { isMenuOpen } = storeToRefs(mobileMenuStore)

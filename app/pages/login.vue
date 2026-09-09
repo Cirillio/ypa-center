@@ -22,7 +22,7 @@ const onSubmit = async () => {
         <main
             class="flex h-full items-center justify-center px-4 py-[calc(1rem+var(--ui-header-height))]"
         >
-            <MyCabinetGuestGate
+            <MeGuestGate
                 v-model:email="email"
                 v-model:code="code"
                 :current-step="step"
