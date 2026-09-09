@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { UpcomingActivityItem } from "~/types/status"
+import type { MeUpcomingVM } from "~/types/me"
 
 defineProps<{
-    item: UpcomingActivityItem
+    item: MeUpcomingVM
 }>()
 </script>
 
@@ -17,7 +17,7 @@ defineProps<{
                 {{ item.title }}
             </div>
             <div class="text-default/70 truncate text-sm leading-tight">
-                {{ item.subtitle }} · {{ item.participant }}
+                {{ item.subtitle ? `${item.subtitle} · ` : "" }}{{ item.participant }}
             </div>
             <div v-if="item.metaLabel" class="text-default/40 text-[10px] font-bold uppercase">
                 {{ item.metaLabel }}

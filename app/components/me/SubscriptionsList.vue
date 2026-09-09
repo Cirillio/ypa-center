@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { StatusSubscription } from "~/types/status"
+import type { MeSubscriptionVM } from "~/types/me"
 
 defineProps<{
-    subscriptions?: StatusSubscription[]
+    subscriptions?: MeSubscriptionVM[]
     isProcessing: boolean
 }>()
 </script>
@@ -18,7 +18,12 @@ defineProps<{
             <h2 class="text-primary text-xl font-bold">Абонементы</h2>
         </div>
         <template v-if="subscriptions">
-            <MeSubscribitionCard v-for="sub in subscriptions" :key="sub.id" v-bind="sub" />
+            <template v-if="subscriptions.length > 0">
+                <MeSubscribitionCard v-for="sub in subscriptions" :key="sub.id" :sub="sub" />
+            </template>
+            <p v-else class="text-default/50 py-4 text-sm italic">
+                У вас пока нет оформленных абонементов
+            </p>
         </template>
         <template v-else>
             <div

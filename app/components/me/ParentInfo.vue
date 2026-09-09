@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { StatusParent } from "~/types/status"
+import type { MeParentVM } from "~/types/me"
 
 defineProps<{
-    parent?: StatusParent
+    parent?: MeParentVM
     isProcessing: boolean
 }>()
 
@@ -28,7 +28,7 @@ const fields = [
             <div v-for="field in fields" :key="field.key" class="flex flex-col gap-0.5">
                 <dt class="text-default/60 text-sm leading-tight">{{ field.label }}</dt>
                 <dd v-if="parent" class="text-default truncate text-lg leading-tight font-semibold">
-                    {{ parent[field.key] }}
+                    {{ parent[field.key] || "—" }}
                 </dd>
                 <dd
                     v-else

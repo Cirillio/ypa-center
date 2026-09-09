@@ -1,22 +1,19 @@
 <script lang="ts" setup>
-import type { CabinetChild } from "~/types/status"
+import type { MeChildVM } from "~/types/me"
 
-const props = defineProps<{
-    children?: readonly CabinetChild[]
+defineProps<{
+    children?: readonly MeChildVM[]
     isProcessing: boolean
     isSaving: boolean
 }>()
 
 const emit = defineEmits<{
     add: [payload: { name: string; birthdate: string }]
-    remove: [id: string]
 }>()
 
 const isAdding = ref<boolean>(false)
 const newName = ref<string>("")
 const newBirthdate = ref<string>("")
-
-const hasLinked = computed(() => props.children?.some((c) => c.isLinked) ?? false)
 
 const initial = (name: string) => name.trim().charAt(0).toUpperCase()
 
@@ -31,7 +28,7 @@ const cancelForm = () => {
 }
 
 const submitForm = () => {
-    if (!newName.value.trim()) return
+    if (!newName.value.trim() || !newBirthdate.value) return
     emit("add", { name: newName.value.trim(), birthdate: newBirthdate.value })
     cancelForm()
 }
@@ -59,7 +56,7 @@ const submitForm = () => {
                 <div
                     v-for="child in children"
                     :key="child.id"
-                    class="bg-secondary/5 flex items-center gap-2 rounded-full py-1 pr-2 pl-1"
+                    class="bg-secondary/5 flex items-center gap-2 rounded-full py-1 pr-3 pl-1"
                     :title="child.birthdate"
                 >
                     <span
@@ -70,22 +67,7 @@ const submitForm = () => {
                     <span class="text-default text-base leading-tight font-semibold">
                         {{ child.name }}
                     </span>
-                    <UIcon
-                        v-if="child.isLinked"
-                        name="ph:lock-simple-fill"
-                        class="text-default/30 mr-1 size-4 shrink-0"
-                        title="Привязан к покупкам — удалить нельзя"
-                    />
-                    <button
-                        v-else
-                        type="button"
-                        :disabled="isSaving"
-                        class="text-default/40 hover:bg-error/10 hover:text-error flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-full text-lg leading-none transition disabled:opacity-40"
-                        title="Удалить"
-                        @click="emit('remove', child.id)"
-                    >
-                        ×
-                    </button>
+                    <!-- TODO backend: нет DELETE /me/children/{id}/, кнопка удаления пока скрыта -->
                 </div>
             </div>
             <p v-else class="text-default/50 text-sm italic">Пока не добавлено ни одного ребёнка</p>
@@ -107,7 +89,7 @@ const submitForm = () => {
                     type="submit"
                     icon="ph:check-bold"
                     :loading="isSaving"
-                    :disabled="!newName.trim()"
+                    :disabled="!newName.trim() || !newBirthdate"
                     title="Сохранить"
                 />
                 <UButton
@@ -129,10 +111,6 @@ const submitForm = () => {
             >
                 Добавить ребёнка
             </UButton>
-
-            <p v-if="hasLinked" class="text-default/50 text-xs">
-                Ребёнка, привязанного к покупке, удалить нельзя.
-            </p>
         </template>
 
         <div v-else class="flex flex-wrap gap-2">

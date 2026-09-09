@@ -1,38 +1,47 @@
 <script lang="ts" setup>
-import type { StatusSubscription } from "~/types/status"
+import type { MeSubscriptionVM } from "~/types/me"
 
-const sub = defineProps<StatusSubscription>()
-
-const clubsSortedByLeft = computed(() => [...sub.clubs].sort((a, b) => b.left - a.left))
-
-const totalLeft = computed(() => sub.clubs.reduce((acc, c) => acc + c.left, 0))
-const totalMax = computed(() => sub.clubs.reduce((acc, c) => acc + c.maxUses, 0))
-
-const formattedCreatedAt = computed(() =>
-    new Date(sub.createdAt).toLocaleDateString("ru-RU", {
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-    })
-)
+const props = defineProps<{
+    sub: MeSubscriptionVM
+}>()
 
 const rows = computed(() => [
-    { label: "Кружков", value: String(sub.clubs.length) },
+    { label: "Кружков", value: String(props.sub.slots.length) },
     {
         label: "Остаток посещений",
-        value: `${totalLeft.value}/${totalMax.value}`,
-        muted: totalLeft.value === 0
+        value: `${props.sub.totalRemaining}/${props.sub.totalMax}`,
+        muted: props.sub.totalRemaining === 0
     },
-    { label: "Стоимость", value: `${sub.sum}р` },
-    { label: "Ребёнок", value: sub.participant.name },
-    { label: "Дата покупки", value: formattedCreatedAt.value }
+    { label: "Стоимость", value: `${props.sub.sum} ₽` },
+    { label: "Ребёнок", value: props.sub.studentName },
+    { label: "Дата покупки", value: props.sub.formattedCreatedAt }
 ])
 
-const stamp = computed(() =>
-    sub.isExpired
-        ? { text: "Завершён", class: "border-default/20 text-default/40 bg-default/5" }
-        : { text: "Активен", class: "border-secondary/40 text-secondary bg-secondary/5" }
-)
+const stamp = computed(() => {
+    switch (props.sub.status) {
+        case "ACTIVE":
+            return {
+                text: "Активен",
+                class: "border-secondary/40 text-secondary bg-secondary/5"
+            }
+        case "PENDING":
+            return {
+                text: "Ожидает оплаты",
+                class: "border-amber-500/40 text-amber-600 bg-amber-500/5"
+            }
+        case "CANCELED":
+            return {
+                text: "Отменён",
+                class: "border-error/40 text-error bg-error/5"
+            }
+        case "EXPIRED":
+        default:
+            return {
+                text: "Истёк",
+                class: "border-default/20 text-default/40 bg-default/5"
+            }
+    }
+})
 
 const isClubsShown = ref<boolean>(false)
 const toggleClubsShown = () => {
@@ -41,7 +50,10 @@ const toggleClubsShown = () => {
 </script>
 
 <template>
-    <div :class="{ 'opacity-75': sub.isExpired }" class="relative overflow-hidden rounded-lg">
+    <div
+        :class="{ 'opacity-75': sub.status === 'EXPIRED' || sub.status === 'CANCELED' }"
+        class="relative overflow-hidden rounded-lg"
+    >
         <div
             class="absolute top-3.5 right-3.5 z-20 -rotate-6 rounded-md border px-2.5 py-0.5 text-xs font-bold tracking-wider uppercase"
             :class="stamp.class"
@@ -55,7 +67,7 @@ const toggleClubsShown = () => {
                 <div class="grid">
                     <span class="text-default/75 text-base leading-tight">Абонемент</span>
                     <span class="text-default text-lg leading-tight font-semibold">
-                        #{{ sub.id }}
+                        {{ sub.displayId }}
                     </span>
                 </div>
             </div>
@@ -85,23 +97,25 @@ const toggleClubsShown = () => {
                 :variant="isClubsShown ? 'ghost' : 'soft'"
                 @click="toggleClubsShown"
             >
-                {{ isClubsShown ? "Скрыть" : `Показать кружки (${sub.clubs.length})` }}
+                {{ isClubsShown ? "Скрыть" : `Показать кружки (${sub.slots.length})` }}
             </UButton>
             <div v-if="isClubsShown" class="grid gap-2 sm:grid-cols-2">
                 <MeActivityItem
-                    v-for="(club, idx) in clubsSortedByLeft"
-                    :key="idx"
-                    :title="club.name"
-                    :desc="club.subgroup.name"
-                    :datetime="`${club.weeklySlot.dayOfWeek} ${club.weeklySlot.startTime}-${club.weeklySlot.endTime}`"
-                    :is-active="club.left > 0"
+                    v-for="slot in sub.slots"
+                    :key="slot.scheduleId"
+                    :title="slot.activityName"
+                    :desc="slot.groupName"
+                    :datetime="slot.schedule"
+                    :is-active="slot.remaining > 0"
                 >
                     <template #trailing>
                         <span class="text-primary text-lg leading-tight font-bold">
-                            <span :class="club.left > 0 ? 'text-secondary' : 'text-default/25'">
-                                {{ club.left }}
+                            <span
+                                :class="slot.remaining > 0 ? 'text-secondary' : 'text-default/25'"
+                            >
+                                {{ slot.remaining }}
                             </span>
-                            /{{ club.maxUses }}
+                            /{{ slot.total }}
                         </span>
                     </template>
                 </MeActivityItem>

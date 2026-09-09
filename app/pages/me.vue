@@ -1,22 +1,34 @@
 <script lang="ts" setup>
-import { MOCK_STATUS_DATA } from "~/constants/mock"
-import type { StatusData, UpcomingActivityItem } from "~/types/status"
+import type { MeUpcomingVM } from "~/types/me"
+import { toParentVM, toSubscriptionVM, toUpcomingVM } from "~/types/me"
 
 definePageMeta({ middleware: "auth" })
 
 const authStore = useAuthStore()
-const { isLoading } = storeToRefs(authStore)
 
-// ВРЕМЕННО: мок изолирован в странице до Задачи 2 (расмокивание me.vue)
-const data = ref<StatusData | null>(MOCK_STATUS_DATA)
+// 1. Слой данных
+const { data: profileData, pending: isProfilePending, refresh: refreshProfile } = useMeProfile()
 
+const { data: subscriptionsData, pending: isSubsPending } = useMeSubscriptions()
+
+const { data: upcomingData, pending: isUpcomingPending } = useMeUpcoming()
+
+const isProcessing = computed(
+    () => isProfilePending.value || isSubsPending.value || isUpcomingPending.value
+)
+
+// Управление детьми
 const {
     children: cabinetChildren,
     isSaving: isChildSaving,
-    addChild,
-    removeChild
-} = useCabinetChildren(() => data.value)
+    addChild
+} = useCabinetChildren(
+    () => profileData.value,
+    () => subscriptionsData.value,
+    refreshProfile
+)
 
+// Модалка выхода
 const modalOpen = ref<boolean>(false)
 
 const openConfirmModal = () => {
@@ -28,16 +40,23 @@ const handleLogout = async () => {
     await navigateTo("/login")
 }
 
-const isProcessing = computed(() => isLoading.value)
-const showData = computed(() => data.value !== null && !isLoading.value)
+// 2. View-models
+const parentVM = computed(() => (profileData.value ? toParentVM(profileData.value) : undefined))
+
+const subscriptionsVM = computed(() => subscriptionsData.value?.map(toSubscriptionVM))
 
 const sortedSubscriptions = computed(() => {
-    if (!showData.value) return undefined
-    return [...data.value!.subscriptions].sort(
+    if (!subscriptionsVM.value) return undefined
+    return [...subscriptionsVM.value].sort(
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
 })
 
+const upcomingActivities = computed<MeUpcomingVM[] | undefined>(() =>
+    upcomingData.value?.map(toUpcomingVM)
+)
+
+// Пагинация списков
 const PAGE_SIZE = 5
 const subscriptionsShown = ref(PAGE_SIZE)
 const upcomingShown = ref(PAGE_SIZE)
@@ -48,84 +67,25 @@ const visibleSubscriptions = computed(() =>
 const hasMoreSubscriptions = computed(
     () => (sortedSubscriptions.value?.length ?? 0) > subscriptionsShown.value
 )
+
 const visibleUpcoming = computed(() => upcomingActivities.value?.slice(0, upcomingShown.value))
 const hasMoreUpcoming = computed(
     () => (upcomingActivities.value?.length ?? 0) > upcomingShown.value
 )
 
-const upcomingActivities = computed<UpcomingActivityItem[] | undefined>(() => {
-    if (!showData.value || !data.value) return undefined
-
-    const items: UpcomingActivityItem[] = []
-    const nowTs = new Date().getTime()
-
-    // 1. Trials
-    data.value.trials.forEach((t) => {
-        const start = new Date(`${t.dateTime.date}T${t.dateTime.startTime}`)
-        if (start.getTime() > nowTs) {
-            items.push({
-                id: t.id,
-                type: "trial",
-                title: t.club.name,
-                subtitle: t.club.subgroup.name,
-                timestamp: start.getTime(),
-                displayDate: formatDisplayDate(start),
-                displayTime: `${t.dateTime.startTime}-${t.dateTime.endTime}`,
-                participant: t.participant.name
-            })
-        }
-    })
-
-    // 2. Events
-    data.value.events.forEach((e) => {
-        const start = new Date(`${e.dateTime.date}T${e.dateTime.startTime}`)
-        if (start.getTime() > nowTs) {
-            items.push({
-                id: e.id,
-                type: "event",
-                title: e.event.name,
-                subtitle: `Вместимость: ${e.event.capacity} чел.`,
-                timestamp: start.getTime(),
-                displayDate: formatDisplayDate(start),
-                displayTime: `${e.dateTime.startTime}-${e.dateTime.endTime}`,
-                participant: e.participant.name
-            })
-        }
-    })
-
-    // 3. Subscriptions (next immediate occurrence)
-    data.value.subscriptions.forEach((sub) => {
-        if (sub.isExpired) return
-        sub.clubs.forEach((club) => {
-            if (club.left <= 0) return
-            const nextDate = getNextOccurrence(club.weeklySlot.dayOfWeek, club.weeklySlot.startTime)
-            items.push({
-                id: `${sub.id}-${club.name}`,
-                type: "subscription",
-                title: club.name,
-                subtitle: club.subgroup.name,
-                timestamp: nextDate.getTime(),
-                displayDate: formatDisplayDate(nextDate),
-                displayTime: `${club.weeklySlot.startTime}-${club.weeklySlot.endTime}`,
-                participant: sub.participant.name,
-                metaLabel: `#${sub.id}`
-            })
-        })
-    })
-
-    return items.sort((a, b) => a.timestamp - b.timestamp)
-})
-
-// Группировка ближайших активностей по дате (date-divider в сайдбаре).
+// Группировка ближайших активностей по дате (серверный фид уже предсортирован)
 const groupedUpcoming = computed(() => {
     const items = visibleUpcoming.value
     if (!items) return undefined
 
-    const groups: { date: string; items: UpcomingActivityItem[] }[] = []
+    const groups: { date: string; items: MeUpcomingVM[] }[] = []
     for (const item of items) {
         const last = groups[groups.length - 1]
-        if (last && last.date === item.displayDate) last.items.push(item)
-        else groups.push({ date: item.displayDate, items: [item] })
+        if (last && last.date === item.displayDate) {
+            last.items.push(item)
+        } else {
+            groups.push({ date: item.displayDate, items: [item] })
+        }
     }
     return groups
 })
@@ -135,7 +95,7 @@ const groupedUpcoming = computed(() => {
     <div class="gradient-bg-ps min-h-dvh pt-(--ui-header-height)">
         <MeLeaveConfirm v-model="modalOpen" @on-confirm="handleLogout" />
 
-        <MeSection :parent-name="data?.parent.name" @on-confirm-logout="openConfirmModal" />
+        <MeSection :parent-name="profileData?.full_name" @on-confirm-logout="openConfirmModal" />
 
         <main class="pb-16">
             <UContainer class="grid gap-4 lg:grid-cols-7">
@@ -143,17 +103,13 @@ const groupedUpcoming = computed(() => {
                     <!-- 2a совмещённый профиль+дети -->
                     <div class="rounded-lg bg-white p-6">
                         <div class="grid gap-6 md:grid-cols-2">
-                            <MeParentInfo
-                                :parent="showData ? data!.parent : undefined"
-                                :is-processing="isProcessing"
-                            />
+                            <MeParentInfo :parent="parentVM" :is-processing="isProcessing" />
                             <MeChildrenInfo
-                                :children="showData ? cabinetChildren : undefined"
+                                :children="profileData ? cabinetChildren : undefined"
                                 :is-processing="isProcessing"
                                 :is-saving="isChildSaving"
                                 class="border-default border-t pt-6 md:border-t-0 md:border-l md:pt-0 md:pl-6"
                                 @add="addChild"
-                                @remove="removeChild"
                             />
                         </div>
                     </div>

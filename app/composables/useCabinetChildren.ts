@@ -1,50 +1,22 @@
-import type { CabinetChild, StatusData } from "~/types/status"
+import type { ApiProfile, ApiSubscriptionView, MeChildVM } from "~/types/me"
+import { toChildVM } from "~/types/me"
 
-/**
- * Управление списком детей в кабинете.
- *
- * Бэкенда пока нет — операции имитируют запрос (как в useMailConfirm).
- * Контракт addChild/removeChild сохранится при подключении реального API.
- *
- * Признак isLinked (ребёнок привязан к покупке → удалять нельзя) вычисляется
- * на клиенте по имени участника в подписках/пробных/событиях. Флага на бэке нет.
- */
-export const useCabinetChildren = (getData: () => StatusData | null) => {
-    const source = computed(getData)
+export const useCabinetChildren = (
+    getProfile: () => ApiProfile | null | undefined,
+    getSubscriptions?: () => ApiSubscriptionView[] | null | undefined,
+    onRefreshProfile?: () => Promise<unknown>
+) => {
+    const { apiFetch } = useApi()
 
-    const children = ref<CabinetChild[]>([])
     const isSaving = ref<boolean>(false)
     const error = ref<string | null>(null)
 
-    let seq = 0
-    const makeId = () => `child-${Date.now()}-${seq++}`
-
-    // Имена участников, у которых есть покупки — их детей удалять нельзя.
-    const linkedNames = computed<Set<string>>(() => {
-        const data = source.value
-        if (!data) return new Set()
-
-        const names = new Set<string>()
-        data.subscriptions.forEach((s) => names.add(s.participant.name))
-        data.trials.forEach((t) => names.add(t.participant.name))
-        data.events.forEach((e) => names.add(e.participant.name))
-        return names
+    const children = computed<MeChildVM[]>(() => {
+        const profile = getProfile()
+        if (!profile?.children) return []
+        const subs = getSubscriptions?.() ?? []
+        return profile.children.map((child) => toChildVM(child, subs))
     })
-
-    // Инициализация локального состояния при получении данных профиля.
-    watch(
-        source,
-        (data) => {
-            children.value = data
-                ? data.children.map((c) => ({
-                      ...c,
-                      id: makeId(),
-                      isLinked: linkedNames.value.has(c.name)
-                  }))
-                : []
-        },
-        { immediate: true }
-    )
 
     const addChild = async (payload: { name: string; birthdate: string }) => {
         if (isSaving.value) return
@@ -52,40 +24,30 @@ export const useCabinetChildren = (getData: () => StatusData | null) => {
         isSaving.value = true
         error.value = null
         try {
-            await new Promise((resolve) => setTimeout(resolve, 800))
-            children.value.push({
-                ...payload,
-                id: makeId(),
-                isLinked: false
+            await apiFetch("/v1/me/children/", {
+                method: "POST",
+                body: {
+                    full_name: payload.name.trim(),
+                    dob: payload.birthdate
+                }
             })
+            if (onRefreshProfile) {
+                await onRefreshProfile()
+            }
         } catch (e: unknown) {
             error.value = e instanceof Error ? e.message : String(e)
+            throw e
         } finally {
             isSaving.value = false
         }
     }
 
-    const removeChild = async (id: string) => {
-        const child = children.value.find((c) => c.id === id)
-        if (!child || child.isLinked || isSaving.value) return
-
-        isSaving.value = true
-        error.value = null
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 600))
-            children.value = children.value.filter((c) => c.id !== id)
-        } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : String(e)
-        } finally {
-            isSaving.value = false
-        }
-    }
+    // TODO backend: нет DELETE /api/v1/me/children/{id}/, удаление временно не поддерживается бэкендом.
 
     return {
-        children: readonly(children),
+        children,
         isSaving: readonly(isSaving),
         error: readonly(error),
-        addChild,
-        removeChild
+        addChild
     }
 }
