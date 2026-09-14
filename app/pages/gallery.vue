@@ -53,6 +53,15 @@ const total = ref(data.value?.count ?? 0)
 const loadingMore = ref(false)
 const loadMoreError = ref(false)
 
+// ПОЧЕМУ: photos копит страницы поверх data (useAsyncData хранит только
+// последнюю). Без синхронизации будущий refresh("gallery") сбросит data на
+// первую страницу, а photos останется с накопленными — синхронизируем на
+// любое изменение data, а не только при инициализации.
+watch(data, (newData) => {
+    photos.value = [...(newData?.results ?? [])]
+    total.value = newData?.count ?? 0
+})
+
 const hasMore = computed(() => photos.value.length < total.value)
 
 const loadMore = async () => {
