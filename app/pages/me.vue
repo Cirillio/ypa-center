@@ -6,11 +6,26 @@ definePageMeta({ middleware: "auth" })
 const authStore = useAuthStore()
 
 // 1. Слой данных (сервисы отдают уже доменные модели)
-const { data: profileData, pending: isProfilePending, refresh: refreshProfile } = useMeProfile()
+const {
+    data: profileData,
+    pending: isProfilePending,
+    error: profileError,
+    refresh: refreshProfile
+} = useMeProfile()
 
-const { data: subscriptionsData, pending: isSubsPending } = useMeSubscriptions()
+const {
+    data: subscriptionsData,
+    pending: isSubsPending,
+    error: subscriptionsError,
+    refresh: refreshSubscriptions
+} = useMeSubscriptions()
 
-const { data: upcomingData, pending: isUpcomingPending } = useMeUpcoming()
+const {
+    data: upcomingData,
+    pending: isUpcomingPending,
+    error: upcomingError,
+    refresh: refreshUpcoming
+} = useMeUpcoming()
 
 const isProcessing = computed(
     () => isProfilePending.value || isSubsPending.value || isUpcomingPending.value
@@ -92,7 +107,12 @@ const groupedUpcoming = computed(() => {
                 <div class="flex flex-col gap-4 lg:col-span-5">
                     <!-- 2a совмещённый профиль+дети -->
                     <div class="rounded-lg bg-white p-6">
-                        <div class="grid gap-6 md:grid-cols-2">
+                        <MeErrorState
+                            v-if="profileError && !profileData"
+                            message="Не удалось загрузить профиль."
+                            @retry="refreshProfile"
+                        />
+                        <div v-else class="grid gap-6 md:grid-cols-2">
                             <MeParentInfo :parent="parent" :is-processing="isProcessing" />
                             <MeChildrenInfo
                                 :children="profileData ? cabinetChildren : undefined"
@@ -106,17 +126,24 @@ const groupedUpcoming = computed(() => {
 
                     <!-- 2b абонементы + Показать ещё -->
                     <div class="flex flex-col gap-6 rounded-lg bg-white p-6">
-                        <MeSubscriptionsList
-                            :subscriptions="visibleSubscriptions"
-                            :is-processing="isProcessing"
+                        <MeErrorState
+                            v-if="subscriptionsError && !subscriptionsData"
+                            message="Не удалось загрузить абонементы."
+                            @retry="refreshSubscriptions"
                         />
-                        <UButton
-                            v-if="hasMoreSubscriptions"
-                            variant="soft"
-                            block
-                            label="Показать ещё"
-                            @click="void (subscriptionsShown += PAGE_SIZE)"
-                        />
+                        <template v-else>
+                            <MeSubscriptionsList
+                                :subscriptions="visibleSubscriptions"
+                                :is-processing="isProcessing"
+                            />
+                            <UButton
+                                v-if="hasMoreSubscriptions"
+                                variant="soft"
+                                block
+                                label="Показать ещё"
+                                @click="void (subscriptionsShown += PAGE_SIZE)"
+                            />
+                        </template>
                     </div>
                 </div>
 
@@ -134,7 +161,13 @@ const groupedUpcoming = computed(() => {
                             <h2 class="text-primary text-xl font-bold">Ближайшие активности</h2>
                         </div>
 
-                        <div v-if="groupedUpcoming" class="flex flex-col gap-4">
+                        <MeErrorState
+                            v-if="upcomingError && !upcomingData"
+                            message="Не удалось загрузить ленту активностей."
+                            @retry="refreshUpcoming"
+                        />
+
+                        <div v-else-if="groupedUpcoming" class="flex flex-col gap-4">
                             <template v-if="groupedUpcoming.length > 0">
                                 <div
                                     v-for="group in groupedUpcoming"
