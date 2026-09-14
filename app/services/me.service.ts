@@ -52,8 +52,7 @@ function toSubscription(dto: SubscriptionView): MeSubscription {
             day: "numeric"
         }),
         studentName: dto.student_name,
-        // Бэк отдаёт копейки
-        sum: Math.round(dto.purchase_price / 100),
+        sum: kopecksToRubles(dto.purchase_price),
         totalRemaining: dto.total_remaining,
         totalMax: slots.reduce((acc, slot) => acc + slot.total, 0),
         slots

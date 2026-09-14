@@ -8,7 +8,7 @@ function toTier(plan: SubscriptionPlanPublic): PlanTier {
     return {
         id: plan.id,
         lessons: plan.is_unlimited ? null : plan.slots_count * LESSONS_PER_SLOT,
-        price: Math.round(plan.price / 100),
+        price: kopecksToRubles(plan.price),
         label: plan.is_unlimited ? plan.name : null,
         highlight: Boolean(plan.is_unlimited)
     }
