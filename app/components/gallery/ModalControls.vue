@@ -18,6 +18,7 @@ defineProps<{
                 color="secondary"
                 class="aspect-square rounded-full"
                 size="md"
+                aria-label="Предыдущее фото"
                 @click="prev()"
             />
             <UButton
@@ -26,6 +27,7 @@ defineProps<{
                 color="secondary"
                 class="aspect-square rounded-full"
                 size="md"
+                aria-label="Следующее фото"
                 @click="next()"
             />
             <UButton
@@ -34,6 +36,7 @@ defineProps<{
                 variant="soft"
                 size="md"
                 class="aspect-square rounded-full"
+                aria-label="Закрыть"
                 @click="close()"
             />
         </div>

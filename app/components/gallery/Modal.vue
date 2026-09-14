@@ -11,7 +11,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     "update:modelValue": [value: boolean]
-    close: []
     prev: []
     next: []
 }>()
