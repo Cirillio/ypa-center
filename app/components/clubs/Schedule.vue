@@ -7,11 +7,25 @@ const props = defineProps<{
 
 const { weekDays, selectedDay } = useSchedule()
 
+// ПОЧЕМУ: раньше slotsForDay был обычной функцией и пересчитывал
+// filter+sort по всем слотам на каждый вызов — до 16 раз за рендер
+// (мобильный вид дважды на выбранный день, десктопный грид дважды на
+// каждую из 7 колонок). Группируем один раз в computed.
+const slotsByDay = computed(() => {
+    const map = new Map<number, WeeklySlot[]>()
+    for (const slot of props.slots) {
+        const list = map.get(slot.dayOfWeek)
+        if (list) list.push(slot)
+        else map.set(slot.dayOfWeek, [slot])
+    }
+    for (const list of map.values()) {
+        list.sort((a, b) => a.startTime.localeCompare(b.startTime))
+    }
+    return map
+})
+
 function slotsForDay(dow: number): WeeklySlot[] {
-    return props.slots
-        .filter((s) => s.dayOfWeek === dow)
-        .slice()
-        .sort((a, b) => a.startTime.localeCompare(b.startTime))
+    return slotsByDay.value.get(dow) ?? []
 }
 
 const isSunday = new Date().getDay() === 0
