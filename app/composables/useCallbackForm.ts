@@ -1,4 +1,3 @@
-import { useStorage } from "@vueuse/core"
 import type { ContactTimeOption, ContactTimeValue, PreferredTimeWindow } from "~/types"
 import { useDayjs } from "#dayjs"
 import { Mask } from "maska"
@@ -37,8 +36,8 @@ export interface UseCallbackFormOptions {
 export const useCallbackForm = (options: UseCallbackFormOptions = {}) => {
     const { contactTimeOptions } = useAppConfig()
     const callback = useCallbackService()
+    const { isSpamBlocked, triggerCooldown } = useAntiSpamCooldown("contact_form_cooldown")
 
-    const COOLDOWN_MINUTES = 5
     const DEFAULT_FORM_STATE: ContactCallbackForm = {
         name: "",
         phone: "",
@@ -56,12 +55,6 @@ export const useCallbackForm = (options: UseCallbackFormOptions = {}) => {
     const captchaToken = ref("")
     const isLoading = ref(false)
     const error = ref<unknown>(null)
-
-    /**
-     * Anti-Spam: Хранение времени окончания блокировки в LocalStorage
-     */
-    const cooldownUntil = useStorage<number>("contact_form_cooldown", 0)
-    const isSpamBlocked = computed(() => Date.now() < cooldownUntil.value)
 
     /**
      * Валидация и доступность отправки
@@ -110,7 +103,7 @@ export const useCallbackForm = (options: UseCallbackFormOptions = {}) => {
                 captcha_token: captchaToken.value
             })
 
-            cooldownUntil.value = Date.now() + COOLDOWN_MINUTES * 60 * 1000
+            triggerCooldown()
             options.onSuccess?.(selectedTime)
             resetForm()
             return true
