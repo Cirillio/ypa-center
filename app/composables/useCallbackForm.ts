@@ -1,5 +1,5 @@
 import { useStorage } from "@vueuse/core"
-import type { ContactTimeOption, PreferredTimeWindow } from "~/types"
+import type { ContactTimeOption, ContactTimeValue, PreferredTimeWindow } from "~/types"
 import { useDayjs } from "#dayjs"
 import { Mask } from "maska"
 import { Maskas } from "~/constants/masks"
@@ -11,6 +11,14 @@ export interface ContactCallbackForm {
     name?: string
     phone: string
     time: ContactTimeOption
+}
+
+// Явное сопоставление вместо .toUpperCase() as PreferredTimeWindow: Record
+// принудит компилятор проверить исчерпаемость при расширении ContactTimeValue
+const CONTACT_TIME_TO_WINDOW: Record<ContactTimeValue, PreferredTimeWindow> = {
+    morning: "MORNING",
+    afternoon: "AFTERNOON",
+    evening: "EVENING"
 }
 
 export interface UseCallbackFormOptions {
@@ -89,7 +97,7 @@ export const useCallbackForm = (options: UseCallbackFormOptions = {}) => {
 
         try {
             const selectedTime = form.time
-            const preferredTimeWindow = selectedTime.value.toUpperCase() as PreferredTimeWindow
+            const preferredTimeWindow = CONTACT_TIME_TO_WINDOW[selectedTime.value]
 
             const dayjs = useDayjs(),
                 formattedDate = dayjs().tz("Asia/Novosibirsk").format("DD.MM.YYYY HH:mm")

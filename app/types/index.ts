@@ -75,10 +75,13 @@ export interface ClubWithSlots {
     slots: WeeklySlot[]
 }
 
+// value связан с PreferredTimeWindow через CONTACT_TIME_TO_WINDOW в useCallbackForm
+export type ContactTimeValue = "morning" | "afternoon" | "evening"
+
 export interface ContactTimeOption {
     label: string
     time: string
-    value: string
+    value: ContactTimeValue
 }
 
 // POST /public/callback/ — заявка на обратный звонок
