@@ -64,7 +64,7 @@ const teaser = [
                     variant="subtle"
                     autocomplete="email"
                     size="xl"
-                    :disabled="isLoading"
+                    :disabled="isLoading || currentStep === 'code'"
                     placeholder="your-email@mail.ru"
                     class="w-full"
                     :ui="{
@@ -72,6 +72,16 @@ const teaser = [
                     }"
                 />
             </div>
+
+            <button
+                v-if="currentStep === 'code'"
+                type="button"
+                :disabled="isLoading"
+                class="text-default/50 hover:text-primary self-start text-xs underline decoration-dotted underline-offset-2 transition disabled:opacity-40"
+                @click="onReset"
+            >
+                ← Изменить почту
+            </button>
 
             <template v-if="currentStep === 'code'">
                 <div class="flex items-center gap-2">
