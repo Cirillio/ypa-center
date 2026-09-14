@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { vMaska } from "maska/vue"
-import type { FormSubmitEvent } from "@nuxt/ui"
+import type { FormSchema, FormSubmitEvent } from "@nuxt/ui"
 import { Maskas } from "~/constants/masks"
 import type { RegistrationForm } from "~/schemas/registration.schema"
 import { SchoolClasses } from "~/types"
 
 const state = defineModel<RegistrationForm>({ required: true })
 
-defineProps<{ schema: unknown }>()
+defineProps<{ schema: FormSchema<RegistrationForm> }>()
 
 const emit = defineEmits<{
     submit: [event: FormSubmitEvent<RegistrationForm>]
