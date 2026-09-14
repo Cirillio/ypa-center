@@ -32,11 +32,28 @@ const isProcessing = computed(
 )
 
 // Управление детьми
+const toast = useToast()
 const {
     children: cabinetChildren,
     isSaving: isChildSaving,
-    addChild
+    addChild: addChildBase
 } = useCabinetChildren(() => profileData.value, refreshProfile)
+
+// ПОЧЕМУ: @add="addChildBase" напрямую — необработанный reject промиса без
+// фидбэка пользователю (addChildBase рвёт цепочку через throw после
+// error.value). Оборачиваем в toast, как в gallery.vue.
+const addChild = async (payload: Parameters<typeof addChildBase>[0]) => {
+    try {
+        await addChildBase(payload)
+    } catch {
+        toast.add({
+            title: "Не удалось добавить ребёнка",
+            description: "Проверьте данные и попробуйте снова.",
+            icon: "ph:x-circle-bold",
+            color: "error"
+        })
+    }
+}
 
 // Модалка выхода
 const modalOpen = ref<boolean>(false)
