@@ -93,8 +93,8 @@ export class MeService {
     async getUpcoming(params?: { weeks?: number; childId?: number }): Promise<MeUpcoming[]> {
         const items = await this.fetch<UpcomingItem[]>("/v1/me/upcoming/", {
             query: {
-                ...(params?.weeks ? { weeks: params.weeks } : {}),
-                ...(params?.childId ? { child_id: params.childId } : {})
+                ...(params?.weeks != null ? { weeks: params.weeks } : {}),
+                ...(params?.childId != null ? { child_id: params.childId } : {})
             }
         })
         return items.map(toUpcoming)
