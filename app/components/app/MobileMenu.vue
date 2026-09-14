@@ -26,7 +26,7 @@ function navigate(to: string) {
     <Transition name="menu">
         <div
             v-if="isMenuOpen"
-            class="border-primary/20 fixed top-(--header-height) right-0 left-0 z-98 h-[calc(100dvh-var(--header-height))] overflow-y-auto border-t bg-white/92 backdrop-blur-md lg:hidden"
+            class="border-primary/20 fixed top-(--ui-header-height) right-0 left-0 z-98 h-[calc(100dvh-var(--ui-header-height))] overflow-y-auto border-t bg-white/92 backdrop-blur-md lg:hidden"
         >
             <UContainer class="flex h-full flex-col gap-6 py-6">
                 <nav class="w-full">

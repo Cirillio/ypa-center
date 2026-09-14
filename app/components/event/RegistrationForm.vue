@@ -25,7 +25,7 @@ const participantItems = ["1", "2", "3", "4", "5"]
 </script>
 
 <template>
-    <div class="sticky top-[calc(var(--header-height)+1rem)] rounded-sm bg-white px-6 py-4">
+    <div class="sticky top-[calc(var(--ui-header-height)+1rem)] rounded-sm bg-white px-6 py-4">
         <h3 class="text-default mb-6 text-2xl font-bold">2. Заполните анкету</h3>
 
         <UForm

@@ -25,7 +25,7 @@ const CENTER_STATS = [
 
 <template>
     <section
-        class="gradient-bg-ps relative z-10 flex w-full overflow-hidden pt-[calc(var(--header-height)+3rem)] pb-16 md:pt-40 md:pb-24"
+        class="gradient-bg-ps relative z-10 flex w-full overflow-hidden pt-[calc(var(--ui-header-height)+3rem)] pb-16 md:pt-40 md:pb-24"
     >
         <UContainer class="relative z-10 flex flex-col gap-8">
             <SectionLeading subtitle="О нашем центре" as="h1" icon="ph:info-duotone">

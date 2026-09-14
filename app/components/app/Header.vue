@@ -23,7 +23,7 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
         "
     >
         <UContainer
-            class="relative flex h-(--header-height) w-full items-center justify-between gap-4 p-2"
+            class="relative flex h-(--ui-header-height) w-full items-center justify-between gap-4 p-2"
         >
             <!-- LOGO -->
             <NuxtLink

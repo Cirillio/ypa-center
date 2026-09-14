@@ -111,7 +111,7 @@ useSeoMeta({
 
                 <!-- Корзина + форма -->
                 <div
-                    class="sticky top-[calc(var(--header-height)+1rem)] h-fit rounded-sm bg-white px-6 py-4 lg:col-span-5"
+                    class="sticky top-[calc(var(--ui-header-height)+1rem)] h-fit rounded-sm bg-white px-6 py-4 lg:col-span-5"
                 >
                     <h3 class="text-default mb-6 text-2xl font-bold">2. Заполните анкету</h3>
 
