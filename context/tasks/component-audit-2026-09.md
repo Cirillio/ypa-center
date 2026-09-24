@@ -58,8 +58,8 @@
 
 ### 3.3 Контракты компонентов
 
-- ❓ **Function-props вместо `defineEmits`**: `me/GuestGate.vue` (`onHandleOtp`, `onResendCode`, `onReset`), `gallery/ModalControls.vue` (`prev`, `next`, `close`). Остальные компоненты фичи используют `defineEmits`. Работает (Vue мапит `@event` на `onEvent`-проп), но неочевидно и непоследовательно. Решить: единый стандарт.
-- ❓ **`on`-префикс в именах emit**: `me/LeaveConfirm.vue` (`onConfirm`), `me/Section.vue` (`onConfirmLogout`). Конвенция Vue: имя события описывает факт (`confirm`, `confirm-logout`), `on*` – сторона слушателя. Рефакторинг требует правки вызывающих.
+- ✅ **Function-props вместо `defineEmits`** (закрыто 2026-09-24, вопрос 8: везде `defineEmits`): `me/GuestGate.vue` (`onHandleOtp`, `onResendCode`, `onReset`), `gallery/ModalControls.vue` (`prev`, `next`, `close`). Остальные компоненты фичи используют `defineEmits`. Работает (Vue мапит `@event` на `onEvent`-проп), но неочевидно и непоследовательно. Решить: единый стандарт.
+- ✅ **`on`-префикс в именах emit** (закрыто 2026-09-24): `me/LeaveConfirm.vue` (`onConfirm`), `me/Section.vue` (`onConfirmLogout`). Конвенция Vue: имя события описывает факт (`confirm`, `confirm-logout`), `on*` – сторона слушателя. Рефакторинг требует правки вызывающих.
 
 ### 3.4 Мелкое / хвосты
 
@@ -81,8 +81,8 @@
 Вычеркнуто 2026-09-23: `--header-height-full` и отсутствие кросс-табной
 синхронизации токенов – уже в `progress-tracker.md` (техдолг), незачем в
 двух местах; `useEventEnrollment.onSubmit`/`register не подключён` – там же;
-`types/status.ts`, `constants/mock.ts` – снесутся сами при редизайне покупок
-(шаг 2 плана), отдельно следить не нужно.
+`constants/mock.ts` (моки конструкторов) – снесётся при редизайне покупок
+(шаг 2 плана), отдельно следить не нужно. `types/status.ts` удалён 2026-09-24.
 
 ## 5. Проверено и чисто
 

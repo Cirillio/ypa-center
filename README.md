@@ -96,7 +96,7 @@ NUXT_PUBLIC_API_BASE=http://192.168.1.10:8000/api docker compose up --build
 ```
 app/
 ├── assets/css/          # глобальные стили: tokens, base, utilities, animations
-├── components/          # 73 компонента, каноничный автоимпорт Nuxt 4 с префиксом папки:
+├── components/          # 79 компонентов, каноничный автоимпорт Nuxt 4 с префиксом папки:
 │   ├── layout/          # каркас: LayoutHeader, LayoutFooter, LayoutMobileMenu
 │   ├── ui/              # базовые UI-кирпичики: UiPhoto, UiVideo, UiScrollFade, UiPageSection, UiSectionLeading, UiRoundIcon, UiRadioCard
 │   ├── promo/           # промо-секции: PromoFaq, PromoJoinUs, PromoSubscriptions, PromoFloatCard
@@ -107,7 +107,7 @@ app/
 ├── layouts/default.vue  # LayoutHeader + <slot> + LayoutFooter + LayoutMobileMenu
 ├── middleware/          # гейты: auth, close-menu.global
 ├── pages/               # файловый роутинг Nuxt
-├── plugins/             # scroll-to-top.client
+├── plugins/             # auth-sync.client (сессия между вкладками), scroll-to-top.client
 ├── schemas/             # Zod-схемы валидации форм (event, registration, feedback, fields)
 ├── services/            # HTTP-сервисы (классы-клиенты, DTO → Domain маппинг, автоимпорт use*Service)
 ├── stores/              # Pinia setup-stores (auth, mobile-menu-store)
