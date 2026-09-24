@@ -34,7 +34,7 @@ const isSunday = new Date().getDay() === 0
 <template>
     <section
         id="schedule"
-        class="relative z-10 flex w-full overflow-hidden bg-white py-12 md:py-20 lg:py-24"
+        class="relative z-10 flex w-full scroll-mt-(--ui-header-height) overflow-hidden bg-white py-12 md:py-20 lg:py-24"
     >
         <UContainer class="flex w-full flex-col gap-4">
             <!-- Заголовок -->

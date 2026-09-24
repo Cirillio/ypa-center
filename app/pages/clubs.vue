@@ -14,16 +14,6 @@ const { data: scheduleData, error: scheduleError } = await useAsyncData("clubs-s
     schedule.getWeek()
 )
 
-const clubsLength = computed(() => activitiesData.value?.length || 0)
-
-// Минимальный возраст по реальным группам расписания, а не захардкоженное число
-const minAge = computed(() => {
-    const ages = (activitiesData.value ?? [])
-        .flatMap((activity) => activity.groups.map((g) => g.age_min))
-        .filter((age): age is number => age != null)
-    return ages.length ? Math.min(...ages) : null
-})
-
 useSeoMeta({
     title: "Кружки – Улица Радости",
     description:
@@ -90,9 +80,13 @@ useHead({
 
 <template>
     <div class="flex w-full min-w-0 flex-col">
-        <ClubsHero :clubs-length="clubsLength" :min-age="minAge" />
+        <ClubsHero />
 
-        <ClubsList v-if="activitiesData && !activitiesError" :activities="activitiesData" />
+        <ClubsList
+            v-if="activitiesData && !activitiesError"
+            :activities="activitiesData"
+            :has-schedule="Boolean(scheduleData) && !scheduleError"
+        />
 
         <ClubsSchedule v-if="scheduleData && !scheduleError" :slots="scheduleData" />
 

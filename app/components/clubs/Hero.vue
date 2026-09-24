@@ -1,10 +1,5 @@
 <script lang="ts" setup>
 import { EnrollRoutesEnum } from "~/constants/nav"
-
-defineProps<{
-    clubsLength: number | null
-    minAge: number | null
-}>()
 </script>
 
 <template>
