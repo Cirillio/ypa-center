@@ -2,6 +2,7 @@
 import { vMaska } from "maska/vue"
 import type { FormSchema, FormSubmitEvent } from "@nuxt/ui"
 import { Maskas } from "~/constants/masks"
+import { REFERRAL_ITEMS } from "~/constants/referral-sources"
 import type { EventRegistration } from "~/schemas/event.schema"
 
 const state = defineModel<EventRegistration>({ required: true })
@@ -12,14 +13,7 @@ const emit = defineEmits<{
     submit: [event: FormSubmitEvent<EventRegistration>]
 }>()
 
-const referralItems = [
-    "ВКонтакте",
-    "Telegram",
-    "От друзей / знакомых",
-    "Поисковик (Google, Яндекс)",
-    "Флаер / баннер",
-    "Другое"
-]
+const referralItems = REFERRAL_ITEMS
 
 const participantItems = ["1", "2", "3", "4", "5"]
 </script>

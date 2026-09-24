@@ -80,7 +80,7 @@ Hero-тексты главной, «От 450 ₽ за занятие», «мак
 | `public/moke/` | `club_1..4.jpg`, `teacher_1..4.png`, `event-1..4.jpg`, `clubs-page-hero.jpeg`                                                                                                                | Тестовые заглушки |
 
 `public/moke/` используется в `components/home/hero/Section.vue` и
-`components/clubs/Section.vue` – при финальном проходе по контенту заменить
+`components/clubs/Hero.vue` – при финальном проходе по контенту заменить
 или убрать эти ссылки.
 
 Фото кружков, педагогов и галереи в проде приходят с бэка (URL из S3), не из

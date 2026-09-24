@@ -46,7 +46,7 @@ useHead({
                     </template>
                 </UiSectionLeading>
 
-                <SharedCallbackForm />
+                <CallbackWidget />
             </div>
 
             <div class="py-4">

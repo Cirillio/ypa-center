@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-type GuestGateProps = {
-    onHandleOtp: () => Promise<void> | void
-    onResendCode: () => Promise<void> | void
-    onReset: () => void
+// Виджет беспарольного входа и регистрации по коду подтверждения из email.
+import type { OtpEmailStep } from "~/stores/auth"
+
+type Props = {
     currentStep: OtpEmailStep
     secondsLeft: number
     isLoading: boolean
@@ -13,7 +13,13 @@ type GuestGateProps = {
 const modelValueEmail = defineModel<string>("email")
 const modelValueCode = defineModel<string>("code")
 
-const props = defineProps<GuestGateProps>()
+const props = defineProps<Props>()
+
+const emit = defineEmits<{
+    submit: []
+    resend: []
+    reset: []
+}>()
 
 const pinValue = computed<number[]>({
     get: () =>
@@ -33,7 +39,7 @@ const pinValue = computed<number[]>({
 
 const handleAutoSubmit = () => {
     if (props.currentStep === "code" && !props.isLoading) {
-        props.onHandleOtp()
+        emit("submit")
     }
 }
 
@@ -46,15 +52,12 @@ const teaser = [
 
 <template>
     <section class="flex h-fit w-full max-w-xs flex-col items-center text-center">
-        <UiRoundIcon name="ph:book-open-text-bold" class="mb-6 max-sm:hidden" />
-        <h1 class="text-primary text-3xl font-bold sm:text-4xl">
-            Мой <span class="text-secondary">кабинет</span>
+        <UiRoundIcon name="ph:user-bold" class="mb-6 max-sm:hidden" />
+        <h1 class="text-primary text-4xl font-extrabold uppercase sm:text-4xl">
+            Добро <br /><span class="text-secondary">Пожаловать!</span>
         </h1>
-        <p class="text-default/70 mt-2 text-base">
-            Войдите по почте – пришлём одноразовый код, пароль не нужен.
-        </p>
 
-        <form class="mt-6 flex w-full flex-col gap-3" @submit.prevent="onHandleOtp">
+        <form class="mt-6 flex w-full flex-col gap-3" @submit.prevent="emit('submit')">
             <div class="flex items-center gap-2">
                 <UiRoundIcon name="ph:envelope-bold" class="max-sm:hidden" />
                 <UInput
@@ -78,7 +81,7 @@ const teaser = [
                 type="button"
                 :disabled="isLoading"
                 class="text-default/50 hover:text-primary self-start text-xs underline decoration-dotted underline-offset-2 transition disabled:opacity-40"
-                @click="onReset"
+                @click="emit('reset')"
             >
                 ← Изменить почту
             </button>
@@ -110,7 +113,7 @@ const teaser = [
                             type="button"
                             :disabled="!canResend"
                             class="text-primary/80 disabled:text-primary/20 hover:text-primary cursor-pointer font-semibold transition"
-                            @click="onResendCode"
+                            @click="emit('resend')"
                         >
                             Отправить заново <span v-if="secondsLeft > 0">({{ secondsLeft }})</span>
                         </button>
@@ -125,13 +128,16 @@ const teaser = [
                 :loading="isLoading"
                 block
                 class="mt-1 text-lg font-semibold"
-                :label="currentStep === 'email' ? 'Получить код' : 'Войти'"
+                :label="currentStep === 'email' ? 'Получить код' : 'Продолжить'"
             />
         </form>
 
-        <p class="text-default/50 mt-4 text-xs">
-            Аккаунт создаётся автоматически после первой покупки – абонемента или разового занятия.
-        </p>
+        <ol class="text-default/50 list-disc space-y-2 px-6 py-4 text-start text-sm font-medium">
+            <li>Если вы впервые, регистрация займёт буквально 1–2 минуты.</li>
+            <li>
+                Пароль не нужен. На указанную почту придёт 6-значный код для быстрого подтверждения.
+            </li>
+        </ol>
 
         <div class="border-default mt-7 grid w-full grid-cols-3 gap-3 border-t pt-6">
             <div

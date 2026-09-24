@@ -23,5 +23,13 @@ export const fields = {
 
     consent: z.boolean().refine((v) => v === true, "Необходимо принять условия"),
 
-    birthDate: z.string().optional()
+    birthDate: z.string().optional(),
+
+    phoneOptional: z
+        .string()
+        .optional()
+        .refine(
+            (v) => !v || v.trim().length === 0 || v.length === Maskas.Phone.length,
+            "Неверно указан телефон"
+        )
 }

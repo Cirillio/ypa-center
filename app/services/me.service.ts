@@ -8,9 +8,15 @@ import type {
     NewChild,
     Profile,
     ProfileChild,
+    ProfileCompletionPayload,
     SubscriptionView,
     UpcomingItem
 } from "~/types"
+
+// Проверяет заполненность обязательных данных профиля родителя.
+export function isProfileComplete(dto: Profile): boolean {
+    return Boolean(dto.full_name?.trim())
+}
 
 function toChild(dto: ProfileChild): MeChild {
     return {
@@ -27,7 +33,8 @@ function toProfile(dto: Profile): MeProfile {
             phone: dto.phone ?? "",
             email: dto.email
         },
-        children: dto.children.map(toChild)
+        children: dto.children.map(toChild),
+        isComplete: isProfileComplete(dto)
     }
 }
 
@@ -109,6 +116,19 @@ export class MeService {
             }
         })
         return toChild(created)
+    }
+
+    /** PATCH /api/v1/me/profile/ */
+    async completeProfile(payload: ProfileCompletionPayload): Promise<MeProfile> {
+        // MOCK(profile-referral): поле referralSource не отправляется (нет в модели Parent на бэке)
+        const updated = await this.fetch<Profile>("/v1/me/profile/", {
+            method: "PATCH",
+            body: {
+                full_name: payload.fullName.trim(),
+                ...(payload.phone?.trim() ? { phone: payload.phone.trim() } : {})
+            }
+        })
+        return toProfile(updated)
     }
 
     // TODO backend: нет DELETE /api/v1/me/children/{id}/, удаление не поддерживается

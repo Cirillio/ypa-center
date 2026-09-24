@@ -117,6 +117,13 @@ export interface MeChild {
 export interface MeProfile {
     parent: MeParent
     children: MeChild[]
+    isComplete: boolean
+}
+
+export interface ProfileCompletionPayload {
+    fullName: string
+    phone?: string
+    referralSource: string
 }
 
 // POST /me/children/ – входная модель добавления ребёнка

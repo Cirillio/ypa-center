@@ -52,7 +52,7 @@
 
 ### 3.2 Доступность (a11y)
 
-- ⬜ **`app/MobileMenu.vue`** – оверлей без `role="dialog"`/`aria-modal`, без Escape-to-close, без focus trap и возврата фокуса на триггер. Блокируется только скролл body.
+- ⬜ **`layout/MobileMenu.vue`** – оверлей без `role="dialog"`/`aria-modal`, без Escape-to-close, без focus trap и возврата фокуса на триггер. Блокируется только скролл body.
 - ⬜ **`clubs/Card.vue`** (строки ~81–96) – самодельные табы «Особенности»/«Подгруппы» без `role="tablist"`/`tab`/`tabpanel`, `aria-selected`, `aria-controls`, стрелочной навигации.
 - ⬜ **`home/events/Card.vue`** – карточка завершённого события рендерится как `<div>` без `aria-disabled`; состояние передано только прозрачностью и текстом.
 

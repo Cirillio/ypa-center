@@ -142,7 +142,7 @@ function onClick() {
 
 | Сущность     | Именование                    | Пример                    |
 | ------------ | ----------------------------- | ------------------------- |
-| Компонент    | PascalCase                    | `SectionLeading.vue`      |
+| Компонент    | PascalCase                    | `ui/SectionLeading.vue`   |
 | Композабл    | camelCase, префикс `use`      | `useSubscriptionPlans.ts` |
 | Сервис       | kebab-case + `.service.ts`    | `me.service.ts`           |
 | Zod-схема    | kebab-case + `.schema.ts`     | `registration.schema.ts`  |
@@ -151,8 +151,11 @@ function onClick() {
 | Доменный тип | PascalCase, без суффикса `VM` | `MeSubscription`          |
 
 Компонент страницы кладётся в подпапку с её именем
-(`app/components/clubs/Card.vue` → `<ClubsCard />`). Общий компонент – в корень
-`app/components/`.
+(`app/components/clubs/Card.vue` → `<ClubsCard />`). Общий компонент – в
+категорию: `layout/` (каркас), `ui/` (базовые кирпичики), `shared/` (формы и
+сводки со своей логикой), `promo/` (сквозные маркетинговые секции). Плоского
+корня в `app/components/` нет, в шаблонах имя идёт с префиксом папки
+(`<UiSectionLeading />`).
 
 > ⚠️ Стор `mobile-menu-store.ts` содержит избыточный суффикс `-store` – второй
 > стор называется просто `auth.ts`. Именование надо выровнять.

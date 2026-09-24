@@ -3,17 +3,24 @@ const authStore = useAuthStore()
 const { email, code, step, isLoading, error, secondsLeft, canResend, isAuthed } =
     storeToRefs(authStore)
 
-onMounted(() => {
+onMounted(async () => {
     if (isAuthed.value) {
-        navigateTo("/me")
+        const isComplete = await authStore.checkProfileCompletion()
+        if (isComplete) {
+            await navigateTo("/me")
+        }
     }
 })
 
 const onSubmit = async () => {
     await authStore.submit()
-    if (isAuthed.value) {
+    if (isAuthed.value && step.value === "accepted") {
         await navigateTo("/me")
     }
+}
+
+const onProfileCompleted = async () => {
+    await navigateTo("/me")
 }
 </script>
 
@@ -22,7 +29,8 @@ const onSubmit = async () => {
         <main
             class="flex h-full items-center justify-center px-4 py-[calc(1rem+var(--ui-header-height))]"
         >
-            <MeGuestGate
+            <LoginOtpWidget
+                v-if="step === 'email' || step === 'code'"
                 v-model:email="email"
                 v-model:code="code"
                 :current-step="step"
@@ -30,10 +38,11 @@ const onSubmit = async () => {
                 :error="error ?? ''"
                 :seconds-left="secondsLeft"
                 :can-resend="canResend"
-                @handle-otp="onSubmit"
-                @resend-code="authStore.resendCode"
+                @submit="onSubmit"
+                @resend="authStore.resendCode"
                 @reset="authStore.resetFlow"
             />
+            <LoginProfileWidget v-else-if="step === 'profile'" @completed="onProfileCompleted" />
         </main>
     </div>
 </template>

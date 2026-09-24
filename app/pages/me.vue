@@ -13,6 +13,17 @@ const {
     refresh: refreshProfile
 } = useMeProfile()
 
+// Перенаправляет на анкету /login, если профиль авторизованного пользователя ещё не заполнен.
+watch(
+    () => profileData.value?.isComplete,
+    (isComplete) => {
+        if (profileData.value && isComplete === false) {
+            void navigateTo("/login")
+        }
+    },
+    { immediate: true }
+)
+
 const {
     data: subscriptionsData,
     pending: isSubsPending,

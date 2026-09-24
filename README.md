@@ -23,8 +23,8 @@
 ## Требования
 
 - [Bun](https://bun.sh) ≥ 1.3
-- Запущенный бэкенд `ypa-center-backend` (по умолчанию `http://127.0.0.1:8000`) –
-  нужен для публичных API и для пре-рендера статических страниц при сборке.
+- Запущенный бэкенд `ypa-center-backend` (по умолчанию `http://127.0.0.1:8000`) —
+  нужен во время работы приложения (dev/prod). Для сборки бэкенд не требуется.
 
 ## Переменные окружения
 
@@ -51,8 +51,8 @@ bun run lint           # ESLint
 
 ### Типы API
 
-Типы ответов бэкенда не пишутся руками – генерируются из живой OpenAPI-схемы в
-`app/types/api.d.ts`, алиасы удобных имён – в `app/types/index.ts`.
+Типы ответов бэкенда не пишутся руками — генерируются из живой OpenAPI-схемы в
+`app/types/api.d.ts`, алиасы удобных имён — в `app/types/index.ts`.
 
 ```bash
 # бэкенд должен быть запущен
@@ -61,15 +61,15 @@ bun run schema:update
 
 ### Docker
 
-Бэкенд на сборку не нужен (все роуты `ssr`, `prerender` нет). Нужен только при
-работе приложения – по адресу из `NUXT_PUBLIC_API_BASE`.
+Бэкенд на этапе сборки не нужен (все публичные роуты на `ssr`, `prerender` отключён).
+Он требуется только в runtime — по адресу из `NUXT_PUBLIC_API_BASE`.
 
 ```bash
 # бэкенд поднят на localhost:8000
 docker compose up --build          # → http://localhost:3000
 ```
 
-`docker-compose.yml` использует `network_mode: host` (Linux) – SSR внутри
+`docker-compose.yml` использует `network_mode: host` (Linux) — SSR внутри
 контейнера и браузер ходят к бэкенду по одному адресу. Для Docker Desktop
 (macOS / Windows) см. комментарии в `docker-compose.yml`.
 
@@ -83,40 +83,38 @@ NUXT_PUBLIC_API_BASE=http://192.168.1.10:8000/api docker compose up --build
 
 `routeRules` в `nuxt.config.ts`:
 
-| Роут(ы)                                               | Режим                                                |
-| ----------------------------------------------------- | ---------------------------------------------------- |
-| `/about`, `/teachers`, `/privacy`, `/consent`         | `prerender` (статические маркетинговые/юр. страницы) |
-| остальное (`/`, `/clubs`, `/gallery`, `/enroll/*`, …) | `ssr`                                                |
-| личный кабинет                                        | `ssr: false` (SPA)                                   |
+| Роут(ы)                                                       | Режим              | Обоснование                                                                      |
+| ------------------------------------------------------------- | ------------------ | -------------------------------------------------------------------------------- |
+| Публичные страницы (`/`, `/clubs`, `/about`, `/teachers`, …)  | `ssr: true`        | SEO и быстрая первая отрисовка; сборка не зависит от наличия бэкенда в CI/Docker |
+| Покупка / запись (`/enroll/trial`, `/enroll/subscription`, …) | `ssr: true`        | SSR-каркас и SEO-мета                                                            |
+| Личный кабинет (`/login`, `/me`)                              | `ssr: false` (SPA) | Закрытый интерактивный клиентский раздел                                         |
 
-Для всех роутов задан CSP-заголовок `frame-src` (VK/Yandex-виджеты).
+Для всех роутов задан CSP-заголовок `frame-src` (виджеты VK / Яндекс Карт).
 
 ## Структура
 
 ```
 app/
 ├── assets/css/          # глобальные стили: tokens, base, utilities, animations
-├── components/
-│   ├── app/             # каркас: Header, Footer, MobileMenu, Photo, Video, ScrollFade
-│   ├── home/            # секции главной (hero, top-clubs, events, gallery, subscriptions, …)
-│   ├── clubs/ gallery/ about/ teachers/            # секции соответствующих страниц
-│   ├── event/ subscription/ trial/ payment/        # флоу записи и оплаты
-│   ├── my-cabinet/ legal/                          # ЛК и юридические страницы
-│   └── *.vue            # общие: SectionLeading, FaqSection, CallbackForm, FloatPromoCard, …
-├── composables/         # логика (авто-импорт): useApi, useSchedule, useSubscriptionPlans, use*Enrollment, …
-├── constants/           # nav, masks, mock (моки enroll-флоу – временно)
-├── layouts/default.vue  # Header + <slot> + Footer
-├── middleware/          # close-menu.global
-├── pages/               # файловый роутинг
+├── components/          # 73 компонента, каноничный автоимпорт Nuxt 4 с префиксом папки:
+│   ├── layout/          # каркас: LayoutHeader, LayoutFooter, LayoutMobileMenu
+│   ├── ui/              # базовые UI-кирпичики: UiPhoto, UiVideo, UiScrollFade, UiPageSection, UiSectionLeading, UiRoundIcon, UiRadioCard
+│   ├── promo/           # промо-секции: PromoFaq, PromoJoinUs, PromoSubscriptions, PromoFloatCard
+│   ├── shared/          # сквозные формы: SharedCallbackForm, SharedRegistrationForm, SharedEnrollmentSummary
+│   └── [domain]/        # секции страниц и флоу: home/, clubs/, about/, teachers/, gallery/, me/, event/, trial/, subscription/, payment/, feedback/, legal/
+├── composables/         # реактивная логика (автоимпорт): useSchedule, useSubscriptionPlans, use*Enrollment, …
+├── constants/           # навигация, маски, моки (nav, masks, mock)
+├── layouts/default.vue  # LayoutHeader + <slot> + LayoutFooter + LayoutMobileMenu
+├── middleware/          # гейты: auth, close-menu.global
+├── pages/               # файловый роутинг Nuxt
 ├── plugins/             # scroll-to-top.client
-├── schemas/             # Zod-схемы форм (event, registration, fields)
-├── store/               # Pinia stores (mobile-menu)
-├── types/               # api.d.ts (генерится) + index.ts (алиасы) + доменные типы
-└── utils/               # чистые функции (авто-импорт): format-price, pluralize, theme, …
-public/
-├── core/  moke/  og/    # изображения
-└── ...
-docs/                    # планы страниц, юр. черновики, CRO-чеклист
+├── schemas/             # Zod-схемы валидации форм (event, registration, feedback, fields)
+├── services/            # HTTP-сервисы (классы-клиенты, DTO → Domain маппинг, автоимпорт use*Service)
+├── stores/              # Pinia setup-stores (auth, mobile-menu-store)
+├── types/               # api.d.ts (генерация из OpenAPI) + index.ts (алиасы и доменные типы)
+└── utils/               # чистые функции (автоимпорт): format-price, get-day-name, pluralize, theme, …
+context/                 # база знаний проекта: архитектура, API, стандарты, трекер
+public/                  # статика: favicon, логотипы, шрифты, медиа
 ```
 
 ## Качество кода
@@ -127,7 +125,7 @@ docs/                    # планы страниц, юр. черновики, 
 bunx prettier --write . && bun run lint && bun run typecheck
 ```
 
-Отдельно `.github/hooks/impeccable.json` – локальный хук, форматирующий затронутые
+Отдельно `.github/hooks/impeccable.json` — локальный хук, форматирующий затронутые
 файлы после каждого редактирования (в `.prettierignore`, CI его не проверяет).
 
 **CI** (`.github/workflows/ci.yml`, на каждый push в любую ветку):
@@ -136,5 +134,5 @@ bunx prettier --write . && bun run lint && bun run typecheck
 bun run prettier --check .  →  bun run lint  →  bun run typecheck  →  bun run build
 ```
 
-Стандарт кода: strict TS без `any`, слоистая архитектура `pages → features → shared`,
+Стандарт кода: strict TS без `any`, слоистая архитектура Nuxt `pages → composables / services → types / stores / utils / components` (не FSD),
 производное состояние через `computed`, схемы Zod как единый источник правды для форм.

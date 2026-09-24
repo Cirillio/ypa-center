@@ -1,4 +1,4 @@
-export type OtpEmailStep = "email" | "code" | "accepted"
+export type OtpEmailStep = "email" | "code" | "profile" | "accepted"
 
 // Стор сам подбирает текст по статусу (401/429/400); от парсера нужен только
 // человекочитаемый detail из RFC 9457 как фолбэк.
@@ -75,7 +75,15 @@ export const useAuthStore = defineStore("auth", () => {
             const res = await auth.verifyOtp(email.value, trimmedCode)
             setTokens(res)
             isAuthed.value = true
-            step.value = "accepted"
+
+            // Проверяем заполненность профиля
+            const meService = useMeService()
+            const profile = await meService.getProfile()
+            if (!profile.isComplete) {
+                step.value = "profile"
+            } else {
+                step.value = "accepted"
+            }
         } catch (err: unknown) {
             const status = getFetchStatus(err)
 
@@ -91,6 +99,29 @@ export const useAuthStore = defineStore("auth", () => {
         } finally {
             isLoading.value = false
         }
+    }
+
+    async function checkProfileCompletion(): Promise<boolean> {
+        if (!hasTokens()) return false
+        try {
+            const meService = useMeService()
+            const profile = await meService.getProfile()
+            if (!profile.isComplete) {
+                step.value = "profile"
+                if (profile.parent.email) {
+                    email.value = profile.parent.email
+                }
+                return false
+            }
+            step.value = "accepted"
+            return true
+        } catch {
+            return false
+        }
+    }
+
+    function completeProfileStep() {
+        step.value = "accepted"
     }
 
     async function submit() {
@@ -140,6 +171,8 @@ export const useAuthStore = defineStore("auth", () => {
         canResend,
         requestOtp,
         verifyOtp,
+        checkProfileCompletion,
+        completeProfileStep,
         submit,
         resendCode,
         logout,
