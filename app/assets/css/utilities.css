@@ -1,6 +1,6 @@
 @layer utilities {
     .h-with-header {
-        @apply h-[calc(100dvh-var(--header-height-full))];
+        @apply h-[calc(100dvh-var(--ui-header-height))];
     }
 
     .page-container {
@@ -8,7 +8,7 @@
     }
 
     /* Фон страниц: один тёплый радиальный отблеск сверху на плоском фоне.
-       Без второго цвета и без анимации — не «градиент», а мягкий свет. */
+       Без второго цвета и без анимации – не «градиент», а мягкий свет. */
     .gradient-bg-ps {
         background-color: var(--ui-bg);
         background-image: radial-gradient(
