@@ -9,7 +9,7 @@ const props = defineProps<{
 const rows = computed(() => [
     { label: "Участник", value: props.booking.participant },
     { label: "Дата и время", value: `${props.booking.displayDate} · ${props.booking.displayTime}` },
-    { label: "Стоимость", value: formatRub(props.booking.price) }
+    { label: "Стоимость", value: formatRubles(props.booking.price) }
 ])
 </script>
 

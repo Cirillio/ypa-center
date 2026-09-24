@@ -13,7 +13,7 @@ const rows = computed(() => [
         value: `${props.sub.totalRemaining}/${props.sub.totalMax}`,
         muted: props.sub.totalRemaining === 0
     },
-    { label: "Стоимость", value: `${props.sub.sum} ₽` },
+    { label: "Стоимость", value: formatRubles(props.sub.sum) },
     { label: "Ребёнок", value: props.sub.studentName },
     { label: "Дата покупки", value: props.sub.formattedCreatedAt }
 ])

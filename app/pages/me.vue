@@ -97,24 +97,15 @@ const parent = computed(() => profileData.value?.parent)
         <main class="pb-16">
             <UContainer class="grid gap-6 lg:grid-cols-7">
                 <div class="flex flex-col gap-6 lg:col-span-5">
-                    <!-- Блок родитель + дети -->
-                    <div class="rounded-lg bg-white p-6">
-                        <MeErrorState
-                            v-if="profileError && !profileData"
-                            message="Не удалось загрузить профиль."
-                            @retry="refreshProfile"
-                        />
-                        <div v-else class="grid gap-6 md:grid-cols-2">
-                            <MeParentInfo :parent="parent" :is-processing="isProcessing" />
-                            <MeParentChildren
-                                :children="profileData ? cabinetChildren : undefined"
-                                :is-processing="isProcessing"
-                                :is-saving="isChildSaving"
-                                class="border-default border-t pt-6 md:border-t-0 md:border-l md:pt-0 md:pl-6"
-                                @add="addChild"
-                            />
-                        </div>
-                    </div>
+                    <MeParentWidget
+                        :parent="parent"
+                        :children="profileData ? cabinetChildren : undefined"
+                        :is-processing="isProcessing"
+                        :is-saving="isChildSaving"
+                        :error="profileError"
+                        @add-child="addChild"
+                        @retry="refreshProfile"
+                    />
 
                     <!-- Две колонки: Абонементы | Наши записи -->
                     <div class="grid items-start gap-6 xl:grid-cols-2">

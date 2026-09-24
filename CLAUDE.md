@@ -24,7 +24,7 @@
 - API **только** через `app/services/*.service.ts`; `useApi()` и `useXService()` –
   только в setup-контексте
 - Типы – один баррель `app/types/index.ts`; `api.d.ts` генерируется, руками не правится
-- Ошибки – только `parseApiError`; деньги – только `kopecksToRubles` / `formatRub`
+- Ошибки – только `parseApiError`; деньги – только `kopecksToRubles` / `formatRub` (копейки) / `formatRubles` (рубли модели)
 - Цвета – токены `--ui-*` и семантические классы, hex в компонентах запрещён
 - Маппинг DTO → доменная модель внутри сервиса, суффикс `VM` не используется
 - Компоненты по папкам `layout/`, `ui/`, `shared/`, `promo/` и папкам страниц;

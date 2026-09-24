@@ -4,7 +4,6 @@ import { profileSchema, type ProfileCompletion } from "~/schemas/profile.schema"
 
 export function useProfileForm() {
     const meService = useMeService()
-    const authStore = useAuthStore()
 
     const state = reactive<ProfileCompletion>({
         fullName: "",
@@ -32,7 +31,6 @@ export function useProfileForm() {
                 phone: state.phone,
                 referralSource: state.referralSource
             })
-            authStore.completeProfileStep()
             return true
         } catch (err: unknown) {
             const parsed = parseApiError(err, "Не удалось сохранить анкету")

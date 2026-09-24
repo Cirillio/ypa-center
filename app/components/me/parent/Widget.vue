@@ -7,21 +7,29 @@ defineProps<{
     children?: readonly MeChild[]
     isProcessing: boolean
     isSaving: boolean
+    error?: unknown
 }>()
 
 const emit = defineEmits<{
     addChild: [payload: { name: string; birthdate: string }]
+    retry: []
 }>()
 </script>
 
 <template>
-    <div class="grid grid-cols-1 gap-6 rounded-lg bg-white p-6 sm:grid-cols-2">
-        <MeParentInfo :parent="parent" :is-processing="isProcessing" />
-        <div class="border-default max-sm:border-t sm:border-l sm:pl-6">
+    <div class="rounded-lg bg-white p-6">
+        <MeErrorState
+            v-if="error && !parent"
+            message="Не удалось загрузить профиль."
+            @retry="emit('retry')"
+        />
+        <div v-else class="grid gap-6 md:grid-cols-2">
+            <MeParentInfo :parent="parent" :is-processing="isProcessing" />
             <MeParentChildren
                 :children="children"
                 :is-processing="isProcessing"
                 :is-saving="isSaving"
+                class="border-default border-t pt-6 md:border-t-0 md:border-l md:pt-0 md:pl-6"
                 @add="emit('addChild', $event)"
             />
         </div>

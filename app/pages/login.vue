@@ -19,7 +19,12 @@ const onSubmit = async () => {
     }
 }
 
+// ПОЧЕМУ: шаг меняется здесь, а не в композабле анкеты – иначе виджет
+// размонтируется до emit("completed") и событие потеряется. Кэш профиля
+// сбрасывается, чтобы гейт /me не взял старый «пустой» профиль.
 const onProfileCompleted = async () => {
+    authStore.completeProfileStep()
+    clearNuxtData("me-profile")
     await navigateTo("/me")
 }
 </script>

@@ -2,14 +2,32 @@
 // Виджет анкеты нового пользователя для завершения регистрации после подтверждения email.
 import { vMaska } from "maska/vue"
 import { Maskas } from "~/constants/masks"
+import type { FormErrorEvent } from "@nuxt/ui"
 import { REFERRAL_ITEMS } from "~/constants/referral-sources"
+import type { ProfileCompletion } from "~/schemas/profile.schema"
 
 const authStore = useAuthStore()
-const { state, schema, isLoading, error, submit } = useProfileForm()
+const { state, schema, isLoading, error, clearError, submit } = useProfileForm()
+const form = useTemplateRef("form")
 
 const emit = defineEmits<{
     completed: []
 }>()
+
+// Валидация только на сабмите: при вводе снимаем ошибку лишь изменённого поля.
+const clearFieldError = (name: keyof ProfileCompletion) => {
+    form.value?.clear(name)
+    clearError()
+}
+
+// Фокус на первое ошибочное поле, чтобы клавиатурный пользователь не искал его.
+const onError = (event: FormErrorEvent) => {
+    const id = event.errors[0]?.id
+    if (!id) return
+    // ПОЧЕМУ rAF, а не nextTick: UForm эмитит error, пока поля ещё disabled
+    // (loadingAuto), и снимает disabled уже после emit – следующим flush.
+    requestAnimationFrame(() => document.getElementById(id)?.focus())
+}
 
 const onSubmit = async () => {
     const ok = await submit()
@@ -30,17 +48,20 @@ const onSubmit = async () => {
         </p>
 
         <UForm
+            ref="form"
             :schema="schema"
             :state="state"
+            :validate-on="[]"
             class="mt-6 flex w-full flex-col gap-4 text-left"
-            @submit.prevent="onSubmit"
+            @submit="onSubmit"
+            @error="onError"
         >
             <UFormField label="Подтверждённая почта" name="email">
                 <UInput
                     :model-value="authStore.email"
                     disabled
                     size="xl"
-                    icon="ph:envelope-simple"
+                    variant="subtle"
                     class="w-full opacity-80"
                     :ui="{
                         base: 'bg-white shadow-sm'
@@ -60,6 +81,7 @@ const onSubmit = async () => {
                     :ui="{
                         base: 'bg-white shadow-sm'
                     }"
+                    @update:model-value="clearFieldError('fullName')"
                 />
             </UFormField>
 
@@ -76,6 +98,7 @@ const onSubmit = async () => {
                     :ui="{
                         base: 'bg-white shadow-sm'
                     }"
+                    @update:model-value="clearFieldError('phone')"
                 />
             </UFormField>
 
@@ -92,11 +115,17 @@ const onSubmit = async () => {
                     :ui="{
                         base: 'bg-white shadow-sm'
                     }"
+                    @update:model-value="clearFieldError('referralSource')"
                 />
             </UFormField>
 
             <UFormField name="consent">
-                <UCheckbox v-model="state.consent" :disabled="isLoading" color="primary">
+                <UCheckbox
+                    v-model="state.consent"
+                    :disabled="isLoading"
+                    color="primary"
+                    @update:model-value="clearFieldError('consent')"
+                >
                     <template #label>
                         <span class="text-default/80 text-xs leading-tight">
                             Я согласен на
