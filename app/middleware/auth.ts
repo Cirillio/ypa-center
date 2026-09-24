@@ -1,4 +1,4 @@
-export default defineNuxtRouteMiddleware(() => {
+export default defineNuxtRouteMiddleware((to) => {
     // ПОЧЕМУ: isAuthed стора выставляется один раз при создании и не следит
     // за localStorage дальше (нет storage-события) – токены могли смениться
     // в другой вкладке или очиститься извне. hasTokens() читает localStorage
@@ -10,6 +10,7 @@ export default defineNuxtRouteMiddleware(() => {
     }
 
     if (!hasTokens()) {
-        return navigateTo("/login")
+        // ПОЧЕМУ: после входа возвращаем на исходную страницу; белый список проверяет resolveRedirect
+        return navigateTo({ path: "/login", query: { redirectFrom: to.fullPath } })
     }
 })

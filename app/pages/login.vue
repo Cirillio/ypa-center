@@ -1,13 +1,20 @@
 <script lang="ts" setup>
+// Страница входа и регистрации: email → код → анкета (если профиль пуст).
+useSeoMeta({ title: "Вход" })
+
 const authStore = useAuthStore()
 const { email, code, step, isLoading, error, secondsLeft, canResend, isAuthed } =
     storeToRefs(authStore)
+
+const route = useRoute()
+// Куда вернуть после входа: единственный источник – query, прошедший белый список
+const redirectTarget = computed(() => resolveRedirect(route.query.redirectFrom))
 
 onMounted(async () => {
     if (isAuthed.value) {
         const isComplete = await authStore.checkProfileCompletion()
         if (isComplete) {
-            await navigateTo("/me")
+            await navigateTo(redirectTarget.value)
         }
     }
 })
@@ -15,7 +22,7 @@ onMounted(async () => {
 const onSubmit = async () => {
     await authStore.submit()
     if (isAuthed.value && step.value === "accepted") {
-        await navigateTo("/me")
+        await navigateTo(redirectTarget.value)
     }
 }
 
@@ -25,13 +32,14 @@ const onSubmit = async () => {
 const onProfileCompleted = async () => {
     authStore.completeProfileStep()
     clearNuxtData("me-profile")
-    await navigateTo("/me")
+    await navigateTo(redirectTarget.value)
 }
 </script>
 
 <template>
     <div class="gradient-bg-ps grid size-full min-h-dvh">
-        <main
+        <section
+            aria-label="Вход в личный кабинет"
             class="flex h-full items-center justify-center px-4 py-[calc(1rem+var(--ui-header-height))]"
         >
             <LoginOtpWidget
@@ -48,6 +56,6 @@ const onProfileCompleted = async () => {
                 @reset="authStore.resetFlow"
             />
             <LoginProfileWidget v-else-if="step === 'profile'" @completed="onProfileCompleted" />
-        </main>
+        </section>
     </div>
 </template>

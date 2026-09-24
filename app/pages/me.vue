@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 // Страница личного кабинета родителя: профиль, абонементы, разовые записи и лента активностей.
 definePageMeta({ middleware: "auth" })
+useSeoMeta({ title: "Личный кабинет" })
 
 const authStore = useAuthStore()
+const route = useRoute()
 
 // 1. Слой данных
 const {
@@ -17,7 +19,7 @@ watch(
     () => profileData.value?.isComplete,
     (isComplete) => {
         if (profileData.value && isComplete === false) {
-            void navigateTo("/login")
+            void navigateTo({ path: "/login", query: { redirectFrom: route.fullPath } })
         }
     },
     { immediate: true }
@@ -94,7 +96,7 @@ const parent = computed(() => profileData.value?.parent)
 
         <MeParentHeader :parent-name="parent?.name" @logout="openConfirmModal" />
 
-        <main class="pb-16">
+        <section aria-label="Личный кабинет" class="pb-16">
             <UContainer class="grid gap-6 lg:grid-cols-7">
                 <div class="flex flex-col gap-6 lg:col-span-5">
                     <MeParentWidget
@@ -134,6 +136,6 @@ const parent = computed(() => profileData.value?.parent)
                     />
                 </div>
             </UContainer>
-        </main>
+        </section>
     </div>
 </template>

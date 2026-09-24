@@ -38,6 +38,11 @@ export function clearTokens(): void {
     localStorage.removeItem(REFRESH_KEY)
 }
 
+// Отвечает, касается ли событие storage токена доступа (null – это localStorage.clear()), не раскрывая имена ключей.
+export function isAccessTokenKey(key: string | null): boolean {
+    return key === null || key === ACCESS_KEY
+}
+
 export function hasTokens(): boolean {
     if (!import.meta.client) return false
     return Boolean(localStorage.getItem(ACCESS_KEY))
