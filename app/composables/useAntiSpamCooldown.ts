@@ -2,7 +2,7 @@ import { useStorage } from "@vueuse/core"
 
 /**
  * Anti-Spam кулдаун между отправками формы, переживает reload (localStorage).
- * storageKey должен быть уникален на форму — иначе кулдаун одной формы
+ * storageKey должен быть уникален на форму – иначе кулдаун одной формы
  * заблокирует другую.
  */
 export function useAntiSpamCooldown(storageKey: string, minutes = 5) {

@@ -39,7 +39,7 @@ const {
     addChild: addChildBase
 } = useCabinetChildren(() => profileData.value, refreshProfile)
 
-// ПОЧЕМУ: @add="addChildBase" напрямую — необработанный reject промиса без
+// ПОЧЕМУ: @add="addChildBase" напрямую – необработанный reject промиса без
 // фидбэка пользователю (addChildBase рвёт цепочку через throw после
 // error.value). Оборачиваем в toast, как в gallery.vue.
 const addChild = async (payload: Parameters<typeof addChildBase>[0]) => {

@@ -1,9 +1,9 @@
 // Глобальные типы приложения
 import type { components } from "./api.d.ts"
 
-// Публичный каталог кружков — GET /public/activities/ (список = ActivityDetail[])
+// Публичный каталог кружков – GET /public/activities/ (список = ActivityDetail[])
 export type Activity = components["schemas"]["ActivityDetail"]
-// GET /public/activities/popular/ — урезанная форма без groups/description
+// GET /public/activities/popular/ – урезанная форма без groups/description
 export type ActivityPopular = components["schemas"]["ActivityCard"]
 export type ActivityGroup = components["schemas"]["ScheduleGroupPublic"]
 
@@ -18,11 +18,11 @@ export type GalleryPage = components["schemas"]["PaginatedGalleryImagePublicList
 export type Teacher = components["schemas"]["TeacherPublic"]
 export type TeacherActivity = components["schemas"]["TeacherActivityNested"]
 
-// GET /public/schedule/ — недельная сетка (сырой ответ бэка, до маппинга в WeeklySlot)
+// GET /public/schedule/ – недельная сетка (сырой ответ бэка, до маппинга в WeeklySlot)
 export type WeekGridResponse = components["schemas"]["WeekGridResponse"]
 export type WeekScheduleSlot = components["schemas"]["WeekSlot"]
 
-// GET /public/plans/ — тарифы абонементов (сырой ответ, до маппинга в PlanTier)
+// GET /public/plans/ – тарифы абонементов (сырой ответ, до маппинга в PlanTier)
 export type SubscriptionPlanPublic = components["schemas"]["SubscriptionPlanPublic"]
 
 /**
@@ -84,12 +84,12 @@ export interface ContactTimeOption {
     value: ContactTimeValue
 }
 
-// POST /public/callback/ — заявка на обратный звонок
+// POST /public/callback/ – заявка на обратный звонок
 export type CallbackRequestPayload = components["schemas"]["CallbackRequestCreateRequest"]
 export type CallbackRequestResponse = components["schemas"]["SubmissionAccepted"]
 export type PreferredTimeWindow = components["schemas"]["PreferredTimeWindowEnum"]
 
-// POST /public/feedback/ — форма обратной связи
+// POST /public/feedback/ – форма обратной связи
 export type FeedbackRequestPayload = components["schemas"]["FeedbackRequestCreateRequest"]
 export type FeedbackRequestResponse = components["schemas"]["SubmissionAccepted"]
 
@@ -119,7 +119,7 @@ export interface MeProfile {
     children: MeChild[]
 }
 
-// POST /me/children/ — входная модель добавления ребёнка
+// POST /me/children/ – входная модель добавления ребёнка
 export interface NewChild {
     name: string
     birthdate: string

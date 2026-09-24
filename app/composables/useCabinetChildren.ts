@@ -2,7 +2,7 @@ import type { MeChild, MeProfile, NewChild } from "~/types"
 
 /**
  * Управление списком детей в кабинете.
- * Список — производное от профиля; композабл владеет только состоянием сохранения.
+ * Список – производное от профиля; композабл владеет только состоянием сохранения.
  */
 export const useCabinetChildren = (
     getProfile: () => MeProfile | null | undefined,

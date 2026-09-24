@@ -8,7 +8,7 @@ useHead({
         lang: "ru"
     },
     titleTemplate: (titleChunk) => {
-        return titleChunk ? `${titleChunk} — ${seo.siteName}` : seo.siteName
+        return titleChunk ? `${titleChunk} – ${seo.siteName}` : seo.siteName
     },
     meta: [
         { charset: "utf-8" },

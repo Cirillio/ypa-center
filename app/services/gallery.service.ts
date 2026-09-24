@@ -11,12 +11,12 @@ import type { GalleryPage, GalleryPhoto } from "~/types"
 export class GalleryService {
     constructor(private readonly fetch: ApiFetch) {}
 
-    /** Весь список массивом — для блоков с фиксированным числом фото */
+    /** Весь список массивом – для блоков с фиксированным числом фото */
     getAll(): Promise<GalleryPhoto[]> {
         return this.fetch<GalleryPhoto[]>("/v1/public/gallery/")
     }
 
-    /** Постраничная выдача — для подгрузки по кнопке */
+    /** Постраничная выдача – для подгрузки по кнопке */
     getPage(limit: number, offset = 0): Promise<GalleryPage> {
         return this.fetch<GalleryPage>("/v1/public/gallery/", {
             query: offset ? { limit, offset } : { limit }

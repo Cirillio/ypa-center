@@ -85,7 +85,7 @@ export interface paths {
         }
         get?: never
         put?: never
-        /** @description Идемпотентное создание платежа за абонемент. Заголовок X-Idempotency-Key (UUID v4) обязателен. Родитель определяется по сессии — parent_id в теле не принимается. */
+        /** @description Идемпотентное создание платежа за абонемент. Заголовок X-Idempotency-Key (UUID v4) обязателен. Родитель определяется по сессии – parent_id в теле не принимается. */
         post: operations["v1_checkout_subscription_create"]
         delete?: never
         options?: never
@@ -307,7 +307,7 @@ export interface paths {
         }
         /**
          * Опубликованные фото галереи
-         * @description Без query-параметров — весь список массивом (обратная совместимость). С ?limit=N (опц. &offset=M) — постраничная выдача в конверте {count, next, previous, results} для подгрузки по кнопке/скроллу.
+         * @description Без query-параметров – весь список массивом (обратная совместимость). С ?limit=N (опц. &offset=M) – постраничная выдача в конверте {count, next, previous, results} для подгрузки по кнопке/скроллу.
          */
         get: operations["public_gallery_list"]
         put?: never
@@ -1319,7 +1319,7 @@ export interface operations {
     public_schedule_week: {
         parameters: {
             query?: {
-                /** @description Понедельник запрашиваемой недели (ISO 8601, YYYY-MM-DD). По умолчанию — текущая неделя; не-понедельник нормализуется к началу своей недели. */
+                /** @description Понедельник запрашиваемой недели (ISO 8601, YYYY-MM-DD). По умолчанию – текущая неделя; не-понедельник нормализуется к началу своей недели. */
                 week_start?: string
             }
             header?: never

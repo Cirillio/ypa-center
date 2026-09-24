@@ -1,7 +1,7 @@
 export default defineNuxtPlugin(() => {
     if (!import.meta.client) return
 
-    // Если кликнули по ссылке на ту же страницу (без hash) — скроллим наверх
+    // Если кликнули по ссылке на ту же страницу (без hash) – скроллим наверх
     window.addEventListener(
         "click",
         (e) => {

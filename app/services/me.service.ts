@@ -61,7 +61,7 @@ function toSubscription(dto: SubscriptionView): MeSubscription {
 
 function toUpcoming(dto: UpcomingItem): MeUpcoming {
     return {
-        // source_id повторяется от недели к неделе — ключ собирается из даты и времени
+        // source_id повторяется от недели к неделе – ключ собирается из даты и времени
         id: `${dto.source_type}-${dto.source_id}-${dto.date}-${dto.time}`,
         type: dto.kind === "EVENT" ? "event" : "subscription",
         title: dto.activity_name ?? dto.title ?? "",

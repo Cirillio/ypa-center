@@ -12,7 +12,7 @@ interface OtpRequestResponse {
  * Пассвордлесс-вход по OTP на email.
  * Эндпоинты: POST /auth/otp/request/, /auth/otp/verify/, /auth/logout/
  *
- * WHY здесь нет refresh: обновление access живёт внутри useApi как сырой $fetch —
+ * WHY здесь нет refresh: обновление access живёт внутри useApi как сырой $fetch –
  * он намеренно минует перехватчик, иначе 401 на самом refresh уйдёт в рекурсию.
  */
 export class AuthService {

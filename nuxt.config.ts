@@ -42,7 +42,7 @@ export default defineNuxtConfig({
         "/gallery": { ssr: true },
 
         // ssr вместо prerender: страницы фетчат бэкенд, а на этапе сборки
-        // (в т.ч. в Docker / CI) его может не быть — пусть рендерятся по запросу
+        // (в т.ч. в Docker / CI) его может не быть – пусть рендерятся по запросу
         "/about": { ssr: true },
         "/teachers": { ssr: true },
         "/privacy": { ssr: true },
@@ -107,7 +107,7 @@ export default defineNuxtConfig({
     typescript: {
         strict: true,
         // type-check вынесен из dev-сервера: гонять vue-tsc в процессе nuxt dev
-        // слишком дорого по памяти. Проверка типов — отдельной командой:
+        // слишком дорого по памяти. Проверка типов – отдельной командой:
         // npx nuxi typecheck
         typeCheck: false,
         tsConfig: {

@@ -8,10 +8,10 @@ const { seo } = useAppConfig()
 const siteUrl = seo.siteUrl
 
 useSeoMeta({
-    title: "Команда — Улица Радости",
+    title: "Команда – Улица Радости",
     description:
         "Познакомьтесь с педагогами центра умного развития «Улица Радости». Внимательные специалисты, которые любят детей и своё дело.",
-    ogTitle: "Наша команда — Улица Радости",
+    ogTitle: "Наша команда – Улица Радости",
     ogDescription: "Педагоги, которые вдохновляют детей учиться, творить и верить в себя.",
     ogImage: `${siteUrl}/og/default.jpg`,
     ogUrl: `${siteUrl}/teachers`

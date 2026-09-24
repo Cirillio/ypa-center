@@ -47,7 +47,7 @@ export const useCallbackForm = (options: UseCallbackFormOptions = {}) => {
     const form = reactive<ContactCallbackForm>({ ...DEFAULT_FORM_STATE })
     const isFormCompleted = computed<boolean>(() => {
         const phoneCompleted = new Mask({ mask: Maskas.Phone }).completed(form.phone)
-        // Имя опционально, но если введено — валидируем от 2 символов
+        // Имя опционально, но если введено – валидируем от 2 символов
         const nameValid = !form.name?.trim() || form.name.trim().length >= 2
 
         return phoneCompleted && nameValid

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 /**
  * Кнопка «Написать нам» + модалка с формой обратной связи.
- * Самодостаточный компонент — подключается одной строкой в любом месте сайта.
+ * Самодостаточный компонент – подключается одной строкой в любом месте сайта.
  */
 const isOpen = ref(false)
 </script>
@@ -18,7 +18,7 @@ const isOpen = ref(false)
     <UModal
         v-model:open="isOpen"
         title="Написать нам"
-        description="Задайте вопрос или оставьте сообщение — ответим на почту."
+        description="Задайте вопрос или оставьте сообщение – ответим на почту."
         :ui="{
             content: 'ring-0 overflow-hidden divide-none shadow-none rounded-sm',
             overlay: 'bg-black/25 backdrop-blur-xs'
