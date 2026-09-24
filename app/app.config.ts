@@ -111,8 +111,7 @@ export default defineAppConfig({
                 base: "w-full px-4! text-lg! rounded-sm cursor-pointer transition duration-150",
                 placeholder: "text-dimmed/60",
                 trailingIcon: "text-muted",
-                content:
-                    "bg-default shadow-none rounded-sm ring-2 ring-transparent hover:ring-primary transition border-0",
+                content: "bg-default shadow-none rounded-sm ring-0 transition border-0",
                 item: "rounded-sm cursor-pointer data-highlighted:not-data-disabled:before:bg-primary/10 data-highlighted:not-data-disabled:text-default! ring-0  px-4! transition duration-150",
                 itemLabel: "text-base font-semibold",
                 viewport: "p-1"
