@@ -43,7 +43,7 @@ const tabs = [
             <div class="absolute bottom-2 z-20 flex flex-col gap-2 p-2 md:bottom-4 md:p-4">
                 <h3
                     :title="activity.name"
-                    class="line-clamp-2 text-2xl font-extrabold text-white transition-colors duration-200 text-shadow-xs sm:text-3xl xl:text-5xl xl:leading-12"
+                    class="line-clamp-2 text-2xl font-extrabold text-balance text-white transition-colors duration-200 text-shadow-xs sm:text-3xl xl:text-5xl xl:leading-12"
                 >
                     {{ activity.name }}
                 </h3>
