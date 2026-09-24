@@ -1,21 +1,20 @@
 <script lang="ts" setup>
 const { subscriptions, contactInfo, seo } = useAppConfig()
+
 const siteUrl = seo.siteUrl
+
+// Fetching Clubs and schedule
 const activities = useActivitiesService()
 const schedule = useScheduleService()
 
-const { data: activitiesData } = await useAsyncData("clubs", () => activities.getAll())
-
-const { data: scheduleData } = await useAsyncData("clubs-schedule", () => schedule.getWeek())
-
-const slots = computed(() => scheduleData.value ?? [])
-
-const enrichedClubs = computed(() =>
-    (activitiesData.value ?? []).map((activity) => ({
-        activity,
-        scheduledDays: [...new Set(activity.groups.map((g) => g.day_of_week_display))]
-    }))
+const { data: activitiesData, error: activitiesError } = await useAsyncData("clubs", () =>
+    activities.getAll()
 )
+const { data: scheduleData, error: scheduleError } = await useAsyncData("clubs-schedule", () =>
+    schedule.getWeek()
+)
+
+const clubsLength = computed(() => activitiesData.value?.length || 0)
 
 // Минимальный возраст по реальным группам расписания, а не захардкоженное число
 const minAge = computed(() => {
@@ -26,10 +25,10 @@ const minAge = computed(() => {
 })
 
 useSeoMeta({
-    title: "Кружки — Улица Радости",
+    title: "Кружки – Улица Радости",
     description:
         "Каталог кружков центра умного развития «Улица Радости». Настольные игры, рисование, пианино, каникулярные программы и другие занятия для детей в Новосибирске.",
-    ogTitle: "Кружки — Улица Радости",
+    ogTitle: "Кружки – Улица Радости",
     ogDescription: "Найдите занятие для вашего ребёнка. Внимательные педагоги и уютная атмосфера.",
     ogImage: `${siteUrl}/og/default.jpg`,
     ogUrl: `${siteUrl}/clubs`
@@ -91,32 +90,16 @@ useHead({
 
 <template>
     <div class="flex w-full min-w-0 flex-col">
-        <ClubsSection :clubs-length="enrichedClubs.length" :min-age="minAge" />
+        <ClubsHero :clubs-length="clubsLength" :min-age="minAge" />
 
-        <section class="bg-default relative z-10 flex w-full py-12 md:py-20 lg:py-24">
-            <UContainer class="flex w-full flex-col gap-6 md:gap-8">
-                <div class="flex items-center justify-between gap-4">
-                    <h2 class="text-secondary text-2xl font-extrabold md:text-3xl">Все кружки</h2>
-                    <UButton
-                        to="/clubs#schedule"
-                        label="Расписание"
-                        trailing-icon="ph:calendar-dots-bold"
-                        class="text-base"
-                        variant="soft"
-                    />
-                </div>
-                <ClubsGrid :enriched-clubs="enrichedClubs" />
-                <span class="text-default/95 text-xs font-semibold md:text-sm"
-                    >• Узнать какие учителя занимаются направлениями можно на
-                    <NuxtLink to="/teachers" class="text-primary">странице учителей</NuxtLink
-                    >.</span
-                >
-            </UContainer>
-        </section>
+        <ClubsList v-if="activitiesData && !activitiesError" :activities="activitiesData" />
 
-        <ClubsSchedule v-if="slots.length" :slots="slots" />
+        <ClubsSchedule v-if="scheduleData && !scheduleError" :slots="scheduleData" />
+
         <ClubsOtherServices />
-        <FaqSection />
-        <JoinUsPromo />
+
+        <PromoFaq />
+
+        <PromoJoinUs />
     </div>
 </template>

@@ -29,7 +29,7 @@ function isSelected(id: number) {
         <h3 class="text-default text-2xl font-bold">1. Выберите кружки по дням</h3>
 
         <!-- Навигация дней -->
-        <AppScrollFade direction="x" fade-color="var(--ui-bg)">
+        <UiScrollFade direction="x" fade-color="var(--ui-bg)">
             <div class="flex gap-2 py-2">
                 <button
                     v-for="day in weekDays"
@@ -57,7 +57,7 @@ function isSelected(id: number) {
                     <span class="text-lg font-bold uppercase">{{ day.dayShort }}</span>
                 </button>
             </div>
-        </AppScrollFade>
+        </UiScrollFade>
 
         <!-- Карточки слотов: flex-wrap, квадратные, ~3 в ряд -->
         <div v-if="slotsForDay.length" :key="selectedDay.dow" class="flex flex-wrap gap-2">

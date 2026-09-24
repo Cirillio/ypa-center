@@ -49,7 +49,7 @@ const isSunday = new Date().getDay() === 0
             <!-- Mobile -->
             <div class="lg:hidden">
                 <!-- Дни недели -->
-                <AppScrollFade direction="x">
+                <UiScrollFade direction="x">
                     <div class="flex gap-2 py-2">
                         <button
                             v-for="day in weekDays"
@@ -72,7 +72,7 @@ const isSunday = new Date().getDay() === 0
                             }}</span>
                         </button>
                     </div>
-                </AppScrollFade>
+                </UiScrollFade>
 
                 <!-- Слоты выбранного дня -->
                 <div
@@ -80,7 +80,7 @@ const isSunday = new Date().getDay() === 0
                     :key="selectedDay.dow"
                     class="mt-2 flex flex-col gap-2"
                 >
-                    <ClubsScheduleCard
+                    <LazyClubsScheduleCard
                         v-for="slot in slotsForDay(selectedDay.dow)"
                         :key="slot.id"
                         :weekly-slot="slot"

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { PlanTier } from "~/types"
 import { EnrollRoutesEnum } from "~/constants/nav"
+import type { PlanTier } from "~/types"
 
 const { pricing } = useAppConfig()
 const { tiers: allTiers } = useSubscriptionPlans()
@@ -38,7 +38,7 @@ const fmt = (n: number) =>
         class="bg-default relative z-10 flex w-full py-12 md:py-20 lg:py-24"
     >
         <UContainer class="flex flex-col gap-10 md:gap-14">
-            <SectionLeading subtitle="Ценообразование" icon="ph:ticket-duotone">
+            <UiSectionLeading subtitle="Ценообразование" icon="ph:ticket-duotone">
                 <template #title>
                     <span class="text-secondary">
                         Калькулятор<br />
@@ -49,11 +49,13 @@ const fmt = (n: number) =>
                     Выбери количество занятий и посмотри, сколько экономишь по сравнению с разовыми
                     посещениями.
                 </template>
-            </SectionLeading>
+            </UiSectionLeading>
 
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
                 <!-- Calculator -->
-                <div class="flex flex-col gap-2 rounded-sm bg-white px-3 py-2 md:gap-4 md:p-4">
+                <div
+                    class="flex flex-col gap-2 rounded-sm bg-white px-3 py-2 shadow-xs md:gap-4 md:p-4"
+                >
                     <h3 class="text-secondary text-xl font-extrabold md:text-3xl">
                         Посчитай выгоду
                     </h3>
@@ -137,7 +139,7 @@ const fmt = (n: number) =>
                 </div>
 
                 <!-- Subscription grid -->
-                <SubscriptionsPromo>
+                <PromoSubscriptions>
                     <template #sub>Все тарифы</template>
                     <template #desc>
                         • Абонемент действует на <strong>любые</strong> кружки центра — можно
@@ -146,7 +148,7 @@ const fmt = (n: number) =>
                         месяц. В этом случае вы можете выбрать <strong>любое количество</strong>
                         занятий.
                     </template>
-                </SubscriptionsPromo>
+                </PromoSubscriptions>
             </div>
         </UContainer>
     </section>

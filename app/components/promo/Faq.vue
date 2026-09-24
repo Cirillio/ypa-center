@@ -33,7 +33,7 @@ useHead({
         >
             <!-- Left: text content -->
             <div class="flex flex-col gap-6">
-                <SectionLeading subtitle="Частые вопросы" icon="ph:question-duotone">
+                <UiSectionLeading subtitle="Частые вопросы" icon="ph:question-duotone">
                     <template #title>
                         <span class="text-secondary">
                             Вопросы<br />
@@ -44,9 +44,9 @@ useHead({
                         Собрали самые популярные вопросы от родителей. Не нашли ответ? Свяжитесь с
                         нами — мы всегда на связи!
                     </template>
-                </SectionLeading>
+                </UiSectionLeading>
 
-                <CallbackForm />
+                <SharedCallbackForm />
             </div>
 
             <div class="py-4">

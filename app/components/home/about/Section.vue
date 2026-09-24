@@ -29,7 +29,7 @@ const AUDIENCE_CARDS = [
         accent: "border-amber-400",
         iconColor: "text-amber-400",
         title: "Дошкольники",
-        desc: "До школы — не прописи, а фундамент. Программа ГДЕЁЖ учит читать через движение, считать через игру, говорить — без страха. К сентябрю ребёнок знает главное: учиться не страшно. Это стоит больше, чем выученный алфавит.",
+        desc: "До школы – не прописи, а фундамент. Программа ГДЕЁЖ учит читать через движение, считать через игру, говорить – без страха. К сентябрю ребёнок знает главное: учиться не страшно. Это стоит больше, чем выученный алфавит.",
         highlight: "Программа ГДЕЁЖ"
     },
     {
@@ -38,7 +38,7 @@ const AUDIENCE_CARDS = [
         accent: "border-emerald-400",
         iconColor: "text-emerald-500",
         title: "Школьники",
-        desc: "Не репетитор — второй дом. Маленькие группы: педагог видит каждого. Кружок мышления учит задавать правильные вопросы. Английский — через живой диалог, без зубрёжки. Умная продлёнка: домашка сделана, настолки в ходу, день прожит с пользой.",
+        desc: "Не репетитор – второй дом. Маленькие группы: педагог видит каждого. Кружок мышления учит задавать правильные вопросы. Английский – через живой диалог, без зубрёжки. Умная продлёнка: домашка сделана, настолки в ходу, день прожит с пользой.",
         highlight: "Кружок мышления · Английский · Продлёнка"
     },
     {
@@ -47,7 +47,7 @@ const AUDIENCE_CARDS = [
         accent: "border-cyan-400",
         iconColor: "text-cyan-500",
         title: "Осознанный выбор",
-        desc: "Надежда — монтессори-практик, преподаватель СУНЦ НГУ. Яков — кандидат физмат. наук, 20 лет формирует мышление у детей. Здесь нет конвейера из сотни учеников. Есть внимание к каждому — и прогресс, который вы заметите сами.",
+        desc: "Надежда – монтессори-практик, преподаватель СУНЦ НГУ. Яков – кандидат физмат. наук, 20 лет формирует мышление у детей. Здесь нет конвейера из сотни учеников. Есть внимание к каждому – и прогресс, который вы заметите сами.",
         highlight: "Педагоги с настоящей экспертизой"
     }
 ]
@@ -57,7 +57,7 @@ const AUDIENCE_CARDS = [
     <section class="relative z-10 flex w-full bg-white py-12 md:py-20 lg:py-24">
         <UContainer class="flex flex-col gap-10 md:gap-14">
             <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-                <SectionLeading subtitle="Для кого мы работаем" icon="ph:users-duotone">
+                <UiSectionLeading subtitle="Для кого мы работаем" icon="ph:users-duotone">
                     <template #title>
                         <span class="text-secondary">
                             Кому это
@@ -66,11 +66,11 @@ const AUDIENCE_CARDS = [
                     </template>
                     <template #description>
                         <span class="flex text-balance">
-                            Программы центра рассчитаны на разный возраст и разные цели — от
+                            Программы центра рассчитаны на разный возраст и разные цели – от
                             подготовки к школе до осознанного выбора развития ребёнка.
                         </span>
                     </template>
-                </SectionLeading>
+                </UiSectionLeading>
 
                 <div class="grid grid-cols-3 gap-2 md:gap-4 lg:shrink-0">
                     <div
@@ -94,7 +94,7 @@ const AUDIENCE_CARDS = [
                 <div
                     v-for="card in AUDIENCE_CARDS"
                     :key="card.tag"
-                    class="bg-default flex flex-col gap-4 rounded-sm border-t-4 p-6 lg:p-8"
+                    class="bg-default flex flex-col gap-4 rounded-sm border-t-4 p-6 transition-all duration-300 ease-out hover:-translate-y-4 lg:p-8"
                     :class="card.accent"
                 >
                     <div class="flex items-center gap-2">

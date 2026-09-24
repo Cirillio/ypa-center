@@ -38,7 +38,7 @@ withDefaults(defineProps<Props>(), {
                         <div
                             class="aspect-5/3 h-20 shrink-0 overflow-hidden rounded-xs shadow-sm md:h-40"
                         >
-                            <AppPhoto
+                            <UiPhoto
                                 :src="img"
                                 :alt="imgAlt ?? title ?? ''"
                                 :quality="50"

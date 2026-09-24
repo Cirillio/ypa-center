@@ -61,7 +61,7 @@ onUnmounted(() => {
             <div v-if="isMobile" class="flex h-dvh w-full flex-col">
                 <div class="relative min-h-0 flex-1 overflow-hidden">
                     <Transition name="photo-fade">
-                        <AppPhoto
+                        <UiPhoto
                             v-if="currentPhoto"
                             :key="currentPhoto.image_url"
                             :src="currentPhoto.image_url"
@@ -84,7 +84,7 @@ onUnmounted(() => {
             <div v-else class="flex w-full flex-col">
                 <div class="relative h-fit max-h-[80vh] w-full overflow-hidden">
                     <Transition name="photo-fade">
-                        <AppPhoto
+                        <UiPhoto
                             v-if="currentPhoto"
                             :key="currentPhoto.image_url"
                             :src="currentPhoto.image_url"

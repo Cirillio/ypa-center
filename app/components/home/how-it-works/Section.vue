@@ -8,12 +8,12 @@ const steps = [
     {
         icon: "ph:puzzle-piece-duotone",
         title: "Собираешь абонемент",
-        desc: "Один абонемент покрывает любые кружки центра. Чем больше занятий — тем ниже цена каждого."
+        desc: "Один абонемент покрывает любые кружки центра. Чем больше занятий – тем ниже цена каждого."
     },
     {
         icon: "ph:credit-card-duotone",
         title: "Платишь один раз",
-        desc: "Оплата через ЮКассу онлайн. Больше не нужно платить каждый раз — занятия уже оплачены."
+        desc: "Оплата через ЮКассу онлайн. Больше не нужно платить каждый раз – занятия уже оплачены."
     }
 ]
 </script>
@@ -21,7 +21,7 @@ const steps = [
 <template>
     <section class="relative z-10 flex w-full bg-white py-12 md:py-20 lg:py-24">
         <UContainer class="flex flex-col gap-12 md:gap-16">
-            <SectionLeading subtitle="Просто и понятно" icon="ph:lightning-duotone">
+            <UiSectionLeading subtitle="Просто и понятно" icon="ph:lightning-duotone">
                 <template #title>
                     <span class="text-secondary">
                         Как это
@@ -31,16 +31,18 @@ const steps = [
                 <template #description>
                     Три шага от выбора кружка до оплаченного абонемента.
                 </template>
-            </SectionLeading>
+            </UiSectionLeading>
 
             <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
                 <div
                     v-for="(step, i) in steps"
                     :key="i"
-                    class="bg-default flex flex-col gap-4 rounded-sm p-5 lg:p-6"
+                    class="bg-default group flex flex-col gap-4 rounded-sm p-5 lg:p-6"
                 >
                     <div class="flex items-center gap-3">
-                        <span class="text-primary shrink-0 text-base font-black">
+                        <span
+                            class="text-primary shrink-0 text-base font-black transition-all duration-150 ease-in-out group-hover:text-3xl"
+                        >
                             {{ String(i + 1).padStart(2, "0") }}
                         </span>
                         <div class="bg-primary/15 h-px flex-1" />

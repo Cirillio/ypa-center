@@ -6,11 +6,11 @@ const { data, error } = await useAsyncData("home-events", () => eventsService.ge
 const events = computed(() => {
     const raw = data.value ?? []
     return raw.toSorted((a, b) => {
-        // 1. Актуальные события (is_upcoming === true) в начале, прошедшие — в самый конец
+        // 1. Актуальные события (is_upcoming === true) в начале, прошедшие – в самый конец
         if (a.is_upcoming !== b.is_upcoming) {
             return a.is_upcoming ? -1 : 1
         }
-        // 2. Внутри каждой группы — хронологический порядок (от ближайших к дальним)
+        // 2. Внутри каждой группы – хронологический порядок (от ближайших к дальним)
         return new Date(a.start_datetime).getTime() - new Date(b.start_datetime).getTime()
     })
 })
@@ -22,7 +22,7 @@ const events = computed(() => {
         class="relative z-10 flex w-full overflow-hidden bg-white py-12 md:py-20 lg:py-24"
     >
         <UContainer class="relative z-10 flex flex-col gap-8 md:gap-12">
-            <SectionLeading subtitle="Ближайшие мероприятия" icon="ph:calendar-star-duotone">
+            <UiSectionLeading subtitle="Ближайшие мероприятия" icon="ph:calendar-star-duotone">
                 <template #title>
                     <span class="text-secondary">
                         События<br />
@@ -30,7 +30,7 @@ const events = computed(() => {
                     </span>
                 </template>
                 <template #description>
-                    Интересные встречи, мастер-классы и праздники — следите за расписанием и
+                    Интересные встречи, мастер-классы и праздники – следите за расписанием и
                     приходите с детьми.
                 </template>
 
@@ -47,7 +47,7 @@ const events = computed(() => {
                         />
                     </UButton>
                 </template>
-            </SectionLeading>
+            </UiSectionLeading>
 
             <!-- Пустое состояние или ошибка загрузки -->
             <HomeEventsEmpty v-if="error || events.length === 0" />

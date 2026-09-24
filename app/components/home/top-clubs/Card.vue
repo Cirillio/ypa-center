@@ -5,7 +5,7 @@ withDefaults(
         slug: string
         shortDescription: string
         coverImage?: string
-        // featured — крупная карточка в раскладке из 3 кружков (растянута на 2 строки)
+        // featured – крупная карточка в раскладке из 3 кружков (растянута на 2 строки)
         featured?: boolean
     }>(),
     {
@@ -14,7 +14,7 @@ withDefaults(
     }
 )
 
-// Обложка опциональна на бэке — пустой src в AppPhoto даёт состояние ошибки
+// Обложка опциональна на бэке – пустой src в AppPhoto даёт состояние ошибки
 const FALLBACK_COVER = "/core/clubs-main.jpg"
 </script>
 
@@ -24,10 +24,10 @@ const FALLBACK_COVER = "/core/clubs-main.jpg"
         class="focus-visible:outline-primary group relative flex flex-col overflow-hidden rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2"
     >
         <div class="relative h-full min-h-0 overflow-hidden">
-            <AppPhoto
+            <UiPhoto
                 :src="coverImage || FALLBACK_COVER"
                 class="object-cover object-center transition duration-300 group-hover:scale-105"
-                :alt="'Кружок — ' + name"
+                :alt="'Кружок – ' + name"
             />
         </div>
 

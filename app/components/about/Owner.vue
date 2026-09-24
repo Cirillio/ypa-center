@@ -5,7 +5,7 @@
         <UContainer class="grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16">
             <div class="flex w-full justify-center">
                 <div class="h-92 w-full overflow-hidden rounded-lg md:h-132">
-                    <AppPhoto
+                    <UiPhoto
                         src="/core/owner_photo.jpg"
                         alt="Основатель центра"
                         class="object-cover object-center"
@@ -14,7 +14,7 @@
             </div>
 
             <div class="flex flex-col gap-6">
-                <SectionLeading subtitle="Основатель" icon="ph:user-circle-duotone">
+                <UiSectionLeading subtitle="Основатель" icon="ph:user-circle-duotone">
                     <template #title>
                         <span class="text-secondary">
                             Макуха<br />
@@ -26,7 +26,7 @@
                         tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
                         quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.
                     </template>
-                </SectionLeading>
+                </UiSectionLeading>
 
                 <blockquote
                     class="border-primary/30 text-default/90 border-l-4 pl-4 text-base leading-relaxed font-semibold italic"

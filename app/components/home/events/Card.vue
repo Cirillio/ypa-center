@@ -78,7 +78,7 @@ const formattedPrice = computed(() =>
         <div
             class="relative aspect-square w-20 shrink-0 overflow-hidden min-[340px]:w-24 sm:w-32 lg:aspect-4/3 lg:w-auto"
         >
-            <AppPhoto
+            <UiPhoto
                 itemprop="image"
                 :src="coverImage || FALLBACK_COVER"
                 :alt="title"

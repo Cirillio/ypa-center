@@ -1,11 +1,11 @@
 <script lang="ts" setup>
+import type { TabsItem } from "@nuxt/ui"
 import { EnrollRoutesEnum } from "~/constants/nav"
 import type { Activity } from "~/types"
 
 const props = defineProps<{
     activity: Activity
     index: number
-    scheduledDays: string[]
 }>()
 
 const formattedNumber = computed(() => String(props.index + 1).padStart(2, "0"))
@@ -14,20 +14,18 @@ const tags = computed(() => (props.activity.tags as string[] | undefined) ?? [])
 const spotsAvailable = computed(() =>
     props.activity.groups.reduce((sum, g) => sum + g.seats_free, 0)
 )
+const clubDays = computed(() => props.activity.days_of_week.map((day) => getDayName("short", day)))
 
-type Tab = "features" | "subgroups"
-const activeTab = ref<Tab>("features")
-
-const tabs: { id: Tab; label: string }[] = [
-    { id: "features", label: "Особенности" },
-    { id: "subgroups", label: "Подгруппы" }
-]
+const tabs = [
+    { label: "Особенности", slot: "features" as const },
+    { label: "Подгруппы", slot: "subgroups" as const }
+] satisfies TabsItem[]
 </script>
 
 <template>
     <article
         :id="`${activity.slug}`"
-        class="group relative flex w-full scroll-mt-[calc(var(--ui-header-height)+0.5rem)] grid-cols-9 rounded-sm bg-white max-md:flex-col md:grid"
+        class="group relative flex w-full scroll-mt-[calc(var(--ui-header-height)+0.5rem)] grid-cols-9 rounded-sm bg-white shadow-xs max-md:flex-col md:grid"
     >
         <!-- Фото с декоративным номером -->
         <div
@@ -36,7 +34,7 @@ const tabs: { id: Tab; label: string }[] = [
             <div
                 class="absolute top-0 left-0 z-10 h-full w-full bg-linear-to-t from-black/75 to-transparent"
             ></div>
-            <AppPhoto
+            <UiPhoto
                 :src="activity.cover_image ?? ''"
                 :alt="activity.name"
                 class="object-cover object-center"
@@ -70,85 +68,77 @@ const tabs: { id: Tab; label: string }[] = [
 
         <!-- Основной контент -->
         <div class="col-span-6 flex min-w-0 flex-col gap-4 px-3 py-4 md:p-6">
-            <!-- Строка 2: описание -->
-            <p class="text-default/90 text-base font-medium lg:line-clamp-7 lg:text-lg xl:text-xl">
+            <!-- Описание -->
+            <p
+                class="text-default/90 text-justify text-base font-medium lg:line-clamp-7 lg:text-lg xl:text-xl"
+            >
                 {{ activity.description }}
             </p>
 
             <!-- Табы: Особенности / Подгруппы -->
-            <div class="bg-default/50 mb-auto flex flex-col gap-2 rounded-sm p-2 md:p-4">
-                <!-- Tab nav -->
-                <div class="flex gap-4">
-                    <button
-                        v-for="tab in tabs"
-                        :key="tab.id"
-                        type="button"
-                        class="flex-1 cursor-pointer rounded-sm bg-white px-3 py-2 text-sm font-semibold transition duration-150 ease-in-out sm:text-base"
-                        :class="
-                            activeTab === tab.id
-                                ? 'text-primary ring-primary/75 ring-2'
-                                : 'text-default hover:ring-primary/50 ring-2 ring-transparent'
-                        "
-                        @click="activeTab = tab.id"
-                    >
-                        {{ tab.label }}
-                    </button>
-                </div>
-
-                <!-- Tab content -->
-                <div
-                    v-if="activeTab === 'features'"
-                    key="features"
-                    class="flex flex-col gap-2 py-2"
-                >
-                    <span
-                        v-for="tag in tags"
-                        :key="tag"
-                        :title="tag"
-                        class="text-default/75 hover:text-primary line-clamp-2 grid grid-cols-[auto_1fr] items-center gap-2 text-sm leading-tight font-semibold lg:text-lg"
-                    >
-                        <UIcon name="ph:dot-duotone" class="text-secondary size-6 md:size-8" />
-                        {{ tag }}
-                    </span>
-                </div>
-
-                <div v-else key="subgroups" class="flex flex-col gap-2 py-2">
-                    <div
-                        v-if="activity.groups.length === 0"
-                        class="text-default/40 py-2 text-base font-semibold"
-                    >
-                        Подгруппы не найдены
-                    </div>
-                    <div
-                        v-for="g in activity.groups"
-                        :key="g.id"
-                        class="text-default/75 group/sub grid grid-cols-[auto_1fr_auto] items-center gap-2 text-base font-semibold"
-                    >
-                        <UIcon
-                            name="ph:users-three-duotone"
-                            class="text-secondary size-5 shrink-0 md:size-6"
-                        />
-                        <span class="line-clamp-1" :title="g.group_name">{{ g.group_name }}</span>
+            <UTabs
+                :items="tabs"
+                class="bg-default mb-auto rounded-sm p-2 md:p-4"
+                :ui="{
+                    list: 'rounded-sm bg-white shadow-xs',
+                    indicator: 'rounded-sm',
+                    trigger: 'cursor-pointer rounded-sm font-semibold sm:text-base'
+                }"
+            >
+                <template #features>
+                    <div class="flex flex-col gap-2 py-2">
                         <span
-                            class="text-default/75 group-hover/sub:text-primary shrink-0 text-base font-bold tabular-nums transition"
-                            >до {{ g.max_capacity }} чел.</span
+                            v-for="tag in tags"
+                            :key="tag"
+                            class="text-default/75 hover:text-primary line-clamp-2 grid grid-cols-[auto_1fr] items-center gap-2 text-sm leading-tight font-semibold lg:text-lg"
                         >
+                            <UIcon name="ph:dot-duotone" class="text-secondary size-6 md:size-8" />
+                            {{ tag }}
+                        </span>
                     </div>
-                </div>
-            </div>
+                </template>
 
-            <!-- Строка 3: расписание + CTA -->
+                <template #subgroups>
+                    <div class="flex flex-col gap-2 py-2">
+                        <div
+                            v-if="activity.groups.length === 0"
+                            class="text-default/40 py-2 text-base font-semibold"
+                        >
+                            Подгруппы не найдены
+                        </div>
+                        <div
+                            v-for="g in activity.groups"
+                            :key="g.id"
+                            class="text-default/75 group/sub grid grid-cols-[auto_1fr_auto] items-center gap-2 text-base font-semibold"
+                        >
+                            <UIcon
+                                name="ph:users-three-duotone"
+                                class="text-secondary size-5 shrink-0 md:size-6"
+                            />
+                            <span class="line-clamp-1" :title="g.group_name">{{
+                                g.group_name
+                            }}</span>
+                            <span
+                                class="text-default/75 group-hover/sub:text-primary shrink-0 text-base font-bold tabular-nums transition"
+                                >до {{ g.max_capacity }} чел.</span
+                            >
+                        </div>
+                    </div>
+                </template>
+            </UTabs>
+
+            <!-- Расписание + CTA -->
             <div class="flex w-full flex-wrap gap-4 max-md:flex-col md:items-center">
                 <div class="flex gap-2">
                     <span
-                        :title="'Расписание: ' + scheduledDays.join(', ')"
+                        :title="'Расписание: ' + clubDays.join(', ')"
                         class="bg-default text-default/90 flex items-center gap-1.5 rounded-md px-3 py-1.5 text-lg font-semibold max-lg:text-sm"
                     >
                         <UIcon
                             name="ph:calendar-dots-duotone"
                             class="text-secondary size-4.5 shrink-0 md:size-5"
                         />
-                        {{ scheduledDays.join(", ") }}
+                        {{ clubDays.join(", ") }}
                     </span>
                 </div>
                 <UButton

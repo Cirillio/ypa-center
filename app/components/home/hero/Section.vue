@@ -15,7 +15,7 @@
                 >
                     Кружки, <br />
                     продленка, <br />
-                    каникулы — <br />
+                    каникулы – <br />
 
                     <span class="text-primary">
                         <span>
@@ -30,7 +30,7 @@
                     class="text-default/95 flex max-w-[24rem] flex-col gap-4 text-lg leading-snug font-semibold text-balance sm:max-w-lg sm:text-lg md:text-xl"
                 >
                     Место, где дети учатся думать, творить и верить в себя. Кружки, продлёнка и
-                    каникулярные программы — в уютной атмосфере рядом с домом!
+                    каникулярные программы – в уютной атмосфере рядом с домом!
                 </span>
             </template>
 
@@ -51,7 +51,7 @@
                     dot: 'bg-white shadow-sm data-[state=active]:ring-primary/25 data-[state=active]:ring-2 backdrop-blur-sm data-[state=active]:shadow-none data-[state=active]:bg-primary/75 size-3'
                 }"
             >
-                <AppPhoto
+                <UiPhoto
                     :src="item"
                     :quality="75"
                     alt="Фото центра"

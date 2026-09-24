@@ -7,9 +7,9 @@ const centerTelegram =
 </script>
 
 <template>
-    <PageSection>
+    <UiPageSection>
         <UContainer class="relative z-10 flex flex-col gap-8">
-            <SectionLeading as="h1" subtitle="Наши моменты" icon="ph:aperture-duotone" center>
+            <UiSectionLeading as="h1" subtitle="Наши моменты" icon="ph:aperture-duotone" center>
                 <template #title>
                     <span class="text-secondary">
                         Галерея<br />
@@ -20,9 +20,9 @@ const centerTelegram =
                     Загляните в нашу жизнь — яркие занятия, счастливые лица и уютная атмосфера
                     «Улицы Радости».
                 </template>
-            </SectionLeading>
+            </UiSectionLeading>
 
-            <FloatPromoCard
+            <PromoFloatCard
                 :to="centerTelegram"
                 icon="ph:aperture-duotone"
                 sublabel="Больше"
@@ -30,6 +30,7 @@ const centerTelegram =
                 description="Ищите в нашей группе Вконтакте."
                 :external="true"
                 :target="'_blank'"
-            /> </UContainer
-    ></PageSection>
+            />
+        </UContainer>
+    </UiPageSection>
 </template>

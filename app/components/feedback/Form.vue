@@ -56,7 +56,7 @@ const inputUi = {
         "
     >
         <div class="flex items-start gap-2">
-            <RoundIcon name="ph:user" class="max-sm:hidden" />
+            <UiRoundIcon name="ph:user" class="max-sm:hidden" />
             <UFormField name="name" class="w-full">
                 <UInput
                     v-model="form.name"
@@ -75,7 +75,7 @@ const inputUi = {
         </div>
 
         <div class="flex items-start gap-2">
-            <RoundIcon name="ph:envelope-simple" class="max-sm:hidden" />
+            <UiRoundIcon name="ph:envelope-simple" class="max-sm:hidden" />
             <UFormField name="email" class="w-full">
                 <UInput
                     v-model="form.email"
@@ -94,7 +94,7 @@ const inputUi = {
         </div>
 
         <div class="flex items-start gap-2">
-            <RoundIcon name="ph:chat-circle-text" class="max-sm:hidden" />
+            <UiRoundIcon name="ph:chat-circle-text" class="max-sm:hidden" />
             <UFormField name="message" class="w-full">
                 <UTextarea
                     v-model="form.message"

@@ -6,7 +6,7 @@ const promo = useAppConfig().promo
     <section class="bg-default relative z-10 flex w-full overflow-hidden py-12 sm:py-20 md:py-24">
         <UContainer class="grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16">
             <div class="flex flex-col gap-6">
-                <SectionLeading subtitle="Наша история" icon="ph:book-open-duotone">
+                <UiSectionLeading subtitle="Наша история" icon="ph:book-open-duotone">
                     <template #title>
                         <span class="text-secondary">
                             Как всё<br />
@@ -19,7 +19,7 @@ const promo = useAppConfig().promo
                         quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
                         consequat.
                     </template>
-                </SectionLeading>
+                </UiSectionLeading>
 
                 <p class="text-default/85 max-w-md text-base leading-relaxed font-semibold">
                     Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
@@ -31,7 +31,7 @@ const promo = useAppConfig().promo
             <div
                 class="hover:ring-primary focus-within:ring-primary aspect-square w-full overflow-hidden rounded-lg ring-2 ring-transparent transition duration-300"
             >
-                <LazyAppVideo :src="promo.aboutVideoUrl" title="Промо-видео центра Улица Радости" />
+                <LazyUiVideo :src="promo.aboutVideoUrl" title="Промо-видео центра Улица Радости" />
             </div>
         </UContainer>
     </section>

@@ -19,10 +19,10 @@ const {
 } = useSubscriptionEnrollment()
 
 useSeoMeta({
-    title: "Оформить абонемент — Улица Радости",
+    title: "Оформить абонемент – Улица Радости",
     description:
         "Соберите персональный абонемент на кружки со скидкой до 50%. Выбирайте любые кружки из расписания, гибкое расписание. Детский центр в Новосибирске.",
-    ogTitle: "Оформить абонемент на кружки — Улица Радости",
+    ogTitle: "Оформить абонемент на кружки – Улица Радости",
     ogDescription:
         "Персональный абонемент: выберите кружки, оплатите раз в месяц. Скидка до 50% при наборе занятий."
 })
@@ -31,7 +31,7 @@ useSeoMeta({
 <template>
     <div class="gradient-bg-ps flex min-h-dvh flex-col pt-32 pb-24">
         <UContainer class="grid gap-16 lg:grid-cols-2">
-            <SectionLeading as="h1" subtitle="Запись" class="mr-auto shrink-0">
+            <UiSectionLeading as="h1" subtitle="Запись" class="mr-auto shrink-0">
                 <template #title>
                     <div class="text-primary">
                         Собери <br />
@@ -40,7 +40,7 @@ useSeoMeta({
                 </template>
                 <template #description>
                     Выберите любые кружки из расписания и оплатите один раз в месяц. Чем больше
-                    занятий — тем ниже цена за каждое.
+                    занятий – тем ниже цена за каждое.
                 </template>
                 <template #action>
                     <div class="flex flex-col gap-0.5">
@@ -52,19 +52,19 @@ useSeoMeta({
                         </span>
                     </div>
                 </template>
-            </SectionLeading>
+            </UiSectionLeading>
 
             <div class="flex flex-col gap-4">
-                <SubscriptionsPromo>
+                <PromoSubscriptions>
                     <template #sub>
                         Система тарифов:
-                        <span class="text-primary font-bold">чем больше — тем выгоднее</span>
+                        <span class="text-primary font-bold">чем больше – тем выгоднее</span>
                     </template>
                     <template #desc>
                         Каждый выбранный кружок добавляет 4 занятия в месяц. Абонемент подбирается
                         автоматически.
                     </template>
-                </SubscriptionsPromo>
+                </PromoSubscriptions>
                 <UButton
                     :to="EnrollRoutesEnum.Trial"
                     label="Попробовать разовое занятие"
@@ -115,7 +115,7 @@ useSeoMeta({
                 >
                     <h3 class="text-default mb-6 text-2xl font-bold">2. Заполните анкету</h3>
 
-                    <RegistrationForm
+                    <SharedRegistrationForm
                         v-model="formState"
                         :schema="RegistrationSchema"
                         @submit="onSubmit"

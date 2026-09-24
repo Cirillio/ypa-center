@@ -19,7 +19,11 @@
                     formatPrice(tier.price)
                 "
                 class="group relative flex flex-col gap-0.5 rounded-sm p-2 transition-all duration-200 md:p-4"
-                :class="tier.highlight ? 'bg-primary ring-primary hover:bg-primary/90' : 'bg-white'"
+                :class="
+                    tier.highlight
+                        ? 'bg-primary ring-primary hover:bg-primary/90'
+                        : 'bg-white shadow-xs'
+                "
             >
                 <span
                     v-if="tier.highlight"
@@ -68,9 +72,7 @@ import type { PlanTier } from "~/types"
 
 const { tiers } = useSubscriptionPlans()
 
-type Tier = PlanTier
-
-function perLesson(tier: Tier): string {
+function perLesson(tier: PlanTier): string {
     if (tier.lessons === null) return "неограниченно — один платёж"
     const per = Math.round(tier.price / tier.lessons)
     return (

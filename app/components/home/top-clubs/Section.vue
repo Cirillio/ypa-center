@@ -2,7 +2,7 @@
 const activities = useActivitiesService()
 const { data, error } = await useAsyncData("popular-clubs", () => activities.getPopular())
 
-// Бэк лимитирует выдачу тремя, но контракт на «ровно 3» не гарантирован —
+// Бэк лимитирует выдачу тремя, но контракт на «ровно 3» не гарантирован –
 // >4 обрезаем сами, раскладка ниже рассчитана на 2..4
 const clubs = computed(() => (data.value ?? []).slice(0, 4))
 
@@ -22,7 +22,7 @@ const variant = computed<Variant>(() => {
     }
 })
 
-// Раскладка grid-контейнера по числу карточек (мобила всегда столбик — grid-cols-1)
+// Раскладка grid-контейнера по числу карточек (мобила всегда столбик – grid-cols-1)
 const GRID_CLASS: Record<Exclude<Variant, "empty">, string> = {
     duo: "md:aspect-2/1 md:grid-cols-2 md:grid-rows-1",
     trio: "md:aspect-2/1 md:grid-cols-[2fr_1fr] md:grid-rows-2",
@@ -34,7 +34,7 @@ const GRID_CLASS: Record<Exclude<Variant, "empty">, string> = {
     <section class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20 lg:py-24">
         <UContainer class="relative z-10 flex flex-col gap-6 md:gap-12">
             <!-- Top: text content -->
-            <SectionLeading subtitle="Для вашего ребёнка" icon="ph:star-duotone">
+            <UiSectionLeading subtitle="Для вашего ребёнка" icon="ph:star-duotone">
                 <template #title>
                     <span class="text-secondary">
                         Популярные<br />
@@ -42,7 +42,7 @@ const GRID_CLASS: Record<Exclude<Variant, "empty">, string> = {
                     </span>
                 </template>
                 <template #description>
-                    Самые любимые кружки наших учеников. Выбирайте то, что по душе вашему ребёнку —
+                    Самые любимые кружки наших учеников. Выбирайте то, что по душе вашему ребёнку –
                     мы найдём занятие для каждого характера и таланта.
                 </template>
                 <template #action>
@@ -54,9 +54,9 @@ const GRID_CLASS: Record<Exclude<Variant, "empty">, string> = {
                         />
                     </UButton>
                 </template>
-            </SectionLeading>
+            </UiSectionLeading>
 
-            <!-- Мало кружков или ошибка загрузки — приглашение в каталог вместо сетки -->
+            <!-- Мало кружков или ошибка загрузки – приглашение в каталог вместо сетки -->
             <HomeTopClubsEmpty v-if="variant === 'empty'" />
 
             <!-- Grid: раскладка зависит от числа карточек (2/3/4) -->
@@ -79,7 +79,7 @@ const GRID_CLASS: Record<Exclude<Variant, "empty">, string> = {
             </div>
 
             <!-- Floating promo card -->
-            <FloatPromoCard
+            <PromoFloatCard
                 to="/teachers"
                 icon="ph:chalkboard-teacher-duotone"
                 sublabel="Наши"

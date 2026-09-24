@@ -11,10 +11,10 @@ const {
 } = useEventEnrollment()
 
 useSeoMeta({
-    title: "Запись на событие — Улица Радости",
+    title: "Запись на событие – Улица Радости",
     description:
         "Запишитесь на мероприятие детского центра Улица Радости: театральные игры, мастер-классы, лекции. Интерактивные события для детей в Новосибирске.",
-    ogTitle: "Запись на событие — Улица Радости",
+    ogTitle: "Запись на событие – Улица Радости",
     ogDescription:
         "Выберите мероприятие и заполните анкету. Мы подтвердим участие и напомним о дате по почте."
 })
@@ -31,7 +31,7 @@ const eventSubtitle = computed(() => {
 <template>
     <div class="gradient-bg-ps flex min-h-dvh flex-col pt-32 pb-24">
         <UContainer>
-            <SectionLeading as="h1" subtitle="Запись" class="mr-auto max-w-2xl shrink-0">
+            <UiSectionLeading as="h1" subtitle="Запись" class="mr-auto max-w-2xl shrink-0">
                 <template #title>
                     <div class="text-primary">
                         Запись на <br />
@@ -39,10 +39,10 @@ const eventSubtitle = computed(() => {
                     </div>
                 </template>
                 <template #description>
-                    Выберите интересующее мероприятие и заполните короткую анкету — мы подтвердим
+                    Выберите интересующее мероприятие и заполните короткую анкету – мы подтвердим
                     участие и напомним о дате по почте.
                 </template>
-            </SectionLeading>
+            </UiSectionLeading>
         </UContainer>
 
         <UContainer>
@@ -56,7 +56,7 @@ const eventSubtitle = computed(() => {
         <UContainer class="w-full">
             <div class="grid grid-cols-1 gap-4 lg:grid-cols-12">
                 <div class="space-y-4 lg:col-span-7">
-                    <EnrollmentSummary
+                    <SharedEnrollmentSummary
                         :title="selectedEvent?.title ?? null"
                         :subtitle="eventSubtitle"
                         :img="selectedEvent?.cover_image ?? null"

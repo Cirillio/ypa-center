@@ -14,7 +14,7 @@ const photos = computed(() => (data.value ?? []).slice(0, HOME_GALLERY_LIMIT))
         class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20 lg:py-24"
     >
         <UContainer class="relative z-10 flex flex-col gap-6 md:gap-12">
-            <SectionLeading subtitle="Наши моменты" icon="ph:aperture-duotone">
+            <UiSectionLeading subtitle="Наши моменты" icon="ph:aperture-duotone">
                 <template #title>
                     <span class="text-secondary">
                         Фото<br />
@@ -25,7 +25,7 @@ const photos = computed(() => (data.value ?? []).slice(0, HOME_GALLERY_LIMIT))
                     Загляните в нашу жизнь — яркие занятия, счастливые лица и уютная атмосфера
                     «Улицы Радости».
                 </template>
-            </SectionLeading>
+            </UiSectionLeading>
 
             <!-- Gallery grid -->
             <div class="grid grid-cols-2 gap-2 lg:grid-cols-4">
@@ -37,7 +37,7 @@ const photos = computed(() => (data.value ?? []).slice(0, HOME_GALLERY_LIMIT))
                         'col-span-2 row-span-2 aspect-square': i === 0
                     }"
                 >
-                    <LazyAppPhoto
+                    <LazyUiPhoto
                         :src="photo.image_url"
                         :alt="'Фото ' + (i + 1) + ' из центра'"
                         class="h-full w-full scale-105 object-cover object-center transition duration-300 group-hover:scale-100"

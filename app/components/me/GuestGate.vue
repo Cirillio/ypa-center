@@ -46,17 +46,17 @@ const teaser = [
 
 <template>
     <section class="flex h-fit w-full max-w-xs flex-col items-center text-center">
-        <RoundIcon name="ph:book-open-text-bold" class="mb-6 max-sm:hidden" />
+        <UiRoundIcon name="ph:book-open-text-bold" class="mb-6 max-sm:hidden" />
         <h1 class="text-primary text-3xl font-bold sm:text-4xl">
             Мой <span class="text-secondary">кабинет</span>
         </h1>
         <p class="text-default/70 mt-2 text-base">
-            Войдите по почте — пришлём одноразовый код, пароль не нужен.
+            Войдите по почте – пришлём одноразовый код, пароль не нужен.
         </p>
 
         <form class="mt-6 flex w-full flex-col gap-3" @submit.prevent="onHandleOtp">
             <div class="flex items-center gap-2">
-                <RoundIcon name="ph:envelope-bold" class="max-sm:hidden" />
+                <UiRoundIcon name="ph:envelope-bold" class="max-sm:hidden" />
                 <UInput
                     v-model="modelValueEmail"
                     name="email"
@@ -85,7 +85,7 @@ const teaser = [
 
             <template v-if="currentStep === 'code'">
                 <div class="flex items-center gap-2">
-                    <RoundIcon name="ph:lock-key-bold" class="max-sm:hidden" />
+                    <UiRoundIcon name="ph:lock-key-bold" class="max-sm:hidden" />
                     <UPinInput
                         v-model="pinValue"
                         :length="6"
@@ -130,7 +130,7 @@ const teaser = [
         </form>
 
         <p class="text-default/50 mt-4 text-xs">
-            Аккаунт создаётся автоматически после первой покупки — абонемента или разового занятия.
+            Аккаунт создаётся автоматически после первой покупки – абонемента или разового занятия.
         </p>
 
         <div class="border-default mt-7 grid w-full grid-cols-3 gap-3 border-t pt-6">

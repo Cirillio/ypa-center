@@ -26,19 +26,19 @@ import { EnrollRoutesEnum } from "~/constants/nav"
             </h2>
 
             <div class="flex items-center gap-4 max-md:flex-col-reverse">
+                <UButton :to="EnrollRoutesEnum.Subscription" color="secondary" class="group w-fit">
+                    <UIcon
+                        name="ph:puzzle-piece-duotone"
+                        class="size-4.5 transition group-hover:scale-110 group-hover:rotate-6 md:size-5.5"
+                    />
+                    <span class="font-bold md:text-lg">Собрать абонемент</span>
+                </UButton>
+
                 <UButton :to="EnrollRoutesEnum.Trial" variant="soft" size="md" class="group w-fit">
                     <span class="font-bold">Записаться на пробное</span>
                     <UIcon
                         name="ph:arrow-right-bold"
                         class="size-4 transition group-hover:translate-x-0.5"
-                    />
-                </UButton>
-
-                <UButton :to="EnrollRoutesEnum.Subscription" color="secondary" class="group w-fit">
-                    <span class="font-bold md:text-lg">Собрать абонемент</span>
-                    <UIcon
-                        name="ph:puzzle-piece-duotone"
-                        class="size-4.5 transition group-hover:scale-110 group-hover:rotate-6 md:size-5.5"
                     />
                 </UButton>
             </div>

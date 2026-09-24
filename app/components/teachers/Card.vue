@@ -8,11 +8,11 @@ defineProps<{
 
 <template>
     <article
-        class="group flex gap-4 overflow-hidden rounded-md bg-white p-4 transition-all duration-300 max-md:flex-col md:gap-6"
+        class="group flex gap-4 overflow-hidden rounded-md bg-white p-4 shadow-xs transition-all duration-300 max-md:flex-col md:gap-6"
     >
         <!-- Фото -->
         <div class="w-full overflow-hidden rounded-md max-md:h-76 md:aspect-4/5 md:w-76">
-            <AppPhoto
+            <UiPhoto
                 :src="teacher.photo_url ?? ''"
                 :alt="teacher.full_name"
                 class="object-cover object-center"
@@ -44,16 +44,16 @@ defineProps<{
                 </div>
             </div>
 
-            <blockquote
-                class="border-primary/30 text-primary before:text-primary/30 after:text-primary/30 border-l-2 pl-3 text-base font-semibold italic before:text-xl before:content-['«'] after:text-xl after:content-['»'] md:text-lg"
-            >
-                {{ teacher.quote }}
-            </blockquote>
             <p
                 class="text-default/85 text-base leading-relaxed font-semibold md:line-clamp-7 md:text-lg"
             >
                 {{ teacher.bio }}
             </p>
+            <blockquote
+                class="text-primary before:text-primary/30 after:text-primary/30 mt-auto ml-auto text-base font-semibold italic before:text-xl before:content-['«'] after:text-xl after:content-['»'] md:text-lg"
+            >
+                {{ teacher.quote }}
+            </blockquote>
         </div>
     </article>
 </template>

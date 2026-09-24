@@ -15,10 +15,10 @@ const {
 } = useTrialEnrollment()
 
 useSeoMeta({
-    title: "Пробное занятие — Улица Радости",
+    title: "Пробное занятие – Улица Радости",
     description:
         "Запишите ребёнка на разовое пробное занятие в детском центре Улица Радости. 1 200 ₽. Выберите кружок и удобное время. Новосибирск.",
-    ogTitle: "Пробное занятие в кружке — Улица Радости",
+    ogTitle: "Пробное занятие в кружке – Улица Радости",
     ogDescription:
         "Разовое занятие в любом кружке за 1 200 ₽. Познакомьтесь с педагогом и форматом перед оформлением абонемента."
 })
@@ -27,7 +27,7 @@ useSeoMeta({
 <template>
     <div class="gradient-bg-ps flex min-h-dvh flex-col pt-32 pb-24">
         <UContainer class="grid gap-16 lg:grid-cols-2">
-            <SectionLeading as="h1" subtitle="Запись" class="mr-auto shrink-0">
+            <UiSectionLeading as="h1" subtitle="Запись" class="mr-auto shrink-0">
                 <template #title>
                     <div class="text-primary">
                         Пробное <br />
@@ -47,10 +47,10 @@ useSeoMeta({
                         </span>
                     </div>
                 </template>
-            </SectionLeading>
+            </UiSectionLeading>
 
             <div class="flex flex-col gap-4">
-                <SubscriptionsPromo>
+                <PromoSubscriptions>
                     <template #sub>
                         С абонементом <span class="text-primary font-bold">выгоднее!</span>
                     </template>
@@ -63,7 +63,7 @@ useSeoMeta({
                         <br />
                         - Абонемент оформляется на <strong>месяц</strong>
                     </template>
-                </SubscriptionsPromo>
+                </PromoSubscriptions>
                 <UButton
                     :to="EnrollRoutesEnum.Subscription"
                     label="Собрать абонемент"
@@ -90,7 +90,7 @@ useSeoMeta({
         <UContainer class="w-full">
             <div class="grid grid-cols-1 gap-4 lg:grid-cols-12">
                 <div class="flex flex-col gap-4 lg:col-span-7">
-                    <EnrollmentSummary
+                    <SharedEnrollmentSummary
                         :title="selectedVariant?.name ?? null"
                         :subtitle="selectedVariant?.slot ?? null"
                         :img="selectedVariant?.img ?? null"
@@ -112,7 +112,7 @@ useSeoMeta({
                     class="sticky top-[calc(var(--ui-header-height)+1rem)] h-fit rounded-sm bg-white px-6 py-4 lg:col-span-5"
                 >
                     <h3 class="text-default mb-6 text-2xl font-bold">3. Заполните анкету</h3>
-                    <RegistrationForm
+                    <SharedRegistrationForm
                         v-model="trialFormState"
                         :schema="RegistrationSchema"
                         @submit="onSubmit"

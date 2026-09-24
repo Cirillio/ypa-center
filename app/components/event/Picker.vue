@@ -41,7 +41,7 @@ function formatTime(dateStr: string): string {
 
             <!-- Events list -->
             <template v-else-if="events.length > 0">
-                <RadioCard
+                <UiRadioCard
                     v-for="event in events"
                     :id="String(event.id)"
                     :key="event.id"
@@ -69,7 +69,7 @@ function formatTime(dateStr: string): string {
                             }}</span>
                         </div>
                     </div>
-                </RadioCard>
+                </UiRadioCard>
             </template>
 
             <!-- Empty state -->

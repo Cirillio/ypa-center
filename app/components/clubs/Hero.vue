@@ -8,12 +8,12 @@ defineProps<{
 </script>
 
 <template>
-    <PageSection class="gradient-bg-ps flex flex-col gap-16">
+    <UiPageSection class="gradient-bg-ps flex flex-col gap-16">
         <UContainer
             class="relative z-10 grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16"
         >
             <div class="flex flex-col gap-8">
-                <SectionLeading as="h1" subtitle="Наши кружки" icon="ph:compass-duotone">
+                <UiSectionLeading as="h1" subtitle="Наши кружки" icon="ph:compass-duotone">
                     <template #title>
                         <span class="text-secondary">
                             Место, где <br />
@@ -47,7 +47,7 @@ defineProps<{
                                 </UButton>
                                 <span class="text-default/90 ml-1 text-xs font-bold">
                                     От <span class="text-primary">450 ₽</span> за занятие в
-                                    абонементе — выгоднее разового
+                                    абонементе – выгоднее разового
                                 </span>
                             </div>
 
@@ -65,19 +65,19 @@ defineProps<{
                                     />
                                 </UButton>
                                 <span class="text-default/90 ml-1 text-xs font-bold">
-                                    Разово, <span class="text-primary">1 200 ₽</span> — без
+                                    Разово, <span class="text-primary">1 200 ₽</span> – без
                                     абонемента
                                 </span>
                             </div>
                         </div>
                     </template>
-                </SectionLeading>
+                </UiSectionLeading>
             </div>
 
             <picture
                 class="flex h-96 w-full items-center justify-center overflow-hidden rounded-lg shadow-sm max-lg:max-w-140 max-sm:h-72 lg:h-120"
             >
-                <AppPhoto
+                <UiPhoto
                     src="/moke/clubs-page-hero.jpeg"
                     :quality="75"
                     :preload="{ fetchPriority: 'high' }"
@@ -88,12 +88,5 @@ defineProps<{
                 />
             </picture>
         </UContainer>
-        <UContainer>
-            <ClubsSectionCTA
-                city="Академгородок"
-                :clubs-quantity="clubsLength || 0"
-                :min-age="minAge"
-            />
-        </UContainer>
-    </PageSection>
+    </UiPageSection>
 </template>

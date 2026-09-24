@@ -92,7 +92,7 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
 
                 <UButton
                     :to="EnrollRoutesEnum.Subscription"
-                    label="Оформить"
+                    label="Абонемент"
                     color="secondary"
                     leading-icon="ph:puzzle-piece-bold"
                     class="h-full px-2 py-2 text-base font-semibold max-lg:hidden xl:px-4"
@@ -121,7 +121,7 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
         </UContainer>
     </header>
 
-    <AppMobileMenu />
+    <LayoutMobileMenu />
 </template>
 
 <style scoped>

@@ -24,7 +24,7 @@ const { formatSlotDate } = useFormatDate()
         <template v-else-if="slots.length > 0">
             <span class="text-default/80 text-lg font-semibold">Ближайшие доступные даты:</span>
             <div class="mt-2 grid gap-2">
-                <RadioCard
+                <UiRadioCard
                     v-for="slot in slots"
                     :id="String(slot.id)"
                     :key="slot.id"
@@ -38,7 +38,7 @@ const { formatSlotDate } = useFormatDate()
                             Мест: {{ slot.available }}/{{ slot.maxCapacity }}
                         </span>
                     </div>
-                </RadioCard>
+                </UiRadioCard>
             </div>
         </template>
 

@@ -37,7 +37,7 @@ const isSelected = computed(() => selectedId.value === props.id)
             v-if="img"
             class="relative aspect-video w-full shrink-0 overflow-hidden rounded-xs sm:aspect-square sm:w-24"
         >
-            <AppPhoto :src="img" :alt="imgAlt ?? title" class="object-cover object-center" />
+            <UiPhoto :src="img" :alt="imgAlt ?? title" class="object-cover object-center" />
             <slot name="img-overlay" />
         </div>
 

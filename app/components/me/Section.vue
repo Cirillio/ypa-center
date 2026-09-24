@@ -20,7 +20,7 @@ const firstName = computed(() => {
 <template>
     <UContainer class="flex items-center justify-between gap-4 px-12! py-6">
         <div class="flex items-center gap-3">
-            <RoundIcon name="ph:book-open-text-bold" />
+            <UiRoundIcon name="ph:book-open-text-bold" />
             <div v-if="firstName" class="flex flex-col">
                 <span
                     class="text-secondary text-sm leading-tight font-semibold tracking-wide uppercase"

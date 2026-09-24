@@ -10,7 +10,7 @@ const selectedClubId = defineModel<string | undefined>({ required: true })
     <fieldset class="">
         <legend class="text-default text-2xl leading-tight font-bold">1. Выберите кружок</legend>
         <div class="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
-            <RadioCard
+            <UiRadioCard
                 v-for="club in clubs"
                 :id="club.id"
                 :key="club.id"
@@ -20,7 +20,7 @@ const selectedClubId = defineModel<string | undefined>({ required: true })
                 radio-group="club"
             >
                 {{ club.shortDesc }}
-            </RadioCard>
+            </UiRadioCard>
         </div>
     </fieldset>
 </template>

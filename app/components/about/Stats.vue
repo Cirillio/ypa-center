@@ -26,14 +26,14 @@ const CENTER_STATS = [
 <template>
     <section class="relative z-10 flex w-full bg-white py-16 md:py-24">
         <UContainer class="flex w-full flex-col gap-10">
-            <SectionLeading subtitle="Цифры и факты" icon="ph:chart-bar-duotone" center>
+            <UiSectionLeading subtitle="Цифры и факты" icon="ph:chart-bar-duotone" center>
                 <template #title>
                     <span class="text-secondary">
                         «Улица Радости»<br />
                         <span class="text-primary">в цифрах</span>
                     </span>
                 </template>
-            </SectionLeading>
+            </UiSectionLeading>
 
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
                 <div
