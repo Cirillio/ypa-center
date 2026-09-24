@@ -70,7 +70,7 @@ const submitForm = () => {
                     </span>
                 </div>
             </div>
-            <p v-else class="text-default/50 text-sm italic">Пока не добавлено ни одного ребёнка</p>
+            <p v-else class="text-muted text-sm italic">Пока не добавлено ни одного ребёнка</p>
 
             <form
                 v-if="isAdding"

@@ -82,7 +82,7 @@ const toggleClubsShown = () => {
                     :key="row.label"
                     class="flex items-center justify-between gap-2 px-1"
                 >
-                    <dt class="text-default/70 text-sm font-medium">{{ row.label }}</dt>
+                    <dt class="text-muted text-sm font-medium">{{ row.label }}</dt>
                     <dd
                         class="text-default text-end text-sm font-semibold"
                         :class="{ 'text-default/40': row.muted }"

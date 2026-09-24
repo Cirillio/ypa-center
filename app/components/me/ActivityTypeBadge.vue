@@ -39,6 +39,7 @@ const badge = computed(() => MAP[props.type])
         }"
     >
         <span
+            role="img"
             class="flex shrink-0 items-center justify-center rounded-full p-2"
             :class="badge.tint"
             :aria-label="badge.label"

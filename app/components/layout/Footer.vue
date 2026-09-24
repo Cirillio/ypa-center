@@ -142,24 +142,24 @@ const CONTACT_LINKS: FooterLink[] = [
                 <a
                     :href="contacts.mapLink"
                     target="_blank"
-                    class="text-default/60 active:text-primary hover:text-primary text-xs font-medium transition"
+                    class="text-muted active:text-primary hover:text-primary text-xs font-medium transition"
                 >
                     {{ contacts.address }}
                 </a>
                 <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
                     <NuxtLink
                         to="/privacy"
-                        class="text-default/60 active:text-primary hover:text-primary text-xs font-medium transition"
+                        class="text-muted active:text-primary hover:text-primary text-xs font-medium transition"
                     >
                         Политика конфиденциальности
                     </NuxtLink>
                     <NuxtLink
                         to="/consent"
-                        class="text-default/60 active:text-primary hover:text-primary text-xs font-medium transition"
+                        class="text-muted active:text-primary hover:text-primary text-xs font-medium transition"
                     >
                         Согласие на обработку ПД
                     </NuxtLink>
-                    <span class="text-default/60 text-xs font-medium">
+                    <span class="text-muted text-xs font-medium">
                         &copy; {{ currentYear }} Улица Радости. Все права защищены.
                     </span>
                 </div>

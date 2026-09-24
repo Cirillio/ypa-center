@@ -17,7 +17,7 @@ defineProps<{
             <div class="text-default truncate text-base leading-tight font-bold">
                 {{ item.title }}
             </div>
-            <div class="text-default/70 truncate text-sm leading-tight">
+            <div class="text-muted truncate text-sm leading-tight">
                 {{ item.subtitle ? `${item.subtitle} · ` : "" }}{{ item.participant }}
             </div>
             <div v-if="item.metaLabel" class="text-default/40 text-[10px] font-bold uppercase">

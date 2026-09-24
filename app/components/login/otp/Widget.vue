@@ -80,7 +80,7 @@ const teaser = [
                 v-if="currentStep === 'code'"
                 type="button"
                 :disabled="isLoading"
-                class="text-default/50 hover:text-primary self-start text-xs underline decoration-dotted underline-offset-2 transition disabled:opacity-40"
+                class="text-muted hover:text-primary self-start text-xs underline decoration-dotted underline-offset-2 transition disabled:opacity-40"
                 @click="emit('reset')"
             >
                 ← Изменить почту
@@ -106,9 +106,9 @@ const teaser = [
                     />
                 </div>
                 <div class="flex flex-col items-center gap-2 text-center">
-                    <p class="text-default/60 text-xs">Введите 6 цифр из письма</p>
+                    <p class="text-muted text-xs">Введите 6 цифр из письма</p>
                     <div class="flex items-center justify-center gap-2 text-sm">
-                        <span class="text-default/70">Код не пришёл?</span>
+                        <span class="text-muted">Код не пришёл?</span>
                         <button
                             type="button"
                             :disabled="!canResend"
@@ -132,7 +132,7 @@ const teaser = [
             />
         </form>
 
-        <ol class="text-default/50 list-disc space-y-2 px-6 py-4 text-start text-sm font-medium">
+        <ol class="text-muted list-disc space-y-2 px-6 py-4 text-start text-sm font-medium">
             <li>Если вы впервые, регистрация займёт буквально 1–2 минуты.</li>
             <li>
                 Пароль не нужен. На указанную почту придёт 6-значный код для быстрого подтверждения.
@@ -151,7 +151,7 @@ const teaser = [
                     <UIcon :name="item.icon" class="size-5" />
                 </div>
                 <span class="text-default text-sm font-semibold">{{ item.title }}</span>
-                <span class="text-default/60 text-xs leading-tight">{{ item.desc }}</span>
+                <span class="text-muted text-xs leading-tight">{{ item.desc }}</span>
             </div>
         </div>
     </section>

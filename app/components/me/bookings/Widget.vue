@@ -45,7 +45,7 @@ const { visible, hasMore, showMore } = useShowMore(items, 5)
                     @click="showMore"
                 />
             </div>
-            <p v-else class="text-default/50 py-4 text-sm italic">
+            <p v-else class="text-muted py-4 text-sm italic">
                 У вас пока нет записей на разовые занятия или события
             </p>
         </template>

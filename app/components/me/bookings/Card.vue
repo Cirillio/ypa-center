@@ -22,7 +22,7 @@ const rows = computed(() => [
                 <h3 class="text-default truncate text-base leading-tight font-semibold">
                     {{ booking.title }}
                 </h3>
-                <p v-if="booking.subtitle" class="text-default/60 truncate text-xs leading-tight">
+                <p v-if="booking.subtitle" class="text-muted truncate text-xs leading-tight">
                     {{ booking.subtitle }}
                 </p>
             </div>
@@ -37,7 +37,7 @@ const rows = computed(() => [
                 :key="row.label"
                 class="flex items-center justify-between gap-2 px-1"
             >
-                <dt class="text-default/70 text-sm font-medium">{{ row.label }}</dt>
+                <dt class="text-muted text-sm font-medium">{{ row.label }}</dt>
                 <dd class="text-default text-end text-sm font-semibold">
                     {{ row.value }}
                 </dd>

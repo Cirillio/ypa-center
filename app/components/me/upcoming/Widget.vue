@@ -55,7 +55,7 @@ const groupedUpcoming = computed(() => {
         <div v-else-if="groupedUpcoming" class="flex flex-col gap-4">
             <template v-if="groupedUpcoming.length > 0">
                 <div v-for="group in groupedUpcoming" :key="group.date" class="flex flex-col gap-2">
-                    <div class="text-default/50 text-xs font-bold tracking-wider uppercase">
+                    <div class="text-muted text-xs font-bold tracking-wider uppercase">
                         {{ group.date }}
                     </div>
                     <MeUpcomingCard
@@ -75,7 +75,7 @@ const groupedUpcoming = computed(() => {
             </template>
             <div v-else class="flex flex-col items-center py-8 text-center">
                 <UIcon name="ph:calendar-x-bold" class="text-default/10 size-16" />
-                <p class="text-default/50 mt-4 text-sm italic">
+                <p class="text-muted mt-4 text-sm italic">
                     Нет запланированных<br />занятий на ближайшее время
                 </p>
             </div>

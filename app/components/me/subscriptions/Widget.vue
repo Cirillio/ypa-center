@@ -51,7 +51,7 @@ const { visible, hasMore, showMore } = useShowMore(sortedSubscriptions, 5)
                     @click="showMore"
                 />
             </div>
-            <p v-else class="text-default/50 py-4 text-sm italic">
+            <p v-else class="text-muted py-4 text-sm italic">
                 У вас пока нет оформленных абонементов
             </p>
         </template>

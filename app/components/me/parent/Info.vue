@@ -27,7 +27,7 @@ const fields = [
 
         <dl class="flex flex-col gap-3">
             <div v-for="field in fields" :key="field.key" class="flex flex-col gap-0.5">
-                <dt class="text-default/60 text-sm leading-tight">{{ field.label }}</dt>
+                <dt class="text-muted text-sm leading-tight">{{ field.label }}</dt>
                 <dd v-if="parent" class="text-default truncate text-lg leading-tight font-semibold">
                     {{ parent[field.key] || "–" }}
                 </dd>

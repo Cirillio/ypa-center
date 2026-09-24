@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 // Виджет анкеты нового пользователя для завершения регистрации после подтверждения email.
+import type { FormErrorEvent } from "@nuxt/ui"
 import { vMaska } from "maska/vue"
 import { Maskas } from "~/constants/masks"
-import type { FormErrorEvent } from "@nuxt/ui"
 import { REFERRAL_ITEMS } from "~/constants/referral-sources"
 import type { ProfileCompletion } from "~/schemas/profile.schema"
 
@@ -43,7 +43,7 @@ const onSubmit = async () => {
         <h1 class="text-primary text-3xl font-bold sm:text-4xl">
             Завершение <span class="text-secondary">регистрации</span>
         </h1>
-        <p class="text-default/70 mt-2 text-base">
+        <p class="text-muted mt-2 text-base">
             Заполните данные для создания профиля и оформления занятий.
         </p>
 
@@ -113,7 +113,8 @@ const onSubmit = async () => {
                     class="w-full"
                     :content="{ bodyLock: false }"
                     :ui="{
-                        base: 'bg-white shadow-sm'
+                        base: 'bg-white shadow-sm ring-2 ring-transparent hover:ring-primary hover:bg-white',
+                        content: 'bg-white shadow-xs'
                     }"
                     @update:model-value="clearFieldError('referralSource')"
                 />
