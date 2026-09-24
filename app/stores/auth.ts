@@ -17,6 +17,12 @@ export const useAuthStore = defineStore("auth", () => {
     const error = ref<string | null>(null)
     const isAuthed = ref<boolean>(import.meta.client ? hasTokens() : false)
 
+    /**
+     * Синхронизирует реактивный флаг `isAuthed` с фактическим наличием access-токена в `localStorage`.
+     *
+     * Вызывается на клиенте (в частности, в `middleware/auth.ts`) для устранения рассинхрона
+     * стора, если токены были изменены или удалены извне (другая вкладка, ручной сброс).
+     */
     function hydrate() {
         isAuthed.value = hasTokens()
     }
