@@ -1,9 +1,15 @@
 <script lang="ts" setup>
+// Панель управления модалки галереи: подпись и кнопки листания/закрытия, состояние держит родитель.
 defineProps<{
     alt?: string
-    prev?: () => void
-    next?: () => void
-    close: () => void
+    hasPrev: boolean
+    hasNext: boolean
+}>()
+
+const emit = defineEmits<{
+    prev: []
+    next: []
+    close: []
 }>()
 </script>
 
@@ -13,22 +19,22 @@ defineProps<{
 
         <div class="flex items-center gap-1">
             <UButton
-                v-if="prev"
+                v-if="hasPrev"
                 icon="ph:arrow-left-bold"
                 color="secondary"
                 class="aspect-square rounded-full"
                 size="md"
                 aria-label="Предыдущее фото"
-                @click="prev()"
+                @click="emit('prev')"
             />
             <UButton
-                v-if="next"
+                v-if="hasNext"
                 icon="ph:arrow-right-bold"
                 color="secondary"
                 class="aspect-square rounded-full"
                 size="md"
                 aria-label="Следующее фото"
-                @click="next()"
+                @click="emit('next')"
             />
             <UButton
                 icon="ph:x-bold"
@@ -37,7 +43,7 @@ defineProps<{
                 size="md"
                 class="aspect-square rounded-full"
                 aria-label="Закрыть"
-                @click="close()"
+                @click="emit('close')"
             />
         </div>
     </div>

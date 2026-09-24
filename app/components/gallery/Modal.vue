@@ -74,9 +74,11 @@ onUnmounted(() => {
                 <GalleryModalControls
                     class="controls-bar bg-black/80 text-sm text-white/75"
                     :alt="currentPhoto ? 'Фото ' + ((currentPhoto.order ?? 0) + 1) : undefined"
-                    :prev="hasPrev ? () => emit('prev') : undefined"
-                    :next="hasNext ? () => emit('next') : undefined"
-                    :close="() => (isOpen = false)"
+                    :has-prev="hasPrev"
+                    :has-next="hasNext"
+                    @prev="emit('prev')"
+                    @next="emit('next')"
+                    @close="isOpen = false"
                 />
             </div>
 
@@ -97,9 +99,11 @@ onUnmounted(() => {
                 <GalleryModalControls
                     class="text-default/80 text-xl"
                     :alt="currentPhoto ? 'Фото ' + ((currentPhoto.order ?? 0) + 1) : undefined"
-                    :prev="hasPrev ? () => emit('prev') : undefined"
-                    :next="hasNext ? () => emit('next') : undefined"
-                    :close="() => (isOpen = false)"
+                    :has-prev="hasPrev"
+                    :has-next="hasNext"
+                    @prev="emit('prev')"
+                    @next="emit('next')"
+                    @close="isOpen = false"
                 />
             </div>
         </template>
