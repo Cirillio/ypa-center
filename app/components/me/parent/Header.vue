@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-interface MeSectionProps {
+// Шапка личного кабинета с приветствием родителя и кнопкой выхода.
+interface Props {
     parentName?: string
 }
 
-const props = defineProps<MeSectionProps>()
+const props = defineProps<Props>()
 
-defineEmits<{
-    onConfirmLogout: []
+const emit = defineEmits<{
+    logout: []
 }>()
 
 const firstName = computed(() => {
@@ -39,7 +40,7 @@ const firstName = computed(() => {
             variant="ghost"
             trailing-icon="ph:sign-out-bold"
             label="Выйти"
-            @click="$emit('onConfirmLogout')"
+            @click="emit('logout')"
         />
     </UContainer>
 </template>

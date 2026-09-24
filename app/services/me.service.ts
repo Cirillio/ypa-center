@@ -1,5 +1,7 @@
 import type { ApiFetch } from "~/composables/useApi"
+import { mockBookings, type BookingItemDraftDto } from "~/services/mocks/me-bookings.mock"
 import type {
+    MeBooking,
     MeChild,
     MeProfile,
     MeSubscription,
@@ -80,9 +82,32 @@ function toUpcoming(dto: UpcomingItem): MeUpcoming {
     }
 }
 
+function toBooking(dto: BookingItemDraftDto): MeBooking {
+    const parts = dto.date.split("-")
+    const formattedDate = parts.length === 3 ? `${parts[2]}.${parts[1]}.${parts[0]}` : dto.date
+
+    let participant = ""
+    if (dto.student_name) {
+        participant = dto.student_name
+    } else if (dto.attendees_count) {
+        participant = `${dto.attendees_count} ${pluralize(dto.attendees_count, ["место", "места", "мест"])}`
+    }
+
+    return {
+        id: String(dto.id),
+        kind: dto.kind === "TRIAL" ? "trial" : "event",
+        title: dto.title,
+        subtitle: dto.group_name ?? "",
+        participant,
+        displayDate: formattedDate,
+        displayTime: dto.time,
+        price: kopecksToRubles(dto.purchase_price)
+    }
+}
+
 /**
  * Личный кабинет родителя. Требует авторизации (Bearer подставляет useApi).
- * Эндпоинты: GET /me/profile/, /me/subscriptions/, /me/upcoming/, POST /me/children/
+ * Эндпоинты: GET /me/profile/, /me/subscriptions/, /me/upcoming/, /me/bookings/, POST /me/children/
  */
 export class MeService {
     constructor(private readonly fetch: ApiFetch) {}
@@ -94,6 +119,13 @@ export class MeService {
     async getSubscriptions(): Promise<MeSubscription[]> {
         const subscriptions = await this.fetch<SubscriptionView[]>("/v1/me/subscriptions/")
         return subscriptions.map(toSubscription)
+    }
+
+    /** GET /api/v1/me/bookings/ */
+    async getBookings(): Promise<MeBooking[]> {
+        // MOCK(bookings): эндпоинт в разработке, временно используем мок-данные
+        const items = await mockBookings()
+        return items.map(toBooking)
     }
 
     /** Лента предсортирована бэком по реальным дате и времени */

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// Карточка ближайшего занятия или события в ленте расписания.
 import type { MeUpcoming } from "~/types"
 
 defineProps<{

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// Карточка абонемента с балансом занятий, статусом и списком входящих кружков.
 import type { MeSubscription } from "~/types"
 
 const props = defineProps<{
@@ -100,7 +101,7 @@ const toggleClubsShown = () => {
                 {{ isClubsShown ? "Скрыть" : `Показать кружки (${sub.slots.length})` }}
             </UButton>
             <div v-if="isClubsShown" class="grid gap-2 sm:grid-cols-2">
-                <MeActivityItem
+                <MeSubscriptionsSlotItem
                     v-for="slot in sub.slots"
                     :key="slot.scheduleId"
                     :title="slot.activityName"
@@ -118,7 +119,7 @@ const toggleClubsShown = () => {
                             /{{ slot.total }}
                         </span>
                     </template>
-                </MeActivityItem>
+                </MeSubscriptionsSlotItem>
             </div>
         </div>
     </div>

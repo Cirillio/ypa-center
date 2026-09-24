@@ -165,6 +165,17 @@ export interface MeUpcoming {
     metaLabel?: string
 }
 
+export interface MeBooking {
+    id: string
+    kind: "trial" | "event"
+    title: string
+    subtitle: string
+    participant: string
+    displayDate: string
+    displayTime: string
+    price: number
+}
+
 // ─── Авторизация ──────────────────────────────────────────────────────────────
 export interface OtpRequestResult {
     resendAvailableIn: number

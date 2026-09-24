@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-const emit = defineEmits<{ onConfirm: [] }>()
+// Модальное окно подтверждения выхода из личного кабинета.
+const emit = defineEmits<{ confirm: [] }>()
 
 const modalOpen = defineModel<boolean>({ default: false })
 
@@ -9,7 +10,7 @@ function handleStay() {
 
 function handleLogout() {
     modalOpen.value = false
-    emit("onConfirm")
+    emit("confirm")
 }
 </script>
 

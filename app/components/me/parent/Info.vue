@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// Отображает блок контактных данных профиля родителя.
 import type { MeParent } from "~/types"
 
 defineProps<{

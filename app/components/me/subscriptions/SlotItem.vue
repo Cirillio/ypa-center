@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// Строка кружка или слота внутри развёрнутой карточки абонемента.
 defineProps<{
     title: string
     desc?: string
@@ -13,7 +14,7 @@ defineProps<{
         <div
             class="w-1 shrink-0 self-stretch rounded-full"
             :class="isActive ? 'bg-secondary/50 animate-pulse' : 'bg-black/25'"
-        ></div>
+        />
 
         <div class="flex min-w-0 flex-1 flex-col gap-1">
             <span class="text-default line-clamp-1 text-base leading-tight font-semibold">

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// Отображает список детей родителя с формой добавления нового ребёнка.
 import type { MeChild } from "~/types"
 
 defineProps<{
@@ -67,7 +68,6 @@ const submitForm = () => {
                     <span class="text-default text-base leading-tight font-semibold">
                         {{ child.name }}
                     </span>
-                    <!-- TODO backend: нет DELETE /me/children/{id}/, кнопка удаления пока скрыта -->
                 </div>
             </div>
             <p v-else class="text-default/50 text-sm italic">Пока не добавлено ни одного ребёнка</p>
