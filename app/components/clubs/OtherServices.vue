@@ -51,7 +51,7 @@ const services: OtherService[] = [
                 <!-- Телефон -->
                 <a
                     :href="`mailto:${email}`"
-                    class="hover:ring-primary group flex w-fit shrink-0 items-center gap-3 rounded-sm bg-white p-4 transition-all duration-200 hover:ring-2 md:self-auto"
+                    class="hover:ring-primary group flex w-fit shrink-0 items-center gap-3 rounded-sm bg-white p-4 shadow-xs transition-all duration-200 hover:ring-2 md:self-auto"
                 >
                     <div
                         class="bg-primary/10 group-hover:bg-primary/20 flex size-10 items-center justify-center rounded-full transition-colors"
@@ -71,11 +71,11 @@ const services: OtherService[] = [
                 v-slot="{ item }"
                 :items="services"
                 :ui="{
-                    container: 'ms-0 gap-4 items-stretch',
+                    container: 'ms-0 gap-4 py-2 items-stretch',
                     item: 'sm:basis-[40%] basis-[80%] ps-0  min-h-full select-none cursor-pointer'
                 }"
             >
-                <div class="flex h-full flex-col gap-4 rounded-sm bg-white p-5 lg:p-6">
+                <div class="flex h-full flex-col gap-4 rounded-sm bg-white p-5 shadow-xs lg:p-6">
                     <UIcon :name="item.icon" class="text-primary/70 size-8" />
                     <div class="flex flex-col gap-2">
                         <span class="text-secondary text-xl font-extrabold">{{ item.name }}</span>

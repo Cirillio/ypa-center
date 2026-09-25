@@ -32,7 +32,7 @@ const tabs = [
             class="relative col-span-3 h-60 min-h-0 w-full shrink-0 overflow-hidden max-md:rounded-sm md:h-full md:rounded-l-sm xl:min-h-132"
         >
             <div
-                class="absolute top-0 left-0 z-10 h-full w-full bg-linear-to-t from-black/75 to-transparent"
+                class="absolute top-0 left-0 z-10 h-full w-full bg-linear-to-t from-black/25 to-transparent"
             ></div>
             <UiPhoto
                 :src="activity.cover_image ?? ''"
@@ -40,27 +40,9 @@ const tabs = [
                 class="object-cover object-center"
                 :quality="90"
             />
-            <div class="absolute bottom-2 z-20 flex flex-col gap-2 p-2 md:bottom-4 md:p-4">
-                <h3
-                    :title="activity.name"
-                    class="line-clamp-2 text-2xl font-extrabold text-balance text-white transition-colors duration-200 text-shadow-xs sm:text-3xl xl:text-5xl xl:leading-12"
-                >
-                    {{ activity.name }}
-                </h3>
-                <div class="flex flex-wrap gap-2">
-                    <span
-                        v-for="feature in features"
-                        :key="feature"
-                        :title="'Навык: ' + feature"
-                        class="bg-default/15 rounded-md px-1.5 py-px text-center text-xs leading-5 font-semibold text-white backdrop-blur-sm text-shadow-xs sm:px-2 sm:py-0.5 sm:text-sm"
-                    >
-                        {{ feature }}
-                    </span>
-                </div>
-            </div>
         </div>
         <span
-            class="text-primary absolute top-2 left-2 flex aspect-square rounded-sm bg-white p-2 text-sm leading-4.5 font-bold select-none lg:text-lg lg:leading-6"
+            class="text-primary absolute top-2 right-2 flex aspect-square rounded-sm bg-white p-2 text-sm leading-4.5 font-bold select-none lg:text-lg lg:leading-6"
             aria-hidden="true"
         >
             {{ formattedNumber }}
@@ -68,9 +50,21 @@ const tabs = [
 
         <!-- Основной контент -->
         <div class="col-span-6 flex min-w-0 flex-col gap-4 px-3 py-4 md:p-6">
+            <h3 class="text-primary text-xl font-extrabold md:text-3xl">{{ activity.name }}</h3>
+
+            <div class="flex flex-wrap gap-2">
+                <span
+                    v-for="feature in features"
+                    :key="feature"
+                    :title="'Навык: ' + feature"
+                    class="bg-secondary/5 text-secondary rounded-md px-1.5 py-px text-center text-xs leading-5 font-semibold backdrop-blur-sm sm:px-2 sm:py-0.5 sm:text-sm"
+                >
+                    {{ feature }}
+                </span>
+            </div>
             <!-- Описание -->
             <p
-                class="text-default/90 text-justify text-base font-medium lg:line-clamp-7 lg:text-lg xl:text-xl"
+                class="text-default/90 text-justify text-sm font-medium md:text-base lg:line-clamp-7 lg:text-lg xl:text-xl"
             >
                 {{ activity.description }}
             </p>
