@@ -5,7 +5,7 @@ import configPrettier from "eslint-config-prettier"
 
 export default withNuxt(
     {
-        ignores: ["app/types/api.d.ts", ".kilo/**", ".github/hooks/**"]
+        ignores: ["app/types/api.d.ts", ".kilo/**", ".github/hooks/**", "mockups/**"]
     },
     {
         plugins: {

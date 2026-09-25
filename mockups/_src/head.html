@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>%%TITLE%% – макет – Улица Радости</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/duotone/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+<!--
+  Токены = frontend-core/app/assets/css/tokens.css + семантика Nuxt UI.
+  text-default / bg-default / border-default / text-muted — как в приложении.
+  Полупрозрачный текст: text-ink/xx (= text-default/xx в Nuxt UI, здесь — из-за ограничений CDN-сборки).
+-->
+<style type="text/tailwindcss">
+@theme {
+  --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  --color-primary: #f16d22;
+  --color-secondary: #2d915d;
+  --color-error: #dc2626;
+  --color-info: #2563eb;
+  --color-ink: #4d4845;
+  --radius-lg: 1rem;
+}
+@utility text-default { color: #4d4845; }
+@utility text-muted { color: #746c66; }
+@utility bg-default { background-color: #fbf9f7; }
+@utility border-default { border-color: #e6e1dc; }
+@utility p-3.75 { padding: 0.9375rem; }
+</style>
+
+<style>
+  :root { --ui-primary:#f16d22; --ui-secondary:#2d915d; --ui-text:#4d4845; --ui-bg:#fbf9f7; --ui-radius:1rem; --ui-header-height:72px; }
+  html { scroll-behavior: smooth; }
+  body { font-family: "Nunito", sans-serif; font-feature-settings: "ss01","ss02","cv01","cv02"; color: var(--ui-text); background: var(--ui-bg); }
+  strong { color: var(--ui-primary); }
+  .gradient-bg-ps { background-color: var(--ui-bg); background-image: radial-gradient(75% 55% at 50% 0%, color-mix(in oklab, var(--ui-primary) 9%, transparent), transparent 72%); }
+  .pending-dot { animation: pending-dot .9s ease-in-out infinite; }
+  @keyframes pending-dot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.8); } }
+  .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { scrollbar-width: none; }
+  .pop-in { animation: pop-in .18s ease-out; } @keyframes pop-in { from { opacity: 0; transform: translateY(6px) scale(.985); } to { opacity: 1; transform: none; } }
+  .fade-in { animation: fade-in .25s ease-out; } @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+  /* Блокировка виджетов на время оплаты */
+  .widget, #page section > div > * { min-width: 0; }
+  #page[inert] { pointer-events: none; user-select: none; }
+  #page[inert] .widget { opacity: .55; transition: opacity .2s; filter: saturate(.6); }
+  input[type=number]::-webkit-inner-spin-button { display: none; }
+  :focus-visible { outline: 2px solid var(--ui-primary); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body class="gradient-bg-ps text-default min-h-dvh antialiased">

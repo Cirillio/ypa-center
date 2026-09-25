@@ -1,0 +1,28 @@
+<!-- Шапка сайта: копия LayoutHeader (макет, ссылки условные) -->
+<header class="fixed top-0 right-0 left-0 z-40 flex justify-center bg-white/85 backdrop-blur-sm">
+  <div class="mx-auto flex h-(--ui-header-height) w-full max-w-[84rem] items-center justify-between gap-4 p-2 px-4 sm:px-6 lg:px-8">
+    <a href="#" class="flex h-full items-center gap-2 py-1" aria-label="На главную Улица Радости">
+      <img src="../frontend-core/public/core/ClearSun.png" alt="" class="h-full w-auto" />
+      <div class="flex flex-col items-start">
+        <span class="text-secondary flex gap-1 text-xl font-extrabold md:text-3xl">
+          <span class="flex"><span class="text-primary">У</span>лица</span>
+          <span class="flex"><span class="text-primary">Ра</span>дости</span>
+        </span>
+        <span class="text-primary -mt-1.5 text-sm font-bold max-md:text-xs">Центр умного развития</span>
+      </div>
+    </a>
+    <div class="flex flex-1 items-center gap-4 max-lg:justify-end">
+      <nav class="mx-auto h-full max-lg:hidden" aria-label="Основная навигация">
+        <ul class="flex list-none items-center gap-4">
+          <li><a href="#" class="hover:bg-primary/10 hover:text-primary rounded-lg px-5 py-2 text-base font-semibold transition-colors">О нас</a></li>
+          <li><a href="#" class="hover:bg-primary/10 hover:text-primary rounded-lg px-5 py-2 text-base font-semibold transition-colors">Кружки</a></li>
+          <li><a href="#" class="hover:bg-primary/10 hover:text-primary rounded-lg px-5 py-2 text-base font-semibold transition-colors">События</a></li>
+          <li><a href="#" class="hover:bg-primary/10 hover:text-primary rounded-lg px-5 py-2 text-base font-semibold transition-colors">Галерея</a></li>
+        </ul>
+      </nav>
+      <a href="#" class="bg-info/10 text-info hover:bg-info/15 flex items-center gap-1.5 rounded-lg px-4 py-2.5 text-base font-semibold transition-colors max-lg:hidden"><i class="ph-bold ph-user text-lg"></i>Мой кабинет</a>
+      <a href="checkout-subscription.html" class="bg-secondary flex items-center gap-1.5 rounded-lg px-4 py-2.5 text-base font-semibold text-white max-lg:hidden"><i class="ph-bold ph-puzzle-piece text-lg"></i>Абонемент</a>
+      <button type="button" class="text-default hover:bg-default aspect-square rounded-lg p-2 lg:hidden" aria-label="Открыть меню"><i class="ph-bold ph-list text-2xl"></i></button>
+    </div>
+  </div>
+</header>

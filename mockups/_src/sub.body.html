@@ -1,0 +1,17 @@
+<section class="widget flex flex-col gap-5 rounded-lg bg-white p-6" aria-label="Выбор кружков">
+  <div class="flex flex-wrap items-center gap-3">
+    <div class="bg-primary/5 text-primary flex items-center justify-center rounded-full p-2"><i class="ph-bold ph-puzzle-piece text-xl"></i></div>
+    <h2 class="text-primary text-xl font-bold">Кружки по дням</h2>
+    <div id="week" class="ml-auto flex items-center gap-1 rounded-full bg-default p-1" aria-label="Неделя показа мест"></div>
+  </div>
+  <p class="text-muted flex items-start gap-2 text-sm"><i class="ph-bold ph-info mt-0.5 text-base"></i><span id="week-note"></span></p>
+  <div id="days" class="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 py-1" role="tablist" aria-label="День недели"></div>
+  <div id="conflict"></div>
+  <div id="slots"></div>
+</section>
+<section class="widget flex flex-col gap-5 rounded-lg bg-white p-6" aria-label="Тариф">
+  <div class="flex items-center gap-3"><div class="bg-primary/5 text-primary flex items-center justify-center rounded-full p-2"><i class="ph-bold ph-chart-line-up text-xl"></i></div><h2 class="text-primary text-xl font-bold">Тариф подбирается сам</h2></div>
+  <p class="text-muted -mt-2 text-sm">Каждый кружок — 4 занятия в месяц. Чем больше кружков, тем ниже цена занятия.</p>
+  <div id="tiers" class="grid grid-cols-3 gap-2 sm:grid-cols-6"></div>
+  <div id="tier-next"></div>
+</section>

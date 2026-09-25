@@ -1,0 +1,80 @@
+<!-- Модалка оплаты: блокирует страницу (#page[inert]), состояния переключает Pay.setState() -->
+<div id="pay-modal" class="fixed inset-0 z-50 hidden items-end justify-center sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="pay-title">
+  <div class="fade-in absolute inset-0 bg-[#4d4845]/40 backdrop-blur-[3px]"></div>
+  <div class="pop-in relative flex max-h-dvh w-full max-w-lg flex-col gap-5 overflow-y-auto rounded-t-lg bg-white p-6 shadow-lg ring-1 ring-black/5 sm:rounded-lg">
+
+    <div class="flex items-center gap-3">
+      <div class="bg-primary/5 text-primary flex items-center justify-center rounded-full p-2"><i class="ph-bold ph-credit-card text-xl"></i></div>
+      <h2 id="pay-title" class="text-primary text-xl font-bold">Оплата</h2>
+      <span id="pay-timer" class="text-muted ml-auto flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1 text-sm font-semibold text-amber-700">
+        <span class="pending-dot size-2 rounded-full bg-amber-500"></span><span>Бронь ещё <b id="pay-timer-val" class="font-bold tabular-nums">30:00</b></span>
+      </span>
+    </div>
+
+    <!-- Сводка заказа -->
+    <div id="pay-order" class="bg-default flex flex-col gap-3 rounded-lg p-3.75"></div>
+
+    <!-- Состояние: платёжная форма -->
+    <div data-state="form" class="flex flex-col gap-4">
+      <div class="flex gap-2" role="tablist" aria-label="Способ оплаты">
+        <button type="button" role="tab" data-method="card" aria-selected="true" class="method-tab bg-primary/10 text-primary flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-base font-bold"><i class="ph-bold ph-credit-card text-lg"></i>Карта</button>
+        <button type="button" role="tab" data-method="sbp" aria-selected="false" class="method-tab bg-default text-default flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-base font-bold"><i class="ph-bold ph-qr-code text-lg"></i>СБП</button>
+      </div>
+
+      <div class="border-default relative rounded-lg border-2 border-dashed p-4">
+        <span class="text-muted absolute -top-3 left-3 bg-white px-2 text-xs font-semibold">Здесь встраивается платёжный виджет ЮKassa</span>
+        <div data-method-panel="card" class="flex flex-col gap-3">
+          <label class="flex flex-col gap-1"><span class="text-default text-base font-semibold">Номер карты</span>
+            <input inputmode="numeric" placeholder="0000 0000 0000 0000" class="bg-default text-default placeholder:text-muted w-full rounded-sm px-4 py-2.5 text-lg outline-none focus:ring-2 focus:ring-primary" /></label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="flex flex-col gap-1"><span class="text-default text-base font-semibold">Срок</span>
+              <input inputmode="numeric" placeholder="ММ / ГГ" class="bg-default text-default placeholder:text-muted w-full rounded-sm px-4 py-2.5 text-lg outline-none focus:ring-2 focus:ring-primary" /></label>
+            <label class="flex flex-col gap-1"><span class="text-default text-base font-semibold">CVC</span>
+              <input inputmode="numeric" placeholder="•••" class="bg-default text-default placeholder:text-muted w-full rounded-sm px-4 py-2.5 text-lg outline-none focus:ring-2 focus:ring-primary" /></label>
+          </div>
+        </div>
+        <div data-method-panel="sbp" class="hidden flex-col items-center gap-3 py-2 text-center">
+          <div class="bg-default flex size-36 items-center justify-center rounded-lg"><i class="ph-duotone ph-qr-code text-primary/60 text-[6rem]"></i></div>
+          <p class="text-muted text-sm">Отсканируйте QR-код камерой или откройте приложение банка</p>
+        </div>
+      </div>
+
+      <button type="button" id="pay-submit" class="bg-primary flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-lg font-bold text-white transition-[filter] hover:brightness-95">
+        <i class="ph-bold ph-lock-simple text-xl"></i><span>Оплатить <span data-pay-amount></span></span>
+      </button>
+      <p class="text-muted flex items-start gap-2 text-xs"><i class="ph-bold ph-shield-check text-secondary mt-px text-base"></i>Платёж проходит на стороне ЮKassa, данные карты нам не передаются.</p>
+      <button type="button" data-close class="text-error hover:bg-error/10 mx-auto flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors"><i class="ph-bold ph-x"></i>Отменить оплату</button>
+    </div>
+
+    <!-- Состояние: проверка -->
+    <div data-state="checking" class="hidden flex-col items-center gap-3 py-6 text-center">
+      <i class="ph-bold ph-spinner-gap text-primary animate-spin text-5xl"></i>
+      <h3 class="text-default text-xl font-bold">Проверяем оплату…</h3>
+      <p class="text-muted max-w-xs text-sm">Не закрывайте окно. Обычно это занимает несколько секунд.</p>
+    </div>
+
+    <!-- Состояние: успех -->
+    <div data-state="success" class="hidden flex-col items-center gap-4 py-2 text-center">
+      <div class="bg-secondary/10 text-secondary flex size-16 items-center justify-center rounded-full"><i class="ph-bold ph-check-circle text-4xl"></i></div>
+      <div class="flex flex-col gap-1"><h3 class="text-default text-2xl font-bold">Оплата прошла</h3><p id="pay-success-text" class="text-muted max-w-sm text-sm"></p></div>
+      <div class="flex w-full flex-col gap-2 sm:flex-row" id="pay-success-actions"></div>
+    </div>
+
+    <!-- Состояние: отказ -->
+    <div data-state="failed" class="hidden flex-col items-center gap-4 py-2 text-center">
+      <div class="bg-error/10 text-error flex size-16 items-center justify-center rounded-full"><i class="ph-bold ph-x-circle text-4xl"></i></div>
+      <div class="flex flex-col gap-1"><h3 class="text-default text-2xl font-bold">Платёж не прошёл</h3><p class="text-muted max-w-sm text-sm">Банк отклонил операцию. Деньги не списаны, места за вами сохранены до конца брони.</p></div>
+      <div class="flex w-full flex-col gap-2 sm:flex-row">
+        <button type="button" data-goto="form" class="bg-primary flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-base font-bold text-white"><i class="ph-bold ph-arrow-counter-clockwise"></i>Попробовать снова</button>
+        <button type="button" data-close class="bg-default text-default flex flex-1 items-center justify-center rounded-lg px-4 py-2.5 text-base font-bold">Изменить заказ</button>
+      </div>
+    </div>
+
+    <!-- Состояние: бронь истекла -->
+    <div data-state="expired" class="hidden flex-col items-center gap-4 py-2 text-center">
+      <div class="flex size-16 items-center justify-center rounded-full bg-amber-500/10 text-amber-600"><i class="ph-bold ph-clock-countdown text-4xl"></i></div>
+      <div class="flex flex-col gap-1"><h3 class="text-default text-2xl font-bold">Время брони истекло</h3><p class="text-muted max-w-sm text-sm">Места освобождены. Выберите заново — свободные ещё могут быть.</p></div>
+      <button type="button" data-close data-reset class="bg-primary flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-base font-bold text-white">Вернуться к выбору</button>
+    </div>
+  </div>
+</div>
