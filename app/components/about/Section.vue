@@ -1,27 +1,4 @@
-<script lang="ts" setup>
-const { stats, pricing } = useAppConfig()
-
-const CENTER_STATS = [
-    {
-        icon: "ph:mask-happy-duotone",
-        textColor: "text-amber-400",
-        label: "Счастливых ребят",
-        value: stats.studentsCount
-    },
-    {
-        icon: "ph:shooting-star-duotone",
-        textColor: "text-emerald-500",
-        label: `Работаем с ${stats.workingSince}`,
-        value: stats.workingYearsText
-    },
-    {
-        icon: "ph:book-bookmark-duotone",
-        textColor: "text-cyan-500",
-        label: "Пробное занятие",
-        value: `${pricing.trialLesson} ₽`
-    }
-]
-</script>
+<script lang="ts" setup></script>
 
 <template>
     <section
@@ -41,19 +18,6 @@ const CENTER_STATS = [
                 </template>
             </UiSectionLeading>
 
-            <!-- Статы -->
-            <div class="flex flex-wrap gap-3">
-                <div
-                    v-for="stat in CENTER_STATS"
-                    :key="stat.label"
-                    class="flex items-center gap-2.5 rounded-lg bg-white/70 px-4 py-2.5 backdrop-blur-sm"
-                >
-                    <UIcon :name="stat.icon" class="size-5 shrink-0" :class="stat.textColor" />
-                    <span class="text-secondary text-sm font-extrabold">{{ stat.value }}</span>
-                    <span class="text-default/85 text-sm font-semibold">{{ stat.label }}</span>
-                </div>
-            </div>
-
             <PromoFloatCard
                 to="/teachers"
                 icon="ph:chalkboard-teacher-duotone"
@@ -65,11 +29,10 @@ const CENTER_STATS = [
             <!-- CTA -->
             <UButton
                 to="#map"
-                trailing-icon="ph:map-pin-area-bold"
+                leading-icon="ph:map-pin-area-bold"
                 label="Найти нас"
                 color="secondary"
-                size="xl"
-                class="w-fit px-6 font-semibold md:text-xl"
+                class="w-fit px-6 font-semibold md:text-lg"
             />
         </UContainer>
     </section>
