@@ -3,15 +3,11 @@ const { subscriptions, contactInfo, seo } = useAppConfig()
 
 const siteUrl = seo.siteUrl
 
-// Fetching Clubs and schedule
+// Fetching Clubs
 const activities = useActivitiesService()
-const schedule = useScheduleService()
 
 const { data: activitiesData, error: activitiesError } = await useAsyncData("clubs", () =>
     activities.getAll()
-)
-const { data: scheduleData, error: scheduleError } = await useAsyncData("clubs-schedule", () =>
-    schedule.getWeek()
 )
 
 useSeoMeta({
@@ -80,15 +76,11 @@ useHead({
 
 <template>
     <div class="flex w-full min-w-0 flex-col">
-        <ClubsHero />
+        <ClubsHero :activities="activitiesData ?? []" />
 
-        <ClubsList
-            v-if="activitiesData && !activitiesError"
-            :activities="activitiesData"
-            :has-schedule="Boolean(scheduleData) && !scheduleError"
-        />
+        <ClubsList v-if="activitiesData && !activitiesError" :activities="activitiesData" />
 
-        <ClubsSchedule v-if="scheduleData && !scheduleError" :slots="scheduleData" />
+        <ClubsSchedule />
 
         <ClubsOtherServices />
 

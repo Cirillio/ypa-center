@@ -16,6 +16,8 @@
             <slot name="description" />
         </p>
 
+        <slot name="extra" />
+
         <slot name="action" />
     </div>
 </template>
@@ -23,7 +25,7 @@
 <script lang="ts" setup>
 withDefaults(
     defineProps<{
-        subtitle: string
+        subtitle?: string
         as?: "h1" | "h2"
         icon?: string
     }>(),

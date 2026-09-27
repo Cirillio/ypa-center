@@ -1,5 +1,27 @@
 <script lang="ts" setup>
 import { EnrollRoutesEnum } from "~/constants/nav"
+import type { Activity } from "~/types"
+
+const props = withDefaults(
+    defineProps<{
+        activities?: Activity[]
+    }>(),
+    {
+        activities: () => []
+    }
+)
+
+// Возрастной диапазон по всем группам всех кружков: минимум из age_min, максимум из age_max.
+const ageLabel = computed(() => {
+    const groups = props.activities.flatMap((activity) => activity.groups)
+    const mins = groups.map((g) => g.age_min).filter((age): age is number => age != null)
+    const maxs = groups.map((g) => g.age_max).filter((age): age is number => age != null)
+
+    return formatAgeRange(
+        mins.length ? Math.min(...mins) : null,
+        maxs.length ? Math.max(...maxs) : null
+    )
+})
 </script>
 
 <template>
@@ -8,7 +30,7 @@ import { EnrollRoutesEnum } from "~/constants/nav"
             class="relative z-10 grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16"
         >
             <div class="flex flex-col gap-8">
-                <UiSectionLeading as="h1" subtitle="Наши кружки" icon="ph:compass-duotone">
+                <UiSectionLeading as="h1" subtitle="" icon="">
                     <template #title>
                         <span class="text-secondary">
                             Место, где <br />
@@ -23,47 +45,30 @@ import { EnrollRoutesEnum } from "~/constants/nav"
                         взрослым.
                     </template>
 
-                    <template #action>
-                        <div class="flex flex-col gap-6">
-                            <div class="flex flex-col gap-1">
-                                <UButton
-                                    :to="EnrollRoutesEnum.Subscription"
-                                    size="xl"
-                                    color="secondary"
-                                    class="group w-fit"
-                                >
-                                    <span class="text-base font-bold md:text-lg"
-                                        >Собрать абонемент</span
-                                    >
-                                    <UIcon
-                                        name="ph:puzzle-piece-duotone"
-                                        class="size-4.5 transition-transform duration-200 group-hover:scale-110 group-hover:rotate-6 md:size-5.5"
-                                    />
-                                </UButton>
-                                <span class="text-default/90 ml-1 text-xs font-bold">
-                                    От <span class="text-primary">450 ₽</span> за занятие в
-                                    абонементе – выгоднее разового
-                                </span>
+                    <template v-if="activities.length" #extra>
+                        <dl
+                            class="flex flex-wrap items-center gap-6 text-base font-semibold sm:gap-8 md:text-lg"
+                        >
+                            <div class="flex items-baseline gap-2">
+                                <dt class="text-muted">Всего направлений:</dt>
+                                <dd class="text-default font-bold">{{ activities.length }}</dd>
                             </div>
+                            <div v-if="ageLabel" class="flex items-baseline gap-2">
+                                <dt class="text-muted">Возраст:</dt>
+                                <dd class="text-default font-bold">{{ ageLabel }}</dd>
+                            </div>
+                        </dl>
+                    </template>
 
-                            <div class="flex flex-col gap-1">
-                                <UButton
-                                    :to="EnrollRoutesEnum.Trial"
-                                    size="lg"
-                                    variant="soft"
-                                    class="group w-fit"
-                                >
-                                    <span class="font-semibold">Записаться на пробное занятие</span>
-                                    <UIcon
-                                        name="ph:arrow-right-bold"
-                                        class="size-3.5 transition group-hover:translate-x-1"
-                                    />
-                                </UButton>
-                                <span class="text-default/90 ml-1 text-xs font-bold">
-                                    Разово, <span class="text-primary">1 200 ₽</span> – без
-                                    абонемента
-                                </span>
-                            </div>
+                    <template #action>
+                        <div class="flex flex-col gap-4">
+                            <UButton :to="EnrollRoutesEnum.Trial" size="lg" class="group w-fit">
+                                <UIcon
+                                    name="ph:calendar-dot-duotone"
+                                    class="size-4.5 transition-transform duration-200 group-hover:scale-110 group-hover:rotate-6 md:size-5.5"
+                                />
+                                <span class="text-base font-bold md:text-lg">Пробное занятие</span>
+                            </UButton>
                         </div>
                     </template>
                 </UiSectionLeading>

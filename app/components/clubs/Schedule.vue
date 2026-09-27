@@ -1,19 +1,36 @@
 <script lang="ts" setup>
-import type { WeeklySlot } from "~/types"
+// Секция расписания каталога кружков с переключением недели и отображением слотов по дням.
+const scheduleService = useScheduleService()
+const {
+    weekDays,
+    selectedDay,
+    weekStart,
+    weekRangeLabel,
+    canPrevWeek,
+    canNextWeek,
+    prevWeek,
+    nextWeek
+} = useSchedule()
 
-const props = defineProps<{
-    slots: WeeklySlot[]
-}>()
+const {
+    data: slotsData,
+    error: slotsError,
+    status: slotsStatus,
+    refresh
+} = await useAsyncData(
+    () => `clubs-schedule:${weekStart.value}`,
+    () => scheduleService.getWeek(weekStart.value),
+    { watch: [weekStart] }
+)
 
-const { weekDays, selectedDay } = useSchedule()
+const slots = computed(() => slotsData.value ?? [])
+const isPending = computed(() => slotsStatus.value === "pending")
 
-// ПОЧЕМУ: раньше slotsForDay был обычной функцией и пересчитывал
-// filter+sort по всем слотам на каждый вызов — до 16 раз за рендер
-// (мобильный вид дважды на выбранный день, десктопный грид дважды на
-// каждую из 7 колонок). Группируем один раз в computed.
+// ПОЧЕМУ: группируем слоты по дню недели один раз в computed,
+// исключая повторный filter+sort при рендере мобильного вида и десктопных колонок.
 const slotsByDay = computed(() => {
-    const map = new Map<number, WeeklySlot[]>()
-    for (const slot of props.slots) {
+    const map = new Map<number, (typeof slots.value)[number][]>()
+    for (const slot of slots.value) {
         const list = map.get(slot.dayOfWeek)
         if (list) list.push(slot)
         else map.set(slot.dayOfWeek, [slot])
@@ -24,11 +41,10 @@ const slotsByDay = computed(() => {
     return map
 })
 
-function slotsForDay(dow: number): WeeklySlot[] {
+// Возвращает отсортированные по времени слоты для заданного дня недели (0-6).
+function slotsForDay(dow: number) {
     return slotsByDay.value.get(dow) ?? []
 }
-
-const isSunday = new Date().getDay() === 0
 </script>
 
 <template>
@@ -36,18 +52,44 @@ const isSunday = new Date().getDay() === 0
         id="schedule"
         class="relative z-10 flex w-full scroll-mt-(--ui-header-height) overflow-hidden bg-white py-12 md:py-20 lg:py-24"
     >
-        <UContainer class="flex w-full flex-col gap-4">
-            <!-- Заголовок -->
-            <span class="flex w-fit items-center font-semibold">
-                <UIcon
-                    name="ph:dot-duotone"
-                    class="text-primary mr-1 mb-0.5 size-5 animate-pulse"
+        <UContainer class="flex w-full flex-col gap-6">
+            <!-- Заголовок и переключатель недели -->
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <span class="flex w-fit items-center font-semibold">
+                    <UIcon
+                        name="ph:dot-duotone"
+                        class="text-primary mr-1 mb-0.5 size-5 animate-pulse"
+                    />
+                    <span class="text-default">Расписание на неделю</span>
+                </span>
+
+                <ClubsScheduleWeekSwitcher
+                    :label="weekRangeLabel"
+                    :can-prev="canPrevWeek"
+                    :can-next="canNextWeek"
+                    @prev="prevWeek"
+                    @next="nextWeek"
                 />
-                <span class="text-default">Расписание на неделю</span>
-            </span>
+            </div>
+
+            <!-- Ошибка загрузки -->
+            <div
+                v-if="slotsError"
+                class="bg-default flex flex-col items-center justify-center gap-3 rounded-sm py-8 text-center"
+            >
+                <UIcon
+                    name="ph:warning-circle-duotone"
+                    class="text-muted size-10"
+                    aria-hidden="true"
+                />
+                <p class="text-muted text-sm font-medium">
+                    Не удалось загрузить расписание на выбранную неделю.
+                </p>
+                <UButton variant="soft" size="sm" label="Повторить" @click="void refresh()" />
+            </div>
 
             <!-- Mobile -->
-            <div class="lg:hidden">
+            <div v-else class="lg:hidden">
                 <!-- Дни недели -->
                 <UiScrollFade direction="x">
                     <div class="flex gap-2 py-2">
@@ -65,7 +107,7 @@ const isSunday = new Date().getDay() === 0
                                       ? 'text-secondary bg-secondary/15'
                                       : 'text-default/95 active:bg-primary/15 active:text-primary bg-default'
                             "
-                            @click="selectedDay = day"
+                            @click="void (selectedDay = day)"
                         >
                             <span class="text-lg font-bold uppercase select-none">{{
                                 day.dayShort
@@ -74,9 +116,22 @@ const isSunday = new Date().getDay() === 0
                     </div>
                 </UiScrollFade>
 
+                <!-- Индикатор загрузки при переключении -->
+                <div
+                    v-if="isPending"
+                    class="grid grid-cols-2 gap-2 sm:grid-cols-3"
+                    aria-busy="true"
+                >
+                    <USkeleton
+                        v-for="n in 4"
+                        :key="`skeleton-${n}`"
+                        class="aspect-5/3 rounded-sm"
+                    />
+                </div>
+
                 <!-- Слоты выбранного дня -->
                 <div
-                    v-if="slotsForDay(selectedDay.dow).length"
+                    v-else-if="slotsForDay(selectedDay.dow).length"
                     :key="selectedDay.dow"
                     class="mt-2 flex flex-col gap-2"
                 >
@@ -89,7 +144,7 @@ const isSunday = new Date().getDay() === 0
                 <div
                     v-else
                     :key="`empty-${selectedDay.dow}`"
-                    :class="isSunday ? 'ring-primary' : 'ring-transparent'"
+                    :class="selectedDay.dow === 0 ? 'ring-primary' : 'ring-transparent'"
                     class="bg-default flex aspect-5/3 flex-col items-center justify-center gap-1.5 rounded-md opacity-35 ring-2 transition active:opacity-100"
                 >
                     <UIcon name="ph:coffee-duotone" class="text-default size-10" />
@@ -98,7 +153,7 @@ const isSunday = new Date().getDay() === 0
             </div>
 
             <!-- Desktop: всегда 7 колонок -->
-            <div class="hidden grid-cols-7 lg:grid lg:gap-2">
+            <div v-if="!slotsError" class="hidden grid-cols-7 lg:grid lg:gap-2">
                 <div v-for="day in weekDays" :key="day.dayShort" class="flex flex-col gap-2">
                     <!-- Заголовок колонки -->
                     <div
@@ -125,11 +180,9 @@ const isSunday = new Date().getDay() === 0
                     <div
                         v-else
                         :class="
-                            isSunday
-                                ? 'ring-primary text-secondary'
-                                : 'text-default opacity-35 ring-transparent transition hover:opacity-100'
+                            day.dow === 0 || 'text-default opacity-35 transition hover:opacity-100'
                         "
-                        class="bg-default flex aspect-square flex-col items-center justify-center gap-1.5 rounded-md ring-2"
+                        class="bg-default flex aspect-square flex-col items-center justify-center gap-1.5 rounded-md"
                     >
                         <UIcon name="ph:coffee-duotone" class="size-8" />
                         <span class="text-base font-semibold">Выходной</span>
@@ -138,8 +191,8 @@ const isSunday = new Date().getDay() === 0
             </div>
 
             <span class="text-default/95 text-xs font-semibold md:text-sm"
-                >• Расписание актуально на неделю. За любыми изменениям можно следить в наших соц.
-                сетях.</span
+                >• Расписание актуально на выбранную неделю. За любыми изменениям можно следить в
+                наших соц. сетях.</span
             >
         </UContainer>
     </section>

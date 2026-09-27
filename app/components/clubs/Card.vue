@@ -11,9 +11,6 @@ const props = defineProps<{
 const formattedNumber = computed(() => String(props.index + 1).padStart(2, "0"))
 const features = computed(() => (props.activity.features as string[] | undefined) ?? [])
 const tags = computed(() => (props.activity.tags as string[] | undefined) ?? [])
-const spotsAvailable = computed(() =>
-    props.activity.groups.reduce((sum, g) => sum + g.seats_free, 0)
-)
 const clubDays = computed(() => props.activity.days_of_week.map((day) => getDayName("short", day)))
 
 const tabs = [
@@ -25,11 +22,11 @@ const tabs = [
 <template>
     <article
         :id="`${activity.slug}`"
-        class="group relative flex w-full scroll-mt-[calc(var(--ui-header-height)+0.5rem)] grid-cols-9 rounded-sm bg-white shadow-xs max-md:flex-col md:grid"
+        class="group relative flex w-full scroll-mt-[calc(var(--ui-header-height)+0.5rem)] grid-cols-9 gap-4 rounded-sm bg-white p-4 shadow-xs max-md:flex-col md:grid"
     >
         <!-- Фото с декоративным номером -->
         <div
-            class="relative col-span-3 h-60 min-h-0 w-full shrink-0 overflow-hidden max-md:rounded-sm md:h-full md:rounded-l-sm xl:min-h-132"
+            class="relative col-span-3 h-60 min-h-0 w-full shrink-0 overflow-hidden rounded-sm md:h-full xl:min-h-132"
         >
             <div
                 class="absolute top-0 left-0 z-10 h-full w-full bg-linear-to-t from-black/25 to-transparent"
@@ -49,8 +46,8 @@ const tabs = [
         </span>
 
         <!-- Основной контент -->
-        <div class="col-span-6 flex min-w-0 flex-col gap-4 px-3 py-4 md:p-6">
-            <h3 class="text-primary text-xl font-extrabold md:text-3xl">{{ activity.name }}</h3>
+        <div class="col-span-6 flex min-w-0 flex-col gap-4 px-3 py-4">
+            <h3 class="text-primary text-xl font-extrabold md:text-4xl">{{ activity.name }}</h3>
 
             <div class="flex flex-wrap gap-2">
                 <span
@@ -64,7 +61,7 @@ const tabs = [
             </div>
             <!-- Описание -->
             <p
-                class="text-default/90 text-justify text-sm font-medium md:text-base lg:line-clamp-7 lg:text-lg xl:text-xl"
+                class="text-default/90 text-justify text-sm leading-tight font-medium md:text-base lg:line-clamp-7 lg:text-lg"
             >
                 {{ activity.description }}
             </p>
@@ -136,9 +133,8 @@ const tabs = [
                     </span>
                 </div>
                 <UButton
-                    v-if="spotsAvailable > 0"
                     variant="soft"
-                    :to="{ path: EnrollRoutesEnum.Trial, query: { clubId: activity.slug } }"
+                    :to="{ path: EnrollRoutesEnum.Trial, query: { clubId: activity.id } }"
                     class="group/btn w-fit gap-1 font-semibold max-md:mt-2 max-md:w-full max-md:justify-center max-sm:py-2 md:text-base lg:ml-auto"
                 >
                     Записаться на пробное
@@ -146,18 +142,6 @@ const tabs = [
                         name="ph:arrow-right-bold"
                         class="size-3.5 transition-transform duration-150 group-hover/btn:translate-x-0.5 md:size-4.5"
                     />
-                </UButton>
-                <UButton
-                    v-else
-                    :to="{
-                        path: EnrollRoutesEnum.Trial,
-                        query: { clubId: activity.slug, waitlist: '1' }
-                    }"
-                    variant="ghost"
-                    color="neutral"
-                    class="ml-auto w-fit text-base font-semibold max-md:mt-2 max-md:w-full max-md:justify-center max-md:py-2 md:text-xl"
-                >
-                    Встать в очередь
                 </UButton>
             </div>
         </div>
