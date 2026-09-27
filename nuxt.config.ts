@@ -41,8 +41,6 @@ export default defineNuxtConfig({
         "/clubs": { ssr: true },
         "/gallery": { ssr: true },
 
-        // ssr вместо prerender: страницы фетчат бэкенд, а на этапе сборки
-        // (в т.ч. в Docker / CI) его может не быть – пусть рендерятся по запросу
         "/about": { ssr: true },
         "/teachers": { ssr: true },
         "/privacy": { ssr: true },

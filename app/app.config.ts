@@ -73,7 +73,7 @@ export default defineAppConfig({
         input: {
             slots: {
                 root: "w-full",
-                base: "w-full px-4! rounded-sm placeholder:text-dimmed/60 transition duration-150 text-lg!"
+                base: "w-full px-4! rounded-sm shadow-xs placeholder:text-dimmed/60 transition duration-150 text-lg!"
             },
             defaultVariants: {
                 variant: "soft",
@@ -85,12 +85,17 @@ export default defineAppConfig({
                     color: "error",
                     variant: "soft",
                     class: "ring-2 ring-inset ring-error"
+                },
+                {
+                    color: "error",
+                    variant: "subtle",
+                    class: "ring-2 ring-inset ring-error"
                 }
             ],
             variants: {
                 variant: {
-                    soft: "bg-default/50 text-default hover:bg-default focus-visible:bg-default",
-                    subtle: "ring-primary/0 focus-visible:ring-primary! ring-2"
+                    soft: "bg-default/50  text-default hover:bg-default focus-visible:bg-default",
+                    subtle: "bg-default ring-primary/0 focus-visible:ring-primary! ring-2"
                 }
             }
         },
@@ -137,8 +142,21 @@ export default defineAppConfig({
                     class: "*:text-white!"
                 }
             ],
+            variants: {
+                color: {
+                    primary: {
+                        base: "bg-white!"
+                    }
+                }
+            },
             slots: {
-                base: "rounded-xs ring-0 border-0 bg-default!"
+                base: "rounded-[0.25rem] shadow-sm cursor-pointer ring-0 border-0 bg-default!"
+            }
+        },
+
+        popover: {
+            slots: {
+                content: "ring-0 bg-white shadow-sm"
             }
         },
 
@@ -156,7 +174,7 @@ export default defineAppConfig({
             ],
             slots: {
                 root: "w-full",
-                base: "w-full px-4! rounded-sm text-lg! placeholder:text-dimmed/60 transition duration-150 resize-none"
+                base: "w-full px-4! shadow-xs rounded-sm text-lg! placeholder:text-dimmed/60 transition duration-150 resize-none"
             },
             variants: {
                 variant: {
