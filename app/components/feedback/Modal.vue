@@ -21,7 +21,7 @@ const isOpen = ref(false)
         description="Задайте вопрос или оставьте сообщение – ответим на почту."
         :ui="{
             content: 'ring-0 overflow-hidden divide-none shadow-none rounded-sm',
-            overlay: 'bg-black/25 backdrop-blur-xs'
+            overlay: 'bg-black/25'
         }"
         :close="{
             color: 'primary',
@@ -31,7 +31,7 @@ const isOpen = ref(false)
         close-icon="ph:x-bold"
     >
         <template #body>
-            <FeedbackForm @success="isOpen = false" />
+            <FeedbackForm @success="void (isOpen = false)" />
         </template>
     </UModal>
 </template>

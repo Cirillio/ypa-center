@@ -14,7 +14,12 @@ export const useFeedbackForm = (options: UseFeedbackFormOptions = {}) => {
     const feedback = useFeedbackService()
     const { isSpamBlocked, triggerCooldown } = useAntiSpamCooldown("feedback_form_cooldown")
 
-    const DEFAULT_FORM_STATE: FeedbackFormState = { name: "", email: "", message: "" }
+    const DEFAULT_FORM_STATE: FeedbackFormState = {
+        name: "",
+        email: "",
+        message: "",
+        consent: false
+    }
 
     const form = reactive<FeedbackFormState>({ ...DEFAULT_FORM_STATE })
     const captchaToken = ref("")
@@ -41,6 +46,7 @@ export const useFeedbackForm = (options: UseFeedbackFormOptions = {}) => {
                 name: event.data.name,
                 email: event.data.email,
                 message: event.data.message,
+                pd_consent: event.data.consent,
                 captcha_token: captchaToken.value
             })
 

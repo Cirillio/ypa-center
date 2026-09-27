@@ -139,6 +139,8 @@ const onSelectTime = (option: ContactTimeOption) => {
             </UPopover>
         </div>
 
+        <UiConsentCheckbox v-model="form.consent" :disabled="isLoading" class="px-1 py-1" />
+
         <!-- Кнопка отправки с подсказкой при блокировке спама -->
         <UTooltip
             :ui="{

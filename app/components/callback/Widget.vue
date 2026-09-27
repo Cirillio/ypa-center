@@ -27,7 +27,11 @@ const onErrorSubmit = (error: ApiError) => {
 
 <template>
     <div class="bg-default flex max-w-xs flex-col rounded-lg p-2 sm:p-6 xl:max-w-sm">
-        <CallbackModal v-model:open="modalOpen" :time="selectedTime" @close="modalOpen = false" />
+        <CallbackModal
+            v-model:open="modalOpen"
+            :time="selectedTime"
+            @close="void (modalOpen = false)"
+        />
 
         <CallbackForm @success="onSuccessSubmit" @error="onErrorSubmit" />
 

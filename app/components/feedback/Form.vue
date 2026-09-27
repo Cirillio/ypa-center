@@ -112,6 +112,10 @@ const inputUi = {
             </UFormField>
         </div>
 
+        <UFormField name="consent" class="px-1">
+            <UiConsentCheckbox v-model="form.consent" :disabled="isLoading" />
+        </UFormField>
+
         <NuxtTurnstile
             ref="turnstileRef"
             v-model="captchaToken"
@@ -142,26 +146,5 @@ const inputUi = {
                 class="w-full justify-center text-lg font-semibold focus-visible:ring-0"
             />
         </UTooltip>
-
-        <span class="text-default/70 mt-2 px-4 text-xs leading-tight">
-            Нажимая на кнопку, вы даёте согласие на
-            <NuxtLink
-                target="_blank"
-                external
-                to="/privacy"
-                class="hover:text-primary underline transition-colors"
-            >
-                обработку персональных данных
-            </NuxtLink>
-            и соглашаетесь с
-            <NuxtLink
-                target="_blank"
-                external
-                to="/consent"
-                class="hover:text-primary underline transition-colors"
-            >
-                политикой конфиденциальности </NuxtLink
-            >.
-        </span>
     </UForm>
 </template>

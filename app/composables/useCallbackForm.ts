@@ -10,6 +10,7 @@ export interface ContactCallbackForm {
     name?: string
     phone: string
     time: ContactTimeOption
+    consent: boolean
 }
 
 // Явное сопоставление вместо .toUpperCase() as PreferredTimeWindow: Record
@@ -41,7 +42,8 @@ export const useCallbackForm = (options: UseCallbackFormOptions = {}) => {
     const DEFAULT_FORM_STATE: ContactCallbackForm = {
         name: "",
         phone: "",
-        time: contactTimeOptions[0]!
+        time: contactTimeOptions[0]!,
+        consent: false
     }
 
     const form = reactive<ContactCallbackForm>({ ...DEFAULT_FORM_STATE })
@@ -50,7 +52,7 @@ export const useCallbackForm = (options: UseCallbackFormOptions = {}) => {
         // Имя опционально, но если введено – валидируем от 2 символов
         const nameValid = !form.name?.trim() || form.name.trim().length >= 2
 
-        return phoneCompleted && nameValid
+        return phoneCompleted && nameValid && form.consent
     })
     const captchaToken = ref("")
     const isLoading = ref(false)
@@ -100,6 +102,7 @@ export const useCallbackForm = (options: UseCallbackFormOptions = {}) => {
                 name: userName,
                 phone: form.phone,
                 preferred_time_window: preferredTimeWindow,
+                pd_consent: form.consent,
                 captcha_token: captchaToken.value
             })
 

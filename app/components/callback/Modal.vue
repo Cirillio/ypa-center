@@ -16,7 +16,7 @@ const emit = defineEmits<{
         v-model:open="open"
         :ui="{
             content: 'ring-0 overflow-hidden shadow-none rounded-sm',
-            overlay: 'bg-black/25 backdrop-blur-xs'
+            overlay: 'bg-black/25'
         }"
     >
         <template #content>

@@ -7,7 +7,8 @@ export const feedbackSchema = z.object({
     message: z
         .string()
         .min(10, "Опишите вопрос чуть подробнее")
-        .max(1000, "Сообщение слишком длинное")
+        .max(1000, "Сообщение слишком длинное"),
+    consent: fields.consent
 })
 
 export type FeedbackFormState = z.infer<typeof feedbackSchema>
