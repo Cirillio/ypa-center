@@ -378,8 +378,12 @@ email. Анкета досылается отдельным шагом, `PATCH /
   `.env` не коммитится, образец – `.env.example`.
 - **Docker:** `docker-compose.yml`, `network_mode: host` (Linux) – SSR внутри
   контейнера и браузер ходят к бэку по одному адресу.
-- **CI:** `.github/workflows/ci.yml` на каждый push:
-  `format:check → lint → typecheck → build`.
-- **Pre-commit:** husky, `prettier --write . && lint && typecheck`.
+- **CI:** `.github/workflows/ci.yml` на каждый push, bun 1.3.9:
+  `format:check → lint → typecheck → test → build`.
+- **Pre-commit:** husky, `format:check && lint && typecheck && test:unit`.
+- **Тесты:** Vitest, проекты `unit` (`tests/unit/`, node, без автоимпортов) и
+  `nuxt` (`tests/nuxt/`, среда Nuxt, фикстуры в `tests/nuxt/fixtures/`), TZ – UTC.
+  `typecheck` проверяет и `tests/` (`tests/tsconfig.json` для node-части).
+  Стратегия – `testing-strategy-2026-09.md`, план этапа – `tasks/tests-stage-1.md`.
 
 > ⚠️ Прод-хостинг, домен и процесс выкладки не описаны. Открытый вопрос.

@@ -18,7 +18,7 @@
 
 | Field          | Value                                                                  |
 | -------------- | ---------------------------------------------------------------------- |
-| Status         | **Proposal.** Not yet adopted (see §0)                                 |
+| Status         | **Adopted 2026-09-28** for frontend phases 1–3; E2E still out of scope |
 | Written        | 2026-09-28                                                             |
 | Scope          | `frontend-core/` (Nuxt 4) and `ypa-center-backend/` (Django/DRF)       |
 | Authority      | Code wins over this document. If they disagree, fix the document (§14) |
@@ -599,9 +599,10 @@ Follow these in addition to `CLAUDE.md` and `context/ai-workflow-rules.md`.
 
 ## 14. Change log
 
-| Date       | Change                                 | By            |
-| ---------- | -------------------------------------- | ------------- |
-| 2026-09-28 | Initial version from codebase analysis | agent session |
+| Date       | Change                                                                                                                                                 | By            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
+| 2026-09-28 | Initial version from codebase analysis                                                                                                                 | agent session |
+| 2026-09-28 | Phases 1–3 executed for the frontend (`tasks/tests-stage-1.md`): 368 tests, Vitest 5, test step in `check`/CI/husky; §0 decision reopened by the owner | agent session |
 
 ## Appendix A — Sources used
 
