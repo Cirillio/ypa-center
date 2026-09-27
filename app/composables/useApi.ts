@@ -68,10 +68,37 @@ async function requestTokenRefresh(
     return refreshPromise
 }
 
+// Уводит на анкету с возвратом на текущую страницу; на самом /login не срабатывает.
+async function redirectToProfileForm(): Promise<void> {
+    const route = useRouter().currentRoute.value
+    if (route.path === "/login") return
+    await navigateTo({ path: "/login", query: { redirectFrom: route.fullPath } })
+}
+
 export function useApi() {
     const { apiBase } = useRuntimeConfig().public
 
+    // ПОЧЕМУ здесь, а не в виджетах: 403 PROFILE_INCOMPLETE отдают все ручки ЛК и чекаута,
+    // гейт в каждом потребителе разъехался бы. Ошибка всё равно пробрасывается вызывающему.
     async function apiFetch<T>(path: string, opts?: Parameters<typeof $fetch<T>>[1]): Promise<T> {
+        try {
+            return await fetchWithRefresh<T>(path, opts)
+        } catch (error: unknown) {
+            if (
+                import.meta.client &&
+                getFetchStatus(error) === 403 &&
+                getProblemCode(error) === "PROFILE_INCOMPLETE"
+            ) {
+                await redirectToProfileForm()
+            }
+            throw error
+        }
+    }
+
+    async function fetchWithRefresh<T>(
+        path: string,
+        opts?: Parameters<typeof $fetch<T>>[1]
+    ): Promise<T> {
         const headers = new Headers(opts?.headers)
         const access = getAccessToken()
 

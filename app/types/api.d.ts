@@ -85,8 +85,45 @@ export interface paths {
         }
         get?: never
         put?: never
-        /** @description Идемпотентное создание платежа за абонемент. Заголовок X-Idempotency-Key (UUID v4) обязателен. Родитель определяется по сессии – parent_id в теле не принимается. */
+        /** @description Идемпотентное создание платежа за абонемент. Заголовок X-Idempotency-Key (UUID v4) обязателен. Родитель определяется по сессии — parent_id в теле не принимается. */
         post: operations["v1_checkout_subscription_create"]
+        delete?: never
+        options?: never
+        head?: never
+        patch?: never
+        trace?: never
+    }
+    "/api/v1/checkout/trial": {
+        parameters: {
+            query?: never
+            header?: never
+            path?: never
+            cookie?: never
+        }
+        get?: never
+        put?: never
+        /** @description Идемпотентная запись на пробное занятие. Заголовок X-Idempotency-Key (UUID v4) обязателен. Не более одного пробного на ребёнка по кружку. Бесплатное пробное подтверждается сразу (CONFIRMED). */
+        post: operations["v1_checkout_trial_create"]
+        delete?: never
+        options?: never
+        head?: never
+        patch?: never
+        trace?: never
+    }
+    "/api/v1/me/bookings/": {
+        parameters: {
+            query?: never
+            header?: never
+            path?: never
+            cookie?: never
+        }
+        /**
+         * Мои записи: пробные занятия и события одной лентой
+         * @description period=upcoming (по умолчанию) — ближайшие сверху; past — свежие сверху; all — сначала предстоящие, потом прошедшие. «Прошло» — по дате: сегодняшнее ещё предстоящее. Отменённые не показываются. status: PENDING — ждёт оплаты/подтверждения, CONFIRMED — записан. Уникальный ключ карточки — пара (kind, id). Без limit — весь список массивом; с ?limit=N&offset=M — конверт {count, next, previous, results}, где results — те же элементы.
+         */
+        get: operations["me_bookings"]
+        put?: never
+        post?: never
         delete?: never
         options?: never
         head?: never
@@ -120,11 +157,55 @@ export interface paths {
         get?: never
         put?: never
         post?: never
-        delete?: never
+        /**
+         * Удалить ребёнка (архивация)
+         * @description Мягкое удаление: ребёнок пропадает из профиля и чекаута, история покупок и посещений сохраняется. 409 CHILD_HAS_ACTIVE_ENROLLMENTS, пока есть действующий абонемент, неоплаченная бронь или предстоящее пробное — список в extensions.active_enrollments.
+         */
+        delete: operations["me_child_delete"]
         options?: never
         head?: never
         /** Изменить данные ребёнка */
         patch: operations["me_child_update"]
+        trace?: never
+    }
+    "/api/v1/me/deposit/": {
+        parameters: {
+            query?: never
+            header?: never
+            path?: never
+            cookie?: never
+        }
+        /**
+         * Баланс депозита родителя
+         * @description Баланс в копейках. Нет депозита — 0. Нужен чекауту, чтобы решить, предлагать ли оплату с депозита (use_deposit).
+         */
+        get: operations["me_deposit"]
+        put?: never
+        post?: never
+        delete?: never
+        options?: never
+        head?: never
+        patch?: never
+        trace?: never
+    }
+    "/api/v1/me/deposit/entries/": {
+        parameters: {
+            query?: never
+            header?: never
+            path?: never
+            cookie?: never
+        }
+        /**
+         * История движений депозита
+         * @description Новые сверху. amount со знаком: плюс — начисление, минус — списание. Без limit — весь список массивом; с ?limit=N&offset=M — конверт {count, next, previous, results}, где results — те же элементы.
+         */
+        get: operations["me_deposit_entries"]
+        put?: never
+        post?: never
+        delete?: never
+        options?: never
+        head?: never
+        patch?: never
         trace?: never
     }
     "/api/v1/me/profile/": {
@@ -152,8 +233,32 @@ export interface paths {
             path?: never
             cookie?: never
         }
-        /** Мои абонементы с балансом по слотам */
+        /**
+         * Мои абонементы: действующие и история
+         * @description Только оплаченные: ACTIVE (сверху) и EXPIRED, внутри — новые сверху. У истёкшего — все купленные слоты, остаток 0 (он ушёл на депозит). Без limit — весь список массивом; с ?limit=N&offset=M — конверт {count, next, previous, results}, где results — те же элементы.
+         */
         get: operations["me_subscriptions"]
+        put?: never
+        post?: never
+        delete?: never
+        options?: never
+        head?: never
+        patch?: never
+        trace?: never
+    }
+    "/api/v1/me/trials/": {
+        parameters: {
+            query?: never
+            header?: never
+            path?: never
+            cookie?: never
+        }
+        /**
+         * Пробные занятия детей родителя (устарела)
+         * @deprecated
+         * @description Устарела: используйте GET /me/bookings/?kind=TRIAL — там пробные вместе с событиями в одном формате. Работает, пока фронт не перейдёт. Новые по дате пробного сверху. Без limit — весь список массивом; с ?limit=N&offset=M — конверт {count, next, previous, results}, где results — те же элементы.
+         */
+        get: operations["me_trials"]
         put?: never
         post?: never
         delete?: never
@@ -169,7 +274,10 @@ export interface paths {
             path?: never
             cookie?: never
         }
-        /** Лента ближайших активностей (занятия + события) */
+        /**
+         * Лента ближайших активностей (занятия + события)
+         * @description Хронологически, ближайшие сверху. Горизонт weeks (по умолчанию 4, максимум 8). Без limit — весь список массивом; с ?limit=N&offset=M — конверт {count, next, previous, results}, где results — те же элементы.
+         */
         get: operations["me_upcoming"]
         put?: never
         post?: never
@@ -307,7 +415,7 @@ export interface paths {
         }
         /**
          * Опубликованные фото галереи
-         * @description Без query-параметров – весь список массивом (обратная совместимость). С ?limit=N (опц. &offset=M) – постраничная выдача в конверте {count, next, previous, results} для подгрузки по кнопке/скроллу.
+         * @description Без query-параметров — весь список массивом (обратная совместимость). С ?limit=N (опц. &offset=M) — постраничная выдача в конверте {count, next, previous, results} для подгрузки по кнопке/скроллу.
          */
         get: operations["public_gallery_list"]
         put?: never
@@ -444,6 +552,34 @@ export interface components {
             readonly photo_url: string
             readonly position: string
         }
+        Booking: {
+            readonly kind: components["schemas"]["KindEnum"]
+            readonly id: number
+            readonly title: string
+            readonly group_name: string | null
+            /** Format: date */
+            readonly date: string
+            /** Format: time */
+            readonly start_time: string
+            /** Format: time */
+            readonly end_time: string
+            /** @description Копейки. Событие — цена × участники; null — цены не из чего взять */
+            readonly cost: number | null
+            readonly child_name: string
+            readonly student_id: number | null
+            readonly attendees_count: number | null
+            readonly status: components["schemas"]["BookingStatusEnum"]
+            readonly status_display: string
+            readonly is_past: boolean
+            readonly activity_id: number | null
+            readonly event_id: number | null
+        }
+        /**
+         * @description * `PENDING` - Ожидает
+         *     * `CONFIRMED` - Записан
+         * @enum {string}
+         */
+        BookingStatusEnum: "PENDING" | "CONFIRMED"
         CallbackRequestCreateRequest: {
             /** Имя */
             name: string
@@ -451,6 +587,8 @@ export interface components {
             phone: string
             /** Удобное время звонка */
             preferred_time_window: components["schemas"]["PreferredTimeWindowEnum"]
+            /** @description Согласие на обработку персональных данных. Обязательно true; галочка на фронте не должна стоять по умолчанию */
+            pd_consent: boolean
             /** @default  */
             website_url: string
             /** @default  */
@@ -483,6 +621,12 @@ export interface components {
             use_deposit: boolean
             slot_ids: number[]
         }
+        CheckoutTrialRequest: {
+            student_id: number
+            schedule_id: number
+            /** Format: date */
+            trial_date: string
+        }
         Child: {
             readonly id: number
             /** ФИО */
@@ -509,6 +653,19 @@ export interface components {
             school_grade?: string
             /** Особенности здоровья */
             health_issues?: string
+        }
+        DepositBalance: {
+            readonly balance: number
+        }
+        DepositEntryView: {
+            readonly id: number
+            readonly amount: number
+            readonly reason: components["schemas"]["ReasonEnum"]
+            readonly reason_display: string
+            readonly subscription_id: number | null
+            readonly subscription_display_id: string | null
+            /** Format: date-time */
+            readonly created_at: string
         }
         EventPublic: {
             readonly id: number
@@ -546,6 +703,8 @@ export interface components {
             source?: string
             /** Комментарий */
             comment?: string
+            /** @description Согласие на обработку персональных данных. Обязательно true; галочка на фронте не должна стоять по умолчанию */
+            pd_consent: boolean
             /** @default  */
             website_url: string
         }
@@ -556,6 +715,8 @@ export interface components {
             email: string
             /** Сообщение */
             message: string
+            /** @description Согласие на обработку персональных данных. Обязательно true; галочка на фронте не должна стоять по умолчанию */
+            pd_consent: boolean
             /** @default  */
             website_url: string
             /** @default  */
@@ -571,6 +732,12 @@ export interface components {
             /** Порядок */
             order?: number
         }
+        /**
+         * @description * `TRIAL` - Пробное занятие
+         *     * `EVENT` - Событие
+         * @enum {string}
+         */
+        KindEnum: "TRIAL" | "EVENT"
         LogoutRequest: {
             /** @description Refresh-токен для аннулирования */
             refresh: string
@@ -590,6 +757,12 @@ export interface components {
             email: string
             /** @description Шестизначный числовой код из письма */
             code: string
+        }
+        OTPVerifyResponse: {
+            access: string
+            refresh: string
+            /** @description false — показать анкету (PATCH /me/profile/); до её заполнения ЛК и покупки отвечают 403 */
+            profile_completed: boolean
         }
         OverrideNested: {
             readonly original_start_time: string
@@ -628,6 +801,20 @@ export interface components {
             full_name?: string
             /** Телефон */
             phone?: string
+            /**
+             * @description Откуда узнали о центре. В ответе у старых родителей бывает UNKNOWN
+             *
+             *     * `FRIENDS` - Друзья, знакомые
+             *     * `SOCIAL` - Соцсети (VK, Telegram)
+             *     * `MAPS` - Яндекс.Карты, 2ГИС
+             *     * `SEARCH` - Поиск в интернете
+             *     * `SIGN` - Вывеска, проходил мимо
+             *     * `SCHOOL` - Школа, детский сад
+             *     * `OTHER` - Другое
+             */
+            referral_source?: components["schemas"]["ReferralSourceEnum"]
+            /** @description Согласие на обработку персональных данных. Обязательно true; галочка на фронте не должна стоять по умолчанию */
+            pd_consent?: boolean
         }
         /**
          * @description * `MORNING` - Утро (9:00–12:00)
@@ -644,8 +831,45 @@ export interface components {
             phone?: string
             /** Format: email */
             readonly email: string
+            /**
+             * @description Откуда узнали о центре. В ответе у старых родителей бывает UNKNOWN
+             *
+             *     * `FRIENDS` - Друзья, знакомые
+             *     * `SOCIAL` - Соцсети (VK, Telegram)
+             *     * `MAPS` - Яндекс.Карты, 2ГИС
+             *     * `SEARCH` - Поиск в интернете
+             *     * `SIGN` - Вывеска, проходил мимо
+             *     * `SCHOOL` - Школа, детский сад
+             *     * `OTHER` - Другое
+             */
+            referral_source: components["schemas"]["ReferralSourceEnum"]
+            /**
+             * Format: date-time
+             * @description Когда дано согласие на обработку ПД; null — галочку надо показать
+             */
+            readonly pd_consent_at: string
+            /** @description false — показать анкету; ЛК и покупки до её заполнения закрыты */
+            readonly profile_completed: boolean
             readonly children: components["schemas"]["Child"][]
         }
+        /**
+         * @description * `SUBSCRIPTION_EXPIRY_CREDIT` - Несгораемый остаток абонемента
+         *     * `CHECKOUT_SPEND` - Списание при покупке
+         *     * `ORDER_CANCELED_RETURN` - Возврат за неисполненный заказ
+         * @enum {string}
+         */
+        ReasonEnum: "SUBSCRIPTION_EXPIRY_CREDIT" | "CHECKOUT_SPEND" | "ORDER_CANCELED_RETURN"
+        /**
+         * @description * `FRIENDS` - Друзья, знакомые
+         *     * `SOCIAL` - Соцсети (VK, Telegram)
+         *     * `MAPS` - Яндекс.Карты, 2ГИС
+         *     * `SEARCH` - Поиск в интернете
+         *     * `SIGN` - Вывеска, проходил мимо
+         *     * `SCHOOL` - Школа, детский сад
+         *     * `OTHER` - Другое
+         * @enum {string}
+         */
+        ReferralSourceEnum: "FRIENDS" | "SOCIAL" | "MAPS" | "SEARCH" | "SIGN" | "SCHOOL" | "OTHER"
         RegistrationAccepted: {
             status: string
         }
@@ -661,16 +885,8 @@ export interface components {
             age_min?: number | null
             /** Возраст до */
             age_max?: number | null
-            /** День недели (денорм.) */
-            readonly day_of_week: number
-            readonly day_of_week_display: string
-            /** Format: time */
-            readonly start_time: string
-            /** Format: time */
-            readonly end_time: string
             /** Максимум детей */
             max_capacity?: number
-            readonly seats_free: number
         }
         SubmissionAccepted: {
             status: string
@@ -711,13 +927,11 @@ export interface components {
             readonly slots: components["schemas"]["SubscriptionSlotView"][]
         }
         /**
-         * @description * `PENDING` - Ожидает оплаты
-         *     * `ACTIVE` - Активен
+         * @description * `ACTIVE` - Активен
          *     * `EXPIRED` - Истёк
-         *     * `CANCELED` - Отменён
          * @enum {string}
          */
-        SubscriptionViewStatusEnum: "PENDING" | "ACTIVE" | "EXPIRED" | "CANCELED"
+        SubscriptionViewStatusEnum: "ACTIVE" | "EXPIRED"
         TeacherActivityNested: {
             readonly id: number
             readonly name: string
@@ -748,6 +962,23 @@ export interface components {
         TokenRefreshResponse: {
             access: string
             refresh: string
+        }
+        TrialView: {
+            readonly id: number
+            readonly student_id: number
+            readonly student_name: string
+            readonly activity_name: string
+            readonly group_name: string
+            /** Format: date */
+            readonly trial_date: string
+            /** Format: time */
+            readonly start_time: string
+            /** Format: time */
+            readonly end_time: string
+            readonly status: string
+            readonly cost: number | null
+            /** Format: date-time */
+            readonly created_at: string
         }
         UpcomingItem: {
             readonly kind: string
@@ -894,12 +1125,13 @@ export interface operations {
             }
         }
         responses: {
-            /** @description Токены выданы */
             200: {
                 headers: {
                     [name: string]: unknown
                 }
-                content?: never
+                content: {
+                    "application/json": components["schemas"]["OTPVerifyResponse"]
+                }
             }
             /** @description Ошибка валидации формата полей */
             400: {
@@ -981,6 +1213,58 @@ export interface operations {
             }
         }
     }
+    v1_checkout_trial_create: {
+        parameters: {
+            query?: never
+            header?: never
+            path?: never
+            cookie?: never
+        }
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CheckoutTrialRequest"]
+                "application/x-www-form-urlencoded": components["schemas"]["CheckoutTrialRequest"]
+                "multipart/form-data": components["schemas"]["CheckoutTrialRequest"]
+            }
+        }
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content: {
+                    "application/json": components["schemas"]["CheckoutResponse"]
+                }
+            }
+        }
+    }
+    me_bookings: {
+        parameters: {
+            query?: {
+                /** @description Без параметра — оба вида. */
+                kind?: "EVENT" | "TRIAL"
+                /** @description Размер страницы, 1..60 (больше — урезается). Без limit — весь список массивом; с limit — конверт {count, next, previous, results}. */
+                limit?: number
+                /** @description Сколько элементов пропустить, по умолчанию 0. */
+                offset?: number
+                period?: "all" | "past" | "upcoming"
+            }
+            header?: never
+            path?: never
+            cookie?: never
+        }
+        requestBody?: never
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content: {
+                    "application/json": components["schemas"]["Booking"][]
+                }
+            }
+        }
+    }
     me_child_create: {
         parameters: {
             query?: never
@@ -1003,6 +1287,40 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["Child"]
                 }
+            }
+        }
+    }
+    me_child_delete: {
+        parameters: {
+            query?: never
+            header?: never
+            path: {
+                id: number
+            }
+            cookie?: never
+        }
+        requestBody?: never
+        responses: {
+            /** @description Удалён */
+            204: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content?: never
+            }
+            /** @description Чужой, несуществующий или уже удалённый ребёнок */
+            404: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content?: never
+            }
+            /** @description CHILD_HAS_ACTIVE_ENROLLMENTS */
+            409: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content?: never
             }
         }
     }
@@ -1029,6 +1347,49 @@ export interface operations {
                 }
                 content: {
                     "application/json": components["schemas"]["Child"]
+                }
+            }
+        }
+    }
+    me_deposit: {
+        parameters: {
+            query?: never
+            header?: never
+            path?: never
+            cookie?: never
+        }
+        requestBody?: never
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content: {
+                    "application/json": components["schemas"]["DepositBalance"]
+                }
+            }
+        }
+    }
+    me_deposit_entries: {
+        parameters: {
+            query?: {
+                /** @description Размер страницы, 1..60 (больше — урезается). Без limit — весь список массивом; с limit — конверт {count, next, previous, results}. */
+                limit?: number
+                /** @description Сколько элементов пропустить, по умолчанию 0. */
+                offset?: number
+            }
+            header?: never
+            path?: never
+            cookie?: never
+        }
+        requestBody?: never
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content: {
+                    "application/json": components["schemas"]["DepositEntryView"][]
                 }
             }
         }
@@ -1079,7 +1440,12 @@ export interface operations {
     }
     me_subscriptions: {
         parameters: {
-            query?: never
+            query?: {
+                /** @description Размер страницы, 1..60 (больше — урезается). Без limit — весь список массивом; с limit — конверт {count, next, previous, results}. */
+                limit?: number
+                /** @description Сколько элементов пропустить, по умолчанию 0. */
+                offset?: number
+            }
             header?: never
             path?: never
             cookie?: never
@@ -1096,10 +1462,38 @@ export interface operations {
             }
         }
     }
+    me_trials: {
+        parameters: {
+            query?: {
+                /** @description Размер страницы, 1..60 (больше — урезается). Без limit — весь список массивом; с limit — конверт {count, next, previous, results}. */
+                limit?: number
+                /** @description Сколько элементов пропустить, по умолчанию 0. */
+                offset?: number
+            }
+            header?: never
+            path?: never
+            cookie?: never
+        }
+        requestBody?: never
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content: {
+                    "application/json": components["schemas"]["TrialView"][]
+                }
+            }
+        }
+    }
     me_upcoming: {
         parameters: {
             query?: {
                 child_id?: number
+                /** @description Размер страницы, 1..60 (больше — урезается). Без limit — весь список массивом; с limit — конверт {count, next, previous, results}. */
+                limit?: number
+                /** @description Сколько элементов пропустить, по умолчанию 0. */
+                offset?: number
                 weeks?: number
             }
             header?: never
@@ -1319,7 +1713,7 @@ export interface operations {
     public_schedule_week: {
         parameters: {
             query?: {
-                /** @description Понедельник запрашиваемой недели (ISO 8601, YYYY-MM-DD). По умолчанию – текущая неделя; не-понедельник нормализуется к началу своей недели. */
+                /** @description Понедельник запрашиваемой недели (ISO 8601, YYYY-MM-DD). По умолчанию — текущая неделя; не-понедельник нормализуется к началу своей недели. */
                 week_start?: string
             }
             header?: never
