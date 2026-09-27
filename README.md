@@ -96,13 +96,12 @@ NUXT_PUBLIC_API_BASE=http://192.168.1.10:8000/api docker compose up --build
 ```
 app/
 ├── assets/css/          # глобальные стили: tokens, base, utilities, animations
-├── components/          # 79 компонентов, каноничный автоимпорт Nuxt 4 с префиксом папки:
+├── components/          # 100 компонентов, каноничный автоимпорт Nuxt 4 с префиксом папки:
 │   ├── layout/          # каркас: LayoutHeader, LayoutFooter, LayoutMobileMenu
 │   ├── ui/              # базовые UI-кирпичики: UiPhoto, UiVideo, UiScrollFade, UiPageSection, UiSectionLeading, UiRoundIcon, UiRadioCard
 │   ├── promo/           # промо-секции: PromoFaq, PromoJoinUs, PromoSubscriptions, PromoFloatCard
-│   ├── shared/          # сквозные формы: SharedCallbackForm, SharedRegistrationForm, SharedEnrollmentSummary
-│   └── [domain]/        # секции страниц и флоу: home/, clubs/, about/, teachers/, gallery/, me/, event/, trial/, subscription/, payment/, feedback/, legal/
-├── composables/         # реактивная логика (автоимпорт): useSchedule, useSubscriptionPlans, use*Enrollment, …
+│   └── [domain]/        # секции страниц и флоу: home/, clubs/, about/, teachers/, gallery/, me/, enroll/ (trial/, subscription/, event/), payment/, feedback/, legal/
+├── composables/         # реактивная логика (автоимпорт): useSchedule, useSubscriptionPlans, use*Checkout, …
 ├── constants/           # навигация, маски, моки (nav, masks, mock)
 ├── layouts/default.vue  # LayoutHeader + <slot> + LayoutFooter + LayoutMobileMenu
 ├── middleware/          # гейты: auth, close-menu.global

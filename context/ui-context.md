@@ -117,7 +117,6 @@ Nuxt UI 4 поверх Reka UI. Своих обёрток над `U*`-компо
 - `app/components/layout/`: `Header.vue` (`<LayoutHeader />`), `Footer.vue` (`<LayoutFooter />`), `MobileMenu.vue` (`<LayoutMobileMenu />`).
 - `app/components/ui/`: `PageSection.vue`, `SectionLeading.vue`, `RoundIcon.vue`, `RadioCard.vue`, `Photo.vue`, `Video.vue`, `ScrollFade.vue` (`<Ui* />`).
 - `app/components/promo/`: `Faq.vue`, `JoinUs.vue`, `Subscriptions.vue`, `FloatCard.vue` (`<Promo* />`).
-- `app/components/shared/`: `CallbackForm.vue`, `RegistrationForm.vue`, `EnrollmentSummary.vue` (`<Shared* />`).
 
 ---
 
@@ -189,15 +188,12 @@ Mobile-first. Брейкпоинты – стандартные Tailwind, спе
 время / Стоимость». Состав списка (прошедшие, неоплаченные, отменённые) не
 решён – вопрос 14. Данные – `architecture.md` §6.
 
-### Сводка каталога на `/clubs` – реализовано 2026-09-24
+### Сводка каталога на `/clubs` – обновлено 2026-09-27
 
-Бывшие «мини-статы» (три плашки: город, направления, «От N лет») удалены:
-город есть в шапке главной и подвале, плашки не использовались в разметке.
-Вместо них в секции «Все кружки» (`clubs/List.vue`): крупный заголовок,
-список «Всего направлений: N» и «Возраст: от X до Y лет» (по всем группам),
-под ним кнопка «К расписанию» на `#schedule`. Возраст по каждому кружку на
-карточках пока не выводится – возможная следующая задача. Открыто: строки с
-ценами под кнопками hero – вопрос 12.
+Сводка по направлениям и возрасту («Всего направлений: N», «Возраст: от X до Y лет»)
+перенесена из заголовка секции «Все кружки» в Hero (`clubs/Hero.vue`) под описание
+в слот `#extra` компонента `UiSectionLeading`. В секции «Все кружки» (`clubs/List.vue`)
+оставлен чистый заголовок секции. Открыто: строки с ценами под кнопками hero – вопрос 12.
 
 ### Текст под кнопками hero на `/clubs`
 
