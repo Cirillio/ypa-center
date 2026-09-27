@@ -6,8 +6,10 @@ import { Maskas } from "~/constants/masks"
  * Используй как строительные блоки в схемах: z.object({ name: fields.fullName, ... })
  */
 export const fields = {
+    // ПОЧЕМУ trim: иначе имя из одних пробелов проходит и min, и regex (\s разрешён)
     fullName: z
         .string()
+        .trim()
         .min(1, "Поле обязательно")
         .max(100, "Слишком длинное значение")
         .regex(/^[a-zA-Zа-яА-ЯёЁ\s-]+$/, "Допустимы только буквы и тире"),
