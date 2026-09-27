@@ -1,15 +1,21 @@
 import { useDayjs } from "#dayjs"
-import type { WeeklySlot } from "~/types"
+
+// Слоты заданы в часовом поясе центра; без явного пояса SSR (UTC) и клиент считали разные даты.
+const CENTER_TIMEZONE = "Asia/Novosibirsk"
 
 export const useFormatDate = () => {
     const dayjs = useDayjs()
 
+    // ПОЧЕМУ явно tz: defaultTimezone модуля не применяется к dayjs() на сервере.
+    // Локаль не задаём: подписи дат строит formatEventDate через Intl, dayjs-ru на сервере не грузится.
+    const centerNow = () => dayjs().tz(CENTER_TIMEZONE)
+
     const getClosestDate = (dayOfWeek: number, startTime: string) => {
-        const now = dayjs()
+        const now = centerNow()
         const [hours, minutes] = startTime.split(":").map(Number)
 
         // dayjs: 0 = Вс, 1 = Пн, ..., 6 = Сб
-        let target = dayjs()
+        let target = centerNow()
             .day(dayOfWeek === 7 ? 0 : dayOfWeek)
             .hour(hours!)
             .minute(minutes!)
@@ -23,11 +29,5 @@ export const useFormatDate = () => {
         return target
     }
 
-    // "ср, 12 мар · 17:00 – 18:00"
-    const formatSlotDate = (slot: WeeklySlot): string => {
-        const date = getClosestDate(slot.dayOfWeek, slot.startTime)
-        return `${date.format("dd, D MMM")} · ${slot.startTime} – ${slot.endTime}`
-    }
-
-    return { getClosestDate, formatSlotDate }
+    return { getClosestDate }
 }

@@ -1,124 +1,87 @@
 <script lang="ts" setup>
-import { EnrollRoutesEnum } from "~/constants/nav"
-import { RegistrationSchema } from "~/schemas/registration.schema"
-
-const { pricing } = useAppConfig()
-
-const {
-    clubs,
-    trialFormState,
-    selectedClubId,
-    selectedSlotId,
-    selectedClubSlots,
-    selectedVariant,
-    onSubmit
-} = useTrialEnrollment()
-
+// Страница записи на пробное занятие: выбор кружка и времени, сводка с ребёнком и ценой.
 useSeoMeta({
-    title: "Пробное занятие – Улица Радости",
+    title: "Пробное занятие",
     description:
         "Запишите ребёнка на разовое пробное занятие в детском центре Улица Радости. 1 200 ₽. Выберите кружок и удобное время. Новосибирск.",
     ogTitle: "Пробное занятие в кружке – Улица Радости",
     ogDescription:
         "Разовое занятие в любом кружке за 1 200 ₽. Познакомьтесь с педагогом и форматом перед оформлением абонемента."
 })
+
+const { pricing } = useAppConfig()
+
+const { clubs, selectedClubId, selectedSlotId, selectedClub, selectedClubSlots, selectedSlot } =
+    useTrialCheckout()
+
+const {
+    isAuthed,
+    isPending: isKidsPending,
+    error: kidsError,
+    retry: retryKids,
+    children,
+    isSaving: isKidSaving,
+    selectedChildId,
+    selectedChild,
+    loginTo,
+    addChild
+} = useCheckoutChildren()
+
+const { tiers } = useSubscriptionPlans()
+
+// Самая низкая цена занятия среди лимитных тарифов – для ссылки «с абонементом выгоднее».
+const subscriptionFromPrice = computed<number | null>(() => {
+    const perLesson = tiers.value
+        .filter((t) => t.lessons !== null && t.lessons > 0)
+        .map((t) => Math.round(t.price / (t.lessons ?? 1)))
+    return perLesson.length ? Math.min(...perLesson) : null
+})
+
+const isReady = computed(
+    () => !!selectedClub.value && !!selectedSlot.value && !!selectedChild.value
+)
 </script>
 
 <template>
-    <div class="gradient-bg-ps flex min-h-dvh flex-col pt-32 pb-24">
-        <UContainer class="grid gap-16 lg:grid-cols-2">
-            <UiSectionLeading as="h1" subtitle="Запись" class="mr-auto shrink-0">
-                <template #title>
-                    <div class="text-primary">
-                        Пробное <br />
-                        <span class="text-secondary">занятие</span>
-                    </div>
-                </template>
-                <template #description>
-                    Выберите интересующее направление, удобное время и заполните небольшую форму,
-                    чтобы записаться на <strong>разовое</strong> занятие.
-                </template>
-                <template #action>
-                    <div class="flex flex-col gap-0.5">
-                        <span class="text-default text-base font-bold md:text-lg xl:text-xl">
-                            Стоимость:
-                            <span class="text-primary">{{ pricing.trialLesson }}</span>
-                            руб.
-                        </span>
-                    </div>
-                </template>
-            </UiSectionLeading>
+    <div class="gradient-bg-ps min-h-dvh pt-(--ui-header-height)">
+        <EnrollHeader title="Пробное занятие" icon="ph:person-simple-run-bold">
+            <EnrollTypeTabs active="trial" />
+        </EnrollHeader>
 
-            <div class="flex flex-col gap-4">
-                <PromoSubscriptions>
-                    <template #sub>
-                        С абонементом <span class="text-primary font-bold">выгоднее!</span>
-                    </template>
-                    <template #desc>
-                        В нашей системе вы можете включить разные кружки в один абонемент:
-                        <br />
-                        - Чем <strong>больше</strong> кружков - тем <strong>выше скидка!</strong>
-                        <br />
-                        - Максимальная выгода: <strong>50%</strong>
-                        <br />
-                        - Абонемент оформляется на <strong>месяц</strong>
-                    </template>
-                </PromoSubscriptions>
-                <UButton
-                    :to="EnrollRoutesEnum.Subscription"
-                    label="Собрать абонемент"
-                    leading-icon="ph:puzzle-piece-bold"
-                    size="lg"
-                    color="secondary"
-                    class="w-fit justify-center px-5 text-base font-bold md:text-xl"
-                />
-            </div>
-        </UContainer>
-
-        <UContainer>
-            <USeparator
-                size="sm"
-                class="my-12"
-                :ui="{ border: 'rounded-full border-(--ui-text)/26' }"
-            >
-                <template #default>
-                    <h2 class="text-primary text-xl font-bold md:text-3xl">Оформление</h2>
-                </template>
-            </USeparator>
-        </UContainer>
-
-        <UContainer class="w-full">
-            <div class="grid grid-cols-1 gap-4 lg:grid-cols-12">
-                <div class="flex flex-col gap-4 lg:col-span-7">
-                    <SharedEnrollmentSummary
-                        :title="selectedVariant?.name ?? null"
-                        :subtitle="selectedVariant?.slot ?? null"
-                        :img="selectedVariant?.img ?? null"
-                        :badge="pricing.trialLesson + 'р'"
-                        icon="ph:person-simple-run-bold"
-                        empty-title="Кружок не выбран"
-                        empty-subtitle="Время не выбрано"
-                    />
-
-                    <TrialClubPicker v-model="selectedClubId" :clubs="clubs" />
-                    <TrialSlotPicker
+        <section aria-label="Оформление пробного занятия" class="pb-32 lg:pb-16">
+            <UContainer class="grid gap-6 lg:grid-cols-7">
+                <div class="flex min-w-0 flex-col gap-6 lg:col-span-5">
+                    <EnrollTrialClubWidget v-model="selectedClubId" :clubs="clubs" />
+                    <EnrollTrialSlotWidget
                         v-model="selectedSlotId"
                         :slots="selectedClubSlots"
                         :club-selected="!!selectedClubId"
                     />
                 </div>
 
-                <div
-                    class="sticky top-[calc(var(--ui-header-height)+1rem)] h-fit rounded-sm bg-white px-6 py-4 lg:col-span-5"
+                <EnrollTrialSummary
+                    :club="selectedClub"
+                    :slot-item="selectedSlot"
+                    :has-child="!!selectedChild"
+                    :price="pricing.trialLesson"
+                    :subscription-from-price="subscriptionFromPrice"
                 >
-                    <h3 class="text-default mb-6 text-2xl font-bold">3. Заполните анкету</h3>
-                    <SharedRegistrationForm
-                        v-model="trialFormState"
-                        :schema="RegistrationSchema"
-                        @submit="onSubmit"
+                    <EnrollKidPicker
+                        v-model="selectedChildId"
+                        :is-authed="isAuthed"
+                        :is-pending="isKidsPending"
+                        :error="kidsError"
+                        :children="children"
+                        :is-saving="isKidSaving"
+                        :login-to="loginTo"
+                        title="Кто пойдёт на занятие"
+                        @add="addChild"
+                        @retry="retryKids"
                     />
-                </div>
-            </div>
-        </UContainer>
+                </EnrollTrialSummary>
+            </UContainer>
+        </section>
+
+        <EnrollMobileBar :amount="formatRubles(pricing.trialLesson)" :ready="isReady" />
     </div>
 </template>

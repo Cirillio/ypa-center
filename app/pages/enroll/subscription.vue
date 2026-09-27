@@ -1,127 +1,111 @@
 <script lang="ts" setup>
-import { EnrollRoutesEnum } from "~/constants/nav"
-import { RegistrationSchema } from "~/schemas/registration.schema"
-
-const {
-    allSlots,
-    formState,
-    selectedSlotIds,
-    selectedSlots,
-    totalMonthlyLessons,
-    currentTier,
-    nextTier,
-    tierProgress,
-    savings,
-    pricePerLesson,
-    toggleSlot,
-    removeSlot,
-    onSubmit
-} = useSubscriptionEnrollment()
-
+// Страница оформления абонемента (каркас, выбор кружков по дням и автоматический подбор тарифа).
 useSeoMeta({
-    title: "Оформить абонемент – Улица Радости",
+    title: "Собрать абонемент",
     description:
         "Соберите персональный абонемент на кружки со скидкой до 50%. Выбирайте любые кружки из расписания, гибкое расписание. Детский центр в Новосибирске.",
     ogTitle: "Оформить абонемент на кружки – Улица Радости",
     ogDescription:
         "Персональный абонемент: выберите кружки, оплатите раз в месяц. Скидка до 50% при наборе занятий."
 })
+
+const {
+    weekDays,
+    selectedDay,
+    slotsForSelectedDay,
+    isSlotsPending,
+    slotsError,
+    refreshSlots,
+    selectedSlotIds,
+    selectedCountByDow,
+    toggleSlot,
+    selectedSlots,
+    conflicts,
+    tiers,
+    currentTierIndex,
+    currentTier,
+    nextTier,
+    totalMonthlyLessons,
+    unlimitedHint
+} = useSubscriptionCheckout()
+
+const { pricing } = useAppConfig()
+const {
+    isAuthed,
+    isPending: isKidsPending,
+    error: kidsError,
+    retry: retryKids,
+    children,
+    isSaving: isKidSaving,
+    selectedChildId,
+    selectedChild,
+    loginTo,
+    addChild
+} = useCheckoutChildren()
+
+const isReady = computed(() => selectedSlots.value.length > 0 && !!selectedChild.value)
 </script>
 
 <template>
-    <div class="gradient-bg-ps flex min-h-dvh flex-col pt-32 pb-24">
-        <UContainer class="grid gap-16 lg:grid-cols-2">
-            <UiSectionLeading as="h1" subtitle="Запись" class="mr-auto shrink-0">
-                <template #title>
-                    <div class="text-primary">
-                        Собери <br />
-                        <span class="text-secondary">абонемент</span>
-                    </div>
-                </template>
-                <template #description>
-                    Выберите любые кружки из расписания и оплатите один раз в месяц. Чем больше
-                    занятий – тем ниже цена за каждое.
-                </template>
-                <template #action>
-                    <div class="flex flex-col gap-0.5">
-                        <span class="text-default text-base font-bold md:text-lg xl:text-xl">
-                            Скидка: до <span class="text-primary">50%</span> от разовой цены
-                        </span>
-                        <span class="text-default text-base font-bold md:text-lg xl:text-xl">
-                            Оформляется на <span class="text-primary">1 месяц</span>
-                        </span>
-                    </div>
-                </template>
-            </UiSectionLeading>
+    <div class="gradient-bg-ps min-h-dvh pt-(--ui-header-height)">
+        <EnrollHeader title="Собрать абонемент" icon="ph:puzzle-piece-bold">
+            <EnrollTypeTabs active="subscription" />
+        </EnrollHeader>
 
-            <div class="flex flex-col gap-4">
-                <PromoSubscriptions>
-                    <template #sub>
-                        Система тарифов:
-                        <span class="text-primary font-bold">чем больше – тем выгоднее</span>
-                    </template>
-                    <template #desc>
-                        Каждый выбранный кружок добавляет 4 занятия в месяц. Абонемент подбирается
-                        автоматически.
-                    </template>
-                </PromoSubscriptions>
-                <UButton
-                    :to="EnrollRoutesEnum.Trial"
-                    label="Попробовать разовое занятие"
-                    leading-icon="ph:person-simple-run-bold"
-                    size="lg"
-                    variant="soft"
-                    class="w-fit justify-center font-bold"
-                />
-            </div>
-        </UContainer>
-
-        <UContainer>
-            <USeparator
-                size="sm"
-                class="my-12"
-                :ui="{ border: 'rounded-full border-(--ui-text)/26' }"
-            >
-                <template #default>
-                    <h2 class="text-primary text-xl font-bold md:text-3xl">Оформление</h2>
-                </template>
-            </USeparator>
-        </UContainer>
-
-        <UContainer class="w-full">
-            <div class="grid grid-cols-1 gap-4 lg:grid-cols-12">
-                <!-- Выбор кружков по дням -->
-                <div class="flex flex-col gap-4 lg:col-span-7">
-                    <SubscriptionSlotDayPicker
-                        :slots="allSlots"
+        <section aria-label="Оформление абонемента" class="pb-32 lg:pb-16">
+            <UContainer class="grid gap-6 lg:grid-cols-7">
+                <div class="flex min-w-0 flex-col gap-6 lg:col-span-5">
+                    <EnrollSubscriptionSlotsWidget
+                        :slots="slotsForSelectedDay"
                         :selected-ids="selectedSlotIds"
-                        @toggle="toggleSlot"
+                        :days="weekDays"
+                        :selected-dow="selectedDay.dow"
+                        :counts-by-dow="selectedCountByDow"
+                        :conflicts="conflicts"
+                        :is-pending="isSlotsPending"
+                        :error="slotsError"
+                        @select-day="void (selectedDay = $event)"
+                        @toggle-slot="toggleSlot"
+                        @retry="refreshSlots"
                     />
-                    <SubscriptionCart
-                        :selected-slots="selectedSlots"
-                        :total-lessons="totalMonthlyLessons"
-                        :current-tier="currentTier"
+
+                    <EnrollSubscriptionTiersWidget
+                        :tiers="tiers"
+                        :current-tier-index="currentTierIndex"
                         :next-tier="nextTier"
-                        :tier-progress="tierProgress"
-                        :savings="savings"
-                        :price-per-lesson="pricePerLesson"
-                        @remove="removeSlot"
+                        :total-monthly-lessons="totalMonthlyLessons"
+                        :unlimited-hint="unlimitedHint"
                     />
                 </div>
 
-                <!-- Корзина + форма -->
-                <div
-                    class="sticky top-[calc(var(--ui-header-height)+1rem)] h-fit rounded-sm bg-white px-6 py-4 lg:col-span-5"
+                <EnrollSubscriptionSummary
+                    :slots="selectedSlots"
+                    :tier="currentTier"
+                    :total-monthly-lessons="totalMonthlyLessons"
+                    :has-child="!!selectedChild"
+                    :trial-price="pricing.trialLesson"
+                    @remove="toggleSlot"
                 >
-                    <h3 class="text-default mb-6 text-2xl font-bold">2. Заполните анкету</h3>
-
-                    <SharedRegistrationForm
-                        v-model="formState"
-                        :schema="RegistrationSchema"
-                        @submit="onSubmit"
+                    <EnrollKidPicker
+                        v-model="selectedChildId"
+                        title="Для кого абонемент"
+                        :is-authed="isAuthed"
+                        :is-pending="isKidsPending"
+                        :error="kidsError"
+                        :children="children"
+                        :is-saving="isKidSaving"
+                        :login-to="loginTo"
+                        @add="addChild"
+                        @retry="retryKids"
                     />
-                </div>
-            </div>
-        </UContainer>
+                </EnrollSubscriptionSummary>
+            </UContainer>
+        </section>
+
+        <EnrollMobileBar
+            label="Итого в месяц"
+            :amount="currentTier ? formatRubles(currentTier.price) : '—'"
+            :ready="isReady"
+        />
     </div>
 </template>
