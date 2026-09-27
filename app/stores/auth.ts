@@ -7,6 +7,7 @@ const errorMessage = (err: unknown, fallback: string): string =>
 
 export const useAuthStore = defineStore("auth", () => {
     const auth = useAuthService()
+    const me = useMeService()
     const { secondsLeft, canResend, startTimer, resetTimer } = useOtpTimer(60)
 
     const email = ref<string>("")
@@ -73,17 +74,9 @@ export const useAuthStore = defineStore("auth", () => {
 
         try {
             const res = await auth.verifyOtp(email.value, trimmedCode)
-            setTokens(res)
+            setTokens({ access: res.access, refresh: res.refresh })
             isAuthed.value = true
-
-            // Проверяем заполненность профиля
-            const meService = useMeService()
-            const profile = await meService.getProfile()
-            if (!profile.isComplete) {
-                step.value = "profile"
-            } else {
-                step.value = "accepted"
-            }
+            step.value = res.profileCompleted ? "accepted" : "profile"
         } catch (err: unknown) {
             const status = getFetchStatus(err)
 
@@ -104,8 +97,7 @@ export const useAuthStore = defineStore("auth", () => {
     async function checkProfileCompletion(): Promise<boolean> {
         if (!hasTokens()) return false
         try {
-            const meService = useMeService()
-            const profile = await meService.getProfile()
+            const profile = await me.getProfile()
             if (!profile.isComplete) {
                 step.value = "profile"
                 if (profile.parent.email) {

@@ -29,11 +29,10 @@ const pinValue = computed<number[]>({
                   .map(Number)
                   .filter((n) => !Number.isNaN(n))
             : [],
-    set: (val: number[]) => {
-        modelValueCode.value = val
-            .filter((n) => typeof n === "number" && !Number.isNaN(n))
-            .join("")
-            .slice(0, 6)
+    // ПОЧЕМУ String: при вставке кода (Ctrl+V, автозаполнение iOS) reka-ui кладёт в модель
+    // строки даже с type="number" – фильтр по typeof number терял весь код
+    set: (val: Array<number | string>) => {
+        modelValueCode.value = val.map(String).join("").replace(/\D/g, "").slice(0, 6)
     }
 })
 

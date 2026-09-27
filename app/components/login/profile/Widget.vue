@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 // Виджет анкеты нового пользователя для завершения регистрации после подтверждения email.
-import type { FormErrorEvent } from "@nuxt/ui"
+import type { FormErrorEvent, FormSubmitEvent } from "@nuxt/ui"
 import { vMaska } from "maska/vue"
 import { Maskas } from "~/constants/masks"
 import { REFERRAL_ITEMS } from "~/constants/referral-sources"
@@ -29,8 +29,8 @@ const onError = (event: FormErrorEvent) => {
     requestAnimationFrame(() => document.getElementById(id)?.focus())
 }
 
-const onSubmit = async () => {
-    const ok = await submit()
+const onSubmit = async (event: FormSubmitEvent<ProfileCompletion>) => {
+    const ok = await submit(event.data)
     if (ok) {
         emit("completed")
     }
@@ -85,7 +85,7 @@ const onSubmit = async () => {
                 />
             </UFormField>
 
-            <UFormField label="Номер телефона" name="phone">
+            <UFormField label="Номер телефона" name="phone" required>
                 <UInput
                     v-model="state.phone"
                     v-maska="Maskas.Phone"
@@ -106,6 +106,7 @@ const onSubmit = async () => {
                 <USelect
                     v-model="state.referralSource"
                     :items="REFERRAL_ITEMS"
+                    value-key="value"
                     :disabled="isLoading"
                     placeholder="Выберите вариант"
                     size="xl"
@@ -121,33 +122,11 @@ const onSubmit = async () => {
             </UFormField>
 
             <UFormField name="consent">
-                <UCheckbox
+                <UiConsentCheckbox
                     v-model="state.consent"
                     :disabled="isLoading"
-                    color="primary"
                     @update:model-value="clearFieldError('consent')"
-                >
-                    <template #label>
-                        <span class="text-default/80 text-xs leading-tight">
-                            Я согласен на
-                            <NuxtLink
-                                to="/consent"
-                                target="_blank"
-                                class="text-primary hover:underline"
-                            >
-                                обработку персональных данных
-                            </NuxtLink>
-                            и ознакомлен с
-                            <NuxtLink
-                                to="/privacy"
-                                target="_blank"
-                                class="text-primary hover:underline"
-                            >
-                                политикой
-                            </NuxtLink>
-                        </span>
-                    </template>
-                </UCheckbox>
+                />
             </UFormField>
 
             <p v-if="error" class="text-error text-center text-sm">{{ error }}</p>
