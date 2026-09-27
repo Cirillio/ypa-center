@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 // Страница личного кабинета родителя: профиль, абонементы, разовые записи и лента активностей.
+import type { MeChild } from "~/types"
+
 definePageMeta({ middleware: "auth" })
 useSeoMeta({ title: "Личный кабинет" })
 
@@ -25,19 +27,8 @@ watch(
     { immediate: true }
 )
 
-const {
-    data: subscriptionsData,
-    pending: isSubsPending,
-    error: subscriptionsError,
-    refresh: refreshSubscriptions
-} = useMeSubscriptions()
-
-const {
-    data: bookingsData,
-    pending: isBookingsPending,
-    error: bookingsError,
-    refresh: refreshBookings
-} = useMeBookings()
+const subscriptions = useMeSubscriptions()
+const bookings = useMeBookings()
 
 const {
     data: upcomingData,
@@ -49,17 +40,22 @@ const {
 const isProcessing = computed(
     () =>
         isProfilePending.value ||
-        isSubsPending.value ||
-        isBookingsPending.value ||
+        subscriptions.pending.value ||
+        bookings.pending.value ||
         isUpcomingPending.value
 )
 
-// Управление детьми
+// 2. Управление детьми
 const toast = useToast()
 const {
     children: cabinetChildren,
     isSaving: isChildSaving,
-    addChild: addChildBase
+    addChild: addChildBase,
+    isDeleting: isChildDeleting,
+    deleteError: childDeleteError,
+    deleteBlockers: childDeleteBlockers,
+    deleteChild,
+    resetDeleteState
 } = useCabinetChildren(() => profileData.value, refreshProfile)
 
 const addChild = async (payload: Parameters<typeof addChildBase>[0]) => {
@@ -75,7 +71,29 @@ const addChild = async (payload: Parameters<typeof addChildBase>[0]) => {
     }
 }
 
-// Модалка выхода
+const childToDelete = ref<MeChild | null>(null)
+const isDeleteModalOpen = ref<boolean>(false)
+
+const openDeleteModal = (child: MeChild) => {
+    resetDeleteState()
+    childToDelete.value = child
+    isDeleteModalOpen.value = true
+}
+
+const confirmDeleteChild = async () => {
+    const child = childToDelete.value
+    if (!child) return
+    const deleted = await deleteChild(child.id)
+    if (!deleted) return
+    isDeleteModalOpen.value = false
+    toast.add({
+        title: `${child.name} удалён из профиля`,
+        icon: "ph:check-circle-bold",
+        color: "success"
+    })
+}
+
+// 3. Модалка выхода
 const modalOpen = ref<boolean>(false)
 
 const openConfirmModal = () => {
@@ -93,8 +111,20 @@ const parent = computed(() => profileData.value?.parent)
 <template>
     <div class="gradient-bg-ps min-h-dvh pt-(--ui-header-height)">
         <MeParentLeaveConfirm v-model="modalOpen" @confirm="handleLogout" />
+        <MeParentChildDeleteConfirm
+            v-model:open="isDeleteModalOpen"
+            :child-name="childToDelete?.name ?? ''"
+            :is-deleting="isChildDeleting"
+            :blockers="childDeleteBlockers"
+            :error="childDeleteError"
+            @confirm="confirmDeleteChild"
+        />
 
-        <MeParentHeader :parent-name="parent?.name" @logout="openConfirmModal" />
+        <MeParentHeader :parent-name="parent?.name" @logout="openConfirmModal">
+            <template #actions>
+                <MeDepositWidget v-if="profileData?.isComplete" />
+            </template>
+        </MeParentHeader>
 
         <section aria-label="Личный кабинет" class="pb-16">
             <UContainer class="grid gap-6 lg:grid-cols-7">
@@ -106,22 +136,31 @@ const parent = computed(() => profileData.value?.parent)
                         :is-saving="isChildSaving"
                         :error="profileError"
                         @add-child="addChild"
+                        @remove-child="openDeleteModal"
                         @retry="refreshProfile"
                     />
 
                     <!-- Две колонки: Абонементы | Наши записи -->
                     <div class="grid items-start gap-6 xl:grid-cols-2">
                         <MeSubscriptionsWidget
-                            :subscriptions="subscriptionsData"
+                            :subscriptions="subscriptions.items.value"
+                            :has-more="subscriptions.hasMore.value"
+                            :is-loading-more="subscriptions.isLoadingMore.value"
+                            :load-more-error="subscriptions.loadMoreError.value"
                             :is-processing="isProcessing"
-                            :error="subscriptionsError"
-                            @retry="refreshSubscriptions"
+                            :error="subscriptions.error.value"
+                            @retry="subscriptions.refresh()"
+                            @load-more="subscriptions.loadMore()"
                         />
                         <MeBookingsWidget
-                            :bookings="bookingsData"
+                            :bookings="bookings.items.value"
+                            :has-more="bookings.hasMore.value"
+                            :is-loading-more="bookings.isLoadingMore.value"
+                            :load-more-error="bookings.loadMoreError.value"
                             :is-processing="isProcessing"
-                            :error="bookingsError"
-                            @retry="refreshBookings"
+                            :error="bookings.error.value"
+                            @retry="bookings.refresh()"
+                            @load-more="bookings.loadMore()"
                         />
                     </div>
                 </div>

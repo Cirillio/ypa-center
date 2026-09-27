@@ -1,25 +1,20 @@
 <script lang="ts" setup>
-// Виджет списка абонементов родителя с пагинацией и состояниями загрузки.
+// Виджет абонементов родителя: действующие, затем история; дозагрузка страницами.
 import type { MeSubscription } from "~/types"
 
-const props = defineProps<{
+defineProps<{
     subscriptions?: MeSubscription[]
+    hasMore: boolean
+    isLoadingMore: boolean
     isProcessing: boolean
     error?: unknown
+    loadMoreError?: unknown
 }>()
 
 const emit = defineEmits<{
     retry: []
+    loadMore: []
 }>()
-
-const sortedSubscriptions = computed(() => {
-    if (!props.subscriptions) return undefined
-    return [...props.subscriptions].sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    )
-})
-
-const { visible, hasMore, showMore } = useShowMore(sortedSubscriptions, 5)
 </script>
 
 <template>
@@ -39,16 +34,20 @@ const { visible, hasMore, showMore } = useShowMore(sortedSubscriptions, 5)
             @retry="emit('retry')"
         />
 
-        <template v-else-if="sortedSubscriptions">
-            <div v-if="sortedSubscriptions.length > 0" class="flex flex-col gap-4">
-                <MeSubscriptionsCard v-for="sub in visible" :key="sub.id" :sub="sub" />
+        <template v-else-if="subscriptions">
+            <div v-if="subscriptions.length > 0" class="flex flex-col gap-4">
+                <MeSubscriptionsCard v-for="sub in subscriptions" :key="sub.id" :sub="sub" />
 
+                <p v-if="loadMoreError" class="text-error text-center text-sm">
+                    Не удалось загрузить ещё. Попробуйте снова.
+                </p>
                 <UButton
                     v-if="hasMore"
                     variant="soft"
                     block
                     label="Показать ещё"
-                    @click="showMore"
+                    :loading="isLoadingMore"
+                    @click="emit('loadMore')"
                 />
             </div>
             <p v-else class="text-muted py-4 text-sm italic">

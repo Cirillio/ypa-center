@@ -10,6 +10,7 @@ defineProps<{
 
 const emit = defineEmits<{
     add: [payload: { name: string; birthdate: string }]
+    remove: [child: MeChild]
 }>()
 
 const isAdding = ref<boolean>(false)
@@ -57,8 +58,7 @@ const submitForm = () => {
                 <div
                     v-for="child in children"
                     :key="child.id"
-                    class="bg-secondary/5 flex items-center gap-2 rounded-full py-1 pr-3 pl-1"
-                    :title="child.birthdate"
+                    class="bg-secondary/5 flex items-center gap-2 rounded-full py-1 pr-1 pl-1"
                 >
                     <span
                         class="bg-secondary/15 text-secondary flex size-7 items-center justify-center rounded-full text-sm font-bold"
@@ -68,6 +68,15 @@ const submitForm = () => {
                     <span class="text-default text-base leading-tight font-semibold">
                         {{ child.name }}
                     </span>
+                    <UButton
+                        icon="ph:x-bold"
+                        color="error"
+                        variant="ghost"
+                        size="xs"
+                        class="rounded-full"
+                        :aria-label="`Удалить ${child.name}`"
+                        @click="emit('remove', child)"
+                    />
                 </div>
             </div>
             <p v-else class="text-muted text-sm italic">Пока не добавлено ни одного ребёнка</p>

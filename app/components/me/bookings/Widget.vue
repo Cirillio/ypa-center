@@ -1,19 +1,23 @@
 <script lang="ts" setup>
-// Виджет списка записей на мероприятия и пробные занятия с пагинацией и состояниями загрузки.
+// Виджет записей на пробные и события: предстоящие, затем прошедшие, дозагрузка страницами.
 import type { MeBooking } from "~/types"
 
 const props = defineProps<{
     bookings?: MeBooking[]
+    hasMore: boolean
+    isLoadingMore: boolean
     isProcessing: boolean
     error?: unknown
+    loadMoreError?: unknown
 }>()
 
 const emit = defineEmits<{
     retry: []
+    loadMore: []
 }>()
 
-const items = computed(() => props.bookings)
-const { visible, hasMore, showMore } = useShowMore(items, 5)
+// Бэк отдаёт прошедшие после предстоящих – заголовок ставится перед первой из них
+const firstPastKey = computed(() => props.bookings?.find((b) => b.isPast)?.key)
 </script>
 
 <template>
@@ -35,18 +39,30 @@ const { visible, hasMore, showMore } = useShowMore(items, 5)
 
         <template v-else-if="bookings">
             <div v-if="bookings.length > 0" class="flex flex-col gap-4">
-                <MeBookingsCard v-for="b in visible" :key="b.id" :booking="b" />
+                <template v-for="b in bookings" :key="b.key">
+                    <h3
+                        v-if="b.key === firstPastKey"
+                        class="text-muted mt-2 text-xs font-bold tracking-wider uppercase"
+                    >
+                        Прошедшие
+                    </h3>
+                    <MeBookingsCard :booking="b" />
+                </template>
 
+                <p v-if="loadMoreError" class="text-error text-center text-sm">
+                    Не удалось загрузить ещё. Попробуйте снова.
+                </p>
                 <UButton
                     v-if="hasMore"
                     variant="soft"
                     block
                     label="Показать ещё"
-                    @click="showMore"
+                    :loading="isLoadingMore"
+                    @click="emit('loadMore')"
                 />
             </div>
             <p v-else class="text-muted py-4 text-sm italic">
-                У вас пока нет записей на разовые занятия или события
+                У вас пока нет записей на пробные занятия или события
             </p>
         </template>
 

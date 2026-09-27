@@ -6,43 +6,28 @@ const props = defineProps<{
     sub: MeSubscription
 }>()
 
+const isExpired = computed(() => props.sub.status === "EXPIRED")
+
+// У истёкшего остаток всегда 0 (переведён на депозит) – показываем, сколько было куплено
 const rows = computed(() => [
     { label: "Кружков", value: String(props.sub.slots.length) },
-    {
-        label: "Остаток посещений",
-        value: `${props.sub.totalRemaining}/${props.sub.totalMax}`,
-        muted: props.sub.totalRemaining === 0
-    },
-    { label: "Стоимость", value: formatRubles(props.sub.sum) },
-    { label: "Ребёнок", value: props.sub.studentName },
-    { label: "Дата покупки", value: props.sub.formattedCreatedAt }
+    isExpired.value
+        ? { label: "Занятий в абонементе", value: String(props.sub.totalMax), muted: false }
+        : {
+              label: "Остаток посещений",
+              value: `${props.sub.totalRemaining}/${props.sub.totalMax}`,
+              muted: props.sub.totalRemaining === 0
+          },
+    { label: "Стоимость", value: formatRubles(props.sub.sum), muted: false },
+    { label: "Ребёнок", value: props.sub.studentName, muted: false },
+    { label: "Дата покупки", value: props.sub.formattedCreatedAt, muted: false }
 ])
 
-const stamp = computed(() => {
-    switch (props.sub.status) {
-        case "ACTIVE":
-            return {
-                text: "Активен",
-                class: "border-secondary/40 text-secondary bg-secondary/5"
-            }
-        case "PENDING":
-            return {
-                text: "Ожидает оплаты",
-                class: "border-amber-500/40 text-amber-600 bg-amber-500/5"
-            }
-        case "CANCELED":
-            return {
-                text: "Отменён",
-                class: "border-error/40 text-error bg-error/5"
-            }
-        case "EXPIRED":
-        default:
-            return {
-                text: "Истёк",
-                class: "border-default/20 text-default/40 bg-default/5"
-            }
-    }
-})
+const stamp = computed(() =>
+    isExpired.value
+        ? { text: "Истёк", class: "border-default/20 text-default/40 bg-default/5" }
+        : { text: "Активен", class: "border-secondary/40 text-secondary bg-secondary/5" }
+)
 
 const isClubsShown = ref<boolean>(false)
 const toggleClubsShown = () => {
@@ -51,10 +36,7 @@ const toggleClubsShown = () => {
 </script>
 
 <template>
-    <div
-        :class="{ 'opacity-75': sub.status === 'EXPIRED' || sub.status === 'CANCELED' }"
-        class="relative overflow-hidden rounded-lg"
-    >
+    <div :class="{ 'opacity-75': isExpired }" class="relative overflow-hidden rounded-lg">
         <div
             class="absolute top-3.5 right-3.5 z-20 -rotate-6 rounded-md border px-2.5 py-0.5 text-xs font-bold tracking-wider uppercase"
             :class="stamp.class"

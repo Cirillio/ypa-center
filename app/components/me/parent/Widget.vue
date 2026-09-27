@@ -12,6 +12,7 @@ defineProps<{
 
 const emit = defineEmits<{
     addChild: [payload: { name: string; birthdate: string }]
+    removeChild: [child: MeChild]
     retry: []
 }>()
 </script>
@@ -31,6 +32,7 @@ const emit = defineEmits<{
                 :is-saving="isSaving"
                 class="border-default border-t pt-6 md:border-t-0 md:border-l md:pt-0 md:pl-6"
                 @add="emit('addChild', $event)"
+                @remove="emit('removeChild', $event)"
             />
         </div>
     </div>

@@ -18,7 +18,7 @@ function handleLogout() {
     <UModal
         v-model:open="modalOpen"
         :ui="{
-            overlay: 'bg-black/25 backdrop-blur-xs',
+            overlay: 'bg-black/25',
             content: 'ring-0 shadow-none'
         }"
     >

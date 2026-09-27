@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-// Карточка разовой записи на событие или пробное занятие.
+// Карточка записи на пробное или событие со статусом оплаты; прошедшая – приглушена.
 import type { MeBooking } from "~/types"
 
 const props = defineProps<{
@@ -7,15 +7,37 @@ const props = defineProps<{
 }>()
 
 const rows = computed(() => [
-    { label: "Участник", value: props.booking.participant },
+    { label: "Участник", value: props.booking.participant || "–" },
     { label: "Дата и время", value: `${props.booking.displayDate} · ${props.booking.displayTime}` },
-    { label: "Стоимость", value: formatRubles(props.booking.price) }
+    {
+        label: "Стоимость",
+        value:
+            props.booking.price == null
+                ? "–"
+                : props.booking.price === 0
+                  ? "Бесплатно"
+                  : formatRubles(props.booking.price)
+    }
 ])
+
+// Прошедшее подтверждённое бейджа не получает: «Записан» на прошлом вводит в заблуждение
+const badge = computed(() => {
+    if (props.booking.status === "PENDING") {
+        return { label: props.booking.statusLabel, color: "warning" as const }
+    }
+    if (!props.booking.isPast) {
+        return { label: props.booking.statusLabel, color: "success" as const }
+    }
+    return null
+})
 </script>
 
 <template>
-    <div class="bg-default flex flex-col gap-4 rounded-lg p-3.75">
-        <!-- Шапка: бейдж типа + заголовок -->
+    <div
+        class="bg-default flex flex-col gap-4 rounded-lg p-3.75"
+        :class="{ 'opacity-75': booking.isPast }"
+    >
+        <!-- Шапка: бейдж типа + заголовок + статус -->
         <div class="flex items-center gap-3">
             <MeActivityTypeBadge :type="booking.kind" />
             <div class="min-w-0 flex-1">
@@ -26,6 +48,13 @@ const rows = computed(() => [
                     {{ booking.subtitle }}
                 </p>
             </div>
+            <UBadge
+                v-if="badge"
+                :label="badge.label"
+                :color="badge.color"
+                variant="soft"
+                class="shrink-0"
+            />
         </div>
 
         <USeparator />

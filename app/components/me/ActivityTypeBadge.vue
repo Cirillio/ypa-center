@@ -35,7 +35,7 @@ const badge = computed(() => MAP[props.type])
             side: 'top'
         }"
         :ui="{
-            content: 'text-base ring-0'
+            content: 'text-base bg-white shadow-sm font-semibold ring-0'
         }"
     >
         <span
