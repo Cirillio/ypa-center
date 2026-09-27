@@ -41,8 +41,8 @@ const hasError = ref(false)
             loading="lazy"
             class="h-full w-full transition-opacity duration-300"
             :class="isLoaded ? 'opacity-100' : 'opacity-0'"
-            @load="isLoaded = true"
-            @error="hasError = true"
+            @load="void (isLoaded = true)"
+            @error="void (hasError = true)"
         />
     </div>
 </template>

@@ -53,7 +53,7 @@ onUnmounted(() => {
             content: isMobile
                 ? 'rounded-none bg-black ring-0 shadow-none focus:outline-none'
                 : 'max-w-5xl w-full rounded-md ring-0 shadow-none overflow-hidden focus:outline-none',
-            overlay: 'bg-black/60 backdrop-blur-sm'
+            overlay: 'bg-black/60'
         }"
     >
         <template #content>
@@ -78,7 +78,7 @@ onUnmounted(() => {
                     :has-next="hasNext"
                     @prev="emit('prev')"
                     @next="emit('next')"
-                    @close="isOpen = false"
+                    @close="void (isOpen = false)"
                 />
             </div>
 
@@ -103,7 +103,7 @@ onUnmounted(() => {
                     :has-next="hasNext"
                     @prev="emit('prev')"
                     @next="emit('next')"
-                    @close="isOpen = false"
+                    @close="void (isOpen = false)"
                 />
             </div>
         </template>

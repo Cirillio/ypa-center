@@ -31,7 +31,7 @@
             :quality="quality"
             class="h-full w-full"
             :class="combinedClasses"
-            @load="isLoaded = true"
+            @load="void (isLoaded = true)"
             @error="onError"
         />
     </div>
