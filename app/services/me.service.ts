@@ -1,13 +1,18 @@
 import type { ApiFetch } from "~/composables/useApi"
-import { mockBookings, type BookingItemDraftDto } from "~/services/mocks/me-bookings.mock"
 import type {
+    BookingDto,
+    DepositBalanceDto,
+    DepositEntryDto,
     MeBooking,
     MeChild,
+    MeDepositEntry,
     MeProfile,
     MeSubscription,
     MeSubscriptionSlot,
     MeUpcoming,
     NewChild,
+    Page,
+    PageQuery,
     Profile,
     ProfileChild,
     ProfileCompletionPayload,
@@ -15,9 +20,20 @@ import type {
     UpcomingItem
 } from "~/types"
 
-// Проверяет заполненность обязательных данных профиля родителя.
+// Флаг анкеты считает бэк: ФИО, телефон, «откуда узнали» и согласие на ПД.
 export function isProfileComplete(dto: Profile): boolean {
-    return Boolean(dto.full_name?.trim())
+    return dto.profile_completed
+}
+
+// Применяет маппер к results, сохраняя счётчик и ссылки страницы.
+function mapPage<T, R>(page: Page<T>, map: (item: T) => R): Page<R> {
+    return { ...page, results: page.results.map(map) }
+}
+
+// "2026-10-03" → "03.10.2026" без Date: не зависит от часового пояса сервера.
+function formatIsoDate(iso: string): string {
+    const [year, month, day] = iso.split("-")
+    return year && month && day ? `${day}.${month}.${year}` : iso
 }
 
 function toChild(dto: ProfileChild): MeChild {
@@ -58,7 +74,8 @@ function toSubscription(dto: SubscriptionView): MeSubscription {
         formattedCreatedAt: new Date(dto.created_at).toLocaleDateString("ru-RU", {
             year: "numeric",
             month: "long",
-            day: "numeric"
+            day: "numeric",
+            timeZone: "Asia/Novosibirsk"
         }),
         studentName: dto.student_name,
         sum: kopecksToRubles(dto.purchase_price),
@@ -82,32 +99,48 @@ function toUpcoming(dto: UpcomingItem): MeUpcoming {
     }
 }
 
-function toBooking(dto: BookingItemDraftDto): MeBooking {
-    const parts = dto.date.split("-")
-    const formattedDate = parts.length === 3 ? `${parts[2]}.${parts[1]}.${parts[0]}` : dto.date
+function toBookingParticipant(dto: BookingDto): string {
+    if (dto.kind === "TRIAL" || !dto.attendees_count) return dto.child_name
+    const seats = `${dto.attendees_count} ${pluralize(dto.attendees_count, ["место", "места", "мест"])}`
+    return dto.child_name ? `${dto.child_name} · ${seats}` : seats
+}
 
-    let participant = ""
-    if (dto.student_name) {
-        participant = dto.student_name
-    } else if (dto.attendees_count) {
-        participant = `${dto.attendees_count} ${pluralize(dto.attendees_count, ["место", "места", "мест"])}`
-    }
-
+function toBooking(dto: BookingDto): MeBooking {
     return {
-        id: String(dto.id),
+        key: `${dto.kind}-${dto.id}`,
         kind: dto.kind === "TRIAL" ? "trial" : "event",
         title: dto.title,
         subtitle: dto.group_name ?? "",
-        participant,
-        displayDate: formattedDate,
-        displayTime: dto.time,
-        price: kopecksToRubles(dto.purchase_price)
+        participant: toBookingParticipant(dto),
+        displayDate: formatIsoDate(dto.date),
+        displayTime: `${dto.start_time.slice(0, 5)}-${dto.end_time.slice(0, 5)}`,
+        price: dto.cost == null ? null : kopecksToRubles(dto.cost),
+        status: dto.status,
+        statusLabel: dto.status_display,
+        isPast: dto.is_past
+    }
+}
+
+function toDepositEntry(dto: DepositEntryDto): MeDepositEntry {
+    return {
+        id: dto.id,
+        amount: kopecksToRubles(dto.amount),
+        reason: dto.reason,
+        reasonLabel: dto.reason_display,
+        subscriptionDisplayId: dto.subscription_display_id,
+        createdAt: new Date(dto.created_at).toLocaleDateString("ru-RU", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+            timeZone: "Asia/Novosibirsk"
+        })
     }
 }
 
 /**
  * Личный кабинет родителя. Требует авторизации (Bearer подставляет useApi).
- * Эндпоинты: GET /me/profile/, /me/subscriptions/, /me/upcoming/, /me/bookings/, POST /me/children/
+ * Списки ЛК пагинируются бэком: с ?limit приходит конверт Page (api-core-contracts.md §0.5).
+ * Всё, кроме профиля и детей, закрыто до заполнения анкеты (403 PROFILE_INCOMPLETE).
  */
 export class MeService {
     constructor(private readonly fetch: ApiFetch) {}
@@ -116,16 +149,20 @@ export class MeService {
         return toProfile(await this.fetch<Profile>("/v1/me/profile/"))
     }
 
-    async getSubscriptions(): Promise<MeSubscription[]> {
-        const subscriptions = await this.fetch<SubscriptionView[]>("/v1/me/subscriptions/")
-        return subscriptions.map(toSubscription)
+    /** Действующие абонементы сверху, внутри группы – новые сверху (порядок бэка) */
+    async getSubscriptionsPage(query: PageQuery): Promise<Page<MeSubscription>> {
+        const page = await this.fetch<Page<SubscriptionView>>("/v1/me/subscriptions/", {
+            query
+        })
+        return mapPage(page, toSubscription)
     }
 
-    /** GET /api/v1/me/bookings/ */
-    async getBookings(): Promise<MeBooking[]> {
-        // MOCK(bookings): эндпоинт в разработке, временно используем мок-данные
-        const items = await mockBookings()
-        return items.map(toBooking)
+    /** period=all: предстоящие по близости, затем прошедшие от свежих (порядок бэка) */
+    async getBookingsPage(query: PageQuery): Promise<Page<MeBooking>> {
+        const page = await this.fetch<Page<BookingDto>>("/v1/me/bookings/", {
+            query: { ...query, period: "all" }
+        })
+        return mapPage(page, toBooking)
     }
 
     /** Лента предсортирована бэком по реальным дате и времени */
@@ -139,6 +176,19 @@ export class MeService {
         return items.map(toUpcoming)
     }
 
+    /** Баланс в рублях; депозита ещё нет – 0 */
+    async getDepositBalance(): Promise<number> {
+        const res = await this.fetch<DepositBalanceDto>("/v1/me/deposit/")
+        return kopecksToRubles(res.balance)
+    }
+
+    async getDepositEntriesPage(query: PageQuery): Promise<Page<MeDepositEntry>> {
+        const page = await this.fetch<Page<DepositEntryDto>>("/v1/me/deposit/entries/", {
+            query
+        })
+        return mapPage(page, toDepositEntry)
+    }
+
     async addChild(dto: NewChild): Promise<MeChild> {
         const created = await this.fetch<ProfileChild>("/v1/me/children/", {
             method: "POST",
@@ -150,20 +200,24 @@ export class MeService {
         return toChild(created)
     }
 
-    /** PATCH /api/v1/me/profile/ */
+    /** Мягкое удаление; 409 CHILD_HAS_ACTIVE_ENROLLMENTS, пока есть живые записи */
+    async deleteChild(id: string): Promise<void> {
+        await this.fetch(`/v1/me/children/${encodeURIComponent(id)}/`, { method: "DELETE" })
+    }
+
+    /** PATCH /me/profile/: галочка согласия уже проверена схемой формы */
     async completeProfile(payload: ProfileCompletionPayload): Promise<MeProfile> {
-        // MOCK(profile-referral): поле referralSource не отправляется (нет в модели Parent на бэке)
         const updated = await this.fetch<Profile>("/v1/me/profile/", {
             method: "PATCH",
             body: {
                 full_name: payload.fullName.trim(),
-                ...(payload.phone?.trim() ? { phone: payload.phone.trim() } : {})
+                phone: payload.phone.trim(),
+                referral_source: payload.referralSource,
+                pd_consent: true
             }
         })
         return toProfile(updated)
     }
-
-    // TODO backend: нет DELETE /api/v1/me/children/{id}/, удаление не поддерживается
 }
 
 export const useMeService = () => new MeService(useApi().apiFetch)

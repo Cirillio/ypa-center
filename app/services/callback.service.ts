@@ -5,6 +5,7 @@ export interface SendCallbackDto {
     phone: string
     preferred_time_window: PreferredTimeWindow
     name: string
+    pd_consent: boolean
     captcha_token: string
 }
 
@@ -21,6 +22,7 @@ export class CallbackService {
             // Нормализация номера в формат E.164 (+79991234567) для бэкенда
             phone: dto.phone.replace(/[^\d+]/g, ""),
             preferred_time_window: dto.preferred_time_window,
+            pd_consent: dto.pd_consent,
             website_url: "",
             captcha_token: dto.captcha_token
         }

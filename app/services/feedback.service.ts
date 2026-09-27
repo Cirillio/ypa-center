@@ -5,6 +5,7 @@ export interface SendFeedbackDto {
     name?: string
     email: string
     message: string
+    pd_consent: boolean
     captcha_token: string
 }
 
@@ -20,6 +21,7 @@ export class FeedbackService {
             name: dto.name?.trim() || undefined,
             email: dto.email,
             message: dto.message,
+            pd_consent: dto.pd_consent,
             website_url: "",
             captcha_token: dto.captcha_token
         }
