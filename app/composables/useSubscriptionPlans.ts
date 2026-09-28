@@ -13,7 +13,7 @@ export function useSubscriptionPlans() {
         highlight: t.highlight ?? false
     }))
 
-    const { data, error } = useAsyncData("public-plans", () => plans.getAll())
+    const { data, error } = useAsyncData("plans", () => plans.getAll())
 
     const tiers = computed<PlanTier[]>(() => (data.value?.length ? data.value : fallback))
 

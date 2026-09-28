@@ -9,9 +9,12 @@ const selectedTime = ref("")
 const toast = useToast()
 
 const modalOpen = ref(false)
+// Монтируем модалку после первого успешного сабмита; при закрытии не размонтируем ради transition
+const hasBeenSubmitted = ref(false)
 
 const onSuccessSubmit = (time: string) => {
     selectedTime.value = time
+    hasBeenSubmitted.value = true
     modalOpen.value = true
 }
 
@@ -27,7 +30,8 @@ const onErrorSubmit = (error: ApiError) => {
 
 <template>
     <div class="bg-default flex max-w-xs flex-col rounded-lg p-2 sm:p-6 xl:max-w-sm">
-        <CallbackModal
+        <LazyCallbackModal
+            v-if="hasBeenSubmitted"
             v-model:open="modalOpen"
             :time="selectedTime"
             @close="void (modalOpen = false)"

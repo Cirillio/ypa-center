@@ -37,14 +37,6 @@ const {
     refresh: refreshUpcoming
 } = useMeUpcoming()
 
-const isProcessing = computed(
-    () =>
-        isProfilePending.value ||
-        subscriptions.pending.value ||
-        bookings.pending.value ||
-        isUpcomingPending.value
-)
-
 // 2. Управление детьми
 const toast = useToast()
 const {
@@ -73,8 +65,10 @@ const addChild = async (payload: Parameters<typeof addChildBase>[0]) => {
 
 const childToDelete = ref<MeChild | null>(null)
 const isDeleteModalOpen = ref<boolean>(false)
+const hasDeleteConfirmOpened = ref<boolean>(false)
 
 const openDeleteModal = (child: MeChild) => {
+    hasDeleteConfirmOpened.value = true
     resetDeleteState()
     childToDelete.value = child
     isDeleteModalOpen.value = true
@@ -95,8 +89,10 @@ const confirmDeleteChild = async () => {
 
 // 3. Модалка выхода
 const modalOpen = ref<boolean>(false)
+const hasLeaveConfirmOpened = ref<boolean>(false)
 
 const openConfirmModal = () => {
+    hasLeaveConfirmOpened.value = true
     modalOpen.value = true
 }
 
@@ -110,8 +106,13 @@ const parent = computed(() => profileData.value?.parent)
 
 <template>
     <div class="gradient-bg-ps min-h-dvh pt-(--ui-header-height)">
-        <MeParentLeaveConfirm v-model="modalOpen" @confirm="handleLogout" />
-        <MeParentChildDeleteConfirm
+        <LazyMeParentLeaveConfirm
+            v-if="hasLeaveConfirmOpened"
+            v-model="modalOpen"
+            @confirm="handleLogout"
+        />
+        <LazyMeParentChildDeleteConfirm
+            v-if="hasDeleteConfirmOpened"
             v-model:open="isDeleteModalOpen"
             :child-name="childToDelete?.name ?? ''"
             :is-deleting="isChildDeleting"
@@ -132,7 +133,7 @@ const parent = computed(() => profileData.value?.parent)
                     <MeParentWidget
                         :parent="parent"
                         :children="profileData ? cabinetChildren : undefined"
-                        :is-processing="isProcessing"
+                        :is-processing="isProfilePending"
                         :is-saving="isChildSaving"
                         :error="profileError"
                         @add-child="addChild"
@@ -147,7 +148,7 @@ const parent = computed(() => profileData.value?.parent)
                             :has-more="subscriptions.hasMore.value"
                             :is-loading-more="subscriptions.isLoadingMore.value"
                             :load-more-error="subscriptions.loadMoreError.value"
-                            :is-processing="isProcessing"
+                            :is-processing="subscriptions.pending.value"
                             :error="subscriptions.error.value"
                             @retry="subscriptions.refresh()"
                             @load-more="subscriptions.loadMore()"
@@ -157,7 +158,7 @@ const parent = computed(() => profileData.value?.parent)
                             :has-more="bookings.hasMore.value"
                             :is-loading-more="bookings.isLoadingMore.value"
                             :load-more-error="bookings.loadMoreError.value"
-                            :is-processing="isProcessing"
+                            :is-processing="bookings.pending.value"
                             :error="bookings.error.value"
                             @retry="bookings.refresh()"
                             @load-more="bookings.loadMore()"
@@ -169,7 +170,7 @@ const parent = computed(() => profileData.value?.parent)
                 <div class="lg:col-span-2">
                     <MeUpcomingWidget
                         :items="upcomingData"
-                        :is-processing="isProcessing"
+                        :is-processing="isUpcomingPending"
                         :error="upcomingError"
                         @retry="refreshUpcoming"
                     />

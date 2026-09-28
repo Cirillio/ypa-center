@@ -46,7 +46,8 @@ useHead({
                     </template>
                 </UiSectionLeading>
 
-                <CallbackWidget />
+                <!-- ПОЧЕМУ lazy: форма тянет Turnstile, Popover и Tooltip (~90 KB); HTML есть из SSR, JS – только у вьюпорта -->
+                <LazyCallbackWidget :hydrate-on-visible="{ rootMargin: '300px' }" />
             </div>
 
             <div class="py-4">

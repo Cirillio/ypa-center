@@ -3,13 +3,15 @@
 const HOME_GALLERY_LIMIT = 5
 
 const gallery = useGalleryService()
-const { data } = await useAsyncData("home-gallery", () => gallery.getAll())
-const photos = computed(() => (data.value ?? []).slice(0, HOME_GALLERY_LIMIT))
+const { data, status } = useAsyncData("gallery:home", () => gallery.getPage(HOME_GALLERY_LIMIT))
+const photos = computed(() => data.value?.results ?? [])
+// Пока фото не пришли, секция держит место скелетоном; без полного набора из 5 – скрыта целиком
+const isPending = computed(() => status.value === "pending" && !photos.value.length)
 </script>
 
 <template>
     <section
-        v-if="photos.length === HOME_GALLERY_LIMIT"
+        v-if="isPending || photos.length === HOME_GALLERY_LIMIT"
         id="gallery"
         class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20 lg:py-24"
     >
@@ -28,7 +30,15 @@ const photos = computed(() => (data.value ?? []).slice(0, HOME_GALLERY_LIMIT))
             </UiSectionLeading>
 
             <!-- Gallery grid -->
-            <div class="grid grid-cols-2 gap-2 lg:grid-cols-4">
+            <div v-if="isPending" class="grid grid-cols-2 gap-2 lg:grid-cols-4" aria-busy="true">
+                <USkeleton class="col-span-2 row-span-2 aspect-square rounded-sm" />
+                <USkeleton
+                    v-for="n in 4"
+                    :key="`home-gallery-sk-${n}`"
+                    class="aspect-square rounded-sm"
+                />
+            </div>
+            <div v-else class="grid grid-cols-2 gap-2 lg:grid-cols-4">
                 <div
                     v-for="(photo, i) in photos"
                     :key="photo.id"
@@ -37,7 +47,7 @@ const photos = computed(() => (data.value ?? []).slice(0, HOME_GALLERY_LIMIT))
                         'col-span-2 row-span-2 aspect-square': i === 0
                     }"
                 >
-                    <LazyUiPhoto
+                    <UiPhoto
                         :src="photo.image_url"
                         :alt="'Фото ' + (i + 1) + ' из центра'"
                         class="h-full w-full scale-105 object-cover object-center transition duration-300 group-hover:scale-100"

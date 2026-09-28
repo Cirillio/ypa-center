@@ -11,7 +11,7 @@ const {
     error: activitiesError,
     pending: activitiesPending,
     refresh: refreshActivities
-} = await useAsyncData("clubs", () => activities.getAll())
+} = useAsyncData("activities", () => activities.getAll())
 
 useSeoMeta({
     title: "Кружки – Улица Радости",
@@ -84,7 +84,7 @@ useHead({
         <ClubsList
             :activities="activitiesData ?? []"
             :error="activitiesError"
-            :retrying="activitiesPending"
+            :pending="activitiesPending"
             @retry="refreshActivities"
         />
 

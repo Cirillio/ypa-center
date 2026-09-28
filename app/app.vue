@@ -33,6 +33,7 @@ const toaster: ToasterProps = { position: "top-center" }
 
 <template>
     <UApp :toaster="toaster">
+        <NuxtLoadingIndicator color="var(--ui-primary)" :height="4" />
         <NuxtLayout>
             <NuxtPage />
         </NuxtLayout>

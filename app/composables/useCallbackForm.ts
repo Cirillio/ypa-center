@@ -1,5 +1,4 @@
 import type { ContactTimeOption, ContactTimeValue, PreferredTimeWindow } from "~/types"
-import { useDayjs } from "#dayjs"
 import { Mask } from "maska"
 import { Maskas } from "~/constants/masks"
 
@@ -94,8 +93,17 @@ export const useCallbackForm = (options: UseCallbackFormOptions = {}) => {
             const selectedTime = form.time
             const preferredTimeWindow = CONTACT_TIME_TO_WINDOW[selectedTime.value]
 
-            const dayjs = useDayjs(),
-                formattedDate = dayjs().tz("Asia/Novosibirsk").format("DD.MM.YYYY HH:mm")
+            // «28.09.2026 21:37» по времени центра; Intl ставит запятую между датой и временем – убираем
+            const formattedDate = new Intl.DateTimeFormat("ru-RU", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                timeZone: "Asia/Novosibirsk"
+            })
+                .format(new Date())
+                .replace(",", "")
             const userName = form.name?.trim() || `Аноним от ${formattedDate}`
 
             await callback.send({

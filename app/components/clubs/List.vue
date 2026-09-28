@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import type { Activity } from "~/types"
 
-// Каталог кружков; при сбое API вместо пустоты – ошибка с повтором, при пустом ответе – пояснение.
+// Каталог кружков; скелетон при первой загрузке, ошибка с повтором при сбое API, пояснение при пустом ответе.
 defineProps<{
     activities: Activity[]
     error?: unknown
-    retrying?: boolean
+    pending?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -13,6 +13,8 @@ const emit = defineEmits<{
 }>()
 
 const { contactInfo } = useAppConfig()
+
+const SKELETON_KEYS = ["clubs-sk-1", "clubs-sk-2", "clubs-sk-3"] as const
 </script>
 
 <template>
@@ -25,11 +27,19 @@ const { contactInfo } = useAppConfig()
                 Все <span class="text-primary">кружки</span>
             </h2>
 
+            <div v-if="pending && !activities.length" class="grid w-full gap-4" aria-busy="true">
+                <USkeleton
+                    v-for="skeletonKey in SKELETON_KEYS"
+                    :key="skeletonKey"
+                    class="h-220 w-full rounded-sm md:h-120 lg:h-128"
+                />
+            </div>
+
             <UiErrorState
-                v-if="error && !activities.length"
+                v-else-if="error && !activities.length"
                 size="lg"
                 message="Не удалось загрузить список кружков."
-                :retrying="retrying"
+                :retrying="pending"
                 @retry="emit('retry')"
             />
 
@@ -50,7 +60,7 @@ const { contactInfo } = useAppConfig()
 
             <!-- Список кружков -->
             <div v-else class="grid w-full gap-4">
-                <LazyClubsCard
+                <ClubsCard
                     v-for="(item, i) in activities"
                     :key="item.id"
                     :activity="item"

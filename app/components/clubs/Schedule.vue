@@ -17,8 +17,8 @@ const {
     error: slotsError,
     status: slotsStatus,
     refresh
-} = await useAsyncData(
-    () => `clubs-schedule:${weekStart.value}`,
+} = useAsyncData(
+    () => `schedule:week:${weekStart.value}`,
     () => scheduleService.getWeek(weekStart.value),
     { watch: [weekStart] }
 )
@@ -73,23 +73,15 @@ function slotsForDay(dow: number) {
             </div>
 
             <!-- Ошибка загрузки -->
-            <div
-                v-if="slotsError"
-                class="bg-default flex flex-col items-center justify-center gap-3 rounded-sm py-8 text-center"
-            >
-                <UIcon
-                    name="ph:warning-circle-duotone"
-                    class="text-muted size-10"
-                    aria-hidden="true"
-                />
-                <p class="text-muted text-sm font-medium">
-                    Не удалось загрузить расписание на выбранную неделю.
-                </p>
-                <UButton variant="soft" size="sm" label="Повторить" @click="void refresh()" />
-            </div>
+            <UiErrorState
+                v-if="slotsError && !isPending"
+                class="bg-default rounded-sm"
+                message="Не удалось загрузить расписание на выбранную неделю."
+                @retry="void refresh()"
+            />
 
             <!-- Mobile -->
-            <div v-else class="lg:hidden">
+            <div v-if="!slotsError || isPending" class="lg:hidden">
                 <!-- Дни недели -->
                 <UiScrollFade direction="x">
                     <div class="flex gap-2 py-2">
@@ -135,7 +127,7 @@ function slotsForDay(dow: number) {
                     :key="selectedDay.dow"
                     class="mt-2 flex flex-col gap-2"
                 >
-                    <LazyClubsScheduleCard
+                    <ClubsScheduleCard
                         v-for="slot in slotsForDay(selectedDay.dow)"
                         :key="slot.id"
                         :weekly-slot="slot"
@@ -153,7 +145,7 @@ function slotsForDay(dow: number) {
             </div>
 
             <!-- Desktop: всегда 7 колонок -->
-            <div v-if="!slotsError" class="hidden grid-cols-7 lg:grid lg:gap-2">
+            <div v-if="!slotsError || isPending" class="hidden grid-cols-7 lg:grid lg:gap-2">
                 <div v-for="day in weekDays" :key="day.dayShort" class="flex flex-col gap-2">
                     <!-- Заголовок колонки -->
                     <div
@@ -167,8 +159,11 @@ function slotsForDay(dow: number) {
                         <span class="text-lg font-bold uppercase">{{ day.dayShort }}</span>
                     </div>
 
+                    <!-- Загрузка недели: вместо «Выходной» – скелетон, иначе пустые дни врут -->
+                    <USkeleton v-if="isPending" class="aspect-square rounded-md" />
+
                     <!-- Карточки слотов -->
-                    <template v-if="slotsForDay(day.dow).length">
+                    <template v-else-if="slotsForDay(day.dow).length">
                         <ClubsScheduleCard
                             v-for="slot in slotsForDay(day.dow)"
                             :key="slot.id"

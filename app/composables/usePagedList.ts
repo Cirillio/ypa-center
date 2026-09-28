@@ -3,16 +3,19 @@ import type { Page, PageQuery } from "~/types"
 interface UsePagedListOptions {
     pageSize?: number
     immediate?: boolean
+    // Публичные списки – true (первая страница в SSR), кабинет – false (нужен токен из localStorage)
+    server?: boolean
 }
 
 // Грузит список страницами с бэка (limit/offset) и дописывает следующие по «Показать ещё».
 export function usePagedList<T>(
     key: string,
-    fetchPage: (query: PageQuery) => Promise<Page<T>>,
-    { pageSize = 5, immediate = true }: UsePagedListOptions = {}
+    // Из конверта нужны только count и results – next/previous в сгенерированных типах бывают optional
+    fetchPage: (query: PageQuery) => Promise<Pick<Page<T>, "count" | "results">>,
+    { pageSize = 5, immediate = true, server = false }: UsePagedListOptions = {}
 ) {
     const first = useAsyncData(key, () => fetchPage({ limit: pageSize, offset: 0 }), {
-        server: false,
+        server,
         immediate
     })
 

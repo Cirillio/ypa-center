@@ -31,7 +31,7 @@ const promo = useAppConfig().promo
             <div
                 class="hover:ring-primary focus-within:ring-primary aspect-square w-full overflow-hidden rounded-lg ring-2 ring-transparent transition duration-300"
             >
-                <LazyUiVideo :src="promo.aboutVideoUrl" title="Промо-видео центра Улица Радости" />
+                <UiVideo :src="promo.aboutVideoUrl" title="Промо-видео центра Улица Радости" />
             </div>
         </UContainer>
     </section>

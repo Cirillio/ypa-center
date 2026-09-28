@@ -9,6 +9,9 @@ export const useAuthStore = defineStore("auth", () => {
     const auth = useAuthService()
     const me = useMeService()
     const { secondsLeft, canResend, startTimer, resetTimer } = useOtpTimer(60)
+    // ПОЧЕМУ computed: readonly-ref Pinia считает state и на гидрации пишет в него
+    // значение из SSR-payload («Set operation on key "value" failed: target is readonly»)
+    const secondsLeftView = computed<number>(() => secondsLeft.value)
 
     const email = ref<string>("")
     const code = ref<string>("")
@@ -159,7 +162,7 @@ export const useAuthStore = defineStore("auth", () => {
         isLoading,
         error,
         isAuthed,
-        secondsLeft,
+        secondsLeft: secondsLeftView,
         canResend,
         requestOtp,
         verifyOtp,

@@ -1,14 +1,15 @@
 <script lang="ts" setup>
 const activities = useActivitiesService()
-const { data, error } = await useAsyncData("popular-clubs", () => activities.getPopular())
+const { data, error, status } = useAsyncData("activities:popular", () => activities.getPopular())
 
 // Бэк лимитирует выдачу тремя, но контракт на «ровно 3» не гарантирован –
 // >4 обрезаем сами, раскладка ниже рассчитана на 2..4
 const clubs = computed(() => (data.value ?? []).slice(0, 4))
 
-type Variant = "empty" | "duo" | "trio" | "quad"
+type Variant = "pending" | "empty" | "duo" | "trio" | "quad"
 
 const variant = computed<Variant>(() => {
+    if (status.value === "pending" && !clubs.value.length) return "pending"
     if (error.value) return "empty"
     switch (clubs.value.length) {
         case 4:
@@ -23,7 +24,7 @@ const variant = computed<Variant>(() => {
 })
 
 // Раскладка grid-контейнера по числу карточек (мобила всегда столбик – grid-cols-1)
-const GRID_CLASS: Record<Exclude<Variant, "empty">, string> = {
+const GRID_CLASS: Record<Exclude<Variant, "empty" | "pending">, string> = {
     duo: "md:aspect-2/1 md:grid-cols-2 md:grid-rows-1",
     trio: "md:aspect-2/1 md:grid-cols-[2fr_1fr] md:grid-rows-2",
     quad: "md:aspect-square md:grid-cols-2 md:grid-rows-2"
@@ -57,7 +58,18 @@ const GRID_CLASS: Record<Exclude<Variant, "empty">, string> = {
             </UiSectionLeading>
 
             <!-- Мало кружков или ошибка загрузки – приглашение в каталог вместо сетки -->
-            <HomeTopClubsEmpty v-if="variant === 'empty'" />
+            <!-- Скелетон повторяет самую частую раскладку – trio -->
+            <div
+                v-if="variant === 'pending'"
+                class="grid w-full grid-cols-1 gap-4 md:aspect-2/1 md:grid-cols-[2fr_1fr] md:grid-rows-2 lg:gap-2"
+                aria-busy="true"
+            >
+                <USkeleton class="h-80 rounded-md md:row-span-2 md:h-auto" />
+                <USkeleton class="h-80 rounded-md md:h-auto" />
+                <USkeleton class="h-80 rounded-md md:h-auto" />
+            </div>
+
+            <HomeTopClubsEmpty v-else-if="variant === 'empty'" />
 
             <!-- Grid: раскладка зависит от числа карточек (2/3/4) -->
             <div
@@ -65,7 +77,7 @@ const GRID_CLASS: Record<Exclude<Variant, "empty">, string> = {
                 class="grid w-full grid-cols-1 overflow-hidden rounded-md max-md:gap-4 lg:gap-2"
                 :class="GRID_CLASS[variant]"
             >
-                <LazyHomeTopClubsCard
+                <HomeTopClubsCard
                     v-for="(club, i) in clubs"
                     :key="club.id"
                     :name="club.name"

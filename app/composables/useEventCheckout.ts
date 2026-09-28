@@ -12,7 +12,7 @@ export function useEventCheckout() {
         status: eventsStatus,
         error: eventsError,
         refresh: refreshEvents
-    } = useAsyncData("enrollment:events", () => eventsService.getAll())
+    } = useAsyncData("events", () => eventsService.getAll())
 
     const events = computed<EventItem[]>(() => eventsData.value ?? [])
     const isLoading = computed(() => eventsStatus.value === "pending")

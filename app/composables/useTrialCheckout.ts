@@ -14,78 +14,79 @@ export function useTrialCheckout() {
 
     const rawClubQuery = parseQueryParam(route.query.clubId)
     const rawSlotQuery = parseQueryParam(route.query.slotId)
-    const initialSlotId =
-        rawSlotQuery !== undefined && /^\d+$/.test(rawSlotQuery) ? Number(rawSlotQuery) : undefined
 
     const {
         data: clubsData,
         status: clubsStatus,
         error: clubsError,
         refresh: refreshClubs
-    } = useAsyncData("enrollment:trial:clubs", () => activitiesService.getAll())
+    } = useAsyncData("activities", () => activitiesService.getAll())
 
     const clubs = computed<Activity[]>(() => clubsData.value ?? [])
     const isClubsLoading = computed(() => clubsStatus.value === "pending")
 
-    // Инициализация кружка: если каталог уже в кэше/SSR, берём сразу
-    const initialMatchedClub = findClubByParam(rawClubQuery, clubs.value)
-    const selectedClubId = ref<number | undefined>(initialMatchedClub?.id)
+    // Запрошенный кружок: из URL или клика. Числовой id известен уже в setup на сервере –
+    // от него строится ключ слотов, и слоты грузятся параллельно с каталогом.
+    const requestedClubParam = ref<string | undefined>(rawClubQuery)
+    const requestedClubId = computed<number | undefined>(() => {
+        const param = requestedClubParam.value
+        return param !== undefined && /^\d+$/.test(param) ? Number(param) : undefined
+    })
 
-    // При первой загрузке каталога находим кружок по параметру из URL без гонок
-    watch(
-        clubs,
-        (loadedClubs) => {
-            if (loadedClubs.length === 0) return
-            if (selectedClubId.value === undefined && rawClubQuery) {
-                const matched = findClubByParam(rawClubQuery, loadedClubs)
-                if (matched) {
-                    selectedClubId.value = matched.id
-                }
-            }
-        },
-        { immediate: true }
-    )
+    // ПОЧЕМУ computed, а не watch: на SSR watch не реагирует на догрузку каталога,
+    // и сервер рендерил «кружок не выбран», а клиент – выбранный (hydration mismatch).
+    const selectedClubId = computed<number | undefined>({
+        get: () => findClubByParam(requestedClubParam.value, clubs.value)?.id,
+        set: (id) => {
+            if (id !== selectedClubId.value) requestedSlotId.value = undefined
+            requestedClubParam.value = id !== undefined ? String(id) : undefined
+        }
+    })
 
     const selectedClub = computed<Activity | undefined>(() =>
         clubs.value.find((c) => c.id === selectedClubId.value)
     )
 
-    // Реактивная загрузка доступных слотов кружка через useAsyncData (поддерживает SSR и watch)
+    // Id для запроса слотов: числовой из URL сразу, slug – только после каталога (исключение, см. architecture.md)
+    const slotsClubId = computed<number | undefined>(
+        () => requestedClubId.value ?? selectedClubId.value
+    )
+
     const {
         data: slotsData,
         status: slotsStatus,
         error: slotsError,
         refresh: refreshSlots
     } = useAsyncData(
-        () => `enrollment:trial:slots:${selectedClubId.value ?? "none"}`,
+        () => `trial-slots:${slotsClubId.value ?? "none"}`,
         () => {
-            const id = selectedClubId.value
+            const id = slotsClubId.value
             if (!id) return Promise.resolve([])
-            const club = clubs.value.find((c) => c.id === id)
-            return activitiesService.getNextTrialSlots(id, club?.name)
+            return activitiesService.getNextTrialSlots(id, selectedClub.value?.name)
         },
-        { watch: [selectedClubId] }
+        { watch: [slotsClubId] }
     )
 
-    const selectedClubSlots = computed<TrialCheckoutSlot[]>(() => slotsData.value ?? [])
+    // Слоты показываются только для подтверждённого каталогом кружка
+    const selectedClubSlots = computed<TrialCheckoutSlot[]>(() =>
+        selectedClubId.value !== undefined ? (slotsData.value ?? []) : []
+    )
     const isSlotsLoading = computed(() => slotsStatus.value === "pending")
 
-    const selectedSlotId = ref<number | undefined>(initialSlotId)
+    const requestedSlotId = ref<number | undefined>(
+        rawSlotQuery !== undefined && /^\d+$/.test(rawSlotQuery) ? Number(rawSlotQuery) : undefined
+    )
 
-    // Смена кружка сбрасывает выбранный ранее слот
-    watch(selectedClubId, (newClubId, oldClubId) => {
-        if (oldClubId !== undefined && newClubId !== oldClubId) {
-            selectedSlotId.value = undefined
-        }
-    })
-
-    // Валидация слота: если слот отсутствует в расписании кружка или занят, сбрасываем выбор
-    watch(selectedClubSlots, (slots) => {
-        if (slots.length > 0 && selectedSlotId.value !== undefined) {
-            const exists = slots.some((s) => s.id === selectedSlotId.value && s.available > 0)
-            if (!exists) {
-                selectedSlotId.value = undefined
-            }
+    // Выбор слота тоже выводится: несуществующий или занятый слот из ссылки не выбран ни на сервере, ни на клиенте
+    const selectedSlotId = computed<number | undefined>({
+        get: () => {
+            const id = requestedSlotId.value
+            return selectedClubSlots.value.some((s) => s.id === id && s.available > 0)
+                ? id
+                : undefined
+        },
+        set: (id) => {
+            requestedSlotId.value = id
         }
     })
 
@@ -93,34 +94,37 @@ export function useTrialCheckout() {
         selectedClubSlots.value.find((s) => s.id === selectedSlotId.value)
     )
 
-    // Отражает фактический выбор в query без дублирования переходов в истории
-    function syncQuery(clubId = selectedClubId.value, slotId = selectedSlotId.value) {
-        const currentClubQuery = parseQueryParam(route.query.clubId)
-        const currentSlotQuery = parseQueryParam(route.query.slotId)
-        const targetClubQuery = clubId !== undefined ? String(clubId) : undefined
+    // Отражает выбор в query без новых записей в истории
+    function syncQuery(clubParam: string | undefined, slotId: number | undefined) {
         const targetSlotQuery = slotId !== undefined ? String(slotId) : undefined
-
-        if (currentClubQuery === targetClubQuery && currentSlotQuery === targetSlotQuery) {
+        if (
+            parseQueryParam(route.query.clubId) === clubParam &&
+            parseQueryParam(route.query.slotId) === targetSlotQuery
+        ) {
             return
         }
-
         void router.replace({
-            query: {
-                ...route.query,
-                clubId: targetClubQuery,
-                slotId: targetSlotQuery
-            }
+            query: { ...route.query, clubId: clubParam, slotId: targetSlotQuery }
         })
     }
 
-    watch([selectedClubId, selectedSlotId], ([clubId, slotId]) => {
-        syncQuery(clubId, slotId)
+    // ПОЧЕМУ следим за запрошенным, а не за выведенным: пока слоты грузятся, выведенный
+    // slotId временно undefined, и URL терял бы параметр из ссылки
+    watch([requestedClubParam, requestedSlotId], ([clubParam, slotId]) => {
+        syncQuery(clubParam, slotId)
     })
 
-    // Очищает невалидный clubId из query только после подтверждённой загрузки каталога
+    // Убирает из URL невалидные clubId/slotId, когда данные подтвердили, что их нет
     onMounted(() => {
-        if (clubs.value.length > 0 && route.query.clubId && selectedClubId.value === undefined) {
-            syncQuery(undefined, undefined)
+        if (clubs.value.length > 0 && requestedClubParam.value && !selectedClubId.value) {
+            requestedClubParam.value = undefined
+            requestedSlotId.value = undefined
+        } else if (
+            slotsStatus.value === "success" &&
+            requestedSlotId.value !== undefined &&
+            selectedSlotId.value === undefined
+        ) {
+            requestedSlotId.value = undefined
         }
     })
 

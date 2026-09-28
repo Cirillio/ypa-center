@@ -2,7 +2,7 @@
 import { EnrollRoutesEnum } from "~/constants/nav"
 
 const eventsService = useEventsService()
-const { data, error } = await useAsyncData("home-events", () => eventsService.getAll())
+const { data, error, status } = useAsyncData("events", () => eventsService.getAll())
 const events = computed(() => {
     const raw = data.value ?? []
     return raw.toSorted((a, b) => {
@@ -49,8 +49,18 @@ const events = computed(() => {
                 </template>
             </UiSectionLeading>
 
+            <div
+                v-if="status === 'pending' && !events.length"
+                class="flex flex-col gap-2 lg:grid lg:grid-cols-3 lg:gap-4"
+                aria-busy="true"
+            >
+                <USkeleton class="h-96 rounded-md" />
+                <USkeleton class="h-96 rounded-md max-lg:hidden" />
+                <USkeleton class="h-96 rounded-md max-lg:hidden" />
+            </div>
+
             <!-- Пустое состояние или ошибка загрузки -->
-            <HomeEventsEmpty v-if="error || events.length === 0" />
+            <HomeEventsEmpty v-else-if="error || events.length === 0" />
 
             <!-- Events list / grid -->
             <ul v-else class="flex flex-col gap-2 lg:grid lg:grid-cols-3 lg:gap-4">
@@ -59,7 +69,7 @@ const events = computed(() => {
                     :key="event.id + event.title + event.start_datetime"
                     class="flex"
                 >
-                    <LazyHomeEventsCard
+                    <HomeEventsCard
                         :id="event.id"
                         :title="event.title"
                         :description="event.description"

@@ -18,7 +18,7 @@ export function useCheckoutChildren() {
         error,
         execute,
         refresh
-    } = useAsyncData("checkout-profile", () => me.getProfile(), {
+    } = useAsyncData("me-profile", () => me.getProfile(), {
         server: false,
         immediate: false
     })

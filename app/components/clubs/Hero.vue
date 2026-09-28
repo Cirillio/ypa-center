@@ -13,14 +13,8 @@ const props = withDefaults(
 
 // Возрастной диапазон по всем группам всех кружков: минимум из age_min, максимум из age_max.
 const ageLabel = computed(() => {
-    const groups = props.activities.flatMap((activity) => activity.groups)
-    const mins = groups.map((g) => g.age_min).filter((age): age is number => age != null)
-    const maxs = groups.map((g) => g.age_max).filter((age): age is number => age != null)
-
-    return formatAgeRange(
-        mins.length ? Math.min(...mins) : null,
-        maxs.length ? Math.max(...maxs) : null
-    )
+    const { min, max } = getAgeBounds(props.activities.flatMap((activity) => activity.groups))
+    return formatAgeRange(min, max)
 })
 </script>
 
@@ -47,7 +41,7 @@ const ageLabel = computed(() => {
 
                     <template v-if="activities.length" #extra>
                         <dl
-                            class="flex flex-wrap items-center gap-6 text-base font-semibold sm:gap-8 md:text-lg"
+                            class="flex flex-wrap items-center gap-6 text-base font-semibold max-sm:gap-2 md:text-lg"
                         >
                             <div class="flex items-baseline gap-2">
                                 <dt class="text-muted">Всего направлений:</dt>

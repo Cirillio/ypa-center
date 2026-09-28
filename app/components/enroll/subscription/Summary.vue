@@ -102,10 +102,9 @@ const missing = computed<string[]>(() => {
                     </div>
                     <UButton
                         icon="ph:x-bold"
-                        color="neutral"
+                        color="error"
                         variant="ghost"
                         size="xs"
-                        class="hover:text-error"
                         :aria-label="`Убрать ${slotItem.activity.name} из абонемента`"
                         @click="emit('remove', slotItem)"
                     />

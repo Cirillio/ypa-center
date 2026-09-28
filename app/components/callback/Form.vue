@@ -166,10 +166,13 @@ const onSelectTime = (option: ContactTimeOption) => {
             />
         </UTooltip>
 
-        <NuxtTurnstile
-            ref="turnstileRef"
-            v-model="captchaToken"
-            :options="{ appearance: 'interaction-only' }"
-        />
+        <!-- ПОЧЕМУ ClientOnly: в SSR виджет кладёт в head preload api.js (85 KB) на каждую страницу с FAQ -->
+        <ClientOnly>
+            <NuxtTurnstile
+                ref="turnstileRef"
+                v-model="captchaToken"
+                :options="{ appearance: 'interaction-only' }"
+            />
+        </ClientOnly>
     </form>
 </template>

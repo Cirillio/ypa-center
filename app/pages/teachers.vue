@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 const teachersService = useTeachersService()
-const { data, pending, error, refresh } = await useAsyncData("teachers", () =>
-    teachersService.getAll()
-)
+const { data, pending, error, refresh } = useAsyncData("teachers", () => teachersService.getAll())
 
 const teachers = computed(() => data.value ?? [])
 

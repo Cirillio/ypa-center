@@ -32,6 +32,7 @@ useIntersectionObserver(
 )
 
 // Состояние модалки
+const hasModalOpened = ref(false)
 const activeIndex = ref<number | null>(null)
 const isModalOpen = computed({
     get: () => activeIndex.value !== null,
@@ -59,6 +60,7 @@ const prev = () => {
 }
 
 const openPhoto = (index: number) => {
+    hasModalOpened.value = true
     activeIndex.value = index
 }
 </script>
@@ -102,7 +104,7 @@ const openPhoto = (index: number) => {
                 class="group hover:ring-primary focus-within:ring-primary active:ring-primary relative cursor-pointer overflow-hidden rounded-md ring-2 ring-transparent transition-all"
                 @click="openPhoto(index)"
             >
-                <LazyUiPhoto
+                <UiPhoto
                     :src="photo.image_url"
                     :alt="'Фото ' + (index + 1) + ' из галереи центра'"
                     class="aspect-square scale-105 object-cover object-center transition-transform duration-150 group-hover:scale-100 group-active:scale-100"
@@ -136,7 +138,8 @@ const openPhoto = (index: number) => {
         </div>
 
         <!-- Модалка -->
-        <GalleryModal
+        <LazyGalleryModal
+            v-if="hasModalOpened"
             v-model:model-value="isModalOpen"
             :photo="activePhoto"
             :has-prev="photos.length > 1"

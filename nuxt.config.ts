@@ -8,8 +8,6 @@ export default defineNuxtConfig({
         "@pinia/nuxt",
         "@nuxtjs/sitemap",
         "@nuxtjs/robots",
-        "dayjs-nuxt",
-        "nuxt-openapi-docs-module",
         "@nuxtjs/turnstile"
     ],
 
@@ -88,17 +86,7 @@ export default defineNuxtConfig({
     vite: {
         server: process.env.NODE_ENV === "development" ? { allowedHosts: true } : undefined,
         optimizeDeps: {
-            include: [
-                "@vue/devtools-core",
-                "@vue/devtools-kit",
-                "dayjs",
-                "dayjs/plugin/updateLocale",
-                "dayjs/locale/ru",
-                "dayjs/plugin/relativeTime",
-                "dayjs/plugin/utc",
-                "dayjs/plugin/timezone",
-                "dayjs/plugin/customParseFormat"
-            ]
+            include: ["@vue/devtools-core", "@vue/devtools-kit"]
         }
     },
 
@@ -115,11 +103,15 @@ export default defineNuxtConfig({
         }
     },
 
-    dayjs: {
-        locales: ["ru"],
-        defaultLocale: "ru",
-        defaultTimezone: "Asia/Novosibirsk",
-        plugins: ["relativeTime", "utc", "timezone", "customParseFormat"]
+    // ПОЧЕМУ: serverBundle вшивал коллекции целиком (4.4 MB в Nitro); scan кладёт в клиент только найденные в коде иконки
+    icon: {
+        serverBundle: false,
+        clientBundle: {
+            // ПОЧЕМУ свой glob: дефолт не читает .ts (app.config, constants) и цепляет доки из context/*.md
+            scan: {
+                globInclude: ["app/**/*.{vue,ts}"]
+            }
+        }
     },
 
     fonts: {
