@@ -1,10 +1,18 @@
 <script lang="ts" setup>
-// Виджет выбора даты и времени пробного занятия с пустым состоянием до выбора кружка.
+// Виджет выбора даты и времени пробного занятия: до выбора кружка, загрузка, ошибка, нет дат.
 import type { TrialCheckoutSlot } from "~/types"
+
+const SKELETON_KEYS = ["slot-sk-1", "slot-sk-2", "slot-sk-3", "slot-sk-4"] as const
 
 const props = defineProps<{
     slots: TrialCheckoutSlot[]
     clubSelected: boolean
+    loading?: boolean
+    error?: unknown
+}>()
+
+const emit = defineEmits<{
+    retry: []
 }>()
 
 const selectedSlotId = defineModel<number | undefined>({ required: true })
@@ -66,6 +74,20 @@ function handleKeydown(event: KeyboardEvent) {
             <UIcon name="ph:lock-simple-bold" class="text-dimmed size-15" aria-hidden="true" />
             <p class="text-muted text-sm italic">Сначала выберите кружок</p>
         </div>
+
+        <div v-else-if="loading" class="grid gap-3 md:grid-cols-2" aria-busy="true">
+            <USkeleton
+                v-for="skeletonKey in SKELETON_KEYS"
+                :key="skeletonKey"
+                class="h-26 rounded-sm"
+            />
+        </div>
+
+        <UiErrorState
+            v-else-if="error"
+            message="Не удалось загрузить свободные даты."
+            @retry="emit('retry')"
+        />
 
         <div
             v-else-if="slots.length > 0"

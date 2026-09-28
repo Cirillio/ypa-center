@@ -31,7 +31,7 @@ const firstPastKey = computed(() => props.bookings?.find((b) => b.isPast)?.key)
             <h2 class="text-primary text-xl font-bold">Наши записи</h2>
         </div>
 
-        <MeErrorState
+        <UiErrorState
             v-if="error && !bookings"
             message="Не удалось загрузить записи."
             @retry="emit('retry')"

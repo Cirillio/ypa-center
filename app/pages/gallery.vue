@@ -46,7 +46,9 @@ const PAGE_SIZE = 12
 const gallery = useGalleryService()
 const toast = useToast()
 
-const { data, pending, error } = await useAsyncData("gallery", () => gallery.getPage(PAGE_SIZE))
+const { data, pending, error, refresh } = await useAsyncData("gallery", () =>
+    gallery.getPage(PAGE_SIZE)
+)
 
 const photos = ref<GalleryPhoto[]>([...(data.value?.results ?? [])])
 const total = ref(data.value?.count ?? 0)
@@ -99,6 +101,7 @@ const loadMore = async () => {
             :loading-more="loadingMore"
             :load-more-error="loadMoreError"
             @load-more="loadMore"
+            @retry="refresh"
         />
     </div>
 </template>

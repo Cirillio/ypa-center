@@ -100,17 +100,11 @@ function handleKeydown(event: KeyboardEvent) {
         </div>
 
         <!-- Ошибка загрузки -->
-        <div v-else-if="error" class="flex flex-col items-center gap-3 py-8 text-center">
-            <UIcon
-                name="ph:warning-circle-duotone"
-                class="text-secondary size-12 opacity-20"
-                aria-hidden="true"
-            />
-            <p class="text-muted text-sm">
-                Не удалось загрузить афишу событий. Попробуйте ещё раз.
-            </p>
-            <UButton variant="soft" size="sm" label="Повторить" @click="emit('retry')" />
-        </div>
+        <UiErrorState
+            v-else-if="error"
+            message="Не удалось загрузить афишу событий."
+            @retry="emit('retry')"
+        />
 
         <!-- Список событий -->
         <div
@@ -132,18 +126,12 @@ function handleKeydown(event: KeyboardEvent) {
         </div>
 
         <!-- Пустая афиша -->
-        <div v-else class="flex flex-col items-center gap-4 px-6 py-8 text-center">
-            <UIcon
-                name="ph:calendar-slash-duotone"
-                class="text-primary/30 size-16"
-                aria-hidden="true"
-            />
-            <div class="flex flex-col gap-1">
-                <span class="text-default text-xl font-bold">Событий пока нет</span>
-                <span class="text-muted text-base font-medium">
-                    Следите за обновлениями — мы регулярно добавляем новые мероприятия
-                </span>
-            </div>
+        <UiEmptyState
+            v-else
+            icon="ph:calendar-slash-duotone"
+            title="Событий пока нет"
+            description="Следите за обновлениями — мы регулярно добавляем новые мероприятия"
+        >
             <UButton
                 v-if="telegramHref"
                 :href="telegramHref"
@@ -154,6 +142,6 @@ function handleKeydown(event: KeyboardEvent) {
                 label="Подписаться на Telegram"
                 size="lg"
             />
-        </div>
+        </UiEmptyState>
     </section>
 </template>

@@ -28,7 +28,7 @@ const emit = defineEmits<{
             <h2 class="text-primary text-xl font-bold">Абонементы</h2>
         </div>
 
-        <MeErrorState
+        <UiErrorState
             v-if="error && !subscriptions"
             message="Не удалось загрузить абонементы."
             @retry="emit('retry')"

@@ -46,7 +46,7 @@ const groupedUpcoming = computed(() => {
             <h2 class="text-primary text-xl font-bold">Ближайшие активности</h2>
         </div>
 
-        <MeErrorState
+        <UiErrorState
             v-if="error && !items"
             message="Не удалось загрузить ленту активностей."
             @retry="emit('retry')"

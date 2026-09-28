@@ -11,8 +11,20 @@ useSeoMeta({
 
 const { pricing } = useAppConfig()
 
-const { clubs, selectedClubId, selectedSlotId, selectedClub, selectedClubSlots, selectedSlot } =
-    useTrialCheckout()
+const {
+    clubs,
+    isClubsLoading,
+    clubsError,
+    refreshClubs,
+    selectedClubId,
+    selectedSlotId,
+    selectedClub,
+    selectedClubSlots,
+    selectedSlot,
+    isSlotsLoading,
+    slotsError,
+    refreshSlots
+} = useTrialCheckout()
 
 const {
     isAuthed,
@@ -51,11 +63,20 @@ const isReady = computed(
         <section aria-label="Оформление пробного занятия" class="pb-32 lg:pb-16">
             <UContainer class="grid gap-6 lg:grid-cols-7">
                 <div class="flex min-w-0 flex-col gap-6 lg:col-span-5">
-                    <EnrollTrialClubWidget v-model="selectedClubId" :clubs="clubs" />
+                    <EnrollTrialClubWidget
+                        v-model="selectedClubId"
+                        :clubs="clubs"
+                        :loading="isClubsLoading"
+                        :error="clubsError"
+                        @retry="refreshClubs"
+                    />
                     <EnrollTrialSlotWidget
                         v-model="selectedSlotId"
                         :slots="selectedClubSlots"
                         :club-selected="!!selectedClubId"
+                        :loading="isSlotsLoading"
+                        :error="slotsError"
+                        @retry="refreshSlots"
                     />
                 </div>
 

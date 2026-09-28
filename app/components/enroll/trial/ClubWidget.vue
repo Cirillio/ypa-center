@@ -1,9 +1,17 @@
 <script lang="ts" setup>
-// Виджет выбора кружка (radiogroup) для записи на пробное занятие.
+// Виджет выбора кружка (radiogroup) для записи на пробное занятие: скелетон, ошибка, пустой каталог.
 import type { Activity } from "~/types"
+
+const SKELETON_KEYS = ["club-sk-1", "club-sk-2", "club-sk-3"] as const
 
 const props = defineProps<{
     clubs: Activity[]
+    loading?: boolean
+    error?: unknown
+}>()
+
+const emit = defineEmits<{
+    retry: []
 }>()
 
 const selectedClubId = defineModel<number | undefined>({ required: true })
@@ -62,7 +70,34 @@ function handleKeydown(event: KeyboardEvent) {
             </span>
         </div>
 
+        <!-- Скелетон повторяет карточку: обложка 16:10 и две строки текста -->
         <div
+            v-if="loading && !clubs.length"
+            class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3"
+            aria-busy="true"
+        >
+            <div
+                v-for="skeletonKey in SKELETON_KEYS"
+                :key="skeletonKey"
+                class="bg-default flex flex-col gap-2 rounded-sm p-2"
+            >
+                <USkeleton class="aspect-16/10 w-full rounded-xs" />
+                <div class="flex flex-col gap-1.5 px-1 pb-1">
+                    <USkeleton class="h-5 w-2/3 rounded-xs" />
+                    <USkeleton class="h-4 w-full rounded-xs" />
+                </div>
+            </div>
+        </div>
+
+        <UiErrorState
+            v-else-if="error && !clubs.length"
+            message="Не удалось загрузить кружки."
+            :retrying="loading"
+            @retry="emit('retry')"
+        />
+
+        <div
+            v-else-if="clubs.length"
             ref="groupRef"
             role="radiogroup"
             aria-label="Кружок"
@@ -78,5 +113,12 @@ function handleKeydown(event: KeyboardEvent) {
                 @select="handleSelect"
             />
         </div>
+
+        <UiEmptyState
+            v-else
+            icon="ph:shapes-duotone"
+            title="Набор в группы скоро откроется"
+            description="Сейчас нет кружков для пробного занятия. Позвоните нам – подберём вариант."
+        />
     </section>
 </template>

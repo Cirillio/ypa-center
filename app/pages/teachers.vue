@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 const teachersService = useTeachersService()
-const { data, pending, error } = await useAsyncData("teachers", () => teachersService.getAll())
+const { data, pending, error, refresh } = await useAsyncData("teachers", () =>
+    teachersService.getAll()
+)
 
 const teachers = computed(() => data.value ?? [])
 
@@ -47,6 +49,6 @@ useHead({
 <template>
     <div class="gradient-bg-ps">
         <TeachersSection />
-        <TeachersGrid :teachers="teachers" :pending="pending" :error="!!error" />
+        <TeachersGrid :teachers="teachers" :pending="pending" :error="!!error" @retry="refresh" />
     </div>
 </template>

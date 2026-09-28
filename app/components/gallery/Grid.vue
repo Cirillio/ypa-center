@@ -13,6 +13,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     loadMore: []
+    retry: []
 }>()
 
 // Автоматическая подгрузка при скролле
@@ -76,16 +77,21 @@ const openPhoto = (index: number) => {
             />
         </div>
 
-        <!-- Ошибка загрузки или пустые данные -->
-        <div
+        <!-- Ошибка первой загрузки -->
+        <UiErrorState
             v-else-if="error && !photos.length"
-            class="flex flex-col items-center justify-center py-20 text-center"
-        >
-            <UIcon name="ph:image-break-duotone" class="text-secondary mb-4 size-16 opacity-20" />
-            <p class="text-secondary/60 text-lg">
-                Пока здесь нет фотографий, но скоро они появятся!
-            </p>
-        </div>
+            size="lg"
+            message="Не удалось загрузить фотографии."
+            :retrying="pending"
+            @retry="emit('retry')"
+        />
+
+        <UiEmptyState
+            v-else-if="!photos.length"
+            icon="ph:image-duotone"
+            title="Пока здесь нет фотографий"
+            description="Скоро они появятся – загляните позже."
+        />
 
         <!-- Сетка -->
         <div v-else class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">

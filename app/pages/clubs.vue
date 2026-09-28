@@ -6,9 +6,12 @@ const siteUrl = seo.siteUrl
 // Fetching Clubs
 const activities = useActivitiesService()
 
-const { data: activitiesData, error: activitiesError } = await useAsyncData("clubs", () =>
-    activities.getAll()
-)
+const {
+    data: activitiesData,
+    error: activitiesError,
+    pending: activitiesPending,
+    refresh: refreshActivities
+} = await useAsyncData("clubs", () => activities.getAll())
 
 useSeoMeta({
     title: "Кружки – Улица Радости",
@@ -78,7 +81,12 @@ useHead({
     <div class="flex w-full min-w-0 flex-col">
         <ClubsHero :activities="activitiesData ?? []" />
 
-        <ClubsList v-if="activitiesData && !activitiesError" :activities="activitiesData" />
+        <ClubsList
+            :activities="activitiesData ?? []"
+            :error="activitiesError"
+            :retrying="activitiesPending"
+            @retry="refreshActivities"
+        />
 
         <ClubsSchedule />
 

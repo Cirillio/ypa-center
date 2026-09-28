@@ -54,6 +54,7 @@ export function useTrialCheckout() {
     const {
         data: slotsData,
         status: slotsStatus,
+        error: slotsError,
         refresh: refreshSlots
     } = useAsyncData(
         () => `enrollment:trial:slots:${selectedClubId.value ?? "none"}`,
@@ -134,6 +135,7 @@ export function useTrialCheckout() {
         selectedClubSlots,
         selectedSlot,
         isSlotsLoading,
+        slotsError,
         refreshSlots
     }
 }

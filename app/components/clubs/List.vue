@@ -1,9 +1,18 @@
 <script lang="ts" setup>
 import type { Activity } from "~/types"
 
+// Каталог кружков; при сбое API вместо пустоты – ошибка с повтором, при пустом ответе – пояснение.
 defineProps<{
     activities: Activity[]
+    error?: unknown
+    retrying?: boolean
 }>()
+
+const emit = defineEmits<{
+    retry: []
+}>()
+
+const { contactInfo } = useAppConfig()
 </script>
 
 <template>
@@ -16,8 +25,31 @@ defineProps<{
                 Все <span class="text-primary">кружки</span>
             </h2>
 
+            <UiErrorState
+                v-if="error && !activities.length"
+                size="lg"
+                message="Не удалось загрузить список кружков."
+                :retrying="retrying"
+                @retry="emit('retry')"
+            />
+
+            <UiEmptyState
+                v-else-if="!activities.length"
+                icon="ph:shapes-duotone"
+                title="Скоро откроем набор"
+                description="Сейчас формируем группы на новый сезон. Позвоните – расскажем, что планируется."
+            >
+                <UButton
+                    :href="`tel:${contactInfo.phoneTo}`"
+                    variant="soft"
+                    leading-icon="ph:phone-bold"
+                    :label="contactInfo.phone"
+                    size="lg"
+                />
+            </UiEmptyState>
+
             <!-- Список кружков -->
-            <div class="grid w-full gap-4">
+            <div v-else class="grid w-full gap-4">
                 <LazyClubsCard
                     v-for="(item, i) in activities"
                     :key="item.id"
@@ -26,7 +58,7 @@ defineProps<{
                 />
             </div>
             <!-- Приписка -->
-            <span class="text-default/95 text-xs font-semibold md:text-sm"
+            <span v-if="activities.length" class="text-default/95 text-xs font-semibold md:text-sm"
                 >• Узнать какие учителя занимаются направлениями можно на
                 <NuxtLink to="/teachers" class="text-primary">странице учителей</NuxtLink>.</span
             >

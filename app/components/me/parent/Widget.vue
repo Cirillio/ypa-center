@@ -19,7 +19,7 @@ const emit = defineEmits<{
 
 <template>
     <div class="rounded-lg bg-white p-6">
-        <MeErrorState
+        <UiErrorState
             v-if="error && !parent"
             message="Не удалось загрузить профиль."
             @retry="emit('retry')"
