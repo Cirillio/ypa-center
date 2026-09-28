@@ -40,6 +40,8 @@ const isMounted = useMounted()
 const inputUi = {
     base: "md:text-lg !text-base bg-white font-semibold text-default placeholder:text-default/75"
 }
+
+const canActive = computed<boolean>(() => !isSubmitDisabled.value || isMounted.value)
 </script>
 
 <template>
@@ -137,12 +139,12 @@ const inputUi = {
             "
         >
             <UButton
-                :disabled="isSubmitDisabled || !isMounted"
-                :loading="isLoading || isSpamBlocked || !isMounted"
+                :disabled="!canActive"
+                :loading="!canActive"
                 color="primary"
                 type="submit"
-                :label="!isMounted ? 'Загрузка...' : isSpamBlocked ? 'Ожидайте...' : 'Отправить'"
-                :variant="!isSubmitDisabled ? 'solid' : 'soft'"
+                :label="!canActive ? 'Загрузка...' : isSpamBlocked ? 'Ожидайте...' : 'Отправить'"
+                :variant="!canActive ? 'solid' : 'soft'"
                 class="w-full justify-center text-lg font-semibold focus-visible:ring-0"
             />
         </UTooltip>

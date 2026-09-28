@@ -26,9 +26,7 @@ export const useFeedbackForm = (options: UseFeedbackFormOptions = {}) => {
     const isLoading = ref(false)
     const error = ref<ApiError | null>(null)
 
-    const isSubmitDisabled = computed(
-        () => !captchaToken.value || isSpamBlocked.value || isLoading.value
-    )
+    const isSubmitDisabled = computed(() => !captchaToken.value || isLoading.value)
 
     const resetForm = () => {
         Object.assign(form, { ...DEFAULT_FORM_STATE })
