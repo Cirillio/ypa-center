@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 // Сводка «Итого» абонемента: ребёнок (слот), состав с удалением, тариф, сумма в месяц и экономия.
-import type { EnrollSummaryRow, PlanTier, WeeklySlot } from "~/types"
+import type { CheckoutError, EnrollSummaryRow, PlanTier, WeeklySlot } from "~/types"
 
 const props = defineProps<{
     slots: WeeklySlot[]
@@ -8,6 +8,9 @@ const props = defineProps<{
     totalMonthlyLessons: number
     hasChild: boolean
     trialPrice: number
+    isSubmitting: boolean
+    cooldownSeconds: number
+    error: CheckoutError | null
 }>()
 
 const emit = defineEmits<{
@@ -54,6 +57,9 @@ const perLesson = computed<number | null>(() =>
 const savings = computed<number>(() =>
     props.tier ? props.trialPrice * props.totalMonthlyLessons - props.tier.price : 0
 )
+
+// ПОЧЕМУ: фолбэк тарифов из app.config без id – заказ по нему бэк не примет
+const isTierUnavailable = computed(() => !!props.tier && props.tier.id === null)
 
 const missing = computed<string[]>(() => {
     const list: string[] = []
@@ -144,9 +150,19 @@ const missing = computed<string[]>(() => {
             </span>
         </p>
 
+        <slot name="payment" />
+
         <EnrollSummaryCta
-            :ready="missing.length === 0"
+            :ready="missing.length === 0 && !isTierUnavailable"
             :missing="missing"
+            :hint="
+                isTierUnavailable
+                    ? 'Тарифы не загрузились – обновите страницу, чтобы оплатить'
+                    : null
+            "
+            :loading="isSubmitting"
+            :cooldown-seconds="cooldownSeconds"
+            :error="error"
             @continue="emit('continue')"
         />
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 // Сводка «Итого» пробного занятия: ребёнок (слот), выбранное, цена, кнопка и переход к абонементу.
 import { EnrollRoutesEnum } from "~/constants/nav"
-import type { Activity, EnrollSummaryRow, TrialCheckoutSlot } from "~/types"
+import type { Activity, CheckoutError, EnrollSummaryRow, TrialCheckoutSlot } from "~/types"
 
 const props = defineProps<{
     club?: Activity
@@ -9,6 +9,9 @@ const props = defineProps<{
     hasChild: boolean
     price: number
     subscriptionFromPrice: number | null
+    isSubmitting: boolean
+    cooldownSeconds: number
+    error: CheckoutError | null
 }>()
 
 const emit = defineEmits<{
@@ -48,6 +51,9 @@ const missing = computed<string[]>(() => {
         <EnrollSummaryCta
             :ready="missing.length === 0"
             :missing="missing"
+            :loading="isSubmitting"
+            :cooldown-seconds="cooldownSeconds"
+            :error="error"
             @continue="emit('continue')"
         />
 

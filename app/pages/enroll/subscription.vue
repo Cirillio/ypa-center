@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { CheckoutSubscriptionRequest } from "~/types"
+
 // Страница оформления абонемента (каркас, выбор кружков по дням и автоматический подбор тарифа).
 useSeoMeta({
     title: "Собрать абонемент",
@@ -43,7 +45,39 @@ const {
     addChild
 } = useCheckoutChildren()
 
+const {
+    balance: depositBalance,
+    useDeposit,
+    applied: depositApplied,
+    toPay
+} = useCheckoutDeposit(() => currentTier.value?.price ?? null)
+
+const {
+    isSubmitting,
+    error: checkoutError,
+    cooldownSeconds,
+    submitSubscription
+} = useCheckoutPayment({ onSlotsStale: refreshSlots, onChildrenStale: retryKids })
+
 const isReady = computed(() => selectedSlots.value.length > 0 && !!selectedChild.value)
+
+// Тело заказа; null – выбор неполный или тариф из фолбэка без id
+const payload = computed<CheckoutSubscriptionRequest | null>(() => {
+    const planId = currentTier.value?.id
+    const studentId = toStudentId(selectedChild.value?.id)
+    if (!planId || studentId === null || !selectedSlots.value.length) return null
+    return {
+        plan_id: planId,
+        student_id: studentId,
+        slot_ids: selectedSlots.value.map((slot) => slot.id),
+        use_deposit: useDeposit.value && depositBalance.value > 0
+    }
+})
+
+// Отправляет заказ, если выбор полный; иначе кнопка и так заблокирована
+function handleContinue() {
+    if (payload.value) void submitSubscription(payload.value)
+}
 </script>
 
 <template>
@@ -84,7 +118,11 @@ const isReady = computed(() => selectedSlots.value.length > 0 && !!selectedChild
                     :total-monthly-lessons="totalMonthlyLessons"
                     :has-child="!!selectedChild"
                     :trial-price="pricing.trialLesson"
+                    :is-submitting="isSubmitting"
+                    :cooldown-seconds="cooldownSeconds"
+                    :error="checkoutError"
                     @remove="toggleSlot"
+                    @continue="handleContinue"
                 >
                     <EnrollKidPicker
                         v-model="selectedChildId"
@@ -98,6 +136,15 @@ const isReady = computed(() => selectedSlots.value.length > 0 && !!selectedChild
                         @add="addChild"
                         @retry="retryKids"
                     />
+
+                    <template v-if="depositBalance > 0" #payment>
+                        <EnrollDepositOption
+                            v-model="useDeposit"
+                            :balance="depositBalance"
+                            :applied="depositApplied"
+                            :to-pay="toPay"
+                        />
+                    </template>
                 </EnrollSubscriptionSummary>
             </UContainer>
         </section>

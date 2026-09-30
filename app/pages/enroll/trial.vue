@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { CheckoutTrialRequest } from "~/types"
+
 // Страница записи на пробное занятие: выбор кружка и времени, сводка с ребёнком и ценой.
 useSeoMeta({
     title: "Пробное занятие",
@@ -52,6 +54,26 @@ const subscriptionFromPrice = computed<number | null>(() => {
 const isReady = computed(
     () => !!selectedClub.value && !!selectedSlot.value && !!selectedChild.value
 )
+
+const {
+    isSubmitting,
+    error: checkoutError,
+    cooldownSeconds,
+    submitTrial
+} = useCheckoutPayment({ onSlotsStale: refreshSlots, onChildrenStale: retryKids })
+
+// Тело заказа; null – выбор неполный
+const payload = computed<CheckoutTrialRequest | null>(() => {
+    const slot = selectedSlot.value
+    const studentId = toStudentId(selectedChild.value?.id)
+    if (!slot || studentId === null) return null
+    return { student_id: studentId, schedule_id: slot.scheduleId, trial_date: slot.date }
+})
+
+// Отправляет заказ, если выбор полный; иначе кнопка и так заблокирована
+function handleContinue() {
+    if (payload.value) void submitTrial(payload.value)
+}
 </script>
 
 <template>
@@ -86,6 +108,10 @@ const isReady = computed(
                     :has-child="!!selectedChild"
                     :price="pricing.trialLesson"
                     :subscription-from-price="subscriptionFromPrice"
+                    :is-submitting="isSubmitting"
+                    :cooldown-seconds="cooldownSeconds"
+                    :error="checkoutError"
+                    @continue="handleContinue"
                 >
                     <EnrollKidPicker
                         v-model="selectedChildId"
