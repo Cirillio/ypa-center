@@ -50,6 +50,7 @@ export default defineNuxtConfig({
 
         "/login": { ssr: false },
         "/me": { ssr: false },
+        "/checkout/**": { ssr: false },
 
         "/**": {
             ssr: true,
@@ -78,7 +79,7 @@ export default defineNuxtConfig({
     },
 
     robots: {
-        disallow: ["/enroll", "/api"]
+        disallow: ["/enroll", "/checkout", "/api"]
     },
 
     compatibilityDate: "2025-07-15",

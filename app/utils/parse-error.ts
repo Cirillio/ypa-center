@@ -16,6 +16,7 @@ const PROBLEM_CODES: ReadonlySet<string> = new Set<ProblemCode>([
     "SUBSCRIPTION_EXPIRED",
     "IDEMPOTENCY_KEY_REUSED",
     "PAYMENT_IN_PROGRESS",
+    "PAYMENT_GATEWAY_UNAVAILABLE",
     "VALIDATION_ERROR",
     "RATE_LIMITED",
     "INTERNAL_SERVER_ERROR"
@@ -110,6 +111,16 @@ export function parseApiError(
         title: problem.title || "Ошибка",
         description: problem.detail || fallbackMessage
     }
+}
+
+// Пауза перед повтором из заголовка Retry-After (секунды); HTTP-дата и мусор – null.
+export function getRetryAfter(err: unknown): number | null {
+    if (!isRecord(err) || !isRecord(err.response)) return null
+    const headers = err.response.headers
+    if (!(headers instanceof Headers)) return null
+    const raw = headers.get("Retry-After")
+    if (raw === null || !/^\d+$/.test(raw.trim())) return null
+    return Number(raw.trim())
 }
 
 export function getFetchStatus(err: unknown): number | undefined {

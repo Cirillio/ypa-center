@@ -1,5 +1,10 @@
 const DEFAULT_REDIRECT = "/me"
-const ALLOWED_PATHS: ReadonlySet<string> = new Set(["/me", "/enroll/trial", "/enroll/subscription"])
+const ALLOWED_PATHS: ReadonlySet<string> = new Set([
+    "/me",
+    "/enroll/trial",
+    "/enroll/subscription",
+    "/checkout/result"
+])
 // Фиктивный origin: по нему отличаем внутренний путь от внешнего после разбора URL
 const PROBE_ORIGIN = "http://internal.invalid"
 
