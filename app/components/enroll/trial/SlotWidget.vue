@@ -15,44 +15,42 @@ const emit = defineEmits<{
     retry: []
 }>()
 
-const selectedSlotId = defineModel<number | undefined>({ required: true })
+const selectedSlotId = defineModel<string | undefined>({ required: true })
 const groupRef = ref<HTMLElement | null>(null)
 
-// Roving tabindex: Tab попадает в группу один раз – на выбранный слот или на первый свободный.
-const focusableSlotId = computed(
-    () => selectedSlotId.value ?? props.slots.find((s) => s.available > 0)?.id
-)
+// Roving tabindex: Tab попадает в группу один раз – на выбранный слот или на первый.
+const focusableSlotId = computed(() => selectedSlotId.value ?? props.slots[0]?.key)
 
-// Обрабатывает выбор доступного слота по клику.
-function handleSelect(slotId: number) {
-    selectedSlotId.value = slotId
+// Обрабатывает выбор слота по клику.
+function handleSelect(slotKey: string) {
+    selectedSlotId.value = slotKey
 }
 
-// Переключает выбор между доступными слотами стрелками клавиатуры внутри radiogroup.
+// Переключает выбор между слотами стрелками клавиатуры внутри radiogroup.
 function handleKeydown(event: KeyboardEvent) {
     const isNext = event.key === "ArrowRight" || event.key === "ArrowDown"
     const isPrev = event.key === "ArrowLeft" || event.key === "ArrowUp"
     if (!isNext && !isPrev) return
 
-    const availableSlots = props.slots.filter((s) => s.available > 0)
-    if (availableSlots.length === 0) return
+    const slots = props.slots
+    if (slots.length === 0) return
 
     event.preventDefault()
-    const currentIndex = availableSlots.findIndex((s) => s.id === selectedSlotId.value)
+    const currentIndex = slots.findIndex((s) => s.key === selectedSlotId.value)
     const nextIndex =
         currentIndex === -1
             ? 0
             : isNext
-              ? (currentIndex + 1) % availableSlots.length
-              : (currentIndex - 1 + availableSlots.length) % availableSlots.length
+              ? (currentIndex + 1) % slots.length
+              : (currentIndex - 1 + slots.length) % slots.length
 
-    const target = availableSlots[nextIndex]
+    const target = slots[nextIndex]
     if (!target) return
 
-    selectedSlotId.value = target.id
+    selectedSlotId.value = target.key
     nextTick(() => {
         const btn = groupRef.value?.querySelector<HTMLButtonElement>(
-            `[data-slot-id="${target.id}"]`
+            `[data-slot-key="${target.key}"]`
         )
         btn?.focus()
     })
@@ -99,10 +97,10 @@ function handleKeydown(event: KeyboardEvent) {
         >
             <EnrollTrialSlotCard
                 v-for="slotItem in slots"
-                :key="slotItem.id"
+                :key="slotItem.key"
                 :slot-item="slotItem"
-                :is-selected="selectedSlotId === slotItem.id"
-                :tabindex="slotItem.id === focusableSlotId ? 0 : -1"
+                :is-selected="selectedSlotId === slotItem.key"
+                :tabindex="slotItem.key === focusableSlotId ? 0 : -1"
                 @select="handleSelect"
             />
         </div>

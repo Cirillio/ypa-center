@@ -1,6 +1,25 @@
 import type { ApiFetch } from "~/composables/useApi"
-import { generateMockTrialSlots } from "~/services/mocks/trial-slots.mock"
-import type { Activity, ActivityPopular, TrialCheckoutSlot } from "~/types"
+import type {
+    Activity,
+    ActivityPopular,
+    TrialCheckoutSlot,
+    TrialSlotDto,
+    TrialSlotsResponse
+} from "~/types"
+
+// Маппит календарный слот бэка в модель выбора пробного с готовыми подписями.
+function toTrialCheckoutSlot(slot: TrialSlotDto): TrialCheckoutSlot {
+    return {
+        key: `${slot.schedule_id}_${slot.date}`,
+        scheduleId: slot.schedule_id,
+        date: slot.date,
+        startTime: slot.start_time,
+        endTime: slot.end_time,
+        groupName: slot.group_name,
+        displayDate: formatEventDate(slot.date),
+        displayTime: `${slot.start_time}–${slot.end_time}`
+    }
+}
 
 /**
  * Публичный каталог кружков.
@@ -19,14 +38,13 @@ export class ActivitiesService {
 
     /**
      * GET /api/v1/public/activities/{activityId}/next-slots/
-     * Календарные слоты кружка на 2 недели вперёд с остатком мест для пробного занятия.
+     * Свободные календарные слоты кружка на сегодня + 13 дней, с учётом отмен и переносов.
      */
-    async getNextTrialSlots(
-        activityId: number,
-        activityName?: string
-    ): Promise<TrialCheckoutSlot[]> {
-        // MOCK(trial-next-slots): эндпоинт слотов пробного в разработке на бэке, обогащаем моком
-        return generateMockTrialSlots(activityId, activityName)
+    async getNextTrialSlots(activityId: number): Promise<TrialCheckoutSlot[]> {
+        const res = await this.fetch<TrialSlotsResponse>(
+            `/v1/public/activities/${activityId}/next-slots/`
+        )
+        return res.slots.map(toTrialCheckoutSlot)
     }
 }
 

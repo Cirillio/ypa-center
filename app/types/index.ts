@@ -71,11 +71,55 @@ export enum SchoolClasses {
 
 export type EnrollPurchaseType = "trial" | "subscription" | "event"
 
-export interface TrialCheckoutSlot extends WeeklySlot {
+// GET /public/activities/{id}/next-slots/ – только свободные слоты, без счётчика мест
+export type TrialSlotsResponse = components["schemas"]["TrialSlotsResponse"]
+export type TrialSlotDto = components["schemas"]["TrialSlot"]
+
+// Календарный слот пробного: своего id у слота нет, уникальна пара «расписание + дата»
+export interface TrialCheckoutSlot {
+    key: string // `${scheduleId}_${date}` – для выбора, :key и query
+    scheduleId: number
+    date: string // YYYY-MM-DD, уходит в checkout как trial_date
+    startTime: string
+    endTime: string
+    groupName: string
     displayDate: string
     displayTime: string
-    date: string
-    schedule_id: number
+}
+
+// POST /checkout/subscription, /checkout/trial
+export type CheckoutSubscriptionRequest = components["schemas"]["CheckoutSubscriptionRequest"]
+export type CheckoutTrialRequest = components["schemas"]["CheckoutTrialRequest"]
+export type CheckoutResponse = components["schemas"]["CheckoutResponse"]
+
+// MOCK(tx-status): контракт GET /checkout/transactions/{id} ещё не в OpenAPI – заменить алиасом после бэка
+export interface TransactionStatusDto {
+    id: string
+    status: "PENDING" | "SUCCEEDED" | "CANCELED"
+    type: "SUBSCRIPTION" | "TRIAL"
+    amount: number // копейки
+    canceled_reason: string | null
+    created_at: string
+    expires_at: string | null
+}
+
+// Статус оплаты для экрана результата; сумма в рублях
+export interface CheckoutTransaction {
+    id: string
+    status: TransactionStatusDto["status"]
+    type: TransactionStatusDto["type"]
+    amount: number
+    canceledReason: string | null
+}
+
+// Экран результата оплаты: одно состояние из пяти
+export type TransactionViewState = "pending" | "success" | "canceled" | "timeout" | "error"
+
+// Ошибка оформления заказа для блока под кнопкой «Продолжить»
+export interface CheckoutError {
+    code: ProblemCode | undefined
+    title: string
+    description: string
 }
 
 export interface ScheduleWeekDay {
@@ -266,6 +310,7 @@ export type ProblemCode =
     | "SUBSCRIPTION_EXPIRED"
     | "IDEMPOTENCY_KEY_REUSED"
     | "PAYMENT_IN_PROGRESS"
+    | "PAYMENT_GATEWAY_UNAVAILABLE"
     | "VALIDATION_ERROR"
     | "RATE_LIMITED"
     | "INTERNAL_SERVER_ERROR"

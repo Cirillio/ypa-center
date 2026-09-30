@@ -222,8 +222,8 @@ export interface paths {
         delete?: never
         options?: never
         head?: never
-        /** Профиль родителя с детьми */
-        patch: operations["me_profile_2"]
+        /** Изменить анкету родителя */
+        patch: operations["me_profile_update"]
         trace?: never
     }
     "/api/v1/me/subscriptions/": {
@@ -313,6 +313,26 @@ export interface paths {
         }
         /** Детальная карточка кружка с подгруппами */
         get: operations["public_activity_detail"]
+        put?: never
+        post?: never
+        delete?: never
+        options?: never
+        head?: never
+        patch?: never
+        trace?: never
+    }
+    "/api/v1/public/activities/{id}/next-slots/": {
+        parameters: {
+            query?: never
+            header?: never
+            path?: never
+            cookie?: never
+        }
+        /**
+         * Свободные занятия кружка для пробного на две недели
+         * @description Окно — сегодня + 13 дней. Только занятия, которые ещё не начались, не отменены и где есть свободное место; переносы уже применены. Из элемента берутся schedule_id и date для POST /checkout/trial (trial_date = date). Нет свободных занятий — пустой slots. Кэш 30 секунд.
+         */
+        get: operations["public_activity_next_slots"]
         put?: never
         post?: never
         delete?: never
@@ -963,6 +983,30 @@ export interface components {
             access: string
             refresh: string
         }
+        TrialSlot: {
+            readonly schedule_id: number
+            /** Format: date */
+            readonly date: string
+            /** Format: time */
+            readonly start_time: string
+            /** Format: time */
+            readonly end_time: string
+            readonly group_name: string
+            readonly teacher: components["schemas"]["TeacherNested"] | null
+            readonly is_rescheduled: boolean
+        }
+        TrialSlotsActivity: {
+            readonly id: number
+            readonly name: string
+        }
+        TrialSlotsResponse: {
+            readonly activity: components["schemas"]["TrialSlotsActivity"]
+            /** Format: date */
+            readonly date_from: string
+            /** Format: date */
+            readonly date_to: string
+            readonly slots: components["schemas"]["TrialSlot"][]
+        }
         TrialView: {
             readonly id: number
             readonly student_id: number
@@ -1191,7 +1235,10 @@ export interface operations {
     v1_checkout_subscription_create: {
         parameters: {
             query?: never
-            header?: never
+            header: {
+                /** @description UUID v4, новый на каждую покупку. Повтор с тем же ключом и тем же телом вернёт тот же ответ, с другим телом — 409. */
+                "X-Idempotency-Key": string
+            }
             path?: never
             cookie?: never
         }
@@ -1216,7 +1263,10 @@ export interface operations {
     v1_checkout_trial_create: {
         parameters: {
             query?: never
-            header?: never
+            header: {
+                /** @description UUID v4, новый на каждую покупку. Повтор с тем же ключом и тем же телом вернёт тот же ответ, с другим телом — 409. */
+                "X-Idempotency-Key": string
+            }
             path?: never
             cookie?: never
         }
@@ -1413,7 +1463,7 @@ export interface operations {
             }
         }
     }
-    me_profile_2: {
+    me_profile_update: {
         parameters: {
             query?: never
             header?: never
@@ -1548,6 +1598,27 @@ export interface operations {
                 }
                 content: {
                     "application/json": components["schemas"]["ActivityDetail"]
+                }
+            }
+        }
+    }
+    public_activity_next_slots: {
+        parameters: {
+            query?: never
+            header?: never
+            path: {
+                id: number
+            }
+            cookie?: never
+        }
+        requestBody?: never
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content: {
+                    "application/json": components["schemas"]["TrialSlotsResponse"]
                 }
             }
         }

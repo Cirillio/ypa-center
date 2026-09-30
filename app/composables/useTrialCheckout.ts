@@ -1,6 +1,9 @@
 // Управляет выбором кружка и календарного слота времени на странице записи на пробное занятие.
 import type { Activity, TrialCheckoutSlot } from "~/types"
 
+// Ключ слота в query: `${scheduleId}_${YYYY-MM-DD}`
+const SLOT_KEY_PATTERN = /^\d+_\d{4}-\d{2}-\d{2}$/
+
 // Находит кружок в каталоге по числовому id или строковому slug из URL.
 function findClubByParam(param: string | undefined, list: Activity[]): Activity | undefined {
     if (!param) return undefined
@@ -62,7 +65,7 @@ export function useTrialCheckout() {
         () => {
             const id = slotsClubId.value
             if (!id) return Promise.resolve([])
-            return activitiesService.getNextTrialSlots(id, selectedClub.value?.name)
+            return activitiesService.getNextTrialSlots(id)
         },
         { watch: [slotsClubId] }
     )
@@ -73,17 +76,15 @@ export function useTrialCheckout() {
     )
     const isSlotsLoading = computed(() => slotsStatus.value === "pending")
 
-    const requestedSlotId = ref<number | undefined>(
-        rawSlotQuery !== undefined && /^\d+$/.test(rawSlotQuery) ? Number(rawSlotQuery) : undefined
+    const requestedSlotId = ref<string | undefined>(
+        rawSlotQuery !== undefined && SLOT_KEY_PATTERN.test(rawSlotQuery) ? rawSlotQuery : undefined
     )
 
-    // Выбор слота тоже выводится: несуществующий или занятый слот из ссылки не выбран ни на сервере, ни на клиенте
-    const selectedSlotId = computed<number | undefined>({
+    // Выбор слота тоже выводится: слот из ссылки, которого нет среди свободных, не выбран ни на сервере, ни на клиенте
+    const selectedSlotId = computed<string | undefined>({
         get: () => {
-            const id = requestedSlotId.value
-            return selectedClubSlots.value.some((s) => s.id === id && s.available > 0)
-                ? id
-                : undefined
+            const key = requestedSlotId.value
+            return selectedClubSlots.value.some((s) => s.key === key) ? key : undefined
         },
         set: (id) => {
             requestedSlotId.value = id
@@ -91,12 +92,11 @@ export function useTrialCheckout() {
     })
 
     const selectedSlot = computed<TrialCheckoutSlot | undefined>(() =>
-        selectedClubSlots.value.find((s) => s.id === selectedSlotId.value)
+        selectedClubSlots.value.find((s) => s.key === selectedSlotId.value)
     )
 
     // Отражает выбор в query без новых записей в истории
-    function syncQuery(clubParam: string | undefined, slotId: number | undefined) {
-        const targetSlotQuery = slotId !== undefined ? String(slotId) : undefined
+    function syncQuery(clubParam: string | undefined, targetSlotQuery: string | undefined) {
         if (
             parseQueryParam(route.query.clubId) === clubParam &&
             parseQueryParam(route.query.slotId) === targetSlotQuery
