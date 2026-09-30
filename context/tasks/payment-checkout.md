@@ -1,217 +1,259 @@
-# Задача: подключение оплаты (абонемент + пробное)
+# Задача: подключение оплаты (абонемент + пробное + опрос результата)
 
 Шаг 5 плана («Флоу оплаты», `project-overview.md`). Перед началом прочитай
-`CLAUDE.md` проекта и «Порядок чтения» – протокол (контекст → план → апрув
-владельца → исполнение порциями, без коммита) уже там.
+`CLAUDE.md` проекта, `code-standards.md` и «Порядок чтения» – протокол (контекст
+→ план → апрув владельца → исполнение порциями, без коммита) уже там.
 
 ## Цель
 
 `POST /checkout/subscription` и `POST /checkout/trial` подключены к готовым
-страницам `/enroll/subscription` и `/enroll/trial`: кнопка «Продолжить» создаёт
-транзакцию и уводит на оплату ЮКассы (или сразу подтверждает, если заказ
-целиком закрыт депозитом); ошибки бэка показываются человеку, а не падают в
-консоль. Готово = сценарии из «Приёмки» воспроизводятся в браузере на живом
-бэке (`mvp`) без ошибок типов и линта.
+страницам `/enroll/subscription` и `/enroll/trial`. При клике «Продолжить»:
 
-`POST /checkout/event` на бэке всё ещё не существует (гостевая регистрация с
-оплатой на месте) – событие в этой задаче не трогать, см. `architecture.md` §6.
+1. Если платёж требует оплаты деньгами (`amount > 0`) → создаётся транзакция с
+   детерминированным `X-Idempotency-Key`, пользователь уходит на страницу оплаты
+   ЮКассы (`payment_url`), а после оплаты возвращается на единый экран
+   `/checkout/result?tx={transaction_id}`.
+2. Если платёж покрыт на 100% депозитом (`use_deposit: true`) или пробное бесплатное →
+   бэк сразу возвращает `status: "CONFIRMED"`, `payment_url: null`. Фронт без ухода
+   на внешний шлюз переходит на тот же `/checkout/result?tx={transaction_id}`.
+3. На `/checkout/result?tx={tx}` изолированный композабл `useTransactionStatus`
+   опрашивает статус транзакции и отображает реактивные экраны ожидания, успеха,
+   отмены или таймаута. До релиза ручки бэкендером опрос работает на
+   конвенционном `MOCK(tx-status)`.
+
+`POST /checkout/event` на бэке не существует (гостевая регистрация с оплатой
+на месте через `POST /public/events/{id}/register/`) – события в этой задаче не трогать.
 
 ---
 
-## Контракты (сжато; полное описание – `backend/api-core-contracts.md`
+## Архитектурные решения и устранение рисков
 
-Сценарий 4, `backend/checkout-flow.md`)
+1. **Генерация типов из схемы – первый шаг:**
+   Перед написанием кода запускается `bun run schema:update`. Бэк на `mvp` уже запущен
+   на порту 8000, в `app/types/api.d.ts` появятся сгенерированные `TrialSlotsResponse`,
+   `TrialSlot` и типы чекаута. Ручное описание DTO запрещено (`code-standards.md §5`).
+2. **Слоты пробного – живой API (`GET /public/activities/{id}/next-slots/`):**
+   Бэк уже реализовал этот эндпоинт (PR #15). Он отдаёт окно сегодня + 13 дней со
+   свободными местами. Метод `ActivitiesService.getNextTrialSlots` переключается с
+   мока на реальный запрос `this.fetch("/v1/public/activities/${activityId}/next-slots/")`.
+3. **Статус транзакции и `MOCK(tx-status)` со сценариями:**
+   Ручка `GET /api/v1/checkout/transactions/{id}` и динамический `return_url`
+   переданы бэкендеру в разработку. До их выкатки фронтенд строит транспортный метод
+   `BillingService.getTransactionStatus` поверх `MOCK(tx-status)`
+   (`app/services/mocks/tx-status.mock.ts`). Мок хранит счётчик вызовов в `Map<string, number>`
+   по `txId` и поддерживает сценарии проверки:
+    - `tx` содержит `canceled` → статус `CANCELED`, `canceled_reason: "bank_declined"`;
+    - `tx` содержит `slow` → вечный `PENDING` (проверка таймаута);
+    - `tx` содержит `missing` → бросает ошибку формы `FetchError` (`statusCode: 404`, `response.status: 404`, `data.code: "NOT_FOUND"`), чтобы `getFetchStatus` и `getProblemCode` распознавали её штатно;
+    - любой другой `tx` → 2 вызова `PENDING`, далее `SUCCEEDED`.
+4. **Конфигурация роута и рендеринга `/checkout/result`:**
+   В Nuxt ключ `ssr` у `definePageMeta` не существует (режим рендеринга задаётся
+   только через `routeRules` в `nuxt.config.ts`, как у `/login` и `/me`).
+    - В `nuxt.config.ts` в `routeRules` добавляется `"/checkout/**": { ssr: false }`.
+    - В `nuxt.config.ts` в `robots.disallow` добавляется `"/checkout"`.
+    - В `app/pages/checkout/result.vue` в `definePageMeta` задаётся только `{ middleware: "auth" }`.
+5. **Гейты авторизации и `architecture.md §5.2`:**
+   Контекстный файл `architecture.md §5.2` уже синхронизирован с решением владельца:
+   выбор кружков/слотов открыт гостю, но выбор ребёнка и чекаут требуют авторизации
+   (кнопка неактивна). В `useCheckoutPayment` остаётся страховочный guard: если
+   `!authStore.isAuthed`, перенаправлять на `/login?redirectFrom=<текущий_роут>`.
+6. **Кнопка «Попробовать снова» на статусе `canceled`:**
+   Ведёт на исходный конструктор по типу транзакции: при `type === "SUBSCRIPTION"` →
+   `/enroll/subscription`, при `type === "TRIAL"` → `/enroll/trial`. Выбор собирается заново.
+7. **Ключ идемпотентности – производное от отпечатка заказа (без watch-сайдэффектов):**
+   Ключ вычисляется чистой функцией отпечатка заказа
+   (`plan_id/schedule_id`, `student_id`, отсортированные `slot_ids/trial_date`, `use_deposit`).
+   Если отпечаток совпадает с предыдущей отправкой – отдаётся сохранённый UUID, если
+   состав изменился – генерируется новый `crypto.randomUUID()`. Никаких `watch`, пишущих в `ref`.
+8. **Поведение при `IDEMPOTENCY_KEY_REUSED`:**
+   Никакого молчаливого автоповтора. Показываем понятное сообщение об ошибке и
+   сбрасываем отпечаток, чтобы следующее осознанное нажатие сформировало новый ключ.
+9. **Хелпер `getRetryAfter` и блокировка кнопки:**
+   В `app/utils/parse-error.ts` добавить утилиту `getRetryAfter(err: unknown): number | null`,
+   извлекающую секунды из заголовка `Retry-After` ответа бэка.
+   При `409 PAYMENT_IN_PROGRESS` (5 с) и `503 PAYMENT_GATEWAY_UNAVAILABLE` (30 с) кнопка
+   блокируется таймером обратного отсчёта.
+10. **Polling статуса – изолированный `useTransactionStatus`:**
+    - Состояние интерфейса: `viewState: Ref<'pending' | 'success' | 'canceled' | 'timeout' | 'error'>`.
+    - Запуск polling раз в 2 с (до 10 попыток).
+    - Обязателен `onScopeDispose` для отмены таймера при уходе со страницы.
+    - Ошибки 403 и 404 – терминальные (`viewState.value = 'error'`, опрос прекращается).
+    - Временные ошибки сети / 5xx списывают 1 попытку и опрос продолжается.
+    - Учитывается заголовок `Retry-After`, если бэк прислал задержку.
+11. **Безопасность возврата (`resolveRedirect`):**
+    Добавить `"/checkout/result"` в `ALLOWED_PATHS` (`app/utils/resolve-redirect.ts`),
+    чтобы при протухании сессии во время оплаты возврат не сбрасывался на `/me`.
+12. **Частичный депозит в сводке:**
+    Если `balance > 0`, чекбокс «Оплатить с депозита» рассчитывает честное списание:
+    `deposit_applied = Math.min(balance, planPrice)`.
+    В сводке выводятся две строки: «Списать с депозита: X ₽», «К оплате деньгами: Y ₽»
+    (или «0 ₽», если покрыто полностью).
+13. **Префикс эндпоинтов в коде сервиса:**
+    `useApi()` уже настроен на baseURL с `/api`. В коде сервисов вызывать
+    `this.fetch("/v1/checkout/subscription")` (без префикса `/api` и без завершающего слэша!).
+    В JSDoc над методом указывать полный каноничный URL: `/** POST /api/v1/checkout/subscription */`.
 
-### Запросы
+---
 
-```
+## Контракты API
+
+### 1. Чекаут абонемента
+
+```http
 POST /api/v1/checkout/subscription
-Headers: X-Idempotency-Key: <uuid4>          ← обязателен
-Body:    { plan_id, student_id, slot_ids: number[], use_deposit?: boolean }
+Authorization: Bearer <access_token>
+X-Idempotency-Key: <uuid4>
+Content-Type: application/json
 
-POST /api/v1/checkout/trial
-Headers: X-Idempotency-Key: <uuid4>          ← обязателен
-Body:    { student_id, schedule_id, trial_date: "YYYY-MM-DD" }
+{
+  "plan_id": 3,
+  "student_id": 101,
+  "slot_ids": [106, 210],
+  "use_deposit": false
+}
 ```
 
-`student_id` – число; `useCheckoutChildren().selectedChild.id` сейчас строка
-(`MeChild.id`), конвертировать `Number(...)` на границе сервиса, не менять
-доменную модель.
+_Внимание:_ URL строго без завершающего слэша!
 
-### Единый ответ (`201`)
+### 2. Чекаут пробного занятия
+
+```http
+POST /api/v1/checkout/trial
+Authorization: Bearer <access_token>
+X-Idempotency-Key: <uuid4>
+Content-Type: application/json
+
+{
+  "student_id": 101,
+  "schedule_id": 11,
+  "trial_date": "2026-10-05"
+}
+```
+
+_Внимание:_ URL строго без завершающего слэша! `trial_date` – дата в формате `YYYY-MM-DD`.
+
+### 3. Единый ответ создания заказа (`201 Created`)
 
 ```json
 {
-  "transaction_id": "uuid",
+  "transaction_id": "a1b2c3d4-e5f6-7890-1234-56789abcdef0",
   "status": "PENDING_PAYMENT" | "CONFIRMED",
-  "payment_url": "https://yookassa.ru/..." | null,
+  "payment_url": "https://yookassa.ru/checkout/payments/..." | null,
   "expires_at": "2026-06-13T16:15:00+07:00" | null
 }
 ```
 
-`payment_url: null` и `status: "CONFIRMED"` – заказ целиком закрыт депозитом
-(`use_deposit`), платить не нужно, сразу показывать успех. Иначе –
-`window.location.href = payment_url` (redirect-флоу ЮКассы, не модалка и не
-`router.push`).
+### 4. Контракт проверки статуса транзакции (`MOCK(tx-status)`)
 
-### `X-Idempotency-Key`
+```http
+GET /api/v1/checkout/transactions/{transaction_id}
+Authorization: Bearer <access_token>
+```
 
-UUID v4 на **попытку оформления**: генерируется при первом клике «Продолжить»
-на экране сводки, живёт, пока пользователь может нажать кнопку повторно (сеть
-оборвалась, вернулся кнопкой браузера), и сбрасывается при уходе со страницы
-конструктора или смене состава заказа (там и так нет сохранения состояния,
-`architecture.md` §6). Повтор с тем же ключом и тем же телом → тот же
-`transaction_id`; тот же ключ, другое тело → `409 IDEMPOTENCY_KEY_REUSED`.
-`crypto.randomUUID()` – в браузере доступен, полифилл не нужен.
+Ответ `200 OK`:
 
-### Ошибки (`code` из `getProblemCode`, не `type`/`title`)
-
-| `code`                            | Когда                                                                    | Что показать                                                                                                                                                                                                                                                                         |
-| --------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `PROFILE_INCOMPLETE`              | Анкета не заполнена                                                      | Не должно всплывать здесь: гейт стоит на входе на страницу (см. «Гард анкеты» ниже). Если долетело – значит гейта нет, чинить его, не эту ошибку                                                                                                                                     |
-| `FORBIDDEN_RESOURCE`              | Ребёнок не свой (удалённый/чужой id)                                     | «Обновите страницу» + `refresh` детей                                                                                                                                                                                                                                                |
-| `NOT_FOUND`                       | Слот/тариф исчез                                                         | Подсветить пропавший слот, предложить выбрать заново                                                                                                                                                                                                                                 |
-| `NO_AVAILABLE_SEATS`              | Место заняли, пока собирали заказ                                        | Подсветить слот, снять выбор, не блокировать остальной заказ                                                                                                                                                                                                                         |
-| `TRIAL_LIMIT_EXCEEDED`            | По этому кружку у ребёнка уже было пробное                               | На сводке, у выбора ребёнка – по `checkout-flow.md` §5 это нужно проверять реактивно при выборе ребёнка, не только по ответу `POST`. В этой задаче минимум – показать ошибку после `POST`; реактивную проверку на смену ребёнка можно вынести отдельным пунктом, если время позволит |
-| `STUDENT_ALREADY_ENROLLED`        | Ребёнок уже на абонементе в этой группе                                  | Текст ошибки бэка (`detail`) содержит подробность, показать как есть                                                                                                                                                                                                                 |
-| `VALIDATION_ERROR`                | `slot_ids` не совпадает с тарифом, битая дата и т.п.                     | `parseApiError` – общий текст, это баг конструктора, не пользователя                                                                                                                                                                                                                 |
-| `IDEMPOTENCY_KEY_REUSED`          | Ключ переиспользован с другим телом (баг фронта, если состав не менялся) | Сгенерировать новый ключ и предложить повторить                                                                                                                                                                                                                                      |
-| `PAYMENT_IN_PROGRESS`             | Платёж по ключу ещё обрабатывается, `Retry-After` в заголовке            | Показать «Обрабатываем…», не давать повторно жать кнопку N секунд                                                                                                                                                                                                                    |
-| `503 PAYMENT_GATEWAY_UNAVAILABLE` | ЮКасса недоступна, `Retry-After: 30`                                     | «Платёжный сервис недоступен, попробуйте через полминуты»                                                                                                                                                                                                                            |
-
-Все коды уже есть в `ProblemCode` (`types/index.ts`) кроме
-`PAYMENT_GATEWAY_UNAVAILABLE` – добавить в union и в `PROBLEM_CODES` (`parse-error.ts`).
+```json
+{
+  "id": "a1b2c3d4-e5f6-7890-1234-56789abcdef0",
+  "status": "PENDING" | "SUCCEEDED" | "CANCELED",
+  "type": "SUBSCRIPTION" | "TRIAL",
+  "amount": 700000,
+  "canceled_reason": "expired_on_confirmation" | "bank_declined" | null,
+  "created_at": "2026-09-30T18:40:00+07:00",
+  "expires_at": "2026-09-30T19:10:00+07:00"
+}
+```
 
 ---
 
-## ⚠️ Решение, нужное до/во время реализации
+## План реализации по слоям
 
-### 1. Слоты пробного – правило зафиксировано, перевод ещё не сделан
+### Этап 1. Конфигурация, типы, транспорт и мок
 
-Решением владельца (2026-09-27, было вопросом 20, закрыт) слоты пробного
-получают с бэка: `GET /public/schedule/?week_start=`, отфильтрованный по
-`activity.id` выбранного кружка, горизонт **2 недели вперёд** (эндпоинт отдаёт
-одну неделю за раз – два вызова, текущий и следующий понедельник, объединить,
-отсечь прошлое). Подробности – `api.md` §1 «Особенности».
+1. Выполнить `bun run schema:update` при поднятом бэке для актуализации `app/types/api.d.ts`.
+2. В `nuxt.config.ts`:
+    - В `routeRules` добавить `"/checkout/**": { ssr: false }`.
+    - В `robots.disallow` добавить `"/checkout"`.
+3. Добавить `"/checkout/result"` в `ALLOWED_PATHS` (`app/utils/resolve-redirect.ts`).
+4. Добавить `PAYMENT_GATEWAY_UNAVAILABLE` в `ProblemCode` (`app/types/index.ts`) и `PROBLEM_CODES` (`app/utils/parse-error.ts`).
+5. Реализовать утилиту `getRetryAfter(err: unknown): number | null` в `app/utils/parse-error.ts`.
+6. Снять мок со слотов пробного:
+    - В `app/services/activities.service.ts` переписать `getNextTrialSlots` на реальный вызов `this.fetch("/v1/public/activities/${activityId}/next-slots/")`.
+7. Создать `app/services/mocks/tx-status.mock.ts`:
+    - Реализация `MOCK(tx-status)` со сценариями (`canceled`, `slow`, `missing` с `FetchError(404)`, default).
+8. Создать `app/services/billing.service.ts`:
+    - `checkoutSubscription(payload, idempotencyKey)` → `this.fetch("/v1/checkout/subscription", { method: "POST", headers: { "X-Idempotency-Key": idempotencyKey }, body: payload })`.
+    - `checkoutTrial(payload, idempotencyKey)` → `this.fetch("/v1/checkout/trial", { method: "POST", headers: { "X-Idempotency-Key": idempotencyKey }, body: payload })`.
+    - `getTransactionStatus(txId)` → вызов `MOCK(tx-status)` с комментарием о снятии после бэка.
+    - Экспортировать `useBillingService()`.
 
-Сам перевод **ещё не сделан** – `useTrialCheckout` сейчас строит `clubs`/
-`selectedSlot` из `MOCK_CLUBS_WITH_SLOTS` (`app/constants/mock.ts`), это
-выдуманные `id` кружков и слотов, не настоящие `schedule_id` бэка.
-**`POST /checkout/trial` с такими данными не сработает** (`404 NOT_FOUND` на
-несуществующий `schedule_id`).
+### Этап 2. Композаблы логики
 
-Перевод конструктора на правило выше – отдельная задача (не входит в объём
-этой: она про оплату, а не про источник данных слотов). Значит:
+1. Реализовать утилиту `createOrderFingerprint(payload)`:
+    - Детерминированная строка отпечатка заказа для контроля идемпотентности.
+2. Реализовать `app/composables/useCheckoutPayment.ts`:
+    - Состояния: `isSubmitting: Ref<boolean>`, `error: Ref<ProblemDetail | null>`, `cooldownSeconds: Ref<number>`.
+    - Страховочная проверка `authStore.isAuthed` перед отправкой (редирект на `/login?redirectFrom=...`).
+    - Использование сохранённого UUID при совпадении отпечатка или генерация нового `crypto.randomUUID()`.
+    - Парсинг `Retry-After` через `getRetryAfter` и включение обратного отсчёта.
+    - Навигация: при наличии `payment_url` → `window.location.href = payment_url`, при `CONFIRMED` без url → `navigateTo({ path: '/checkout/result', query: { tx: transaction_id } })`.
+3. Реализовать `app/composables/useTransactionStatus.ts`:
+    - Принимает `txId: MaybeRef<string | undefined>`.
+    - Состояния: `viewState: Ref<'pending' | 'success' | 'canceled' | 'timeout' | 'error'>`, `transaction: Ref<TransactionStatus | null>`, `error: Ref<ProblemDetail | null>`.
+    - Polling каждые 2 с (до 10 попыток), остановка при терминальных статусах или 403/404.
+    - `onScopeDispose` для отмены таймера при уходе.
 
-- **(б)** В этой задаче подключить оплату **только абонемента** (данные уже
-  живые), а пробное – после того, как перевод слотов будет сделан.
-- **(а)** Или сначала завести и выполнить задачу перевода `useTrialCheckout`,
-  эта задача ждёт.
+### Этап 3. UI страниц покупки
 
-Рекомендация – **(б)**: абонемент готов к оплате уже сейчас, пробное иначе
-тянет за собой не относящуюся к оплате переделку конструктора в одной задаче.
+1. **Абонемент ([`/enroll/subscription`](file:///home/cirillio/web/ypa-center.ru/frontend-core/app/pages/enroll/subscription.vue)):**
+    - В сводку `EnrollSubscriptionSummary.vue`:
+        - Добавить чекбокс «Оплатить с депозита» (показывать только при `depositBalance > 0` из `useMeDeposit`).
+        - Расчёт частичного списания: `depositApplied = Math.min(depositBalance, tierPrice)`.
+        - Вывод сумм: «Списать с депозита: X ₽», «К оплате деньгами: Y ₽».
+        - Блокировка кнопки «Продолжить», если `currentTier.id === null` или не выбран ребёнок, или идёт `cooldownSeconds > 0`.
+        - Подключение `@continue` к `submitSubscription`.
+        - Блок отображения ошибки под кнопкой.
+2. **Пробное ([`/enroll/trial`](file:///home/cirillio/web/ypa-center.ru/frontend-core/app/pages/enroll/trial.vue)):**
+    - Подключение `@continue` к `submitTrial` с выбранными `schedule_id` и `date`.
+    - Блок отображения ошибки под кнопкой (с акцентом на `TRIAL_LIMIT_EXCEEDED`).
 
-### 2. Возврат с ЮКассы – `return_url` статичный, не несёт `transaction_id`
+### Этап 4. Страница результата `/checkout/result`
 
-Бэк настраивает `confirmation.return_url` из `.env`
-(`YOOKASSA_RETURN_URL=http://localhost:3000/checkout/result`, фронт не
-управляет им per-запрос) – ЮКасса откроет ровно этот URL без query-параметров.
-**GET-эндпоинта «статус транзакции по id» на бэке нет** – только
-вебхук `POST /webhooks/yookassa`, который сервер-to-сервер обновляет БД
-асинхронно; фронт узнаёт результат только через уже существующие ручки ЛК
-(`/me/subscriptions/`, `/me/bookings/?kind=TRIAL`).
-
-Значит страница `/checkout/result` не может спросить «как прошёл платёж X» –
-она может либо (а) просто сказать «оплата обрабатывается, результат в
-кабинете» и дать ссылку на `/me`, либо (б) перед редиректом на оплату
-запомнить в `sessionStorage` состав заказа (`transaction_id`, `student_id`,
-ожидаемые `slot_ids`/`schedule_id`) и на `/checkout/result` несколько раз
-опросить `/me/subscriptions/` или `/me/bookings/`, ища совпадение – с таймаутом
-и тем же фолбэком «результат в кабинете».
-
-Рекомендация – **(а)** для этой задачи: честно, без хрупкого сопоставления по
-списку без явного `transaction_id` в ответе списков ЛК. (б) можно сделать
-позже отдельной задачей, если понадобится мгновенная обратная связь на
-странице. Готовые компоненты `components/payment/*` (`Succeeded`, `Canceled`,
-`Pending`, `InvalidPid`, `Status.vue`) рассчитаны на старый polling-дизайн
-(`invalid_pid`, `reason` из `canceled_details.reason`, которого бэк не отдаёт
-никаким эндпоинтом фронта) – по факту для варианта (а) достаточно одного
-экрана «Оплата обрабатывается» + ссылка на `/me`, без `Canceled`/`InvalidPid`.
-Что делать со старыми компонентами (переиспользовать частично, удалить,
-оставить про запас) – на усмотрение исполнителя, не архитектурное решение.
-
-**Обе рекомендации ((б) для п.1 и (а) для п.2) нужно подтвердить у владельца
-перед стартом**, если решение не будет дано вместе с апрувом этой задачи.
-
----
-
-## Объём
-
-Входит (при принятой рекомендации (б)/(а) выше):
-
-1. Утилита генерации/хранения ключа идемпотентности для сессии оформления.
-2. `BillingService` (или `checkout.service.ts`) с методом
-   `checkoutSubscription(payload, idempotencyKey)` → сервис сам ставит заголовок
-   и маппит `CheckoutResponse` в доменную модель (`transactionId`, `status`,
-   `paymentUrl`, `expiresAt`).
-3. `useSubscriptionCheckout` (или новый composable `useSubscriptionPayment`) –
-   состояние отправки: `isSubmitting`, `error` (через `parseApiError`/
-   `getProblemCode`), метод `submit()`.
-4. Кнопка «Продолжить» в `EnrollSubscriptionSummary` подключена к `submit()`:
-   успех с `payment_url` → редирект на ЮКассу; успех с `CONFIRMED` → переход на
-   `/checkout/result?status=confirmed` (или сразу тост + `/me`, см. п.6);
-   ошибка → сообщение под кнопкой/тост по таблице кодов выше.
-5. Галочка «Оплатить остатком с депозита» на сводке абонемента – показывать,
-   только если `GET /me/deposit/` вернул баланс `> 0`; `use_deposit: true` в
-   теле запроса при отметке.
-6. Страница `/checkout/result` (простой экран по рекомендации (а) п.2):
-   заголовок по `?status=` by `pending`/`confirmed` (если он есть, иначе общий
-   текст «Спасибо, обрабатываем оплату»), ссылка на `/me` и на `/clubs`.
-   `routeRules` – `ssr: false` (личные данные, как `/me`).
-7. Обновить `context/api.md` §4 (оплата подключена) и `progress-tracker.md`
-   (шаг 5 плана, снять пункт из «Следующие шаги»).
-
-Не входит:
-
-- Оплата пробного (см. решение 1) и событий (`POST /checkout/event` не
-  существует).
-- Реактивная проверка `TRIAL_LIMIT_EXCEEDED` при выборе ребёнка до сабмита
-  (упомянута в таблице ошибок как желательное улучшение, не обязательное).
-- Вариант (б) из решения 2 (polling `/me/*` со страницы результата).
-- Экраны `PaymentCanceled`/`PaymentInvalidPid` – их сценарии здесь не
-  наступают (без `pid` в URL нет предмета для «платёж не найден», причина
-  отмены с бэка не приходит).
-- Компонент `EnrollSubscriptionTiersWidget` и вся логика подбора тарифа –
-  не трогать, кроме отображения `tier.id === null` (см. ниже).
-
-## Важное ограничение конструктора абонемента
-
-`useSubscriptionPlans` при недоступности `/public/plans/` подставляет фолбэк
-из `app.config.ts`, где `id: null` (`app/composables/useSubscriptionPlans.ts`).
-С таким `plan_id` чекаут физически невозможен. Кнопка «Продолжить» должна
-блокироваться (или отдельно сообщать «тарифы временно недоступны»), если
-`currentTier.value?.id == null`, даже когда состав слотов выбран.
+1. Создать `app/pages/checkout/result.vue`:
+    - Настройки: `definePageMeta({ middleware: "auth" })`.
+    - Получение `tx` из `route.query.tx`. Если нет – редирект на `/me`.
+    - Подключение `useTransactionStatus(tx)`.
+    - Отображение 5 состояний по `viewState`:
+        1. **`pending`:** спиннер, заголовок «Подтверждаем оплату в банке...», текст «Обычно это занимает несколько секунд».
+        2. **`success`:** зелёная иконка успеха, заголовок «Заказ успешно оформлен!», сумма, кнопки «В личный кабинет» и «К расписанию».
+        3. **`canceled`:** иконка отмены, «Оплата не прошла или была отменена», текст `canceled_reason`, кнопка «Попробовать снова» (переход на `/enroll/subscription` или `/enroll/trial` по `transaction.type`).
+        4. **`timeout`:** «Банк обрабатывает платёж чуть дольше обычного», ссылка на `/me`.
+        5. **`error` (404/403):** «Транзакция не найдена», кнопка «В личный кабинет».
 
 ---
 
 ## Приёмка
 
-Проверить в браузере на локальном бэке `mvp`:
-
-1. Абонемент, 1+ слот, ребёнок выбран → «Продолжить» → редирект на страницу
-   ЮКассы (по `payment_url` из ответа); `Network` показывает `X-Idempotency-Key`
-   как валидный UUID.
-2. Повторный клик «Продолжить» без изменения состава (например, вернулись
-   кнопкой браузера) → тот же `transaction_id` в ответе (проверить в сети),
-   не два разных заказа.
-3. Баланс депозита `> 0` (тестовые данные уже есть у `kirill-io3@yandex.ru`,
-   `context/progress-tracker.md` §«Заметки») → галочка видна; с галочкой и
-   абонементом, полностью покрываемым депозитом → ответ `CONFIRMED`,
-   `payment_url: null`, редирект на `/checkout/result`, без ухода на ЮКассу.
-4. Занятый слот (создать конфликт вручную или дождаться реального) →
-   `409 NO_AVAILABLE_SEATS` показан читаемо, состав заказа не потерян, слот
-   можно снять и продолжить с оставшимися.
-5. Фолбэк тарифов (временно вырубить `/public/plans/` или подставить пустой
-   ответ) → кнопка заблокирована, а не падает в `500`/`undefined`.
-6. `/checkout/result` открывается напрямую (без прохождения оплаты) и не падает.
-7. `bun run check` зелёный.
+1. **Типы:**
+    - `app/types/api.d.ts` содержит актуальные типы бэка из OpenAPI без ручных DTO.
+2. **Частичный и полный депозит:**
+    - Баланс депозита > 0 → чекбокс виден, суммы пересчитываются наглядно.
+    - Полное покрытие депозитом → `201 Created` с `payment_url: null` → мгновенный переход на `/checkout/result?tx=...` → экран успеха без посещения внешнего шлюза.
+3. **Оплата через ЮКассу:**
+    - `amount > 0` → редирект на ЮКассу; в сетевом запросе заголовок `X-Idempotency-Key` (валидный UUID).
+4. **Идемпотентность:**
+    - Повторный клик с тем же составом заказа шлёт тот же `X-Idempotency-Key`. Смена слота/тарифа меняет ключ.
+5. **Пробное занятие:**
+    - Слоты приходят из живого эндпоинта `next-slots`. Заказ отправляет корректный `trial_date` и `schedule_id`.
+6. **Экран результата и мок:**
+    - `/checkout/result?tx=test-uuid` → 2 тика `pending` → `success`.
+    - `/checkout/result?tx=mock-canceled` → `canceled` → клик «Попробовать снова» уводит на соответствующий конструктор.
+    - `/checkout/result?tx=mock-slow` → через 20 с `timeout`.
+    - `/checkout/result?tx=mock-missing` → `error` (валидная ошибка формы `FetchError(404)`).
+    - Таймер polling не утекает при переходе на другую страницу (проверить в консоли).
+7. **Безопасность:**
+    - Гость при попытке открыть `/checkout/result` уходит на `/login` по `middleware: "auth"`.
+    - Возврат после логина с `redirectFrom=/checkout/result?tx=...` разрешён белым списком.
+8. **Стандарты качества:**
+    - `bun run check` чистый: 0 ошибок TypeScript, 0 ошибок ESLint.
+    - Мок помечен тегом `MOCK(tx-status)` и зафиксирован в техдолге.
