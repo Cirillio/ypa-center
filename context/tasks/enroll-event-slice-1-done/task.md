@@ -5,7 +5,7 @@
 (план → апрув → порциями, без коммита) уже там.
 
 **Зависимость.** Каркас (`EnrollHeader`, `EnrollTypeTabs`) создаётся задачей
-`context/tasks/enroll-trial-slice-1.md`. Проверь, что `app/components/enroll/`
+`context/tasks/enroll-trial-slice-1-done/task.md`. Проверь, что `app/components/enroll/`
 уже содержит их. Если нет – остановись и сообщи, каркас здесь не пишем.
 
 ## Цель

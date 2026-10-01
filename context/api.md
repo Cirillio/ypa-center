@@ -126,31 +126,38 @@ Refresh вызывается не сервисом, а транспортом `u
 
 ## 4. Оплата
 
-В активной работе – подключение начинается **после** редизайна трёх страниц
-записи, не раньше (`project-overview.md` §5). UX – `backend/checkout-flow.md`.
+Подключено на фронте 2026-09-30 (`tasks/payment-checkout/report.md`). UX – `backend/checkout-flow.md`.
 
 | Метод | Путь                             | Примечание                                                                                                                     |
 | ----- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | POST  | `/v1/checkout/subscription`      | **Без завершающего слеша** ⚠️. Требует `X-Idempotency-Key` (UUID v4). Тело: `plan_id`, `student_id`, `slot_ids`, `use_deposit` |
 | POST  | `/v1/checkout/trial`             | **Без завершающего слеша** ⚠️. Требует `X-Idempotency-Key`. Тело: `student_id`, `schedule_id`, `trial_date` (календарная дата) |
-| GET   | `/v1/checkout/transactions/{id}` | Статус транзакции (`PENDING`, `SUCCEEDED`, `CANCELED`). Для polling на `/checkout/result?tx=`                                  |
+| GET   | `/v1/checkout/transactions/{id}` | **Ещё нет на бэке** (`MOCK(tx-status)`). Статус транзакции для опроса на `/checkout/result?tx=`                                |
 | POST  | `/v1/checkout/event`             | **Не существует.** Гостевая регистрация с оплатой на месте (`POST /v1/public/events/{id}/register/`)                           |
 | POST  | `/v1/webhooks/yookassa`          | Server-to-server, фронта не касается                                                                                           |
 
-**`X-Idempotency-Key`** – обязательный заголовок на обоих готовых чекаутах.
-Повтор запроса с тем же ключом и тем же телом возвращает тот же результат
-(не дублирует покупку); с тем же ключом, но другим телом – `409 IDEMPOTENCY_KEY_REUSED`.
-Фронт генерирует UUID v4 на попытку оформления и сбрасывает его при смене состава слотов
-или уходе со страницы конструктора.
+**`X-Idempotency-Key`** – обязательный заголовок на обоих чекаутах.
+Повтор с тем же ключом и тем же телом возвращает тот же `201` (не дублирует покупку);
+с тем же ключом, но другим телом – `409 IDEMPOTENCY_KEY_REUSED`. Фронт выводит ключ
+из отпечатка состава заказа (`architecture.md` §6).
 
-**`return_url` и опрос статуса:**
-ЮКасса перенаправляет пользователя на `http://localhost:3000/checkout/result?tx={transaction_id}`.
-Страница `/checkout/result` опрашивает `GET /v1/checkout/transactions/{tx}` с интервалом 2 сек
-(до 15–20 сек) и отображает состояние: обработка → успех (зелёная карточка, переход в `/me`) /
-отмена (ошибка банка, «попробовать снова») / таймаут («платёж обрабатывается, проверьте кабинет»).
-При `use_deposit: true` с полным покрытием суммы или бесплатном пробном (`price: 0`) бэк сразу
-отдаёт `{ status: "CONFIRMED", payment_url: null }` – редиректа на ЮКассу нет, фронт сразу
-показывает успех.
+**CORS (⚠️ бэк, на 2026-09-30):** `x-idempotency-key` не входит в `CORS_ALLOW_HEADERS`,
+а `Retry-After` – в `CORS_EXPOSE_HEADERS`: из браузера чекаут не проходит preflight.
+Локально проверено временным патчем, бэкендеру передано.
+
+**Ответы без денег:** при `use_deposit: true` с полным покрытием или бесплатном
+пробном бэк сразу отдаёт `{ status: "CONFIRMED", payment_url: null }` – фронт без
+ЮKassa переходит на `/checkout/result?tx=`.
+
+**`return_url` и опрос статуса (⚠️ бэк, на 2026-09-30):** сейчас `return_url`
+статичный (`/checkout/result` без параметров); договорились, что бэк будет
+передавать `?tx={transaction_id}`. Ручки `GET /v1/checkout/transactions/{id}` ещё нет –
+фронт опрашивает `MOCK(tx-status)` 10 раз по 2 с. Контракт ответа (черновик):
+`{ id, status: PENDING|SUCCEEDED|CANCELED, type: SUBSCRIPTION|TRIAL, amount (копейки),
+canceled_reason, created_at, expires_at }`, доступ только владельцу (`403`/`404`).
+
+**Конфигурация ЮKassa:** без `YOOKASSA_SHOP_ID` / `YOOKASSA_SECRET_KEY` в `.env` бэка
+любой чекаут отдаёт `500` (даже депозитный) – для локальной проверки нужен тестовый магазин.
 
 ---
 

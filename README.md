@@ -112,7 +112,7 @@ app/
 │   ├── layout/          # каркас: LayoutHeader, LayoutFooter, LayoutMobileMenu
 │   ├── ui/              # базовые UI-кирпичики: UiPhoto, UiVideo, UiScrollFade, UiPageSection, UiSectionLeading, UiRoundIcon, UiRadioCard
 │   ├── promo/           # промо-секции: PromoFaq, PromoJoinUs, PromoSubscriptions, PromoFloatCard
-│   └── [domain]/        # секции страниц и флоу: home/, clubs/, about/, teachers/, gallery/, me/, enroll/ (trial/, subscription/, event/), payment/, feedback/, legal/
+│   └── [domain]/        # секции страниц и флоу: home/, clubs/, about/, teachers/, gallery/, me/, enroll/ (trial/, subscription/, event/), checkout/, feedback/, legal/
 ├── composables/         # реактивная логика (автоимпорт): useSchedule, useSubscriptionPlans, use*Checkout, …
 ├── constants/           # навигация, маски, моки (nav, masks, mock)
 ├── layouts/default.vue  # LayoutHeader + <slot> + LayoutFooter + LayoutMobileMenu

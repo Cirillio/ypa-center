@@ -7,7 +7,7 @@
 (`localhost:3000`, данные из локального бэка), ширины вьюпорта 1165 px и 375 px.
 
 Связанные документы: `context/ui-context.md` (токены, правила цвета),
-`context/tasks/component-audit-2026-09.md` (пункт про табы без ARIA в `clubs/Card.vue`).
+`context/tasks/component-audit-2026-09/task.md` (пункт про табы без ARIA в `clubs/Card.vue`).
 
 ---
 

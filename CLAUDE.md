@@ -16,7 +16,7 @@
 6. `context/progress-tracker.md` – фаза, следующие шаги, открытые вопросы, техдолг, решения
 
 Справочники по необходимости: `context/api.md` (эндпоинты),
-`context/content.md` (тексты и картинки), `context/tasks/` (аудит, заметки по оплате),
+`context/content.md` (тексты и картинки), `context/tasks/<задача>/` (`task.md` + `report.md`, индекс – `tasks/README.md`),
 `context/backend/` – снимки доков бэка, авторитет у `../ypa-center-backend/docs/`,
 `context/testing-strategy-2026-09.md` – стратегия тестирования (защищённый файл,
 не перезаписывать; правки только по просьбе владельца, с записью в его журнал).
