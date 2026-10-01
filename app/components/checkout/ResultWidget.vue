@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-// Экран результата оплаты: опрашивает статус транзакции и показывает одно из пяти состояний.
+// Экран результата оплаты: опрашивает статус транзакции и показывает одно из пяти состояний с маскотом.
 import { PAYMENT_CANCEL_FALLBACK, PAYMENT_CANCEL_REASONS } from "~/constants/payment-cancel-reasons"
 
 const props = defineProps<{
@@ -15,13 +15,6 @@ const retryPath = computed<string>(() => {
     return "/clubs"
 })
 
-const successDescription = computed<string>(() => {
-    const amount = transaction.value?.amount ?? 0
-    return amount > 0
-        ? `Оплачено ${formatRubles(amount)}. Запись уже в личном кабинете.`
-        : "Оплачено с депозита. Запись уже в личном кабинете."
-})
-
 const cancelReason = computed<string>(() => {
     const reason = transaction.value?.canceledReason
     return (reason && PAYMENT_CANCEL_REASONS[reason]) ?? PAYMENT_CANCEL_FALLBACK
@@ -32,57 +25,79 @@ const cancelReason = computed<string>(() => {
     <div aria-live="polite">
         <CheckoutResultCard
             v-if="viewState === 'pending'"
+            eyebrow="Секундочку"
             title="Подтверждаем оплату"
-            description="Обычно это занимает несколько секунд. Не закрывайте страницу."
+            description="Банк проверяет платёж – обычно это пара секунд. Не закрывайте страницу."
         >
             <template #icon>
-                <div class="flex h-20 items-center gap-3" aria-hidden="true">
-                    <span class="pending-dot" />
-                    <span class="pending-dot [animation-delay:160ms]" />
-                    <span class="pending-dot [animation-delay:320ms]" />
-                </div>
+                <CheckoutMascot mood="spin" />
             </template>
         </CheckoutResultCard>
 
         <CheckoutResultCard
-            v-else-if="viewState === 'success'"
-            title="Заказ оформлен!"
-            :description="successDescription"
+            v-else-if="viewState === 'success' && transaction"
+            eyebrow="Оплата прошла"
+            title="УРА!"
+            description="Вы записаны. До встречи на Улице Радости!"
+            hero
         >
             <template #icon>
-                <CheckoutSuccessMark />
+                <CheckoutConfetti />
+                <CheckoutMascot mood="joy" />
             </template>
+
+            <CheckoutReceipt :transaction="transaction" />
+
             <template #actions>
-                <UButton to="/me" label="В личный кабинет" size="xl" block />
-                <UButton to="/clubs#schedule" label="К расписанию" variant="soft" size="xl" block />
+                <UButton to="/me" label="В личный кабинет" size="xl" block class="sm:flex-1" />
+                <UButton
+                    to="/clubs#schedule"
+                    label="К расписанию"
+                    variant="soft"
+                    size="xl"
+                    block
+                    class="sm:flex-1"
+                />
             </template>
         </CheckoutResultCard>
 
         <CheckoutResultCard
             v-else-if="viewState === 'canceled'"
+            eyebrow="Оплата не прошла"
             :title="cancelReason"
-            description="Деньги не списаны. Место не забронировано – оформите заказ заново."
+            description="Деньги не списаны, место не забронировано. Ничего страшного – соберите заказ заново."
         >
             <template #icon>
-                <UIcon name="ph:x-circle-duotone" class="text-error size-20" aria-hidden="true" />
+                <CheckoutMascot mood="cloudy" />
             </template>
             <template #actions>
-                <UButton :to="retryPath" label="Попробовать снова" size="xl" block />
-                <UButton to="/me" label="В личный кабинет" variant="soft" size="xl" block />
+                <UButton
+                    :to="retryPath"
+                    label="Попробовать снова"
+                    trailing-icon="ph:arrow-clockwise-bold"
+                    size="xl"
+                    block
+                    class="sm:flex-1"
+                />
+                <UButton
+                    to="/me"
+                    label="В личный кабинет"
+                    variant="soft"
+                    size="xl"
+                    block
+                    class="sm:flex-1"
+                />
             </template>
         </CheckoutResultCard>
 
         <CheckoutResultCard
             v-else-if="viewState === 'timeout'"
-            title="Банк отвечает дольше обычного"
-            description="Не переживайте: как только подтверждение придёт, запись появится в личном кабинете."
+            eyebrow="Почти готово"
+            title="Банк думает чуть дольше"
+            description="Как только подтверждение придёт, запись сама появится в личном кабинете. Оплачивать повторно не нужно."
         >
             <template #icon>
-                <UIcon
-                    name="ph:hourglass-medium-duotone"
-                    class="text-primary size-20"
-                    aria-hidden="true"
-                />
+                <CheckoutMascot mood="wait" />
             </template>
             <template #actions>
                 <UButton to="/me" label="В личный кабинет" size="xl" block />
@@ -91,15 +106,12 @@ const cancelReason = computed<string>(() => {
 
         <CheckoutResultCard
             v-else
-            title="Заказ не найден"
-            description="Ссылка устарела или заказ оформлен с другого аккаунта."
+            eyebrow="Заказ не найден"
+            title="Такого заказа на нашей улице нет"
+            description="Ссылка устарела или заказ оформлен с другого аккаунта. Все ваши записи – в личном кабинете."
         >
             <template #icon>
-                <UIcon
-                    name="ph:question-duotone"
-                    class="text-primary/30 size-20"
-                    aria-hidden="true"
-                />
+                <CheckoutStreet />
             </template>
             <template #actions>
                 <UButton to="/me" label="В личный кабинет" size="xl" block />
