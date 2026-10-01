@@ -150,7 +150,7 @@ function submitForm() {
                 variant="soft"
                 size="sm"
                 class="w-fit"
-                @click="isAdding = true"
+                @click="void (isAdding = true)"
             />
         </template>
     </section>
