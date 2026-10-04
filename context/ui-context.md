@@ -115,12 +115,12 @@ Nuxt UI 4 поверх Reka UI. Своих обёрток над `U*`-компо
 Собственные общие компоненты разложены по категориям без плоского корня:
 
 - `app/components/layout/`: `Header.vue` (`<LayoutHeader />`), `Footer.vue` (`<LayoutFooter />`), `MobileMenu.vue` (`<LayoutMobileMenu />`).
-- `app/components/ui/`: `PageSection.vue`, `SectionLeading.vue`, `RoundIcon.vue`, `RadioCard.vue`, `Photo.vue`, `Video.vue`, `ScrollFade.vue` (`<Ui* />`).
+- `app/components/ui/`: `PageSection.vue`, `SectionLeading.vue`, `RoundIcon.vue`, `RadioCard.vue`, `Photo.vue`, `Video.vue`, `ScrollFade.vue`, `Mascot.vue` (солнце-маскот: `spin` / `joy` / `cloudy` / `wait`), `ErrorState.vue`, `EmptyState.vue` (`<Ui* />`).
 - `app/components/promo/`: `Faq.vue`, `JoinUs.vue`, `Subscriptions.vue`, `FloatCard.vue` (`<Promo* />`).
 
 Доменные компоненты с собственным визуальным языком:
 
-- `app/components/checkout/` – экраны результата оплаты (§10b): `ResultWidget`, `ResultCard`, `Mascot`, `Confetti`, `Receipt`, `Street`.
+- `app/components/checkout/` – экраны результата оплаты (§10b): `ResultWidget`, `ResultCard`, `Confetti`, `Receipt`, `Street`.
 - `app/components/enroll/DepositOption.vue` – списание депозита в сводке абонемента.
 
 ---
@@ -259,14 +259,18 @@ Mobile-first. Брейкпоинты – стандартные Tailwind, спе
 Любая секция, которая фетчит данные, показывает ровно одно из четырёх состояний,
 в порядке проверки: **загрузка → ошибка → данные → пусто**.
 
-| Состояние | Как выглядит                                                                                                                             |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Загрузка  | `USkeleton` той же геометрии, что и карточки (обложка, строки текста), контейнер с `aria-busy="true"`. Только пока данных ещё нет        |
-| Ошибка    | `UiErrorState`: иконка `ph:warning-circle-duotone`, текст «Не удалось загрузить … Попробуйте ещё раз.», кнопка «Повторить» → `refresh()` |
-| Пусто     | `UiEmptyState`: иконка-duotone `text-primary/30`, заголовок, пояснение, необязательное действие в слоте. Ошибку за пустоту не выдавать   |
+| Состояние | Как выглядит                                                                                                                           |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Загрузка  | `USkeleton` той же геометрии, что и карточки (обложка, строки текста), контейнер с `aria-busy="true"`. Только пока данных ещё нет      |
+| Ошибка    | `UiErrorState`: `message` + дефолтное «Попробуйте ещё раз.», кнопка «Повторить» → `refresh()`. Размеры ниже                            |
+| Пусто     | `UiEmptyState`: иконка-duotone `text-primary/30`, заголовок, пояснение, необязательное действие в слоте. Ошибку за пустоту не выдавать |
 
-- `UiErrorState` `size="lg"` – для секций на всю страницу (`/clubs`, `/teachers`,
-  `/gallery`), по умолчанию – внутри карточек-виджетов.
+- `UiErrorState` по размерам: `lg` – секции на всю страницу (`/clubs`, `/teachers`,
+  `/gallery`): `UiMascot mood="cloudy"` + заголовок; `md` (по умолчанию) – внутри
+  карточек-виджетов: иконка на оранжевом ореоле, как у `UiEmptyState`; `sm` –
+  горизонтальная строка для тесных колонок. Необязательные: `title`, `description`
+  (`""` отключает «Попробуйте ещё раз.»), `icon`, `actionLabel`, слот `#action`.
+  Акцент иконок ошибки и пустоты – `primary`, не `secondary`.
 - Ошибка показывается, только если данных нет совсем (`error && !items.length`):
   упавшая дозагрузка не прячет уже показанное.
 
