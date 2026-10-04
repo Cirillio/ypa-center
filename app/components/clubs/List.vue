@@ -1,6 +1,18 @@
 <script lang="ts" setup>
 import type { Activity } from "~/types"
 
+const emptyState = {
+    error: {
+        title: "При загрузке кружков возникла ошибка.",
+        description: "Попробуйте позже или попробуйте ещё раз."
+    },
+    empty: {
+        title: "Упс, кажется мы не нашли кружков.",
+        description:
+            "Возможно, мы их ещё не добавили, или что-то пошло не так. Попробуйте ещё раз или позвоните нам."
+    }
+}
+
 // Каталог кружков; скелетон при первой загрузке, ошибка с повтором при сбое API, пояснение при пустом ответе.
 defineProps<{
     activities: Activity[]
@@ -37,6 +49,7 @@ const SKELETON_KEYS = ["clubs-sk-1", "clubs-sk-2", "clubs-sk-3"] as const
 
             <UiErrorState
                 v-else-if="error && !activities.length"
+                class="w-full rounded-lg bg-white"
                 size="lg"
                 message="Не удалось загрузить список кружков."
                 :retrying="pending"
@@ -46,16 +59,22 @@ const SKELETON_KEYS = ["clubs-sk-1", "clubs-sk-2", "clubs-sk-3"] as const
             <UiEmptyState
                 v-else-if="!activities.length"
                 icon="ph:shapes-duotone"
-                title="Скоро откроем набор"
-                description="Сейчас формируем группы на новый сезон. Позвоните – расскажем, что планируется."
+                :title="emptyState.empty.title"
+                :description="emptyState.empty.description"
             >
-                <UButton
-                    :href="`tel:${contactInfo.phoneTo}`"
-                    variant="soft"
-                    leading-icon="ph:phone-bold"
-                    :label="contactInfo.phone"
-                    size="lg"
-                />
+                <div class="flex gap-2">
+                    <UButton
+                        :href="`tel:${contactInfo.phoneTo}`"
+                        variant="soft"
+                        leading-icon="ph:phone-bold"
+                        :label="contactInfo.phone"
+                        size="lg"
+                    />
+
+                    <UButton :loading="pending" :disabled="pending" variant="soft" size="lg"
+                        >Обновить</UButton
+                    >
+                </div>
             </UiEmptyState>
 
             <!-- Список кружков -->

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const activities = useActivitiesService()
-const { data, error, status } = useAsyncData("activities:popular", () => activities.getPopular())
+const { data, status } = useAsyncData("activities:popular", () => activities.getPopular())
 
 // Бэк лимитирует выдачу тремя, но контракт на «ровно 3» не гарантирован –
 // >4 обрезаем сами, раскладка ниже рассчитана на 2..4
@@ -10,7 +10,7 @@ type Variant = "pending" | "empty" | "duo" | "trio" | "quad"
 
 const variant = computed<Variant>(() => {
     if (status.value === "pending" && !clubs.value.length) return "pending"
-    if (error.value) return "empty"
+    // Ошибка без данных даёт пустой список, то есть то же приглашение; ошибка при наличии данных их не прячет
     switch (clubs.value.length) {
         case 4:
             return "quad"

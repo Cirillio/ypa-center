@@ -26,7 +26,7 @@ const txId = computed<string | undefined>(() => {
                     description="Если оплата прошла, запись появится в личном кабинете в течение пары минут."
                 >
                     <template #icon>
-                        <CheckoutMascot mood="wait" />
+                        <UiMascot mood="wait" />
                     </template>
                     <template #actions>
                         <UButton to="/me" label="В личный кабинет" size="xl" block />

@@ -2,7 +2,7 @@
 import { EnrollRoutesEnum } from "~/constants/nav"
 
 const eventsService = useEventsService()
-const { data, error, status } = useAsyncData("events", () => eventsService.getAll())
+const { data, status } = useAsyncData("events", () => eventsService.getAll())
 const events = computed(() => {
     const raw = data.value ?? []
     return raw.toSorted((a, b) => {
@@ -59,8 +59,8 @@ const events = computed(() => {
                 <USkeleton class="h-96 rounded-md max-lg:hidden" />
             </div>
 
-            <!-- Пустое состояние или ошибка загрузки -->
-            <HomeEventsEmpty v-else-if="error || events.length === 0" />
+            <!-- Пусто или ошибка без данных; уже загруженные события ошибка не прячет -->
+            <HomeEventsEmpty v-else-if="!events.length" />
 
             <!-- Events list / grid -->
             <ul v-else class="flex flex-col gap-2 lg:grid lg:grid-cols-3 lg:gap-4">

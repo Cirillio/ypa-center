@@ -117,3 +117,15 @@
             rotate(calc(var(--r) * 1.6)) scale(0.9);
     }
 }
+
+/* Мягкое появление блока: лёгкий подъём на 8px, без суеты */
+.fade-up {
+    animation: fade-up 0.3s ease-out both;
+}
+
+@keyframes fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}

@@ -30,7 +30,7 @@ const cancelReason = computed<string>(() => {
             description="Банк проверяет платёж – обычно это пара секунд. Не закрывайте страницу."
         >
             <template #icon>
-                <CheckoutMascot mood="spin" />
+                <UiMascot mood="spin" />
             </template>
         </CheckoutResultCard>
 
@@ -43,7 +43,7 @@ const cancelReason = computed<string>(() => {
         >
             <template #icon>
                 <CheckoutConfetti />
-                <CheckoutMascot mood="joy" />
+                <UiMascot mood="joy" />
             </template>
 
             <CheckoutReceipt :transaction="transaction" />
@@ -68,7 +68,7 @@ const cancelReason = computed<string>(() => {
             description="Деньги не списаны, место не забронировано. Ничего страшного – соберите заказ заново."
         >
             <template #icon>
-                <CheckoutMascot mood="cloudy" />
+                <UiMascot mood="cloudy" />
             </template>
             <template #actions>
                 <UButton
@@ -97,7 +97,7 @@ const cancelReason = computed<string>(() => {
             description="Как только подтверждение придёт, запись сама появится в личном кабинете. Оплачивать повторно не нужно."
         >
             <template #icon>
-                <CheckoutMascot mood="wait" />
+                <UiMascot mood="wait" />
             </template>
             <template #actions>
                 <UButton to="/me" label="В личный кабинет" size="xl" block />
