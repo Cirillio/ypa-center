@@ -8,13 +8,6 @@ import type {
     ProblemCode
 } from "~/types"
 
-// ПОЧЕМУ фолбэк: Retry-After не CORS-safelisted, пока бэк его не выставит в Expose-Headers,
-// браузер заголовок прячет. Значения совпадают с billing/views.py
-const FALLBACK_RETRY_SECONDS: Partial<Record<ProblemCode, number>> = {
-    PAYMENT_IN_PROGRESS: 5,
-    PAYMENT_GATEWAY_UNAVAILABLE: 30
-}
-
 // Тексты по коду; коды без записи показывают detail бэка
 const ERROR_MESSAGES: Partial<Record<ProblemCode, Omit<CheckoutError, "code">>> = {
     FORBIDDEN_RESOURCE: {
@@ -53,6 +46,16 @@ const NETWORK_ERROR: Omit<CheckoutError, "code"> = {
     title: "Нет связи с сервером",
     description: "Проверьте интернет и нажмите ещё раз – второй заказ не создастся."
 }
+
+// Пробное на уже начавшееся занятие: бэк отвечает 422 с ошибкой в поле trial_date
+const LESSON_STARTED: Omit<CheckoutError, "code"> = {
+    title: "Запись на это занятие закрыта",
+    description: "Занятие уже началось. Мы обновили список – выберите другое время."
+}
+
+// Ошибка валидации пришла именно по дате пробного
+const isTrialDateClosed = (err: unknown): boolean =>
+    getProblem(err)?.extensions?.invalid_params?.some((p) => p.name === "trial_date") ?? false
 
 // Коды, после которых выбор на странице устарел и данные нужно перезапросить
 const SLOTS_STALE_CODES: ReadonlySet<ProblemCode> = new Set(["NOT_FOUND", "NO_AVAILABLE_SEATS"])
@@ -102,20 +105,28 @@ export function useCheckoutPayment(options: CheckoutPaymentOptions = {}) {
     function handleError(err: unknown) {
         const code = getProblemCode(err)
         // ПОЧЕМУ: без тела RFC 9457 parseApiError отдаёт сырое сообщение ofetch с URL – родителю оно ни к чему
-        const known = code ? ERROR_MESSAGES[code] : getProblem(err) ? undefined : NETWORK_ERROR
+        const problem = getProblem(err)
+        const lessonStarted = isTrialDateClosed(err)
+        const known = lessonStarted
+            ? LESSON_STARTED
+            : code
+              ? ERROR_MESSAGES[code]
+              : problem
+                ? undefined
+                : NETWORK_ERROR
         const parsed = parseApiError(err, "Не удалось оформить заказ")
         error.value = {
             code,
             title: known?.title ?? parsed.title,
-            description: known?.description ?? parsed.description ?? ""
+            description: known?.description ?? parsed.description ?? "",
+            requestId: problem?.extensions?.request_id
         }
 
         if (code === "IDEMPOTENCY_KEY_REUSED") lastAttempt = null
-        if (code && SLOTS_STALE_CODES.has(code)) void options.onSlotsStale?.()
+        if (lessonStarted || (code && SLOTS_STALE_CODES.has(code))) void options.onSlotsStale?.()
         if (code === "FORBIDDEN_RESOURCE") void options.onChildrenStale?.()
 
-        const fallbackRetry = code ? FALLBACK_RETRY_SECONDS[code] : undefined
-        const retryAfter = getRetryAfter(err) ?? fallbackRetry
+        const retryAfter = getRetryAfter(err)
         if (retryAfter) startCooldown(retryAfter)
     }
 

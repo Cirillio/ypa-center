@@ -57,7 +57,13 @@ const buttonLabel = computed(() =>
             icon="ph:warning-circle-bold"
             :title="error.title"
             :description="error.description"
-        />
+        >
+            <template v-if="error.requestId" #actions>
+                <span class="text-muted text-xs select-all"
+                    >Код обращения: {{ error.requestId.slice(0, 8) }}</span
+                >
+            </template>
+        </UAlert>
 
         <p v-else-if="hint" class="text-muted text-center text-xs">{{ hint }}</p>
         <p v-else-if="!ready && missing.length" class="text-muted text-center text-xs">
