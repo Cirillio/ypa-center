@@ -93,6 +93,23 @@ export interface paths {
         patch?: never
         trace?: never
     }
+    "/api/v1/checkout/transactions/{transaction_id}": {
+        parameters: {
+            query?: never
+            header?: never
+            path?: never
+            cookie?: never
+        }
+        /** @description Итог оплаты для страницы «результат оплаты» (id приходит в return_url как ?tx=). Фронт опрашивает, пока status = PENDING. Чужая или несуществующая транзакция — 404. */
+        get: operations["v1_checkout_transactions_retrieve"]
+        put?: never
+        post?: never
+        delete?: never
+        options?: never
+        head?: never
+        patch?: never
+        trace?: never
+    }
     "/api/v1/checkout/trial": {
         parameters: {
             query?: never
@@ -619,6 +636,24 @@ export interface components {
             readonly taken: number
             readonly free: number
         }
+        CheckoutOrder: {
+            title: string
+            student_name: string
+            /** Format: date */
+            trial_date: string | null
+            slots: components["schemas"]["CheckoutOrderSlot"][]
+        }
+        CheckoutOrderSlot: {
+            schedule_id: number
+            activity_name: string
+            group_name: string
+            /** @description 0 — понедельник, 6 — воскресенье */
+            day_of_week: number
+            /** Format: time */
+            start_time: string
+            /** Format: time */
+            end_time: string
+        }
         CheckoutResponse: {
             /** Format: uuid */
             transaction_id: string
@@ -641,6 +676,50 @@ export interface components {
             use_deposit: boolean
             slot_ids: number[]
         }
+        CheckoutTransaction: {
+            /** Format: uuid */
+            id: string
+            type: components["schemas"]["TypeEnum"]
+            status: components["schemas"]["CheckoutTransactionStatusEnum"]
+            reason:
+                | (
+                      | components["schemas"]["CheckoutTransactionReasonEnum"]
+                      | components["schemas"]["NullEnum"]
+                  )
+                | null
+            /** @description Копейки: сколько прошло через карту (оно же вернётся), до оплаты — сколько предстоит заплатить */
+            amount: number
+            /** Format: date-time */
+            created_at: string
+            /**
+             * Format: date-time
+             * @description До какого момента ждём оплату; осмысленно только для PENDING
+             */
+            expires_at: string
+            order: components["schemas"]["CheckoutOrder"]
+        }
+        /**
+         * @description * `SEATS_TAKEN` - SEATS_TAKEN
+         *     * `GROUP_CLOSED` - GROUP_CLOSED
+         *     * `PAID_AFTER_EXPIRY` - PAID_AFTER_EXPIRY
+         *     * `AMOUNT_MISMATCH` - AMOUNT_MISMATCH
+         *     * `NOT_FULFILLED` - NOT_FULFILLED
+         * @enum {string}
+         */
+        CheckoutTransactionReasonEnum:
+            | "SEATS_TAKEN"
+            | "GROUP_CLOSED"
+            | "PAID_AFTER_EXPIRY"
+            | "AMOUNT_MISMATCH"
+            | "NOT_FULFILLED"
+        /**
+         * @description * `PENDING` - PENDING
+         *     * `SUCCEEDED` - SUCCEEDED
+         *     * `CANCELED` - CANCELED
+         *     * `REFUND` - REFUND
+         * @enum {string}
+         */
+        CheckoutTransactionStatusEnum: "PENDING" | "SUCCEEDED" | "CANCELED" | "REFUND"
         CheckoutTrialRequest: {
             student_id: number
             schedule_id: number
@@ -680,13 +759,23 @@ export interface components {
         DepositEntryView: {
             readonly id: number
             readonly amount: number
-            readonly reason: components["schemas"]["ReasonEnum"]
+            readonly reason: components["schemas"]["DepositEntryViewReasonEnum"]
             readonly reason_display: string
             readonly subscription_id: number | null
             readonly subscription_display_id: string | null
             /** Format: date-time */
             readonly created_at: string
         }
+        /**
+         * @description * `SUBSCRIPTION_EXPIRY_CREDIT` - Несгораемый остаток абонемента
+         *     * `CHECKOUT_SPEND` - Списание при покупке
+         *     * `ORDER_CANCELED_RETURN` - Возврат за неисполненный заказ
+         * @enum {string}
+         */
+        DepositEntryViewReasonEnum:
+            | "SUBSCRIPTION_EXPIRY_CREDIT"
+            | "CHECKOUT_SPEND"
+            | "ORDER_CANCELED_RETURN"
         EventPublic: {
             readonly id: number
             /** Название */
@@ -762,6 +851,8 @@ export interface components {
             /** @description Refresh-токен для аннулирования */
             refresh: string
         }
+        /** @enum {unknown} */
+        NullEnum: null
         OTPRequestRequest: {
             /**
              * Format: email
@@ -872,13 +963,6 @@ export interface components {
             readonly profile_completed: boolean
             readonly children: components["schemas"]["Child"][]
         }
-        /**
-         * @description * `SUBSCRIPTION_EXPIRY_CREDIT` - Несгораемый остаток абонемента
-         *     * `CHECKOUT_SPEND` - Списание при покупке
-         *     * `ORDER_CANCELED_RETURN` - Возврат за неисполненный заказ
-         * @enum {string}
-         */
-        ReasonEnum: "SUBSCRIPTION_EXPIRY_CREDIT" | "CHECKOUT_SPEND" | "ORDER_CANCELED_RETURN"
         /**
          * @description * `FRIENDS` - Друзья, знакомые
          *     * `SOCIAL` - Соцсети (VK, Telegram)
@@ -1024,6 +1108,12 @@ export interface components {
             /** Format: date-time */
             readonly created_at: string
         }
+        /**
+         * @description * `SUBSCRIPTION` - SUBSCRIPTION
+         *     * `TRIAL` - TRIAL
+         * @enum {string}
+         */
+        TypeEnum: "SUBSCRIPTION" | "TRIAL"
         UpcomingItem: {
             readonly kind: string
             readonly date: string
@@ -1256,6 +1346,27 @@ export interface operations {
                 }
                 content: {
                     "application/json": components["schemas"]["CheckoutResponse"]
+                }
+            }
+        }
+    }
+    v1_checkout_transactions_retrieve: {
+        parameters: {
+            query?: never
+            header?: never
+            path: {
+                transaction_id: string
+            }
+            cookie?: never
+        }
+        requestBody?: never
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content: {
+                    "application/json": components["schemas"]["CheckoutTransaction"]
                 }
             }
         }

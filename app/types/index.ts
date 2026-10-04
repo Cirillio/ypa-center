@@ -92,34 +92,52 @@ export type CheckoutSubscriptionRequest = components["schemas"]["CheckoutSubscri
 export type CheckoutTrialRequest = components["schemas"]["CheckoutTrialRequest"]
 export type CheckoutResponse = components["schemas"]["CheckoutResponse"]
 
-// MOCK(tx-status): контракт GET /checkout/transactions/{id} ещё не в OpenAPI – заменить алиасом после бэка
-export interface TransactionStatusDto {
-    id: string
-    status: "PENDING" | "SUCCEEDED" | "CANCELED"
-    type: "SUBSCRIPTION" | "TRIAL"
-    amount: number // копейки
-    canceled_reason: string | null
-    created_at: string
-    expires_at: string | null
+// GET /checkout/transactions/{id} – исход оплаты для родителя
+export type CheckoutTransactionDto = components["schemas"]["CheckoutTransaction"]
+export type CheckoutTransactionStatus = components["schemas"]["CheckoutTransactionStatusEnum"]
+export type CheckoutTransactionReason = components["schemas"]["CheckoutTransactionReasonEnum"]
+
+// Слот из состава заказа; день недели 0=Пн, как в getDayName
+export interface CheckoutOrderSlot {
+    scheduleId: number
+    activityName: string
+    groupName: string
+    dayOfWeek: number
+    startTime: string
+    endTime: string
 }
 
 // Статус оплаты для экрана результата; сумма в рублях
 export interface CheckoutTransaction {
     id: string
-    status: TransactionStatusDto["status"]
-    type: TransactionStatusDto["type"]
+    status: CheckoutTransactionStatus
+    type: CheckoutTransactionDto["type"]
+    reason: CheckoutTransactionReason | null
     amount: number
-    canceledReason: string | null
+    expiresAt: string
+    order: {
+        title: string
+        studentName: string
+        trialDate: string | null
+        slots: CheckoutOrderSlot[]
+    }
 }
 
-// Экран результата оплаты: одно состояние из пяти
-export type TransactionViewState = "pending" | "success" | "canceled" | "timeout" | "error"
+// Экран результата оплаты: одно состояние из шести
+export type TransactionViewState =
+    | "pending"
+    | "success"
+    | "canceled"
+    | "refund"
+    | "timeout"
+    | "error"
 
 // Ошибка оформления заказа для блока под кнопкой «Продолжить»
 export interface CheckoutError {
     code: ProblemCode | undefined
     title: string
     description: string
+    requestId?: string // X-Request-ID ответа – родитель диктует его администратору
 }
 
 export interface ScheduleWeekDay {
@@ -184,7 +202,7 @@ export type BookingDto = components["schemas"]["Booking"]
 export type BookingStatus = components["schemas"]["BookingStatusEnum"]
 export type DepositBalanceDto = components["schemas"]["DepositBalance"]
 export type DepositEntryDto = components["schemas"]["DepositEntryView"]
-export type DepositReason = components["schemas"]["ReasonEnum"]
+export type DepositReason = components["schemas"]["DepositEntryViewReasonEnum"]
 export type ReferralSource = components["schemas"]["ReferralSourceEnum"]
 
 export interface MeParent {

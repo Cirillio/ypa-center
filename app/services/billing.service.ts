@@ -1,24 +1,38 @@
 import type { ApiFetch } from "~/composables/useApi"
-import { getMockTransactionStatus } from "~/services/mocks/tx-status.mock"
 import type {
     CheckoutTransaction,
     CheckoutResponse,
     CheckoutSubscriptionRequest,
-    CheckoutTrialRequest,
-    TransactionStatusDto
+    CheckoutTransactionDto,
+    CheckoutTrialRequest
 } from "~/types"
 
 // ПОЧЕМУ заголовок отдельно от тела: бэк склеивает повтор по ключу и сверяет тело (409 при расхождении)
 const IDEMPOTENCY_HEADER = "X-Idempotency-Key"
 
-// Маппит статус транзакции бэка в модель экрана результата (копейки → рубли).
-function toCheckoutTransaction(dto: TransactionStatusDto): CheckoutTransaction {
+// Маппит статус транзакции бэка в модель экрана результата (копейки → рубли, camelCase).
+function toCheckoutTransaction(dto: CheckoutTransactionDto): CheckoutTransaction {
     return {
         id: dto.id,
         status: dto.status,
         type: dto.type,
+        // ПОЧЕМУ гард по статусу: причина осмысленна только у REFUND
+        reason: dto.status === "REFUND" ? dto.reason : null,
         amount: kopecksToRubles(dto.amount),
-        canceledReason: dto.canceled_reason
+        expiresAt: dto.expires_at,
+        order: {
+            title: dto.order.title,
+            studentName: dto.order.student_name,
+            trialDate: dto.order.trial_date,
+            slots: dto.order.slots.map((slot) => ({
+                scheduleId: slot.schedule_id,
+                activityName: slot.activity_name,
+                groupName: slot.group_name,
+                dayOfWeek: slot.day_of_week,
+                startTime: slot.start_time.slice(0, 5),
+                endTime: slot.end_time.slice(0, 5)
+            }))
+        }
     }
 }
 
@@ -55,9 +69,9 @@ export class BillingService {
 
     /** GET /api/v1/checkout/transactions/{txId} */
     async getTransactionStatus(txId: string): Promise<CheckoutTransaction> {
-        // MOCK(tx-status): ручки ещё нет на бэке; после выкатки –
-        // this.fetch<TransactionStatusDto>(`/v1/checkout/transactions/${txId}`)
-        const dto = await getMockTransactionStatus(txId)
+        const dto = await this.fetch<CheckoutTransactionDto>(
+            `/v1/checkout/transactions/${encodeURIComponent(txId)}`
+        )
         return toCheckoutTransaction(dto)
     }
 }

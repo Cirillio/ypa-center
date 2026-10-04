@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-// Экран результата оплаты: опрашивает статус транзакции и показывает одно из пяти состояний с маскотом.
-import { PAYMENT_CANCEL_FALLBACK, PAYMENT_CANCEL_REASONS } from "~/constants/payment-cancel-reasons"
+// Экран результата оплаты: опрашивает статус транзакции и показывает одно из шести состояний с маскотом.
+import { REFUND_REASONS } from "~/constants/refund-reasons"
 
 const props = defineProps<{
     txId: string
@@ -15,9 +15,13 @@ const retryPath = computed<string>(() => {
     return "/clubs"
 })
 
-const cancelReason = computed<string>(() => {
-    const reason = transaction.value?.canceledReason
-    return (reason && PAYMENT_CANCEL_REASONS[reason]) ?? PAYMENT_CANCEL_FALLBACK
+// Текст возврата: общий срок плюс причина, если бэк её знает
+const refundDescription = computed<string>(() => {
+    const reason = transaction.value?.reason
+    const detail = reason ? REFUND_REASONS[reason] : undefined
+    const base =
+        "Деньги вернутся на карту, обычно за несколько дней. Если понадобится что-то уточнить, мы свяжемся с вами."
+    return detail ? `${detail} ${base}` : base
 })
 </script>
 
@@ -64,8 +68,8 @@ const cancelReason = computed<string>(() => {
         <CheckoutResultCard
             v-else-if="viewState === 'canceled'"
             eyebrow="Оплата не прошла"
-            :title="cancelReason"
-            description="Деньги не списаны, место не забронировано. Ничего страшного – соберите заказ заново."
+            title="Оплата не прошла или была отменена"
+            description="Если деньги всё же списались – они вернутся автоматически. Соберите заказ заново."
         >
             <template #icon>
                 <UiMascot mood="cloudy" />
@@ -91,16 +95,50 @@ const cancelReason = computed<string>(() => {
         </CheckoutResultCard>
 
         <CheckoutResultCard
+            v-else-if="viewState === 'refund'"
+            eyebrow="Оплата прошла"
+            title="Оформить заказ не получилось"
+            :description="refundDescription"
+        >
+            <template #icon>
+                <UiMascot mood="cloudy" />
+            </template>
+            <template #actions>
+                <UButton
+                    :to="retryPath"
+                    label="Выбрать другую группу"
+                    size="xl"
+                    block
+                    class="sm:flex-1"
+                />
+                <UButton
+                    to="/me"
+                    label="В личный кабинет"
+                    variant="soft"
+                    size="xl"
+                    block
+                    class="sm:flex-1"
+                />
+            </template>
+        </CheckoutResultCard>
+
+        <CheckoutResultCard
             v-else-if="viewState === 'timeout'"
             eyebrow="Почти готово"
             title="Банк думает чуть дольше"
-            description="Как только подтверждение придёт, запись сама появится в личном кабинете. Оплачивать повторно не нужно."
+            description="Проверка оплаты занимает больше времени, чем обычно. Обновите эту страницу через несколько минут – оплачивать повторно не нужно."
         >
             <template #icon>
                 <UiMascot mood="wait" />
             </template>
             <template #actions>
-                <UButton to="/me" label="В личный кабинет" size="xl" block />
+                <UButton
+                    label="Обновить страницу"
+                    trailing-icon="ph:arrow-clockwise-bold"
+                    size="xl"
+                    block
+                    @click="reloadNuxtApp()"
+                />
             </template>
         </CheckoutResultCard>
 

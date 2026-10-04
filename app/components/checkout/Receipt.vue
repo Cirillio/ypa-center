@@ -1,16 +1,27 @@
 <script lang="ts" setup>
 // Чек успешного заказа и короткое «что дальше»: только проверяемые факты – кабинет, адрес, срок абонемента.
+import type { DeepReadonly } from "vue"
+
 import type { CheckoutTransaction } from "~/types"
 
 const props = defineProps<{
-    transaction: CheckoutTransaction
+    transaction: DeepReadonly<CheckoutTransaction>
 }>()
 
 const { contactInfo } = useAppConfig()
 
-const purchaseLabel = computed(() =>
-    props.transaction.type === "SUBSCRIPTION" ? "Абонемент на месяц" : "Пробное занятие"
-)
+// ПОЧЕМУ разбор строкой: new Date("YYYY-MM-DD") – полночь UTC, в минусовых поясах съехал бы день
+const trialDateLabel = computed<string | null>(() => {
+    const raw = props.transaction.order.trialDate
+    if (!raw) return null
+    const [year, month, day] = raw.split("-").map(Number)
+    if (!year || !month || !day) return null
+    return new Date(year, month - 1, day).toLocaleDateString("ru-RU", {
+        day: "numeric",
+        month: "long",
+        weekday: "short"
+    })
+})
 
 const paymentLabel = computed(() => (props.transaction.amount > 0 ? "Через ЮKassa" : "С депозита"))
 
@@ -23,7 +34,37 @@ const orderNumber = computed(() => props.transaction.id.slice(0, 8).toUpperCase(
         <dl class="bg-default flex flex-col gap-2.5 rounded-sm px-5 py-4 text-sm">
             <div class="flex items-baseline justify-between gap-3">
                 <dt class="text-muted font-semibold">Покупка</dt>
-                <dd class="text-default font-bold">{{ purchaseLabel }}</dd>
+                <dd class="text-default text-end font-bold">{{ transaction.order.title }}</dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-3">
+                <dt class="text-muted font-semibold">Ребёнок</dt>
+                <dd class="text-default text-end font-bold">{{ transaction.order.studentName }}</dd>
+            </div>
+            <div v-if="trialDateLabel" class="flex items-baseline justify-between gap-3">
+                <dt class="text-muted font-semibold">Дата</dt>
+                <dd class="text-default text-end font-bold">{{ trialDateLabel }}</dd>
+            </div>
+            <div
+                v-if="transaction.order.slots.length"
+                class="flex items-baseline justify-between gap-3"
+            >
+                <dt class="text-muted font-semibold">
+                    {{ transaction.order.slots.length > 1 ? "Занятия" : "Занятие" }}
+                </dt>
+                <dd class="flex flex-col items-end gap-1">
+                    <span
+                        v-for="slot in transaction.order.slots"
+                        :key="slot.scheduleId"
+                        class="text-default text-end font-bold"
+                    >
+                        {{ slot.activityName }} · {{ slot.groupName }}
+                        <span class="text-muted font-semibold whitespace-nowrap">
+                            {{ getDayName("short", slot.dayOfWeek) }} {{ slot.startTime }}–{{
+                                slot.endTime
+                            }}
+                        </span>
+                    </span>
+                </dd>
             </div>
             <div class="flex items-baseline justify-between gap-3">
                 <dt class="text-muted font-semibold">Оплата</dt>
