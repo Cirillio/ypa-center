@@ -418,8 +418,28 @@ export interface paths {
         }
         get?: never
         put?: never
-        /** Гостевая регистрация на событие */
+        /**
+         * Гостевая регистрация на событие
+         * @description Бесплатное событие → 201 {status: accepted}. Платное → бронь на время оплаты и платёж: 201 {transaction_id, status: PENDING_PAYMENT, payment_url, expires_at}, фронт уводит на payment_url.
+         */
         post: operations["public_event_register"]
+        delete?: never
+        options?: never
+        head?: never
+        patch?: never
+        trace?: never
+    }
+    "/api/v1/public/events/payments/{transaction_id}/": {
+        parameters: {
+            query?: never
+            header?: never
+            path?: never
+            cookie?: never
+        }
+        /** @description Итог оплаты события для страницы «результат оплаты» (return_url приходит с ?tx=…&kind=event). Без входа, без персональных данных. Фронт опрашивает, пока status = PENDING. Не транзакция события — 404. */
+        get: operations["public_event_payment_status"]
+        put?: never
+        post?: never
         delete?: never
         options?: never
         head?: never
@@ -654,6 +674,14 @@ export interface components {
             /** Format: time */
             end_time: string
         }
+        /**
+         * @description * `PENDING` - PENDING
+         *     * `SUCCEEDED` - SUCCEEDED
+         *     * `CANCELED` - CANCELED
+         *     * `REFUND` - REFUND
+         * @enum {string}
+         */
+        CheckoutOutcomeStatusEnum: "PENDING" | "SUCCEEDED" | "CANCELED" | "REFUND"
         CheckoutResponse: {
             /** Format: uuid */
             transaction_id: string
@@ -679,13 +707,10 @@ export interface components {
         CheckoutTransaction: {
             /** Format: uuid */
             id: string
-            type: components["schemas"]["TypeEnum"]
-            status: components["schemas"]["CheckoutTransactionStatusEnum"]
+            type: components["schemas"]["CheckoutTransactionTypeEnum"]
+            status: components["schemas"]["CheckoutOutcomeStatusEnum"]
             reason:
-                | (
-                      | components["schemas"]["CheckoutTransactionReasonEnum"]
-                      | components["schemas"]["NullEnum"]
-                  )
+                | (components["schemas"]["RefundReasonEnum"] | components["schemas"]["NullEnum"])
                 | null
             /** @description Копейки: сколько прошло через карту (оно же вернётся), до оплаты — сколько предстоит заплатить */
             amount: number
@@ -699,27 +724,11 @@ export interface components {
             order: components["schemas"]["CheckoutOrder"]
         }
         /**
-         * @description * `SEATS_TAKEN` - SEATS_TAKEN
-         *     * `GROUP_CLOSED` - GROUP_CLOSED
-         *     * `PAID_AFTER_EXPIRY` - PAID_AFTER_EXPIRY
-         *     * `AMOUNT_MISMATCH` - AMOUNT_MISMATCH
-         *     * `NOT_FULFILLED` - NOT_FULFILLED
+         * @description * `SUBSCRIPTION` - SUBSCRIPTION
+         *     * `TRIAL` - TRIAL
          * @enum {string}
          */
-        CheckoutTransactionReasonEnum:
-            | "SEATS_TAKEN"
-            | "GROUP_CLOSED"
-            | "PAID_AFTER_EXPIRY"
-            | "AMOUNT_MISMATCH"
-            | "NOT_FULFILLED"
-        /**
-         * @description * `PENDING` - PENDING
-         *     * `SUCCEEDED` - SUCCEEDED
-         *     * `CANCELED` - CANCELED
-         *     * `REFUND` - REFUND
-         * @enum {string}
-         */
-        CheckoutTransactionStatusEnum: "PENDING" | "SUCCEEDED" | "CANCELED" | "REFUND"
+        CheckoutTransactionTypeEnum: "SUBSCRIPTION" | "TRIAL"
         CheckoutTrialRequest: {
             student_id: number
             schedule_id: number
@@ -776,6 +785,34 @@ export interface components {
             | "SUBSCRIPTION_EXPIRY_CREDIT"
             | "CHECKOUT_SPEND"
             | "ORDER_CANCELED_RETURN"
+        EventCheckoutOrder: {
+            event_id: number
+            title: string
+            /** Format: date-time */
+            starts_at: string
+            attendees_count: number
+        }
+        EventCheckoutTransaction: {
+            /** Format: uuid */
+            id: string
+            readonly type: components["schemas"]["EventCheckoutTransactionTypeEnum"]
+            status: components["schemas"]["CheckoutOutcomeStatusEnum"]
+            reason:
+                | (components["schemas"]["RefundReasonEnum"] | components["schemas"]["NullEnum"])
+                | null
+            /** @description Копейки: сколько прошло через карту (оно же вернётся), до оплаты — сколько предстоит заплатить */
+            amount: number
+            /** Format: date-time */
+            created_at: string
+            /**
+             * Format: date-time
+             * @description До какого момента ждём оплату; осмысленно только для PENDING
+             */
+            expires_at: string
+            order: components["schemas"]["EventCheckoutOrder"]
+        }
+        /** @enum {string} */
+        EventCheckoutTransactionTypeEnum: "EVENT"
         EventPublic: {
             readonly id: number
             /** Название */
@@ -817,6 +854,9 @@ export interface components {
             /** @default  */
             website_url: string
         }
+        EventRegistrationResult:
+            | components["schemas"]["RegistrationAccepted"]
+            | components["schemas"]["CheckoutResponse"]
         FeedbackRequestCreateRequest: {
             /** Имя */
             name?: string
@@ -974,6 +1014,22 @@ export interface components {
          * @enum {string}
          */
         ReferralSourceEnum: "FRIENDS" | "SOCIAL" | "MAPS" | "SEARCH" | "SIGN" | "SCHOOL" | "OTHER"
+        /**
+         * @description * `SEATS_TAKEN` - SEATS_TAKEN
+         *     * `GROUP_CLOSED` - GROUP_CLOSED
+         *     * `PAID_AFTER_EXPIRY` - PAID_AFTER_EXPIRY
+         *     * `AMOUNT_MISMATCH` - AMOUNT_MISMATCH
+         *     * `CANCELED_BY_CENTER` - CANCELED_BY_CENTER
+         *     * `NOT_FULFILLED` - NOT_FULFILLED
+         * @enum {string}
+         */
+        RefundReasonEnum:
+            | "SEATS_TAKEN"
+            | "GROUP_CLOSED"
+            | "PAID_AFTER_EXPIRY"
+            | "AMOUNT_MISMATCH"
+            | "CANCELED_BY_CENTER"
+            | "NOT_FULFILLED"
         RegistrationAccepted: {
             status: string
         }
@@ -1108,12 +1164,6 @@ export interface components {
             /** Format: date-time */
             readonly created_at: string
         }
-        /**
-         * @description * `SUBSCRIPTION` - SUBSCRIPTION
-         *     * `TRIAL` - TRIAL
-         * @enum {string}
-         */
-        TypeEnum: "SUBSCRIPTION" | "TRIAL"
         UpcomingItem: {
             readonly kind: string
             readonly date: string
@@ -1800,7 +1850,10 @@ export interface operations {
     public_event_register: {
         parameters: {
             query?: never
-            header?: never
+            header?: {
+                /** @description Только для платного события (обязателен): UUID v4, один на заполненную форму. Повтор с тем же ключом и телом вернёт тот же платёж. */
+                "X-Idempotency-Key"?: string
+            }
             path: {
                 event_id: number
             }
@@ -1819,7 +1872,28 @@ export interface operations {
                     [name: string]: unknown
                 }
                 content: {
-                    "application/json": components["schemas"]["RegistrationAccepted"]
+                    "application/json": components["schemas"]["EventRegistrationResult"]
+                }
+            }
+        }
+    }
+    public_event_payment_status: {
+        parameters: {
+            query?: never
+            header?: never
+            path: {
+                transaction_id: string
+            }
+            cookie?: never
+        }
+        requestBody?: never
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content: {
+                    "application/json": components["schemas"]["EventCheckoutTransaction"]
                 }
             }
         }

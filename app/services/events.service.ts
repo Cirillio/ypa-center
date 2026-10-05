@@ -1,6 +1,6 @@
 import type { ApiFetch } from "~/composables/useApi"
 import { applyMockEventSeats, type EventWithSeatsDraftDto } from "~/services/mocks/event-seats.mock"
-import type { EventItem, EventPublic } from "~/types"
+import type { EventItem, EventPublic, EventRegistrationRequest } from "~/types"
 
 // Маппит черновик DTO события со свободными местами в доменную модель EventItem.
 function toEventItem(dto: EventWithSeatsDraftDto): EventItem {
@@ -25,8 +25,13 @@ export class EventsService {
         return applyMockEventSeats(events).map(toEventItem)
     }
 
-    // TODO: POST /v1/public/events/{event_id}/register/ – гостевая регистрация,
-    // подключается вместе с расмокиванием отправкой формы на /enroll/event
+    /** POST /api/v1/public/events/{eventId}/register/ – бронь без входа; токен, если есть, привяжет её к ЛК */
+    async register(eventId: number, payload: EventRegistrationRequest): Promise<void> {
+        await this.fetch(`/v1/public/events/${eventId}/register/`, {
+            method: "POST",
+            body: payload
+        })
+    }
 }
 
 export const useEventsService = () => new EventsService(useApi().apiFetch)

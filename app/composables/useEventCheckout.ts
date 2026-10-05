@@ -14,7 +14,10 @@ export function useEventCheckout() {
         refresh: refreshEvents
     } = useAsyncData("events", () => eventsService.getAll())
 
-    const events = computed<EventItem[]>(() => eventsData.value ?? [])
+    // ПОЧЕМУ фильтр: афиша отдаёт и прошедшие события, а бронь на них бэк отклоняет
+    const events = computed<EventItem[]>(() =>
+        (eventsData.value ?? []).filter((e) => e.is_upcoming)
+    )
     const isLoading = computed(() => eventsStatus.value === "pending")
 
     const rawQueryEventId = parseQueryParam(route.query.eventId)
@@ -67,7 +70,13 @@ export function useEventCheckout() {
         requestedSeats.value = Math.max(1, Math.min(seats.value + delta, maxSeats.value))
     }
 
-    const contacts = ref<EventContacts>({ name: "", phone: "", email: "", consent: false })
+    const contacts = ref<EventContacts>({
+        parentName: "",
+        childName: "",
+        phone: "",
+        email: "",
+        consent: false
+    })
     const isContactsValid = computed(() => eventContactsSchema.safeParse(contacts.value).success)
 
     const isFree = computed(() => !!selectedEvent.value?.is_free)

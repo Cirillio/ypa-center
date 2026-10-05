@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 // Сводка «Итого» события: выбранное событие, места и контакты (слот), сумма и кнопка.
-import type { EventItem } from "~/types"
+import type { CheckoutError, EventItem } from "~/types"
 
 const FALLBACK_COVER = "/core/clubs-main.jpg"
 
@@ -10,6 +10,9 @@ const props = defineProps<{
     isFree: boolean
     totalKopecks: number
     contactsValid: boolean
+    loading: boolean
+    cooldownSeconds: number
+    error: CheckoutError | null
 }>()
 
 const emit = defineEmits<{
@@ -60,7 +63,7 @@ const missing = computed<string[]>(() => {
 
         <USeparator />
 
-        <EnrollPriceBox label="К оплате" :amount="amount">
+        <EnrollPriceBox label="Итого" :amount="amount">
             <template v-if="event" #aside>
                 <span class="text-muted pb-0.5 text-xs font-semibold">
                     {{ isFree ? `мест: ${seats}` : `${formatRub(event.price ?? 0)} × ${seats}` }}
@@ -71,24 +74,23 @@ const missing = computed<string[]>(() => {
         <EnrollSummaryCta
             :ready="missing.length === 0"
             :missing="missing"
-            :label="isFree ? 'Записаться' : 'Продолжить'"
-            :icon="isFree ? 'ph:check-bold' : 'ph:arrow-right-bold'"
+            :loading="loading"
+            :cooldown-seconds="cooldownSeconds"
+            :error="error"
+            label="Записаться"
+            icon="ph:check-bold"
             @continue="emit('continue')"
         />
 
         <p class="text-muted flex items-start gap-2 text-xs">
             <template v-if="isFree">
                 <UIcon name="ph:info-bold" class="mt-px size-4 shrink-0" aria-hidden="true" />
-                Событие бесплатное — оплата не нужна, места закрепим сразу.
+                Событие бесплатное – оплата не нужна, места закрепим сразу.
             </template>
             <template v-else>
-                <UIcon
-                    name="ph:lock-simple-bold"
-                    class="mt-px size-4 shrink-0"
-                    aria-hidden="true"
-                />
-                Оплата через ЮKassa. После нажатия места держим за вами 30 минут. Входить в кабинет
-                не нужно.
+                <UIcon name="ph:info-bold" class="mt-px size-4 shrink-0" aria-hidden="true" />
+                Оплата на месте. Менеджер позвонит и подтвердит бронь – без подтверждения места
+                держим 30 минут. Входить в кабинет не нужно.
             </template>
         </p>
     </EnrollSummaryCard>

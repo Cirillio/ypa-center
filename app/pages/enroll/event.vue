@@ -25,6 +25,25 @@ const {
     totalKopecks,
     isReady
 } = useEventCheckout()
+
+const {
+    submit,
+    isSubmitting,
+    cooldownSeconds,
+    error: registrationError,
+    result
+} = useEventRegistration({ onEventsStale: refreshEvents })
+
+// Отправляет бронь, только когда выбор собран; кнопка и так заблокирована, это страховка
+function onContinue() {
+    if (!selectedEvent.value || !isReady.value) return
+    void submit(selectedEvent.value, seats.value, contacts.value)
+}
+
+// ПОЧЕМУ скролл вверх: экран подтверждения короче формы, без него родитель видит пустоту
+watch(result, (value) => {
+    if (value) window.scrollTo({ top: 0, behavior: "smooth" })
+})
 </script>
 
 <template>
@@ -33,7 +52,13 @@ const {
             <EnrollTypeTabs active="event" />
         </EnrollHeader>
 
-        <section aria-label="Оформление записи на событие" class="pb-32 lg:pb-16">
+        <section v-if="result" aria-label="Заявка принята" class="px-4 pt-24 pb-16 md:pt-28">
+            <div class="mx-auto w-full max-w-lg">
+                <EnrollEventAccepted :result="result" />
+            </div>
+        </section>
+
+        <section v-else aria-label="Оформление записи на событие" class="pb-32 lg:pb-16">
             <UContainer class="grid gap-6 lg:grid-cols-7">
                 <div class="flex min-w-0 flex-col gap-6 lg:col-span-5">
                     <EnrollEventListWidget
@@ -52,6 +77,10 @@ const {
                     :is-free="isFree"
                     :total-kopecks="totalKopecks"
                     :contacts-valid="isContactsValid"
+                    :loading="isSubmitting"
+                    :cooldown-seconds="cooldownSeconds"
+                    :error="registrationError"
+                    @continue="onContinue"
                 >
                     <EnrollEventSeatsStepper
                         :seats="seats"
@@ -66,9 +95,11 @@ const {
         </section>
 
         <EnrollMobileBar
+            v-if="!result"
+            :label="isFree ? 'Итого' : 'Оплата на месте'"
             :amount="!selectedEvent ? '—' : isFree ? 'Бесплатно' : formatRub(totalKopecks)"
             :ready="isReady"
-            :action-label="isFree ? 'Записаться' : 'Продолжить'"
+            action-label="Записаться"
         />
     </div>
 </template>

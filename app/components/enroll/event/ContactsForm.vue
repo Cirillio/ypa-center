@@ -16,21 +16,37 @@ function update<K extends keyof EventContacts>(key: K, value: EventContacts[K]) 
     <UForm
         :schema="eventContactsSchema"
         :state="contacts"
-        :validate-on="['change']"
+        :validate-on="[]"
         class="flex flex-col gap-3"
         aria-label="Контакты"
     >
         <h3 class="text-default text-base font-semibold">Контакты для подтверждения</h3>
 
-        <UFormField label="Имя" name="name">
+        <UFormField label="Ваше имя" name="parentName">
             <UInput
-                :model-value="contacts.name"
+                :model-value="contacts.parentName"
                 autocomplete="name"
                 placeholder="Как к вам обращаться"
                 size="xl"
                 variant="subtle"
                 class="w-full"
-                @update:model-value="update('name', String($event ?? ''))"
+                @update:model-value="update('parentName', String($event ?? ''))"
+            />
+        </UFormField>
+
+        <UFormField
+            label="Имя ребёнка"
+            name="childName"
+            help="Если детей несколько – через запятую"
+        >
+            <UInput
+                :model-value="contacts.childName"
+                autocomplete="off"
+                placeholder="Маша"
+                size="xl"
+                variant="subtle"
+                class="w-full"
+                @update:model-value="update('childName', String($event ?? ''))"
             />
         </UFormField>
 
@@ -49,7 +65,7 @@ function update<K extends keyof EventContacts>(key: K, value: EventContacts[K]) 
             />
         </UFormField>
 
-        <UFormField label="Почта" name="email" help="Пришлём подтверждение и напоминание">
+        <UFormField label="Почта" name="email" help="Напишем, если бронь снимется">
             <UInput
                 :model-value="contacts.email"
                 type="email"

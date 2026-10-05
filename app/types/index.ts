@@ -92,10 +92,21 @@ export type CheckoutSubscriptionRequest = components["schemas"]["CheckoutSubscri
 export type CheckoutTrialRequest = components["schemas"]["CheckoutTrialRequest"]
 export type CheckoutResponse = components["schemas"]["CheckoutResponse"]
 
+// POST /public/events/{id}/register/
+export type EventRegistrationRequest = components["schemas"]["EventRegistrationCreateRequest"]
+
+// Принятая бронь для экрана подтверждения
+export interface EventRegistrationResult {
+    eventTitle: string
+    startDatetime: string
+    seats: number
+    isFree: boolean
+}
+
 // GET /checkout/transactions/{id} – исход оплаты для родителя
 export type CheckoutTransactionDto = components["schemas"]["CheckoutTransaction"]
-export type CheckoutTransactionStatus = components["schemas"]["CheckoutTransactionStatusEnum"]
-export type CheckoutTransactionReason = components["schemas"]["CheckoutTransactionReasonEnum"]
+export type CheckoutTransactionStatus = components["schemas"]["CheckoutOutcomeStatusEnum"]
+export type CheckoutTransactionReason = components["schemas"]["RefundReasonEnum"]
 
 // Слот из состава заказа; день недели 0=Пн, как в getDayName
 export interface CheckoutOrderSlot {
