@@ -109,12 +109,11 @@ export type EventRegistrationOutcome =
 // Ответ бэка на бронь: RegistrationAccepted у бесплатного, CheckoutResponse у платного
 export type EventRegistrationResultDto = components["schemas"]["EventRegistrationResult"]
 
-// Принятая бронь для экрана подтверждения
+// Принятая бронь бесплатного события для экрана подтверждения (платное уходит на оплату)
 export interface EventRegistrationResult {
     eventTitle: string
     startDatetime: string
     seats: number
-    isFree: boolean
 }
 
 // GET /checkout/transactions/{id} – исход оплаты для родителя

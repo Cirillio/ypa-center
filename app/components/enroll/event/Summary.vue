@@ -63,7 +63,7 @@ const missing = computed<string[]>(() => {
 
         <USeparator />
 
-        <EnrollPriceBox label="Итого" :amount="amount">
+        <EnrollPriceBox :label="isFree ? 'Итого' : 'К оплате'" :amount="amount">
             <template v-if="event" #aside>
                 <span class="text-muted pb-0.5 text-xs font-semibold">
                     {{ isFree ? `мест: ${seats}` : `${formatRub(event.price ?? 0)} × ${seats}` }}
@@ -77,8 +77,8 @@ const missing = computed<string[]>(() => {
             :loading="loading"
             :cooldown-seconds="cooldownSeconds"
             :error="error"
-            label="Записаться"
-            icon="ph:check-bold"
+            :label="isFree ? 'Записаться' : 'Перейти к оплате'"
+            :icon="isFree ? 'ph:check-bold' : 'ph:arrow-right-bold'"
             @continue="emit('continue')"
         />
 
@@ -88,9 +88,13 @@ const missing = computed<string[]>(() => {
                 Событие бесплатное – оплата не нужна, места закрепим сразу.
             </template>
             <template v-else>
-                <UIcon name="ph:info-bold" class="mt-px size-4 shrink-0" aria-hidden="true" />
-                Оплата на месте. Менеджер позвонит и подтвердит бронь – без подтверждения места
-                держим 30 минут. Входить в кабинет не нужно.
+                <UIcon
+                    name="ph:lock-simple-bold"
+                    class="mt-px size-4 shrink-0"
+                    aria-hidden="true"
+                />
+                Оплата через ЮKassa. После нажатия места держим за вами 15 минут. Входить в кабинет
+                не нужно.
             </template>
         </p>
     </EnrollSummaryCard>

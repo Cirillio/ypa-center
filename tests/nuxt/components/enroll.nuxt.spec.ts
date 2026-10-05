@@ -2,8 +2,10 @@ import { mountSuspended } from "@nuxt/test-utils/runtime"
 import { describe, expect, it } from "vitest"
 import SeatsStepper from "~/components/enroll/event/SeatsStepper.vue"
 import SummaryCta from "~/components/enroll/SummaryCta.vue"
+import EventSummary from "~/components/enroll/event/Summary.vue"
 import SubscriptionSummary from "~/components/enroll/subscription/Summary.vue"
-import type { WeeklySlot } from "~/types"
+import type { EventItem, WeeklySlot } from "~/types"
+import { eventDto } from "../fixtures/dto/public"
 
 const button = (wrapper: Awaited<ReturnType<typeof mountSuspended>>, label: string) =>
     wrapper.get(`button[aria-label="${label}"]`)
@@ -109,5 +111,47 @@ describe("EnrollSubscriptionSummary: no plan for the cart", () => {
     it("tells how long the seats are held", async () => {
         const wrapper = await mountSummary(1)
         expect(wrapper.text()).toContain("места держим за вами 15 минут")
+    })
+})
+
+describe("EnrollEventSummary", () => {
+    const event = (isFree: boolean): EventItem => ({
+        ...eventDto({ is_free: isFree, price: isFree ? 0 : 150_000 }),
+        availableSeats: 10
+    })
+
+    const mountSummary = (isFree: boolean) =>
+        mountSuspended(EventSummary, {
+            props: {
+                event: event(isFree),
+                seats: 2,
+                isFree,
+                totalKopecks: isFree ? 0 : 300_000,
+                contactsValid: true,
+                loading: false,
+                cooldownSeconds: 0,
+                error: null
+            }
+        })
+
+    it("sends a paid event to online payment", async () => {
+        const wrapper = await mountSummary(false)
+        expect(wrapper.text()).toContain("К оплате")
+        expect(wrapper.text()).toContain("Перейти к оплате")
+        expect(wrapper.text()).toContain(
+            "Оплата через ЮKassa. После нажатия места держим за вами 15 минут"
+        )
+    })
+
+    it("books a free event without payment", async () => {
+        const wrapper = await mountSummary(true)
+        expect(wrapper.text()).toContain("Записаться")
+        expect(wrapper.text()).toContain("оплата не нужна")
+        expect(wrapper.text()).not.toContain("ЮKassa")
+    })
+
+    it.each([[true], [false]])("never promises payment on site (free: %s)", async (isFree) => {
+        const text = (await mountSummary(isFree)).text()
+        expect(text).not.toMatch(/на месте|позвонит/)
     })
 })

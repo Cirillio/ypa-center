@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-// Подтверждение принятой брони: бесплатное закреплено сразу, платное ждёт звонка менеджера.
+// Подтверждение брони бесплатного события: места закреплены сразу, платное уходит на оплату.
 import type { DeepReadonly } from "vue"
 
 import type { EventRegistrationResult } from "~/types"
@@ -12,16 +12,12 @@ defineProps<{
 <template>
     <CheckoutResultCard
         eyebrow="Заявка принята"
-        :title="result.isFree ? 'УРА!' : 'Места за вами'"
-        :description="
-            result.isFree
-                ? 'Места закреплены. До встречи на Улице Радости!'
-                : 'Менеджер позвонит, чтобы подтвердить бронь. Оплата – на месте.'
-        "
-        :hero="result.isFree"
+        title="УРА!"
+        description="Места закреплены. До встречи на Улице Радости!"
+        hero
     >
         <template #icon>
-            <CheckoutConfetti v-if="result.isFree" />
+            <CheckoutConfetti />
             <UiMascot mood="joy" />
         </template>
 
@@ -41,10 +37,6 @@ defineProps<{
                 <dd class="text-default font-bold tabular-nums">{{ result.seats }}</dd>
             </div>
         </dl>
-
-        <p v-if="!result.isFree" class="text-muted text-start text-xs">
-            Если менеджер не подтвердит бронь за 30 минут, места освободятся – мы напишем на почту.
-        </p>
 
         <template #actions>
             <UButton to="/" label="На главную" size="xl" block class="sm:flex-1" />

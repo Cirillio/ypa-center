@@ -96,7 +96,7 @@ watch(result, (value) => {
 
         <EnrollMobileBar
             v-if="!result"
-            :label="isFree ? 'Итого' : 'Оплата на месте'"
+            :label="isFree ? 'Итого' : 'К оплате'"
             :amount="!selectedEvent ? '—' : isFree ? 'Бесплатно' : formatRub(totalKopecks)"
             :ready="isReady"
             action-label="Записаться"

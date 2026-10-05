@@ -65,7 +65,7 @@ function update<K extends keyof EventContacts>(key: K, value: EventContacts[K]) 
             />
         </UFormField>
 
-        <UFormField label="Почта" name="email" help="Напишем, если бронь снимется">
+        <UFormField label="Почта" name="email" help="Пришлём чек и напишем, если бронь снимется">
             <UInput
                 :model-value="contacts.email"
                 type="email"
