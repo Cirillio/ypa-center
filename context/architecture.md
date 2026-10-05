@@ -393,6 +393,14 @@ email. Анкета досылается отдельным шагом, `PATCH /
   `CheckoutResultWidget`: ожидание, успех (чек из `order`), отмена, возврат
   (`constants/refund-reasons.ts`), таймаут («обновите страницу»), не найден. Без `tx` –
   экран «Вы вернулись из банка». «Попробовать снова» – новая покупка с новым ключом.
+- **Результат оплаты события** – тот же экран с `?tx=…&kind=event` (`return_url` бэка),
+  **без входа**: платит гость. Страница объявляет `definePageMeta({ authSkip })` –
+  предикат по маршруту; `middleware/auth.ts` пропускает гостя, если предикат истинен.
+  Разбор `kind` – `parseCheckoutResultKind` (`event` | `purchase`, всё прочее – `purchase`).
+  Статус – публичный `GET /public/events/payments/{id}/` (без ПД) через
+  `BillingService.getEventPaymentStatus`; `useTransactionStatus(txId, kind)` выбирает
+  источник, логика опроса общая. `order` доменной `CheckoutTransaction` – размеченное
+  объединение `purchase` | `event`; чек и кнопки виджета ветвятся по `order.kind`.
 - **Абонемент:** в заказ уходят `schedule_id` слотов (паттерн «ПН 16:00»), не
   календарные даты. Тариф не выбирается – выводится из числа слотов; тариф из
   фолбэка `app.config` без `id` оплатить нельзя.

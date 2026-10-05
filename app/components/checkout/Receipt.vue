@@ -10,9 +10,17 @@ const props = defineProps<{
 
 const { contactInfo } = useAppConfig()
 
+// Заказ разведён по видам: у покупки – ребёнок и занятия, у события – дата и места
+const purchase = computed(() =>
+    props.transaction.order.kind === "purchase" ? props.transaction.order : null
+)
+const eventOrder = computed(() =>
+    props.transaction.order.kind === "event" ? props.transaction.order : null
+)
+
 // ПОЧЕМУ разбор строкой: new Date("YYYY-MM-DD") – полночь UTC, в минусовых поясах съехал бы день
 const trialDateLabel = computed<string | null>(() => {
-    const raw = props.transaction.order.trialDate
+    const raw = purchase.value?.trialDate
     if (!raw) return null
     const [year, month, day] = raw.split("-").map(Number)
     if (!year || !month || !day) return null
@@ -33,27 +41,38 @@ const orderNumber = computed(() => props.transaction.id.slice(0, 8).toUpperCase(
     <div class="flex w-full flex-col gap-4 text-start">
         <dl class="bg-default flex flex-col gap-2.5 rounded-sm px-5 py-4 text-sm">
             <div class="flex items-baseline justify-between gap-3">
-                <dt class="text-muted font-semibold">Покупка</dt>
+                <dt class="text-muted font-semibold">{{ eventOrder ? "Событие" : "Покупка" }}</dt>
                 <dd class="text-default text-end font-bold">{{ transaction.order.title }}</dd>
             </div>
-            <div class="flex items-baseline justify-between gap-3">
+            <template v-if="eventOrder">
+                <div class="flex items-baseline justify-between gap-3">
+                    <dt class="text-muted font-semibold">Когда</dt>
+                    <dd class="text-default text-end font-bold">
+                        {{ formatEventDateTime(eventOrder.startsAt) }}
+                    </dd>
+                </div>
+                <div class="flex items-baseline justify-between gap-3">
+                    <dt class="text-muted font-semibold">Мест</dt>
+                    <dd class="text-default font-bold tabular-nums">
+                        {{ eventOrder.attendeesCount }}
+                    </dd>
+                </div>
+            </template>
+            <div v-if="purchase" class="flex items-baseline justify-between gap-3">
                 <dt class="text-muted font-semibold">Ребёнок</dt>
-                <dd class="text-default text-end font-bold">{{ transaction.order.studentName }}</dd>
+                <dd class="text-default text-end font-bold">{{ purchase.studentName }}</dd>
             </div>
             <div v-if="trialDateLabel" class="flex items-baseline justify-between gap-3">
                 <dt class="text-muted font-semibold">Дата</dt>
                 <dd class="text-default text-end font-bold">{{ trialDateLabel }}</dd>
             </div>
-            <div
-                v-if="transaction.order.slots.length"
-                class="flex items-baseline justify-between gap-3"
-            >
+            <div v-if="purchase?.slots.length" class="flex items-baseline justify-between gap-3">
                 <dt class="text-muted font-semibold">
-                    {{ transaction.order.slots.length > 1 ? "Занятия" : "Занятие" }}
+                    {{ purchase.slots.length > 1 ? "Занятия" : "Занятие" }}
                 </dt>
                 <dd class="flex flex-col items-end gap-1">
                     <span
-                        v-for="slot in transaction.order.slots"
+                        v-for="slot in purchase.slots"
                         :key="slot.scheduleId"
                         class="text-default text-end font-bold"
                     >
@@ -88,7 +107,8 @@ const orderNumber = computed(() => props.transaction.id.slice(0, 8).toUpperCase(
         <section aria-label="Что дальше" class="flex flex-col gap-3">
             <h2 class="text-default text-base font-bold">Что дальше</h2>
             <ol class="flex flex-col gap-3">
-                <li class="flex items-start gap-3">
+                <!-- ПОЧЕМУ не для события: платит гость, кабинета у него может не быть -->
+                <li v-if="purchase" class="flex items-start gap-3">
                     <UiRoundIcon name="ph:user-circle-bold" />
                     <span class="text-default text-sm font-semibold">
                         Запись уже в

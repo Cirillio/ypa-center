@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 // Экран возврата после оплаты: по ?tx= опрашивает статус, без него – подсказывает, где смотреть результат.
-definePageMeta({ middleware: "auth" })
+definePageMeta({
+    middleware: "auth",
+    // ПОЧЕМУ: событие оплачивает гость – его результат открыт без входа
+    authSkip: (route) => parseCheckoutResultKind(route.query.kind) === "event"
+})
 useSeoMeta({ title: "Результат оплаты" })
 
 const route = useRoute()
@@ -9,6 +13,7 @@ const txId = computed<string | undefined>(() => {
     const raw = parseQueryParam(route.query.tx)
     return raw && /^[\w-]{1,64}$/.test(raw) ? raw : undefined
 })
+const kind = computed(() => parseCheckoutResultKind(route.query.kind))
 </script>
 
 <template>
@@ -16,9 +21,9 @@ const txId = computed<string | undefined>(() => {
         <!-- ПОЧЕМУ верхний отступ: маскот выглядывает из-за края карточки -->
         <section aria-label="Результат оплаты" class="px-4 pt-32 pb-16 md:pt-36 md:pb-24">
             <div class="mx-auto w-full max-w-lg">
-                <CheckoutResultWidget v-if="txId" :tx-id="txId" />
+                <CheckoutResultWidget v-if="txId" :tx-id="txId" :kind="kind" />
 
-                <!-- ПОЧЕМУ: ЮKassa пока возвращает без ?tx= – опрашивать нечего, статус смотрим в кабинете -->
+                <!-- ПОЧЕМУ: без ?tx= опрашивать нечего (адрес набран руками или обрезан) – статус в кабинете -->
                 <CheckoutResultCard
                     v-else
                     eyebrow="С возвращением"

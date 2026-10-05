@@ -1,4 +1,7 @@
 export default defineNuxtRouteMiddleware((to) => {
+    // Страница сама решает, когда гостю можно (оплата события на /checkout/result)
+    if (to.meta.authSkip?.(to)) return
+
     // ПОЧЕМУ: isAuthed стора выставляется один раз при создании и не следит
     // за localStorage дальше (нет storage-события) – токены могли смениться
     // в другой вкладке или очиститься извне. hasTokens() читает localStorage

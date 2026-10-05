@@ -1,5 +1,6 @@
 import type {
     CheckoutError,
+    CheckoutResultKind,
     CheckoutTransaction,
     CheckoutTransactionStatus,
     TransactionViewState
@@ -23,9 +24,12 @@ const FINAL_VIEW: Readonly<
 // Статусы, при которых опрашивать бессмысленно: транзакции нет или она не наша
 const TERMINAL_HTTP_STATUSES: ReadonlySet<number> = new Set([403, 404])
 
-// Опрос статуса оплаты для экрана результата; txId берётся один раз, страница живёт под одну транзакцию.
-export function useTransactionStatus(txId: string) {
+// Опрос статуса оплаты для экрана результата; txId и источник берутся один раз, страница живёт под одну транзакцию.
+export function useTransactionStatus(txId: string, kind: CheckoutResultKind = "purchase") {
     const billing = useBillingService()
+    // ПОЧЕМУ два источника: оплату события делает гость, её статус – на публичной ручке без ПД
+    const fetchStatus = (id: string) =>
+        kind === "event" ? billing.getEventPaymentStatus(id) : billing.getTransactionStatus(id)
 
     const viewState = ref<TransactionViewState>("pending")
     const transaction = ref<CheckoutTransaction | null>(null)
@@ -48,7 +52,7 @@ export function useTransactionStatus(txId: string) {
     // Один опрос: терминальный статус останавливает цикл, PENDING и временные сбои – продолжают.
     async function poll() {
         try {
-            const tx = await billing.getTransactionStatus(txId)
+            const tx = await fetchStatus(txId)
             if (isDisposed) return
             transaction.value = tx
             if (tx.status !== "PENDING") {

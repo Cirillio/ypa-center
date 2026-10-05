@@ -1,4 +1,6 @@
 // Глобальные типы приложения
+import type { RouteLocationNormalized } from "vue-router"
+
 import type { components } from "./api.d.ts"
 
 // Публичный каталог кружков – GET /public/activities/ (список = ActivityDetail[])
@@ -131,21 +133,40 @@ export interface CheckoutOrderSlot {
     endTime: string
 }
 
+// GET /public/events/payments/{id}/ – исход оплаты события для гостя, без ПД
+export type EventCheckoutTransactionDto = components["schemas"]["EventCheckoutTransaction"]
+
+// Что купил родитель: абонемент или пробное
+export interface CheckoutPurchaseOrder {
+    kind: "purchase"
+    title: string
+    studentName: string
+    trialDate: string | null
+    slots: CheckoutOrderSlot[]
+}
+
+// Оплаченная бронь события
+export interface CheckoutEventOrder {
+    kind: "event"
+    eventId: number
+    title: string
+    startsAt: string
+    attendeesCount: number
+}
+
 // Статус оплаты для экрана результата; сумма в рублях
 export interface CheckoutTransaction {
     id: string
     status: CheckoutTransactionStatus
-    type: CheckoutTransactionDto["type"]
+    type: CheckoutTransactionDto["type"] | EventCheckoutTransactionDto["type"]
     reason: CheckoutTransactionReason | null
     amount: number
     expiresAt: string
-    order: {
-        title: string
-        studentName: string
-        trialDate: string | null
-        slots: CheckoutOrderSlot[]
-    }
+    order: CheckoutPurchaseOrder | CheckoutEventOrder
 }
+
+// Что оплачено на экране результата: событие (гость, публичный статус) или покупка родителя
+export type CheckoutResultKind = "event" | "purchase"
 
 // Экран результата оплаты: одно состояние из шести
 export type TransactionViewState =
@@ -384,5 +405,12 @@ export interface ProblemDetail {
             reason: string
         }>
         active_enrollments?: ActiveEnrollmentDto[]
+    }
+}
+
+// Гостевое исключение страницы для middleware auth: истина – вход не требуется
+declare module "nuxt/app" {
+    interface PageMeta {
+        authSkip?: (route: RouteLocationNormalized) => boolean
     }
 }

@@ -4,7 +4,8 @@ import type {
     CheckoutResponse,
     CheckoutSubscriptionRequest,
     CheckoutTransactionDto,
-    CheckoutTrialRequest
+    CheckoutTrialRequest,
+    EventCheckoutTransactionDto
 } from "~/types"
 
 // ПОЧЕМУ заголовок отдельно от тела: бэк склеивает повтор по ключу и сверяет тело (409 при расхождении)
@@ -21,6 +22,7 @@ function toCheckoutTransaction(dto: CheckoutTransactionDto): CheckoutTransaction
         amount: kopecksToRubles(dto.amount),
         expiresAt: dto.expires_at,
         order: {
+            kind: "purchase",
             title: dto.order.title,
             studentName: dto.order.student_name,
             trialDate: dto.order.trial_date,
@@ -32,6 +34,25 @@ function toCheckoutTransaction(dto: CheckoutTransactionDto): CheckoutTransaction
                 startTime: slot.start_time.slice(0, 5),
                 endTime: slot.end_time.slice(0, 5)
             }))
+        }
+    }
+}
+
+// Маппит публичный статус оплаты события: та же модель экрана, заказ – вариант event.
+function toEventTransaction(dto: EventCheckoutTransactionDto): CheckoutTransaction {
+    return {
+        id: dto.id,
+        status: dto.status,
+        type: dto.type,
+        reason: dto.status === "REFUND" ? dto.reason : null,
+        amount: kopecksToRubles(dto.amount),
+        expiresAt: dto.expires_at,
+        order: {
+            kind: "event",
+            eventId: dto.order.event_id,
+            title: dto.order.title,
+            startsAt: dto.order.starts_at,
+            attendeesCount: dto.order.attendees_count
         }
     }
 }
@@ -73,6 +94,14 @@ export class BillingService {
             `/v1/checkout/transactions/${encodeURIComponent(txId)}`
         )
         return toCheckoutTransaction(dto)
+    }
+
+    /** GET /api/v1/public/events/payments/{txId}/ – без входа: оплату события делает гость */
+    async getEventPaymentStatus(txId: string): Promise<CheckoutTransaction> {
+        const dto = await this.fetch<EventCheckoutTransactionDto>(
+            `/v1/public/events/payments/${encodeURIComponent(txId)}/`
+        )
+        return toEventTransaction(dto)
     }
 }
 

@@ -1,18 +1,40 @@
 <script lang="ts" setup>
 // Экран результата оплаты: опрашивает статус транзакции и показывает одно из шести состояний с маскотом.
 import { REFUND_REASONS } from "~/constants/refund-reasons"
+import type { CheckoutResultKind } from "~/types"
 
-const props = defineProps<{
-    txId: string
-}>()
+const EVENTS_PATH = "/enroll/event"
 
-const { viewState, transaction } = useTransactionStatus(props.txId)
+const props = withDefaults(
+    defineProps<{
+        txId: string
+        kind?: CheckoutResultKind
+    }>(),
+    { kind: "purchase" }
+)
 
-// Конструктор, куда вернуться после отказа; тип неизвестен – в каталог
+const { viewState, transaction } = useTransactionStatus(props.txId, props.kind)
+
+// ПОЧЕМУ по kind, а не по ответу: при 404 ответа нет, а гостя всё равно нельзя слать в кабинет
+const isEvent = computed(() => props.kind === "event")
+const eventOrder = computed(() =>
+    transaction.value?.order.kind === "event" ? transaction.value.order : null
+)
+
+// Куда вернуться после отказа: то же событие, конструктор покупки или каталог
 const retryPath = computed<string>(() => {
+    if (isEvent.value)
+        return eventOrder.value ? `${EVENTS_PATH}?eventId=${eventOrder.value.eventId}` : EVENTS_PATH
     if (transaction.value?.type === "SUBSCRIPTION") return "/enroll/subscription"
     if (transaction.value?.type === "TRIAL") return "/enroll/trial"
     return "/clubs"
+})
+
+// Успех события называет событие, время и места – чек у гостя единственный след покупки
+const successDescription = computed<string>(() => {
+    const order = eventOrder.value
+    if (!order) return "Вы записаны. До встречи на Улице Радости!"
+    return `Вы записаны на «${order.title}», ${formatEventDateTime(order.startsAt)}, мест: ${order.attendeesCount}`
 })
 
 // Текст возврата: общий срок плюс причина, если бэк её знает
@@ -42,7 +64,7 @@ const refundDescription = computed<string>(() => {
             v-else-if="viewState === 'success' && transaction"
             eyebrow="Оплата прошла"
             title="УРА!"
-            description="Вы записаны. До встречи на Улице Радости!"
+            :description="successDescription"
             hero
         >
             <template #icon>
@@ -53,15 +75,28 @@ const refundDescription = computed<string>(() => {
             <CheckoutReceipt :transaction="transaction" />
 
             <template #actions>
-                <UButton to="/me" label="В личный кабинет" size="xl" block class="sm:flex-1" />
-                <UButton
-                    to="/clubs#schedule"
-                    label="К расписанию"
-                    variant="soft"
-                    size="xl"
-                    block
-                    class="sm:flex-1"
-                />
+                <template v-if="isEvent">
+                    <UButton to="/" label="На главную" size="xl" block class="sm:flex-1" />
+                    <UButton
+                        :to="EVENTS_PATH"
+                        label="К афише"
+                        variant="soft"
+                        size="xl"
+                        block
+                        class="sm:flex-1"
+                    />
+                </template>
+                <template v-else>
+                    <UButton to="/me" label="В личный кабинет" size="xl" block class="sm:flex-1" />
+                    <UButton
+                        to="/clubs#schedule"
+                        label="К расписанию"
+                        variant="soft"
+                        size="xl"
+                        block
+                        class="sm:flex-1"
+                    />
+                </template>
             </template>
         </CheckoutResultCard>
 
@@ -84,8 +119,8 @@ const refundDescription = computed<string>(() => {
                     class="sm:flex-1"
                 />
                 <UButton
-                    to="/me"
-                    label="В личный кабинет"
+                    :to="isEvent ? EVENTS_PATH : '/me'"
+                    :label="isEvent ? 'К афише' : 'В личный кабинет'"
                     variant="soft"
                     size="xl"
                     block
@@ -105,15 +140,15 @@ const refundDescription = computed<string>(() => {
             </template>
             <template #actions>
                 <UButton
-                    :to="retryPath"
-                    label="Выбрать другую группу"
+                    :to="isEvent ? EVENTS_PATH : retryPath"
+                    :label="isEvent ? 'К афише' : 'Выбрать другую группу'"
                     size="xl"
                     block
                     class="sm:flex-1"
                 />
                 <UButton
-                    to="/me"
-                    label="В личный кабинет"
+                    :to="isEvent ? '/' : '/me'"
+                    :label="isEvent ? 'На главную' : 'В личный кабинет'"
                     variant="soft"
                     size="xl"
                     block
@@ -146,13 +181,22 @@ const refundDescription = computed<string>(() => {
             v-else
             eyebrow="Заказ не найден"
             title="Такого заказа на нашей улице нет"
-            description="Ссылка устарела или заказ оформлен с другого аккаунта. Все ваши записи – в личном кабинете."
+            :description="
+                isEvent
+                    ? 'Ссылка устарела или оплата не найдена. Выберите событие в афише заново.'
+                    : 'Ссылка устарела или заказ оформлен с другого аккаунта. Все ваши записи – в личном кабинете.'
+            "
         >
             <template #icon>
                 <CheckoutStreet />
             </template>
             <template #actions>
-                <UButton to="/me" label="В личный кабинет" size="xl" block />
+                <UButton
+                    :to="isEvent ? EVENTS_PATH : '/me'"
+                    :label="isEvent ? 'К афише' : 'В личный кабинет'"
+                    size="xl"
+                    block
+                />
             </template>
         </CheckoutResultCard>
     </div>
