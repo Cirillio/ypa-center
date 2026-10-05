@@ -62,7 +62,7 @@ const fmt = (n: number) =>
 
                     <!-- Lessons picker -->
                     <div class="flex flex-col gap-2">
-                        <span class="text-default/70 text-sm font-semibold">
+                        <span class="text-muted text-sm font-semibold">
                             Количество занятий в месяц
                         </span>
                         <div class="flex flex-wrap gap-2">
@@ -82,7 +82,7 @@ const fmt = (n: number) =>
                                 {{ tier.lessons }}
                             </UButton>
                         </div>
-                        <span class="text-default/50 text-xs font-medium">
+                        <span class="text-muted text-xs font-medium">
                             {{ selectedLessons }}
                             {{ pluralize(selectedLessons, ["занятие", "занятия", "занятий"]) }} в
                             месяц - {{ lessonsPerWeek }}
@@ -94,10 +94,10 @@ const fmt = (n: number) =>
                     <!-- Price comparison -->
                     <div class="flex flex-col gap-3 border-y border-neutral-100 py-4">
                         <div class="flex items-center justify-between">
-                            <span class="text-default/60 text-sm font-medium">
+                            <span class="text-muted text-sm font-medium">
                                 Разово ({{ selectedLessons }} × {{ fmt(pricing.trialLesson) }})
                             </span>
-                            <span class="text-default/50 text-base font-bold line-through">
+                            <span class="text-muted text-base font-bold line-through">
                                 {{ fmt(regularPrice) }}
                             </span>
                         </div>

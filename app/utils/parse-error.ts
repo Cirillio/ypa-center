@@ -42,7 +42,11 @@ const isActiveEnrollment = (value: unknown): value is ActiveEnrollmentDto =>
     isRecord(value) &&
     typeof value.id === "number" &&
     (value.type === "REGULAR" || value.type === "TRIAL") &&
-    typeof value.activity_name === "string"
+    typeof value.status === "string" &&
+    typeof value.activity_name === "string" &&
+    typeof value.group_name === "string" &&
+    (value.subscription_id === null || typeof value.subscription_id === "number") &&
+    (value.trial_date === null || typeof value.trial_date === "string")
 
 // Разбирает extensions по полям: мусор от бэка отбрасывается, а не протекает в UI.
 function parseExtensions(raw: unknown): ProblemDetail["extensions"] {

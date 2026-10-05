@@ -1,10 +1,16 @@
 <script lang="ts" setup>
 import type { Activity } from "~/types"
 
-defineProps<{
+const props = defineProps<{
     club: Activity
     isSelected: boolean
 }>()
+
+// Диапазон возраста по всем подгруппам кружка: помогает родителю выбрать, не открывая расписание.
+const ageLabel = computed(() => {
+    const { min, max } = getAgeBounds(props.club.groups)
+    return formatAgeRange(min, max)
+})
 
 const emit = defineEmits<{
     select: [clubId: number]
@@ -37,6 +43,7 @@ const emit = defineEmits<{
 
         <div class="flex flex-col gap-0.5 px-1 pb-1">
             <span class="text-primary text-lg leading-tight font-bold">{{ club.name }}</span>
+            <span v-if="ageLabel" class="text-secondary text-xs font-bold">{{ ageLabel }}</span>
             <span class="text-muted text-sm leading-tight">{{ club.short_description }}</span>
         </div>
     </button>

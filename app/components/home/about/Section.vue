@@ -99,18 +99,14 @@ const AUDIENCE_CARDS = [
                 >
                     <div class="flex items-center gap-2">
                         <UIcon :name="card.icon" class="size-5 shrink-0" :class="card.iconColor" />
-                        <span
-                            class="text-default/50 text-xs font-semibold tracking-wider uppercase"
-                        >
+                        <span class="text-muted text-xs font-semibold tracking-wider uppercase">
                             {{ card.tag }}
                         </span>
                     </div>
                     <h3 class="text-secondary text-2xl leading-snug font-extrabold lg:text-3xl">
                         {{ card.title }}
                     </h3>
-                    <p
-                        class="text-default/70 grow text-sm leading-relaxed font-medium md:text-base"
-                    >
+                    <p class="text-muted grow text-sm leading-relaxed font-medium md:text-base">
                         {{ card.desc }}
                     </p>
                     <span

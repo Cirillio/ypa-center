@@ -153,6 +153,38 @@ describe("MeService.getBookingsPage", () => {
     })
 })
 
+// Характеризация под бэк от 2026-10-05: cost брони события – снимок суммы в момент записи
+describe("MeService.getBookingsPage: event booking amount", () => {
+    it.each([
+        ["a paid online booking awaiting payment", 300_000, "PENDING", "Ожидает оплаты", 3_000],
+        ["a confirmed paid booking", 300_000, "CONFIRMED", "Подтверждена", 3_000],
+        ["a free booking", 0, "CONFIRMED", "Подтверждена", 0]
+    ] as const)(
+        "shows %s with its own price and status",
+        async (_l, cost, status, label, price) => {
+            const dto = bookingDto({
+                kind: "EVENT",
+                id: 9,
+                cost,
+                status,
+                status_display: label,
+                attendees_count: 2,
+                student_id: null,
+                activity_id: null,
+                event_id: 2
+            })
+            const [booking] = (
+                await new MeService(createFakeFetch(() => pageOf([dto])).fetch).getBookingsPage({
+                    limit: 5,
+                    offset: 0
+                })
+            ).results
+
+            expect(booking).toMatchObject({ price, status, statusLabel: label })
+        }
+    )
+})
+
 describe("MeService.getUpcoming", () => {
     it("sends only the params that are set", async () => {
         const { fetch, calls } = createFakeFetch(() => [])

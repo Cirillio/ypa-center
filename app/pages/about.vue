@@ -3,7 +3,7 @@ const { seo } = useAppConfig()
 const siteUrl = seo.siteUrl
 
 useSeoMeta({
-    title: "О нас – Улица Радости",
+    title: "О нас",
     description:
         "История центра умного развития «Улица Радости» в Новосибирске. Узнайте о нашей команде, ценностях и подходе к развитию детей.",
     ogTitle: "О нас – Улица Радости",

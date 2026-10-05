@@ -5,7 +5,7 @@ const { seo } = useAppConfig()
 const { siteUrl } = seo
 
 useSeoMeta({
-    title: "Галерея – Улица Радости",
+    title: "Галерея",
     description:
         "Фотографии нашего центра: учебные классы, игровые зоны и моменты с наших занятий.",
     ogTitle: "Галерея – Улица Радости",

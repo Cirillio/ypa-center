@@ -1,7 +1,7 @@
 import { nextTick } from "vue"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { useAntiSpamCooldown } from "~/composables/useAntiSpamCooldown"
-import { useOtpTimer } from "~/composables/useOptTimer"
+import { useOtpTimer } from "~/composables/useOtpTimer"
 
 beforeEach(() => {
     vi.useFakeTimers({ now: new Date("2026-09-28T10:00:00Z") })

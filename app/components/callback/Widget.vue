@@ -39,7 +39,7 @@ const onErrorSubmit = (error: ApiError) => {
 
         <CallbackForm @success="onSuccessSubmit" @error="onErrorSubmit" />
 
-        <span class="text-default/70 mt-2 px-4 text-xs leading-tight">
+        <span class="text-muted mt-2 px-4 text-xs leading-tight">
             Нажимая на кнопку, вы даете согласие на
             <NuxtLink
                 target="_blank"

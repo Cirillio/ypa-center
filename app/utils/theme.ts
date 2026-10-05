@@ -36,7 +36,9 @@ const CARD_STYLES = [
     }
 ] as const
 
+// Стабильный цвет кружка по id; любой id (в т.ч. ≤ 0) сворачивается в границы палитры.
 export function getActivityTheme(activityId: number) {
-    const index = CARD_STYLES[(activityId - 1) % CARD_STYLES.length]!
-    return index
+    const size = CARD_STYLES.length
+    const index = (((activityId - 1) % size) + size) % size
+    return CARD_STYLES[index] ?? CARD_STYLES[0]
 }
