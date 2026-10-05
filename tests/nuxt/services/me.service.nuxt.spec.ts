@@ -11,7 +11,7 @@ import {
     upcomingDto
 } from "../fixtures/dto/me"
 
-const NBSP = " "
+const NBSP = "\u00a0"
 
 describe("MeService.getProfile", () => {
     it("requests the profile and maps it to the domain model", async () => {
@@ -289,5 +289,31 @@ describe("MeService.completeProfile", () => {
             }
         })
         expect(profile.isComplete).toBe(true)
+    })
+})
+
+describe("MeService.getTrialUsages", () => {
+    it("asks all trial bookings without pagination", async () => {
+        const { fetch, calls } = createFakeFetch(() => [bookingDto()])
+        await new MeService(fetch).getTrialUsages()
+
+        expect(calls).toEqual([
+            {
+                path: "/v1/me/bookings/",
+                opts: { query: { kind: "TRIAL", period: "all" } }
+            }
+        ])
+    })
+
+    it("keeps child and club pairs, skips manual records without them", async () => {
+        const { fetch } = createFakeFetch(() => [
+            bookingDto({ student_id: 11, activity_id: 1 }),
+            bookingDto({ id: 4, student_id: null, activity_id: 1 }),
+            bookingDto({ id: 5, student_id: 11, activity_id: null })
+        ])
+
+        expect(await new MeService(fetch).getTrialUsages()).toEqual([
+            { studentId: 11, activityId: 1 }
+        ])
     })
 })

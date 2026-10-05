@@ -1,6 +1,7 @@
 import type { ApiFetch } from "~/composables/useApi"
 import type {
     BookingDto,
+    TrialUsage,
     DepositBalanceDto,
     DepositEntryDto,
     MeBooking,
@@ -163,6 +164,19 @@ export class MeService {
             query: { ...query, period: "all" }
         })
         return mapPage(page, toBooking)
+    }
+
+    /** Все пробные родителя одним списком (без limit бэк отдаёт массив) – для предпроверки лимита */
+    async getTrialUsages(): Promise<TrialUsage[]> {
+        const bookings = await this.fetch<BookingDto[]>("/v1/me/bookings/", {
+            query: { kind: "TRIAL", period: "all" }
+        })
+        // ПОЧЕМУ пропуск: записи, заведённые вручную без ребёнка или кружка, лимит не задают
+        return bookings.flatMap((b) =>
+            b.student_id !== null && b.activity_id !== null
+                ? [{ studentId: b.student_id, activityId: b.activity_id }]
+                : []
+        )
     }
 
     /** Лента предсортирована бэком по реальным дате и времени */

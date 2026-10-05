@@ -5,11 +5,13 @@ import type { CheckoutResponse, CheckoutSubscriptionRequest } from "~/types"
 import { withSetup } from "../fixtures/with-setup"
 
 const mocks = vi.hoisted(() => ({
-    checkoutSubscription: vi.fn<(p: unknown, key: string) => Promise<CheckoutResponse>>()
+    checkoutSubscription: vi.fn<(p: unknown, key: string) => Promise<CheckoutResponse>>(),
+    checkoutTrial: vi.fn<(p: unknown, key: string) => Promise<CheckoutResponse>>()
 }))
 
 mockNuxtImport("useBillingService", () => () => ({
-    checkoutSubscription: mocks.checkoutSubscription
+    checkoutSubscription: mocks.checkoutSubscription,
+    checkoutTrial: mocks.checkoutTrial
 }))
 mockNuxtImport("useAuthStore", () => () => ({ isAuthed: true }))
 
@@ -37,6 +39,7 @@ const ORDER: CheckoutSubscriptionRequest = {
 
 beforeEach(() => {
     mocks.checkoutSubscription.mockReset()
+    mocks.checkoutTrial.mockReset()
 })
 
 describe("useCheckoutPayment: subscription errors", () => {
@@ -69,5 +72,18 @@ describe("useCheckoutPayment: subscription errors", () => {
         await payment.submitSubscription(ORDER)
 
         expect(payment.error.value?.title).toBe("Ребёнок уже записан")
+    })
+})
+
+describe("useCheckoutPayment: trial errors", () => {
+    it("re-reads the trial bookings on 409 TRIAL_LIMIT_EXCEEDED", async () => {
+        const onTrialUsed = vi.fn()
+        mocks.checkoutTrial.mockRejectedValue(problem(409, "TRIAL_LIMIT_EXCEEDED"))
+        const payment = await withSetup(() => useCheckoutPayment({ onTrialUsed }))
+
+        await payment.submitTrial({ student_id: 7, schedule_id: 101, trial_date: "2026-10-12" })
+
+        expect(payment.error.value?.title).toBe("Пробное уже было")
+        expect(onTrialUsed).toHaveBeenCalledOnce()
     })
 })

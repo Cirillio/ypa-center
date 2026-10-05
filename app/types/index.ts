@@ -334,6 +334,12 @@ export interface MeBooking {
     isPast: boolean
 }
 
+// Пара «ребёнок – кружок» из пробных записей родителя: второе пробное бэк не продаст
+export interface TrialUsage {
+    studentId: number
+    activityId: number
+}
+
 export interface MeDepositEntry {
     id: number
     amount: number // рубли со знаком: + пришло, − потрачено

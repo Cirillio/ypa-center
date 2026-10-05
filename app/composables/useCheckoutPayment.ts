@@ -80,6 +80,7 @@ const SLOTS_STALE_CODES: ReadonlySet<ProblemCode> = new Set(["NOT_FOUND", "NO_AV
 interface CheckoutPaymentOptions {
     onSlotsStale?: () => unknown
     onPlansStale?: () => unknown
+    onTrialUsed?: () => unknown
     onChildrenStale?: () => unknown
 }
 
@@ -147,6 +148,7 @@ export function useCheckoutPayment(options: CheckoutPaymentOptions = {}) {
         if (lessonStarted || (code && SLOTS_STALE_CODES.has(code))) void options.onSlotsStale?.()
         if (code === "FORBIDDEN_RESOURCE") void options.onChildrenStale?.()
         if (code === "PLAN_UNAVAILABLE" || slotCountMismatch) void options.onPlansStale?.()
+        if (code === "TRIAL_LIMIT_EXCEEDED") void options.onTrialUsed?.()
 
         const retryAfter = getRetryAfter(err)
         if (retryAfter) startCooldown(retryAfter)

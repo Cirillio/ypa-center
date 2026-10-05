@@ -11,8 +11,6 @@ useSeoMeta({
         "Разовое занятие в любом кружке за 1 200 ₽. Познакомьтесь с педагогом и форматом перед оформлением абонемента."
 })
 
-const { pricing } = useAppConfig()
-
 const {
     clubs,
     isClubsLoading,
@@ -25,7 +23,8 @@ const {
     selectedSlot,
     isSlotsLoading,
     slotsError,
-    refreshSlots
+    refreshSlots,
+    trialPrice
 } = useTrialCheckout()
 
 const {
@@ -41,6 +40,12 @@ const {
     addChild
 } = useCheckoutChildren()
 
+const { isUsed: isTrialUsed, refresh: refreshTrialUsage } = useTrialUsage({
+    isAuthed,
+    studentId: computed(() => toStudentId(selectedChild.value?.id)),
+    activityId: computed(() => selectedClub.value?.id)
+})
+
 const { tiers } = useSubscriptionPlans()
 
 // Самая низкая цена занятия среди лимитных тарифов – для ссылки «с абонементом выгоднее».
@@ -52,7 +57,8 @@ const subscriptionFromPrice = computed<number | null>(() => {
 })
 
 const isReady = computed(
-    () => !!selectedClub.value && !!selectedSlot.value && !!selectedChild.value
+    () =>
+        !!selectedClub.value && !!selectedSlot.value && !!selectedChild.value && !isTrialUsed.value
 )
 
 const {
@@ -60,7 +66,11 @@ const {
     error: checkoutError,
     cooldownSeconds,
     submitTrial
-} = useCheckoutPayment({ onSlotsStale: refreshSlots, onChildrenStale: retryKids })
+} = useCheckoutPayment({
+    onSlotsStale: refreshSlots,
+    onChildrenStale: retryKids,
+    onTrialUsed: refreshTrialUsage
+})
 
 // Тело заказа; null – выбор неполный
 const payload = computed<CheckoutTrialRequest | null>(() => {
@@ -106,7 +116,8 @@ function handleContinue() {
                     :club="selectedClub"
                     :slot-item="selectedSlot"
                     :has-child="!!selectedChild"
-                    :price="pricing.trialLesson"
+                    :price="trialPrice"
+                    :trial-used="isTrialUsed"
                     :subscription-from-price="subscriptionFromPrice"
                     :is-submitting="isSubmitting"
                     :cooldown-seconds="cooldownSeconds"
@@ -129,6 +140,15 @@ function handleContinue() {
             </UContainer>
         </section>
 
-        <EnrollMobileBar :amount="formatRubles(pricing.trialLesson)" :ready="isReady" />
+        <EnrollMobileBar
+            :amount="
+                trialPrice === null
+                    ? '—'
+                    : trialPrice === 0
+                      ? 'Бесплатно'
+                      : formatRubles(trialPrice)
+            "
+            :ready="isReady"
+        />
     </div>
 </template>

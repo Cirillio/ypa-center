@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 import { formatRub, formatRubles, kopecksToRubles } from "~/utils/format-price"
 
 // toLocaleString("ru-RU") группирует разряды неразрывным пробелом
-const NBSP = " "
+const NBSP = "\u00a0"
 
 describe("kopecksToRubles", () => {
     it.each([

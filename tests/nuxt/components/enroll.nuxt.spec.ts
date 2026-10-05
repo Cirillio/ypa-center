@@ -4,7 +4,8 @@ import SeatsStepper from "~/components/enroll/event/SeatsStepper.vue"
 import SummaryCta from "~/components/enroll/SummaryCta.vue"
 import EventSummary from "~/components/enroll/event/Summary.vue"
 import SubscriptionSummary from "~/components/enroll/subscription/Summary.vue"
-import type { EventItem, WeeklySlot } from "~/types"
+import TrialSummary from "~/components/enroll/trial/Summary.vue"
+import type { Activity, EventItem, TrialCheckoutSlot, WeeklySlot } from "~/types"
 import { eventDto } from "../fixtures/dto/public"
 
 const button = (wrapper: Awaited<ReturnType<typeof mountSuspended>>, label: string) =>
@@ -153,5 +154,74 @@ describe("EnrollEventSummary", () => {
     it.each([[true], [false]])("never promises payment on site (free: %s)", async (isFree) => {
         const text = (await mountSummary(isFree)).text()
         expect(text).not.toMatch(/на месте|позвонит/)
+    })
+})
+
+describe("EnrollTrialSummary", () => {
+    const CLUB: Activity = {
+        id: 1,
+        name: "Шахматы",
+        slug: "chess",
+        groups: [],
+        teachers: [],
+        days_of_week: []
+    }
+    const SLOT: TrialCheckoutSlot = {
+        key: "101_2026-10-12",
+        scheduleId: 101,
+        date: "2026-10-12",
+        startTime: "16:00",
+        endTime: "17:00",
+        groupName: "Младшая",
+        displayDate: "Пн, 12 октября",
+        displayTime: "16:00"
+    }
+
+    const mountSummary = (price: number | null, trialUsed = false) =>
+        mountSuspended(TrialSummary, {
+            props: {
+                club: CLUB,
+                slotItem: SLOT,
+                hasChild: true,
+                price,
+                trialUsed,
+                subscriptionFromPrice: null,
+                isSubmitting: false,
+                cooldownSeconds: 0,
+                error: null
+            }
+        })
+
+    const cta = (wrapper: Awaited<ReturnType<typeof mountSummary>>, label: string) =>
+        wrapper.findAll("button").find((b) => b.text().includes(label))
+
+    it("shows the club's own trial price and the 15-minute hold", async () => {
+        const text = (await mountSummary(1_100)).text()
+        // ПОЧЕМУ \u00a0: ru-RU разделяет разряды неразрывным пробелом
+        expect(text).toContain("1\u00a0100 ₽")
+        expect(text).toContain("места держим за вами 15 минут")
+    })
+
+    it("books a free trial without payment", async () => {
+        const wrapper = await mountSummary(0)
+        const text = wrapper.text()
+
+        expect(text).toContain("Бесплатно")
+        expect(text).not.toContain("ЮKassa")
+        expect(cta(wrapper, "Записаться")?.attributes("disabled")).toBeUndefined()
+    })
+
+    it("blocks a trial the child already had in this club", async () => {
+        const wrapper = await mountSummary(1_100, true)
+
+        expect(cta(wrapper, "Продолжить")?.attributes("disabled")).toBeDefined()
+        expect(wrapper.text()).toContain(
+            "У ребёнка уже было пробное в этом кружке – выберите другой или оформите абонемент"
+        )
+    })
+
+    it("shows a dash until a club is chosen", async () => {
+        const text = (await mountSummary(null)).text()
+        expect(text).toContain("—")
     })
 })
