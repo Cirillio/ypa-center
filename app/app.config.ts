@@ -190,8 +190,7 @@ export default defineAppConfig({
             variants: {
                 color: {
                     primary: {
-                        base: "bg-white!",
-                        indicator: "bg-default *:text-primary! ring-secondary border-0 ring-2"
+                        base: "bg-primary/50! transition hover:bg-primary/75! ring-0 shadow-sm"
                     }
                 }
             },
