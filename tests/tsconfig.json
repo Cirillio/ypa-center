@@ -1,0 +1,9 @@
+{
+    // ПОЧЕМУ: Nuxt кладёт в свой tsconfig только tests/nuxt/** (с фикстурами). Юнит-тесты и
+    // конфиг Vitest проверяются отдельно, с теми же strict-настройками, но без автоимпортов.
+    "extends": "../.nuxt/tsconfig.app.json",
+    "compilerOptions": {
+        "types": ["node"]
+    },
+    "include": ["./unit/**/*", "../vitest.config.ts"]
+}
