@@ -5,6 +5,7 @@ import type { EventItem } from "~/types"
 export function useEventCheckout() {
     const route = useRoute()
     const router = useRouter()
+    const toast = useToast()
     const eventsService = useEventsService()
 
     const {
@@ -54,8 +55,22 @@ export function useEventCheckout() {
     watch(selectedEventId, syncQuery)
 
     // Убирает из URL невалидный eventId из ссылки (нет такого события или нет мест).
+    // Если событие существовало, но мест уже нет – информирует родителя тостом.
     onMounted(() => {
         if (events.value.length > 0 && route.query.eventId && selectedEventId.value === undefined) {
+            if (parsedInitialId !== undefined) {
+                const soldOutEvent = events.value.find(
+                    (e) => e.id === parsedInitialId && e.availableSeats <= 0
+                )
+                if (soldOutEvent) {
+                    toast.add({
+                        title: "Все места заняты",
+                        description: `На событие «${soldOutEvent.title}» запись закрыта. Выберите другое мероприятие из афиши.`,
+                        icon: "ph:users-three-bold",
+                        color: "info"
+                    })
+                }
+            }
             syncQuery(undefined)
         }
     })
