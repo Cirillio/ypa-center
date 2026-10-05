@@ -7,6 +7,7 @@ const LESSONS_PER_SLOT = 4
 function toTier(plan: SubscriptionPlanPublic): PlanTier {
     return {
         id: plan.id,
+        slotsCount: plan.slots_count,
         lessons: plan.is_unlimited ? null : plan.slots_count * LESSONS_PER_SLOT,
         price: kopecksToRubles(plan.price),
         label: plan.is_unlimited ? plan.name : null,

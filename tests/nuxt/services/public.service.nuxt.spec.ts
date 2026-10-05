@@ -16,7 +16,7 @@ describe("PlansService", () => {
             planDto({
                 id: 3,
                 name: "Безлимит",
-                slots_count: 0,
+                slots_count: 6,
                 price: 2_500_000,
                 is_unlimited: true
             })
@@ -25,9 +25,16 @@ describe("PlansService", () => {
 
         expect(calls[0]?.path).toBe("/v1/public/plans/")
         expect(tiers).toEqual([
-            { id: 1, lessons: 4, price: 7_000, label: null, highlight: false },
-            { id: 2, lessons: 12, price: 18_000, label: null, highlight: false },
-            { id: 3, lessons: null, price: 25_000, label: "Безлимит", highlight: true }
+            { id: 1, slotsCount: 1, lessons: 4, price: 7_000, label: null, highlight: false },
+            { id: 2, slotsCount: 3, lessons: 12, price: 18_000, label: null, highlight: false },
+            {
+                id: 3,
+                slotsCount: 6,
+                lessons: null,
+                price: 25_000,
+                label: "Безлимит",
+                highlight: true
+            }
         ])
     })
 

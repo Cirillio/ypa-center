@@ -35,6 +35,7 @@ export type SubscriptionPlanPublic = components["schemas"]["SubscriptionPlanPubl
  */
 export interface PlanTier {
     id: number | null
+    slotsCount: number // у безлимита – минимум слотов, с которого он продаётся
     lessons: number | null // null = безлимит
     price: number // рубли (API отдаёт копейки)
     label: string | null // задан только для безлимита; иначе шаблон показывает число занятий

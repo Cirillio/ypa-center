@@ -22,6 +22,14 @@ const ERROR_MESSAGES: Partial<Record<ProblemCode, Omit<CheckoutError, "code">>> 
         title: "Места закончились",
         description: "Пока вы выбирали, место заняли. Список обновлён – выберите другое время."
     },
+    PLAN_UNAVAILABLE: {
+        title: "Тариф изменился",
+        description: "Мы обновили тарифы – проверьте новую цену и нажмите ещё раз."
+    },
+    STUDENT_ALREADY_ENROLLED: {
+        title: "Ребёнок уже записан",
+        description: "Ребёнок уже занимается в одной из выбранных групп. Уберите её из состава."
+    },
     TRIAL_LIMIT_EXCEEDED: {
         title: "Пробное уже было",
         description:
@@ -53,15 +61,25 @@ const LESSON_STARTED: Omit<CheckoutError, "code"> = {
     description: "Занятие уже началось. Мы обновили список – выберите другое время."
 }
 
+// Число слотов не подошло тарифу: бэк отвечает 422 с ошибкой в поле slot_ids
+const SLOT_COUNT_MISMATCH: Omit<CheckoutError, "code"> = {
+    title: "Число кружков не подходит тарифу",
+    description: "Тарифы обновились. Мы перезагрузили их – проверьте состав и цену."
+}
+
+// Ошибка валидации пришла в указанном поле
+const hasInvalidParam = (err: unknown, name: string): boolean =>
+    getProblem(err)?.extensions?.invalid_params?.some((p) => p.name === name) ?? false
+
 // Ошибка валидации пришла именно по дате пробного
-const isTrialDateClosed = (err: unknown): boolean =>
-    getProblem(err)?.extensions?.invalid_params?.some((p) => p.name === "trial_date") ?? false
+const isTrialDateClosed = (err: unknown): boolean => hasInvalidParam(err, "trial_date")
 
 // Коды, после которых выбор на странице устарел и данные нужно перезапросить
 const SLOTS_STALE_CODES: ReadonlySet<ProblemCode> = new Set(["NOT_FOUND", "NO_AVAILABLE_SEATS"])
 
 interface CheckoutPaymentOptions {
     onSlotsStale?: () => unknown
+    onPlansStale?: () => unknown
     onChildrenStale?: () => unknown
 }
 
@@ -107,13 +125,16 @@ export function useCheckoutPayment(options: CheckoutPaymentOptions = {}) {
         // ПОЧЕМУ: без тела RFC 9457 parseApiError отдаёт сырое сообщение ofetch с URL – родителю оно ни к чему
         const problem = getProblem(err)
         const lessonStarted = isTrialDateClosed(err)
+        const slotCountMismatch = hasInvalidParam(err, "slot_ids")
         const known = lessonStarted
             ? LESSON_STARTED
-            : code
-              ? ERROR_MESSAGES[code]
-              : problem
-                ? undefined
-                : NETWORK_ERROR
+            : slotCountMismatch
+              ? SLOT_COUNT_MISMATCH
+              : code
+                ? ERROR_MESSAGES[code]
+                : problem
+                  ? undefined
+                  : NETWORK_ERROR
         const parsed = parseApiError(err, "Не удалось оформить заказ")
         error.value = {
             code,
@@ -125,6 +146,7 @@ export function useCheckoutPayment(options: CheckoutPaymentOptions = {}) {
         if (code === "IDEMPOTENCY_KEY_REUSED") lastAttempt = null
         if (lessonStarted || (code && SLOTS_STALE_CODES.has(code))) void options.onSlotsStale?.()
         if (code === "FORBIDDEN_RESOURCE") void options.onChildrenStale?.()
+        if (code === "PLAN_UNAVAILABLE" || slotCountMismatch) void options.onPlansStale?.()
 
         const retryAfter = getRetryAfter(err)
         if (retryAfter) startCooldown(retryAfter)

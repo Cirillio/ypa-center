@@ -61,6 +61,15 @@ const savings = computed<number>(() =>
 // ПОЧЕМУ: фолбэк тарифов из app.config без id – заказ по нему бэк не примет
 const isTierUnavailable = computed(() => !!props.tier && props.tier.id === null)
 
+// Кружки выбраны, а тарифа под их число нет: больше потолка корзины или пропуск в линейке
+const noPlanHint = computed<string | null>(() => {
+    const count = props.slots.length
+    if (!count || props.tier) return null
+    if (count > MAX_SUBSCRIPTION_SLOTS)
+        return `В абонементе не больше ${MAX_SUBSCRIPTION_SLOTS} кружков – уберите лишние`
+    return `Нет тарифа на ${count} ${pluralize(count, ["кружок", "кружка", "кружков"])} – добавьте или уберите кружок`
+})
+
 const missing = computed<string[]>(() => {
     const list: string[] = []
     if (!props.slots.length) list.push("кружки")
@@ -153,12 +162,13 @@ const missing = computed<string[]>(() => {
         <slot name="payment" />
 
         <EnrollSummaryCta
-            :ready="missing.length === 0 && !isTierUnavailable"
+            :ready="missing.length === 0 && !isTierUnavailable && !noPlanHint"
             :missing="missing"
             :hint="
-                isTierUnavailable
+                noPlanHint ??
+                (isTierUnavailable
                     ? 'Тарифы не загрузились – обновите страницу, чтобы оплатить'
-                    : null
+                    : null)
             "
             :loading="isSubmitting"
             :cooldown-seconds="cooldownSeconds"
@@ -168,7 +178,7 @@ const missing = computed<string[]>(() => {
 
         <p class="text-muted flex items-start gap-2 text-xs">
             <UIcon name="ph:lock-simple-bold" class="mt-px size-4 shrink-0" aria-hidden="true" />
-            Оплата через ЮKassa. После нажатия места держим за вами 30 минут.
+            Оплата через ЮKassa. После нажатия места держим за вами 15 минут.
         </p>
     </EnrollSummaryCard>
 </template>

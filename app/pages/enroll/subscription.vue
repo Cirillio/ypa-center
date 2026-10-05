@@ -57,7 +57,11 @@ const {
     error: checkoutError,
     cooldownSeconds,
     submitSubscription
-} = useCheckoutPayment({ onSlotsStale: refreshSlots, onChildrenStale: retryKids })
+} = useCheckoutPayment({
+    onSlotsStale: refreshSlots,
+    onChildrenStale: retryKids,
+    onPlansStale: () => refreshNuxtData("plans")
+})
 
 const isReady = computed(() => selectedSlots.value.length > 0 && !!selectedChild.value)
 

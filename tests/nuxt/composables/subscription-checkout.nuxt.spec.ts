@@ -13,8 +13,10 @@ const mocks = vi.hoisted(() => ({
 mockNuxtImport("usePlansService", () => () => ({ getAll: mocks.getPlans }))
 mockNuxtImport("useScheduleService", () => () => ({ getWeek: mocks.getWeek }))
 
+// slotsCount безлимита – минимум слотов, с которого он продаётся (на бэке – 6)
 const tier = (lessons: number | null, price: number): PlanTier => ({
     id: lessons ?? 99,
+    slotsCount: lessons === null ? 6 : lessons / 4,
     lessons,
     price,
     label: lessons === null ? "Безлимит" : null,
@@ -79,10 +81,19 @@ describe("useSubscriptionPlans", () => {
 
         expect(tiers.value.length).toBeGreaterThan(0)
         for (const t of tiers.value) {
-            expect(Object.keys(t).sort()).toEqual(["highlight", "id", "label", "lessons", "price"])
+            expect(Object.keys(t).sort()).toEqual([
+                "highlight",
+                "id",
+                "label",
+                "lessons",
+                "price",
+                "slotsCount"
+            ])
             expect(t.id).toBeNull()
         }
         expect(tiers.value.filter((t) => t.lessons === null)).toHaveLength(1)
+        // Безлимит фолбэка начинается сразу за самым большим обычным тарифом
+        expect(tiers.value.find((t) => t.lessons === null)?.slotsCount).toBe(6)
     })
 })
 
@@ -106,7 +117,8 @@ describe("useSubscriptionCheckout: tier selection", () => {
         // после 20 занятий следующий тариф – безлимит, у него lessons: null
         [5, 20, null],
         [6, null, null],
-        [9, null, null]
+        [9, null, null],
+        [10, null, null]
     ])("%i slots → tier with %j lessons, next tier lessons %j", async (count, lessons, next) => {
         const checkout = await setup()
         for (let i = 1; i <= count; i++) checkout.toggleSlot(slot(i, dow(i), "10:00"))
@@ -123,7 +135,22 @@ describe("useSubscriptionCheckout: tier selection", () => {
         expect(checkout.nextTier.value).toMatchObject({ lessons: null, label: "Безлимит" })
     })
 
-    it("derives the unlimited hint from the largest limited tier", async () => {
+    it.each([
+        ["a gap in the lineup", 3],
+        ["more than 10 slots in the cart", 11]
+    ])("has no tier for %s", async (_label, count) => {
+        if (count === 3) mocks.getPlans.mockResolvedValue(TIERS.filter((t) => t.lessons !== 12))
+        const checkout = await withSetup(() => useSubscriptionCheckout())
+        await vi.waitFor(() => expect(mocks.getPlans).toHaveBeenCalled())
+        await vi.waitFor(() => expect(checkout.tiers.value.length).toBeGreaterThan(0))
+        for (let i = 1; i <= count; i++) checkout.toggleSlot(slot(i, dow(i), `${8 + i}:00`))
+
+        expect(checkout.selectedSlots.value).toHaveLength(count)
+        expect(checkout.currentTier.value).toBeNull()
+        expect(checkout.currentTierIndex.value).toBe(-1)
+    })
+
+    it("derives the unlimited hint from the unlimited tier", async () => {
         const checkout = await setup()
         expect(checkout.unlimitedHint.value).toBe("при 6+ кружках")
     })

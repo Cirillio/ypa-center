@@ -44,11 +44,10 @@ export function useSubscriptionCheckout() {
 
     const totalMonthlyLessons = computed(() => selectedSlots.value.length * LESSONS_PER_SLOT)
 
+    // -1 – тарифа под выбор нет: ничего не выбрано, пропуск в линейке или больше 10 слотов
     const currentTierIndex = computed(() => {
-        const total = totalMonthlyLessons.value
-        if (total === 0 || tiers.value.length === 0) return -1
-        const idx = tiers.value.findIndex((tier) => tier.lessons === null || tier.lessons >= total)
-        return idx === -1 ? tiers.value.length - 1 : idx
+        const plan = pickPlan(tiers.value, selectedSlots.value.length)
+        return plan ? tiers.value.indexOf(plan) : -1
     })
 
     const currentTier = computed<PlanTier | null>(() => {
@@ -62,15 +61,10 @@ export function useSubscriptionCheckout() {
         return tiers.value[idx + 1] ?? null
     })
 
-    // Вычисляет порог кружков для безлимитного тарифа из последнего лимитного тарифа без хардкода.
+    // Порог безлимита – из самого тарифа, без хардкода.
     const unlimitedHint = computed<string | null>(() => {
-        const limitedLessons = tiers.value
-            .map((tier) => tier.lessons)
-            .filter((lessons): lessons is number => lessons !== null && lessons > 0)
-        if (limitedLessons.length === 0) return null
-        const maxLimitedLessons = Math.max(...limitedLessons)
-        const minUnlimitedClubs = Math.floor(maxLimitedLessons / LESSONS_PER_SLOT) + 1
-        return `при ${minUnlimitedClubs}+ кружках`
+        const unlimited = tiers.value.find((tier) => tier.lessons === null)
+        return unlimited ? `при ${unlimited.slotsCount}+ кружках` : null
     })
 
     // Добавляет снимок слота в корзину или снимает выбор при повторном нажатии.
