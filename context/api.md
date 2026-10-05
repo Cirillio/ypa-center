@@ -27,7 +27,7 @@
 | GET   | `/v1/public/gallery/`                    | `gallery.service`    | `/gallery`, блок галереи на главной                            |
 | GET   | `/v1/public/plans/`                      | `plans.service`      | Калькулятор абонемента                                         |
 | GET   | `/v1/public/events/`                     | `events.service`     | `/` – афиша; `/enroll/event`                                   |
-| POST  | `/v1/public/events/{event_id}/register/` | –                    | **Не используется** – запись на событие не подключена ⚠️       |
+| POST  | `/v1/public/events/{event_id}/register/` | `events.service`     | `/enroll/event` – бронь места без входа, оплата на месте       |
 | POST  | `/v1/public/callback/`                   | `callback.service`   | Форма «обратный звонок», шлёт `pd_consent`                     |
 | POST  | `/v1/public/feedback/`                   | `feedback.service`   | Форма «обратная связь», шлёт `pd_consent`                      |
 
@@ -128,33 +128,39 @@ Refresh вызывается не сервисом, а транспортом `u
 
 Подключено на фронте 2026-09-30 (`tasks/payment-checkout/report.md`). UX – `backend/checkout-flow.md`.
 
-| Метод | Путь                             | Примечание                                                                                                                     |
-| ----- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| POST  | `/v1/checkout/subscription`      | **Без завершающего слеша** ⚠️. Требует `X-Idempotency-Key` (UUID v4). Тело: `plan_id`, `student_id`, `slot_ids`, `use_deposit` |
-| POST  | `/v1/checkout/trial`             | **Без завершающего слеша** ⚠️. Требует `X-Idempotency-Key`. Тело: `student_id`, `schedule_id`, `trial_date` (календарная дата) |
-| GET   | `/v1/checkout/transactions/{id}` | **Ещё нет на бэке** (`MOCK(tx-status)`). Статус транзакции для опроса на `/checkout/result?tx=`                                |
-| POST  | `/v1/checkout/event`             | **Не существует.** Гостевая регистрация с оплатой на месте (`POST /v1/public/events/{id}/register/`)                           |
-| POST  | `/v1/webhooks/yookassa`          | Server-to-server, фронта не касается                                                                                           |
+| Метод | Путь                             | Примечание                                                                                                                                                                                       |
+| ----- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| POST  | `/v1/checkout/subscription`      | **Без завершающего слеша** ⚠️. Требует `X-Idempotency-Key` (UUID v4). Тело: `plan_id`, `student_id`, `slot_ids`, `use_deposit`                                                                   |
+| POST  | `/v1/checkout/trial`             | **Без завершающего слеша** ⚠️. Требует `X-Idempotency-Key`. Тело: `student_id`, `schedule_id`, `trial_date` (календарная дата)                                                                   |
+| GET   | `/v1/checkout/transactions/{id}` | Исход оплаты для родителя: `status` PENDING / SUCCEEDED / CANCELED / REFUND, `reason` (только у REFUND), `amount` в копейках, `expires_at`, `order` (что купили). Чужая или битая `{id}` – `404` |
+| POST  | `/v1/checkout/event`             | **Не существует.** Гостевая регистрация с оплатой на месте (`POST /v1/public/events/{id}/register/`)                                                                                             |
+| POST  | `/v1/webhooks/yookassa`          | Server-to-server, фронта не касается                                                                                                                                                             |
 
 **`X-Idempotency-Key`** – обязательный заголовок на обоих чекаутах.
 Повтор с тем же ключом и тем же телом возвращает тот же `201` (не дублирует покупку);
 с тем же ключом, но другим телом – `409 IDEMPOTENCY_KEY_REUSED`. Фронт выводит ключ
 из отпечатка состава заказа (`architecture.md` §6).
 
-**CORS (⚠️ бэк, на 2026-09-30):** `x-idempotency-key` не входит в `CORS_ALLOW_HEADERS`,
-а `Retry-After` – в `CORS_EXPOSE_HEADERS`: из браузера чекаут не проходит preflight.
-Локально проверено временным патчем, бэкендеру передано.
+**CORS:** с 2026-10-04 на `mvp` разрешён заголовок запроса `X-Idempotency-Key`, а
+`Retry-After` и `X-Request-ID` открыты для JS. Временный патч бэка снят.
 
 **Ответы без денег:** при `use_deposit: true` с полным покрытием или бесплатном
 пробном бэк сразу отдаёт `{ status: "CONFIRMED", payment_url: null }` – фронт без
 ЮKassa переходит на `/checkout/result?tx=`.
 
-**`return_url` и опрос статуса (⚠️ бэк, на 2026-09-30):** сейчас `return_url`
-статичный (`/checkout/result` без параметров); договорились, что бэк будет
-передавать `?tx={transaction_id}`. Ручки `GET /v1/checkout/transactions/{id}` ещё нет –
-фронт опрашивает `MOCK(tx-status)` 10 раз по 2 с. Контракт ответа (черновик):
-`{ id, status: PENDING|SUCCEEDED|CANCELED, type: SUBSCRIPTION|TRIAL, amount (копейки),
-canceled_reason, created_at, expires_at }`, доступ только владельцу (`403`/`404`).
+**`return_url` и опрос статуса:** ЮKassa возвращает на `/checkout/result?tx=<id>`.
+Фронт опрашивает `GET /v1/checkout/transactions/{id}` раз в 2 с, пока `PENDING`,
+и сдаётся после `expires_at` + 5 минут. `REFUND` – оплата прошла, заказ не
+оформился, деньги вернутся; `reason`: `SEATS_TAKEN`, `GROUP_CLOSED`,
+`PAID_AFTER_EXPIRY`, `AMOUNT_MISMATCH`, `NOT_FULFILLED`. Типы – из OpenAPI
+(`CheckoutTransaction`), маппинг в сервисе. Контракт – `backend/checkout-flow.md` §7.
+
+**Бронь события** (`POST /v1/public/events/{id}/register/`, без входа): тело
+`child_name`, `parent_name`, `phone`, `email`, `attendees_count` (1–5), `pd_consent: true`,
+`website_url: ""` (ловушка для ботов). Ответ всегда `201 {status: "accepted"}`.
+Ошибки – `422` по полю: `phone` (уже есть запись), `attendees_count` (мест меньше),
+`event` (событие прошло); `404` – события нет. Платное событие ждёт подтверждения
+менеджера 30 минут.
 
 **Конфигурация ЮKassa:** без `YOOKASSA_SHOP_ID` / `YOOKASSA_SECRET_KEY` в `.env` бэка
 любой чекаут отдаёт `500` (даже депозитный) – для локальной проверки нужен тестовый магазин.
