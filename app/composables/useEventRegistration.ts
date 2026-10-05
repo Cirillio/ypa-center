@@ -80,8 +80,7 @@ export function useEventRegistration(options: EventRegistrationOptions = {}) {
             await eventsService.register(event.id, {
                 child_name: contacts.childName.trim(),
                 parent_name: contacts.parentName.trim(),
-                // ПОЧЕМУ E.164: бэк ищет дубль брони по точному номеру
-                phone: contacts.phone.replace(/[^\d+]/g, ""),
+                phone: toE164Phone(contacts.phone),
                 email: contacts.email.trim(),
                 attendees_count: seats,
                 pd_consent: contacts.consent,

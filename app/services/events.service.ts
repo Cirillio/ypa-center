@@ -1,6 +1,25 @@
 import type { ApiFetch } from "~/composables/useApi"
 import { applyMockEventSeats, type EventWithSeatsDraftDto } from "~/services/mocks/event-seats.mock"
-import type { EventItem, EventPublic, EventRegistrationRequest } from "~/types"
+import type {
+    EventItem,
+    EventPublic,
+    EventRegistrationOutcome,
+    EventRegistrationRequest,
+    EventRegistrationResultDto
+} from "~/types"
+
+const IDEMPOTENCY_HEADER = "X-Idempotency-Key"
+
+// Различает ответ брони: у платного события есть transaction_id, у бесплатного – только status.
+function toRegistrationOutcome(dto: EventRegistrationResultDto): EventRegistrationOutcome {
+    if (!("transaction_id" in dto)) return { kind: "accepted" }
+    return {
+        kind: "payment",
+        transactionId: dto.transaction_id,
+        paymentUrl: dto.payment_url,
+        expiresAt: dto.expires_at
+    }
+}
 
 // Маппит черновик DTO события со свободными местами в доменную модель EventItem.
 function toEventItem(dto: EventWithSeatsDraftDto): EventItem {
@@ -25,12 +44,24 @@ export class EventsService {
         return applyMockEventSeats(events).map(toEventItem)
     }
 
-    /** POST /api/v1/public/events/{eventId}/register/ – бронь без входа; токен, если есть, привяжет её к ЛК */
-    async register(eventId: number, payload: EventRegistrationRequest): Promise<void> {
-        await this.fetch(`/v1/public/events/${eventId}/register/`, {
-            method: "POST",
-            body: payload
-        })
+    /**
+     * POST /api/v1/public/events/{eventId}/register/ – бронь без входа; токен, если есть, привяжет её к ЛК.
+     * Ключ идемпотентности передаётся только для платного события.
+     */
+    async register(
+        eventId: number,
+        payload: EventRegistrationRequest,
+        idempotencyKey?: string
+    ): Promise<EventRegistrationOutcome> {
+        const dto = await this.fetch<EventRegistrationResultDto>(
+            `/v1/public/events/${eventId}/register/`,
+            {
+                method: "POST",
+                body: payload,
+                ...(idempotencyKey ? { headers: { [IDEMPOTENCY_HEADER]: idempotencyKey } } : {})
+            }
+        )
+        return toRegistrationOutcome(dto)
     }
 }
 

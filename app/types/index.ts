@@ -96,6 +96,19 @@ export type CheckoutResponse = components["schemas"]["CheckoutResponse"]
 // POST /public/events/{id}/register/
 export type EventRegistrationRequest = components["schemas"]["EventRegistrationCreateRequest"]
 
+// Исход брони события: бесплатное принято сразу, платное ведёт на оплату
+export type EventRegistrationOutcome =
+    | { kind: "accepted" }
+    | {
+          kind: "payment"
+          transactionId: string
+          paymentUrl: string | null
+          expiresAt: string | null
+      }
+
+// Ответ бэка на бронь: RegistrationAccepted у бесплатного, CheckoutResponse у платного
+export type EventRegistrationResultDto = components["schemas"]["EventRegistrationResult"]
+
 // Принятая бронь для экрана подтверждения
 export interface EventRegistrationResult {
     eventTitle: string

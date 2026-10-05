@@ -62,3 +62,20 @@
 - **Не проверено вживую:** подсказка «нет тарифа» (в живой линейке пропусков нет –
   покрыто компонентным тестом); `PLAN_UNAVAILABLE` (нужно снять тариф в админке при
   открытой корзине и войти); тексты пробного и события про 30 минут – в подзадачах 04 и 06.
+
+## 03. Сервис брони события и ключ идемпотентности – 2026-10-05
+
+- Решение сначала записано в `architecture.md` §6 (бронь события, ключ брони).
+- **Red:** 14 падений – нет `createEventOrderFingerprint`; `register` возвращал
+  `undefined` и не слал ключ.
+- **Green:**
+    - `createEventOrderFingerprint(eventId, seats, contacts)` в `utils/order-fingerprint.ts`:
+      телефон в E.164, имена и email без пробелов по краям, согласие не входит;
+    - `toE164Phone` вынесен в `utils/masks.ts` – им пользуются отпечаток и тело брони
+      (`useEventRegistration`), раньше нормализация была только в композабле;
+    - `EventsService.register(eventId, payload, idempotencyKey?)` → доменное объединение
+      `EventRegistrationOutcome` (`accepted` | `payment`); заголовок `X-Idempotency-Key`
+      только при переданном ключе; DTO – `EventRegistrationResult` из `api.d.ts`.
+- **Мутация:** отпечаток без нормализации телефона – 3 теста упали.
+- Итог: 423 теста, `bun run check` зелёный. Поведение страницы не менялось
+  (`useEventRegistration` пока игнорирует исход – подзадача 04). Браузер не нужен.
