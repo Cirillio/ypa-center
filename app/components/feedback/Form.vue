@@ -41,7 +41,7 @@ const inputUi = {
     base: "md:text-lg !text-base bg-white font-semibold text-default placeholder:text-default/75"
 }
 
-const canActive = computed<boolean>(() => !isSubmitDisabled.value || isMounted.value)
+const canActive = computed<boolean>(() => !isSubmitDisabled.value && isMounted.value)
 </script>
 
 <template>
@@ -139,12 +139,12 @@ const canActive = computed<boolean>(() => !isSubmitDisabled.value || isMounted.v
             "
         >
             <UButton
-                :disabled="!canActive"
+                :disabled="!canActive || isSpamBlocked"
                 :loading="!canActive"
                 color="primary"
                 type="submit"
-                :label="!canActive ? 'Загрузка...' : isSpamBlocked ? 'Ожидайте...' : 'Отправить'"
-                :variant="!canActive ? 'solid' : 'soft'"
+                :label="canActive ? 'Отправить' : isSpamBlocked ? 'Ожидайте...' : 'Загрузка...'"
+                :variant="canActive ? 'solid' : 'soft'"
                 class="w-full justify-center text-lg font-semibold focus-visible:ring-0"
             />
         </UTooltip>

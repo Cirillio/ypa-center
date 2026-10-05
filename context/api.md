@@ -17,19 +17,19 @@
 
 Не требуют авторизации. Основа MVP.
 
-| Метод | Путь                                     | Сервис фронта        | Где используется                                                                                                         |
-| ----- | ---------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| GET   | `/v1/public/activities/`                 | `activities.service` | `/clubs` – полный каталог                                                                                                |
-| GET   | `/v1/public/activities/popular/`         | `activities.service` | `/` – топ-3 кружка (урезанная форма `ActivityCard`)                                                                      |
-| GET   | `/v1/public/activities/{id}/`            | –                    | **Не используется** фронтом                                                                                              |
-| GET   | `/v1/public/schedule/`                   | `schedule.service`   | `/clubs` – недельная сетка; конструкторы абонемента и пробного                                                           |
-| GET   | `/v1/public/teachers/`                   | `teachers.service`   | `/teachers`                                                                                                              |
-| GET   | `/v1/public/gallery/`                    | `gallery.service`    | `/gallery`, блок галереи на главной                                                                                      |
-| GET   | `/v1/public/plans/`                      | `plans.service`      | Калькулятор абонемента                                                                                                   |
-| GET   | `/v1/public/events/`                     | `events.service`     | `/` – афиша; `/enroll/event`                                                                                             |
-| POST  | `/v1/public/events/{event_id}/register/` | `events.service`     | `/enroll/event` – бронь без входа; платное – онлайн-оплата (с 2026-10-05 на бэке, фронт – `tasks/backend-sync-2026-10/`) |
-| POST  | `/v1/public/callback/`                   | `callback.service`   | Форма «обратный звонок», шлёт `pd_consent`                                                                               |
-| POST  | `/v1/public/feedback/`                   | `feedback.service`   | Форма «обратная связь», шлёт `pd_consent`                                                                                |
+| Метод | Путь                                     | Сервис фронта        | Где используется                                                                       |
+| ----- | ---------------------------------------- | -------------------- | -------------------------------------------------------------------------------------- |
+| GET   | `/v1/public/activities/`                 | `activities.service` | `/clubs` – полный каталог                                                              |
+| GET   | `/v1/public/activities/popular/`         | `activities.service` | `/` – топ-3 кружка (урезанная форма `ActivityCard`)                                    |
+| GET   | `/v1/public/activities/{id}/`            | –                    | **Не используется** фронтом                                                            |
+| GET   | `/v1/public/schedule/`                   | `schedule.service`   | `/clubs` – недельная сетка; конструкторы абонемента и пробного                         |
+| GET   | `/v1/public/teachers/`                   | `teachers.service`   | `/teachers`                                                                            |
+| GET   | `/v1/public/gallery/`                    | `gallery.service`    | `/gallery`, блок галереи на главной                                                    |
+| GET   | `/v1/public/plans/`                      | `plans.service`      | Калькулятор абонемента                                                                 |
+| GET   | `/v1/public/events/`                     | `events.service`     | `/` – афиша; `/enroll/event`                                                           |
+| POST  | `/v1/public/events/{event_id}/register/` | `events.service`     | `/enroll/event` – бронь без входа; платное – онлайн-оплата через ЮKassa (с 2026-10-05) |
+| POST  | `/v1/public/callback/`                   | `callback.service`   | Форма «обратный звонок», шлёт `pd_consent`                                             |
+| POST  | `/v1/public/feedback/`                   | `feedback.service`   | Форма «обратная связь», шлёт `pd_consent`                                              |
 
 ### Особенности
 
@@ -128,14 +128,14 @@ Refresh вызывается не сервисом, а транспортом `u
 
 Подключено на фронте 2026-09-30 (`tasks/payment-checkout/report.md`). UX – `backend/checkout-flow.md`.
 
-| Метод | Путь                               | Примечание                                                                                                                                                                                       |
-| ----- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| POST  | `/v1/checkout/subscription`        | **Без завершающего слеша** ⚠️. Требует `X-Idempotency-Key` (UUID v4). Тело: `plan_id`, `student_id`, `slot_ids`, `use_deposit`                                                                   |
-| POST  | `/v1/checkout/trial`               | **Без завершающего слеша** ⚠️. Требует `X-Idempotency-Key`. Тело: `student_id`, `schedule_id`, `trial_date` (календарная дата)                                                                   |
-| GET   | `/v1/checkout/transactions/{id}`   | Исход оплаты для родителя: `status` PENDING / SUCCEEDED / CANCELED / REFUND, `reason` (только у REFUND), `amount` в копейках, `expires_at`, `order` (что купили). Чужая или битая `{id}` – `404` |
-| POST  | `/v1/checkout/event`               | **Не существует.** Оплата события встроена в `POST /v1/public/events/{id}/register/`                                                                                                             |
-| GET   | `/v1/public/events/payments/{id}/` | Статус оплаты события без входа и без ПД, тот же вид ответа, `order` – `event_id`, `title`, `starts_at`, `attendees_count`; лимит 60 запросов/мин с IP. **На фронте не подключено**              |
-| POST  | `/v1/webhooks/yookassa`            | Server-to-server, фронта не касается                                                                                                                                                             |
+| Метод | Путь                               | Примечание                                                                                                                                                                                                  |
+| ----- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| POST  | `/v1/checkout/subscription`        | **Без завершающего слеша** ⚠️. Требует `X-Idempotency-Key` (UUID v4). Тело: `plan_id`, `student_id`, `slot_ids`, `use_deposit`                                                                              |
+| POST  | `/v1/checkout/trial`               | **Без завершающего слеша** ⚠️. Требует `X-Idempotency-Key`. Тело: `student_id`, `schedule_id`, `trial_date` (календарная дата)                                                                              |
+| GET   | `/v1/checkout/transactions/{id}`   | Исход оплаты для родителя: `status` PENDING / SUCCEEDED / CANCELED / REFUND, `reason` (только у REFUND), `amount` в копейках, `expires_at`, `order` (что купили). Чужая или битая `{id}` – `404`            |
+| POST  | `/v1/checkout/event`               | **Не существует.** Оплата события встроена в `POST /v1/public/events/{id}/register/`                                                                                                                        |
+| GET   | `/v1/public/events/payments/{id}/` | Статус оплаты события без входа и без ПД, тот же вид ответа, `order` – `event_id`, `title`, `starts_at`, `attendees_count`; лимит 60 запросов/мин с IP. `billing.service` → `/checkout/result?…&kind=event` |
+| POST  | `/v1/webhooks/yookassa`            | Server-to-server, фронта не касается                                                                                                                                                                        |
 
 **`X-Idempotency-Key`** – обязательный заголовок на обоих чекаутах.
 Повтор с тем же ключом и тем же телом возвращает тот же `201` (не дублирует покупку);
@@ -158,18 +158,24 @@ Refresh вызывается не сервисом, а транспортом `u
 
 **Бронь события** (`POST /v1/public/events/{id}/register/`, без входа): тело
 `child_name`, `parent_name`, `phone`, `email`, `attendees_count` (1–5), `pd_consent: true`,
-`website_url: ""` (ловушка для ботов). Ответ всегда `201 {status: "accepted"}`.
-Ошибки – `422` по полю: `phone` (уже есть запись), `attendees_count` (мест меньше),
-`event` (событие прошло); `404` – события нет.
+`website_url: ""` (ловушка для ботов). Бесплатное событие – `201 {status: "accepted"}`.
+Платное (с 2026-10-05, бэк PR #31, фронт – `tasks/backend-sync-2026-10/`) – обязателен
+`X-Idempotency-Key` (только у платного) и email; ответ как у чекаута (`transaction_id`,
+`payment_url`, `expires_at`, бронь держится 15 минут), ЮKassa возвращает на
+`/checkout/result?tx=<id>&kind=event`. Брони «оплата на месте» больше не создаются.
+Ошибки – `422` по полю: `phone` (уже есть бронь; неоплаченная снимется сама примерно
+через 20 минут), `attendees_count` (мест меньше), `event` (событие прошло), `email`;
+`404` – события нет; `409 EVENT_PRICE_CHANGED`, `409 IDEMPOTENCY_KEY_REUSED`,
+`409 PAYMENT_IN_PROGRESS`, `429 RATE_LIMITED` (3 в минуту с IP),
+`503 PAYMENT_GATEWAY_UNAVAILABLE`.
 
-**С 2026-10-05 (PR #31) на бэке, на фронте ещё нет:** платное событие требует
-`X-Idempotency-Key` и email, отвечает как чекаут (`transaction_id`, `payment_url`,
-`expires_at`, бронь держится 15 минут), ЮKassa возвращает на
-`/checkout/result?tx=<id>&kind=event`. Новые ошибки: `409 EVENT_PRICE_CHANGED`,
-`409 IDEMPOTENCY_KEY_REUSED`, `409 PAYMENT_IN_PROGRESS`, `429 RATE_LIMITED` (3 в минуту
-с IP), `503 PAYMENT_GATEWAY_UNAVAILABLE`. Брони «оплата на месте» больше не создаются.
-Абонемент: обычный тариф – ровно `slots_count` слотов, безлимит – не меньше;
-снятый тариф – `409 PLAN_UNAVAILABLE`. План – `tasks/backend-sync-2026-10/task.md`.
+**Тарифы абонемента:** обычный тариф – ровно `slots_count` слотов, безлимит – не меньше,
+корзина до 10 (`utils/pick-plan.ts`); снятый тариф – `409 PLAN_UNAVAILABLE`, фронт
+перезапрашивает `/public/plans/`.
+
+**Цена пробного** – цена кружка (`Activity.price`, копейки); `0` – пробное бесплатное,
+бэк сразу отвечает `CONFIRMED`. Предпроверка лимита – `GET /v1/me/bookings/?kind=TRIAL&period=all`
+(без `limit` – массив), окончательно – `409 TRIAL_LIMIT_EXCEEDED`.
 
 **Конфигурация ЮKassa:** без `YOOKASSA_SHOP_ID` / `YOOKASSA_SECRET_KEY` в `.env` бэка
 любой чекаут отдаёт `500` (даже депозитный) – для локальной проверки нужен тестовый магазин.
@@ -216,15 +222,15 @@ Refresh вызывается не сервисом, а транспортом `u
 
 Кандидаты на перенос в API – обсуждается вместе с `content.md`.
 
-| Что                                                                  | Где лежит сейчас                                     |
-| -------------------------------------------------------------------- | ---------------------------------------------------- |
-| Тарифы абонементов (фолбэк)                                          | `app.config.ts` → `subscriptions`                    |
-| FAQ                                                                  | `app.config.ts` → `faq`                              |
-| Контакты, адрес, соцсети, часы работы                                | `app.config.ts` → `contactInfo`                      |
-| Цена пробного (1 200 ₽)                                              | `app.config.ts` → `pricing`                          |
-| Статистика центра («100+», год открытия)                             | `app.config.ts` → `stats`                            |
-| Слоты расписания и каталог кружков для флоу `trial` / `subscription` | `app/constants/mock.ts` – **моки** ⚠️                |
-| Фото карусели на главной                                             | Захардкожены в `components/home/hero/Section.vue` ⚠️ |
+| Что                                                                  | Где лежит сейчас                                                                                              |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Тарифы абонементов (фолбэк)                                          | `app.config.ts` → `subscriptions`                                                                             |
+| FAQ                                                                  | `app.config.ts` → `faq`                                                                                       |
+| Контакты, адрес, соцсети, часы работы                                | `app.config.ts` → `contactInfo`                                                                               |
+| Цена пробного – у каждого кружка своя                                | `Activity.price` из `/public/activities/` (копейки); хардкод `pricing` уходит – `tasks/trial-price-per-club/` |
+| Статистика центра («100+», год открытия)                             | `app.config.ts` → `stats`                                                                                     |
+| Слоты расписания и каталог кружков для флоу `trial` / `subscription` | `app/constants/mock.ts` – **моки** ⚠️                                                                         |
+| Фото карусели на главной                                             | Захардкожены в `components/home/hero/Section.vue` ⚠️                                                          |
 
 Эндпоинта `/public/settings/` на бэке нет. Решение о его появлении – за
 владельцем проекта, см. `backend/admin.md`, последний раздел.
