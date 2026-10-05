@@ -92,7 +92,7 @@ export const depositEntryDto = (overrides: Partial<DepositEntryDto> = {}): Depos
 })
 
 export const upcomingDto = (overrides: Partial<UpcomingItem> = {}): UpcomingItem => ({
-    kind: "LESSON",
+    kind: "SUBSCRIPTION_SESSION",
     date: "2026-10-05",
     time: "16:00",
     student_id: 11,

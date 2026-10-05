@@ -311,7 +311,7 @@ export interface MeSubscription {
 
 export interface MeUpcoming {
     id: string
-    type: "subscription" | "event"
+    type: "subscription" | "trial" | "event"
     title: string
     subtitle: string
     displayDate: string // "31.12.2001"

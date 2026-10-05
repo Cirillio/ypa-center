@@ -86,11 +86,18 @@ function toSubscription(dto: SubscriptionView): MeSubscription {
     }
 }
 
+// kind бэка (SUBSCRIPTION_SESSION | TRIAL | EVENT) → тип бейджа; неизвестное считаем занятием по абонементу.
+function toUpcomingType(kind: string): MeUpcoming["type"] {
+    if (kind === "EVENT") return "event"
+    if (kind === "TRIAL") return "trial"
+    return "subscription"
+}
+
 function toUpcoming(dto: UpcomingItem): MeUpcoming {
     return {
         // source_id повторяется от недели к неделе – ключ собирается из даты и времени
         id: `${dto.source_type}-${dto.source_id}-${dto.date}-${dto.time}`,
-        type: dto.kind === "EVENT" ? "event" : "subscription",
+        type: toUpcomingType(dto.kind),
         title: dto.activity_name ?? dto.title ?? "",
         subtitle: dto.group_name ?? "",
         displayDate: dto.date,

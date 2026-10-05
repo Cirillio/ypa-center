@@ -185,6 +185,19 @@ describe("MeService.getBookingsPage: event booking amount", () => {
     )
 })
 
+describe("MeService.getUpcoming: item type", () => {
+    it.each([
+        ["SUBSCRIPTION_SESSION", "subscription"],
+        ["TRIAL", "trial"],
+        ["EVENT", "event"]
+    ] as const)("maps kind %s to badge type %s", async (kind, type) => {
+        const { fetch } = createFakeFetch(() => [upcomingDto({ kind })])
+        const [item] = await new MeService(fetch).getUpcoming()
+
+        expect(item?.type).toBe(type)
+    })
+})
+
 describe("MeService.getUpcoming", () => {
     it("sends only the params that are set", async () => {
         const { fetch, calls } = createFakeFetch(() => [])
