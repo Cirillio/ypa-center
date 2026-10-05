@@ -69,10 +69,10 @@ const fmt = (n: number) =>
                             <UButton
                                 v-for="tier in tiers"
                                 :key="tier.lessons"
-                                size="xl"
+                                size="lg"
                                 :variant="selectedLessons === tier.lessons ? 'solid' : 'soft'"
                                 :color="selectedLessons === tier.lessons ? 'primary' : 'secondary'"
-                                class="flex size-9 justify-center rounded-sm font-bold md:size-11"
+                                class="flex size-7 justify-center rounded-lg font-bold md:size-9"
                                 @click="
                                     () => {
                                         selectedLessons = tier.lessons
@@ -110,7 +110,7 @@ const fmt = (n: number) =>
                             </span>
                         </div>
                         <div
-                            class="bg-primary/10 flex items-center justify-between rounded-sm px-3 py-2"
+                            class="bg-primary/10 flex items-center justify-between rounded-lg px-3 py-2"
                         >
                             <span class="text-primary text-base font-bold md:text-lg"
                                 >Ваша экономия</span

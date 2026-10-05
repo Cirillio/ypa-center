@@ -195,7 +195,7 @@ export default defineAppConfig({
                 }
             },
             slots: {
-                base: "rounded-[0.25rem] shadow-sm cursor-pointer ring-0 border-0 bg-default!"
+                base: "rounded-[0.25rem] cursor-pointer ring-2 ring-secondary border-0 bg-default!"
             }
         },
 

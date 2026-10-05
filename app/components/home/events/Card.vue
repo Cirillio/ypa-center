@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { EnrollRoutesEnum } from "~/constants/nav"
-
 const props = withDefaults(
     defineProps<{
         id: number
@@ -51,19 +49,14 @@ const formattedPrice = computed(() =>
 </script>
 
 <template>
-    <component
-        :is="props.isUpcoming ? resolveComponent('NuxtLink') : 'div'"
-        :to="
-            isUpcoming
-                ? { path: EnrollRoutesEnum.Event, query: { eventId: String(id) } }
-                : undefined
-        "
+    <NuxtLink
+        :to="isUpcoming ? `/enroll/event?eventId=${props.id}` : undefined"
         itemscope
         itemtype="https://schema.org/Event"
         class="group bg-default/50 relative flex flex-row overflow-hidden rounded-sm transition duration-300 lg:flex-col"
         :class="
             isUpcoming
-                ? 'hover:bg-default active:bg-default focus-visible:outline-primary focus-visible:outline-2 focus-visible:outline-offset-2'
+                ? 'hover:bg-default active:bg-default focus-visible:outline-primary cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2'
                 : 'cursor-default opacity-75'
         "
     >
@@ -155,5 +148,5 @@ const formattedPrice = computed(() =>
                 </div>
             </div>
         </div>
-    </component>
+    </NuxtLink>
 </template>

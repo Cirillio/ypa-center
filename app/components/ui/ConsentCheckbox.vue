@@ -11,7 +11,6 @@ const checked = defineModel<boolean>({ required: true })
     <UCheckbox
         :model-value="checked"
         :disabled="disabled"
-        color="primary"
         @update:model-value="checked = $event === true"
     >
         <template #label>
