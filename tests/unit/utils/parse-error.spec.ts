@@ -94,6 +94,18 @@ describe("getProblemCode", () => {
         )
     })
 
+    // Коды бэка mvp от 2026-10-05 и прежние коды оплаты – регрессия каталога
+    it.each([
+        ["EVENT_PRICE_CHANGED", 409],
+        ["PLAN_UNAVAILABLE", 409],
+        ["RATE_LIMITED", 429],
+        ["PAYMENT_GATEWAY_UNAVAILABLE", 503],
+        ["PAYMENT_IN_PROGRESS", 409],
+        ["IDEMPOTENCY_KEY_REUSED", 409]
+    ])("recognises the checkout code %s", (code, status) => {
+        expect(getProblemCode(fetchError(problemBody({ code, status }), status))).toBe(code)
+    })
+
     it("returns undefined for an unknown code", () => {
         expect(getProblemCode(fetchError(problemBody({ code: "SOMETHING_NEW" })))).toBeUndefined()
     })

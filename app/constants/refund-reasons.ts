@@ -5,5 +5,6 @@ export const REFUND_REASONS: Readonly<Partial<Record<CheckoutTransactionReason, 
     SEATS_TAKEN: "Место в группе успели занять, пока шла оплата.",
     GROUP_CLOSED: "Группа закрыта.",
     PAID_AFTER_EXPIRY: "Оплата пришла после того, как бронь истекла.",
-    AMOUNT_MISMATCH: "Сумма оплаты не совпала с заказом."
+    AMOUNT_MISMATCH: "Сумма оплаты не совпала с заказом.",
+    CANCELED_BY_CENTER: "Центр отменил запись на событие."
 }
