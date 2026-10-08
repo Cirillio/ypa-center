@@ -37,10 +37,7 @@ const ITEMS: EnrollTabItem[] = [
 </script>
 
 <template>
-    <nav
-        aria-label="Тип покупки"
-        class="no-scrollbar flex max-w-full gap-1 overflow-x-auto rounded-full bg-white p-1"
-    >
+    <UiPillNav label="Тип покупки">
         <UButton
             v-for="item in ITEMS"
             :key="item.id"
@@ -58,5 +55,5 @@ const ITEMS: EnrollTabItem[] = [
             "
             :ui="{ leadingIcon: 'size-4.5 shrink-0' }"
         />
-    </nav>
+    </UiPillNav>
 </template>

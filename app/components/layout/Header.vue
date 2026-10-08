@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useMounted, useWindowScroll } from "@vueuse/core"
-import { CabinetRoutesEnum, EnrollRoutesEnum, NAV_ROUTES } from "~/constants/nav"
+import { HEADER_ACTIONS, NAV_ROUTES } from "~/constants/nav"
 import { useMobileMenuStore } from "~/stores/mobile-menu-store"
 
 const isMounted = useMounted()
@@ -80,23 +80,22 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
                 <!-- ACTION -->
 
                 <UButton
-                    :to="EnrollRoutesEnum.Subscription"
-                    label="Абонемент"
+                    :to="HEADER_ACTIONS.subscription.to"
+                    :label="HEADER_ACTIONS.subscription.label"
                     color="secondary"
-                    leading-icon="ph:puzzle-piece-bold"
+                    :leading-icon="HEADER_ACTIONS.subscription.icon"
                     class="h-full px-2 py-2 text-base font-semibold max-lg:hidden xl:px-4"
                     aria-label="Записаться на абонемент"
                     :ui="{ trailingIcon: 'size-5' }"
                 />
 
                 <UButton
-                    :to="CabinetRoutesEnum.Me"
-                    label="Мой кабинет"
+                    :to="HEADER_ACTIONS.cabinet.to"
+                    :label="HEADER_ACTIONS.cabinet.label"
                     color="info"
                     variant="soft"
-                    leading-icon="ph:user-bold"
+                    :leading-icon="HEADER_ACTIONS.cabinet.icon"
                     class="h-full px-2 py-2 text-base font-semibold max-lg:hidden xl:px-4"
-                    aria-label="Узнать свой баланс"
                     :ui="{ trailingIcon: 'size-5' }"
                 />
 
@@ -107,6 +106,8 @@ const { isMenuOpen } = storeToRefs(mobileMenuStore)
                     class="aspect-square transition-transform duration-500 lg:hidden"
                     :class="isMenuOpen ? 'rotate-90' : 'rotate-0'"
                     :aria-label="isMenuOpen ? 'Закрыть меню' : 'Открыть меню'"
+                    :aria-expanded="isMenuOpen"
+                    aria-controls="mobile-menu"
                     @click="() => mobileMenuStore.toggleMenu()"
                 >
                     <Transition name="burger" mode="out-in">

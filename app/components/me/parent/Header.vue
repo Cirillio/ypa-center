@@ -19,7 +19,7 @@ const firstName = computed(() => {
 </script>
 
 <template>
-    <UContainer class="flex flex-wrap items-center justify-between gap-4 px-12! py-6">
+    <UContainer class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 py-6">
         <div class="flex items-center gap-3">
             <UiRoundIcon name="ph:book-open-text-bold" />
             <div v-if="firstName" class="flex flex-col">
@@ -35,15 +35,17 @@ const firstName = computed(() => {
             <h1 v-else class="text-primary text-2xl leading-tight font-bold">Личный кабинет</h1>
         </div>
 
-        <div class="flex flex-wrap items-center justify-end gap-2">
+        <UiPillNav label="Действия кабинета">
             <slot name="actions" />
             <UButton
                 color="error"
-                variant="soft"
+                variant="ghost"
                 trailing-icon="ph:sign-out-bold"
                 label="Выйти"
+                class="shrink-0 gap-1.5 rounded-full px-4! py-2! text-base font-bold transition-colors"
+                :ui="{ trailingIcon: 'size-4.5 shrink-0' }"
                 @click="emit('logout')"
             />
-        </div>
+        </UiPillNav>
     </UContainer>
 </template>

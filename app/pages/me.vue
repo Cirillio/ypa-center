@@ -128,8 +128,8 @@ const parent = computed(() => profileData.value?.parent)
         </MeParentHeader>
 
         <section aria-label="Личный кабинет" class="pb-16">
-            <UContainer class="grid gap-6 lg:grid-cols-7">
-                <div class="flex flex-col gap-6 lg:col-span-5">
+            <UContainer class="grid grid-cols-1 gap-6 lg:grid-cols-7">
+                <div class="flex min-w-0 flex-col gap-6 lg:col-span-5">
                     <MeParentWidget
                         :parent="parent"
                         :children="profileData ? cabinetChildren : undefined"
@@ -142,7 +142,7 @@ const parent = computed(() => profileData.value?.parent)
                     />
 
                     <!-- Две колонки: Абонементы | Наши записи -->
-                    <div class="grid items-start gap-6 xl:grid-cols-2">
+                    <div class="grid grid-cols-1 items-start gap-6 xl:grid-cols-2">
                         <MeSubscriptionsWidget
                             :subscriptions="subscriptions.items.value"
                             :has-more="subscriptions.hasMore.value"

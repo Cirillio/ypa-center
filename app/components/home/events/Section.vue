@@ -14,6 +14,12 @@ const events = computed(() => {
         return new Date(a.start_datetime).getTime() - new Date(b.start_datetime).getTime()
     })
 })
+
+// Бэк держит завершённые события ещё неделю: без будущих заголовок не должен обещать «ближайшие».
+const hasUpcoming = computed(() => events.value.some((e) => e.is_upcoming))
+const subtitle = computed(() =>
+    hasUpcoming.value ? "Ближайшие мероприятия" : "Недавние мероприятия"
+)
 </script>
 
 <template>
@@ -22,7 +28,7 @@ const events = computed(() => {
         class="relative z-10 flex w-full overflow-hidden bg-white py-12 md:py-20 lg:py-24"
     >
         <UContainer class="relative z-10 flex flex-col gap-8 md:gap-12">
-            <UiSectionLeading subtitle="Ближайшие мероприятия" icon="ph:calendar-star-duotone">
+            <UiSectionLeading :subtitle="subtitle" icon="ph:calendar-star-duotone">
                 <template #title>
                     <span class="text-secondary">
                         События<br />

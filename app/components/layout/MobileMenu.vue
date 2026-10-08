@@ -1,9 +1,11 @@
 <script lang="ts" setup>
-import { CabinetRoutesEnum, EnrollRoutesEnum, NAV_ROUTES } from "~/constants/nav"
+import { onKeyStroke, useMediaQuery } from "@vueuse/core"
+import { EnrollRoutesEnum, HEADER_ACTIONS, NAV_ROUTES } from "~/constants/nav"
 import { useMobileMenuStore } from "~/stores/mobile-menu-store"
 
 const mobileMenuStore = useMobileMenuStore()
 const { isMenuOpen } = storeToRefs(mobileMenuStore)
+const route = useRoute()
 
 // Блокируем скролл страницы пока меню открыто
 const overflowWatch = watch(isMenuOpen, (isOpen) => {
@@ -15,21 +17,27 @@ onUnmounted(() => {
     overflowWatch()
 })
 
-// Закрываем меню и навигируем — работает даже если маршрут тот же
-function navigate(to: string) {
-    mobileMenuStore.closeMenu()
-    navigateTo(to)
-}
+// Меню не должно «залипать» открытым: Esc, навигация назад/вперёд и переход на десктопную ширину его закрывают.
+onKeyStroke("Escape", () => mobileMenuStore.closeMenu())
+watch(
+    () => route.fullPath,
+    () => mobileMenuStore.closeMenu()
+)
+const isDesktop = useMediaQuery("(min-width: 1024px)")
+watch(isDesktop, (matches) => {
+    if (matches) mobileMenuStore.closeMenu()
+})
 </script>
 
 <template>
     <Transition name="menu">
         <div
             v-if="isMenuOpen"
+            id="mobile-menu"
             class="border-primary/20 fixed top-(--ui-header-height) right-0 left-0 z-98 h-[calc(100dvh-var(--ui-header-height))] overflow-y-auto border-t bg-white/92 backdrop-blur-md lg:hidden"
         >
             <UContainer class="flex h-full flex-col gap-6 py-6">
-                <nav class="w-full">
+                <nav class="w-full" aria-label="Основная навигация">
                     <ul class="flex w-full list-none flex-col gap-2">
                         <TransitionGroup name="nav-item">
                             <li
@@ -39,6 +47,7 @@ function navigate(to: string) {
                                 :style="{ transitionDelay: `${i * 55}ms` }"
                             >
                                 <UButton
+                                    :to="r.to"
                                     :label="r.label"
                                     :icon="r.icon"
                                     block
@@ -46,7 +55,7 @@ function navigate(to: string) {
                                     size="xl"
                                     class="px-5 py-3 text-lg font-semibold"
                                     :ui="{ label: 'mx-auto' }"
-                                    @click="navigate(r.to)"
+                                    @click="mobileMenuStore.closeMenu()"
                                 />
                             </li>
                         </TransitionGroup>
@@ -56,35 +65,38 @@ function navigate(to: string) {
                 <Transition name="actions">
                     <div v-if="isMenuOpen" class="mt-auto flex flex-col gap-3 pb-4">
                         <UButton
-                            :to="CabinetRoutesEnum.Me"
-                            label="Мой статус"
+                            :to="HEADER_ACTIONS.cabinet.to"
+                            :label="HEADER_ACTIONS.cabinet.label"
+                            :trailing-icon="HEADER_ACTIONS.cabinet.icon"
                             color="info"
+                            variant="soft"
                             size="xl"
-                            trailing-icon="ph:user-bold"
                             class="w-full justify-center py-3 text-base font-semibold"
-                            aria-label="Узнать свой баланс"
                             :ui="{ trailingIcon: 'size-5' }"
+                            @click="mobileMenuStore.closeMenu()"
                         />
 
                         <USeparator color="secondary" />
 
                         <UButton
+                            :to="EnrollRoutesEnum.Trial"
                             label="Пробное занятие"
-                            trailing-icon="ph:rocket-launch-duotone"
+                            trailing-icon="ph:person-simple-run-bold"
                             size="xl"
                             variant="soft"
                             class="w-full justify-center py-3 text-base font-semibold"
                             :ui="{ trailingIcon: 'size-5' }"
-                            @click="navigate(EnrollRoutesEnum.Trial)"
+                            @click="mobileMenuStore.closeMenu()"
                         />
                         <UButton
-                            label="Собрать абонемент"
+                            :to="HEADER_ACTIONS.subscription.to"
+                            :label="HEADER_ACTIONS.subscription.label"
+                            :trailing-icon="HEADER_ACTIONS.subscription.icon"
                             color="secondary"
-                            trailing-icon="ph:calendar-dots-fill"
                             size="xl"
                             class="w-full justify-center py-3 text-base font-semibold"
                             :ui="{ trailingIcon: 'size-5' }"
-                            @click="navigate(EnrollRoutesEnum.Subscription)"
+                            @click="mobileMenuStore.closeMenu()"
                         />
                     </div>
                 </Transition>

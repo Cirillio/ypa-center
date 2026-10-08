@@ -28,7 +28,8 @@ const onOpenChange = (open: boolean) => {
             trailing-icon="ph:clock-counter-clockwise-bold"
             :loading="isBalancePending"
             :aria-label="`Депозит ${balanceText}, открыть историю`"
-            class="whitespace-nowrap"
+            class="shrink-0 gap-1.5 rounded-full px-4! py-2! text-base whitespace-nowrap transition-colors"
+            :ui="{ trailingIcon: 'size-4.5 shrink-0' }"
         >
             <span class="font-medium">Депозит</span>
             <span class="font-bold tabular-nums">
