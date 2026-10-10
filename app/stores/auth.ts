@@ -1,6 +1,6 @@
 export type OtpEmailStep = "email" | "code" | "profile" | "accepted"
 
-// Стор сам подбирает текст по статусу (401/429/400); от парсера нужен только
+// Стор сам подбирает текст по статусу (401/429/422); от парсера нужен только
 // человекочитаемый detail из RFC 9457 как фолбэк.
 const errorMessage = (err: unknown, fallback: string): string =>
     parseApiError(err, fallback).description ?? fallback
@@ -54,8 +54,14 @@ export const useAuthStore = defineStore("auth", () => {
             const status = getFetchStatus(err)
 
             if (status === 429) {
+                // ПОЧЕМУ: бэк режет и cooldown 60 с, и 5 кодов в час — точное ожидание только в Retry-After
+                const retryAfter = getRetryAfter(err)
+                if (retryAfter !== null) {
+                    step.value = "code"
+                    startTimer(retryAfter)
+                }
                 error.value = errorMessage(err, "Повторный запрос возможен позже")
-            } else if (status === 400) {
+            } else if (status === 422) {
                 error.value = errorMessage(err, "Некорректный формат email")
             } else {
                 error.value = errorMessage(err, "Не удалось отправить код. Попробуйте снова")
@@ -85,9 +91,19 @@ export const useAuthStore = defineStore("auth", () => {
 
             if (status === 401) {
                 error.value = "Неверный или истёкший код"
-            } else if (status === 429) {
+            } else if (getProblemCode(err) === "OTP_ATTEMPTS_EXCEEDED") {
+                // Код сгорел: ждать бесполезно, нужен новый
+                code.value = ""
+                step.value = "email"
+                resetTimer()
                 error.value = "Превышен лимит попыток. Запросите код заново"
-            } else if (status === 400) {
+            } else if (status === 429) {
+                const retryAfter = getRetryAfter(err)
+                error.value =
+                    retryAfter !== null
+                        ? `Слишком много запросов. Повторите через ${retryAfter} сек.`
+                        : "Слишком много запросов. Повторите позже"
+            } else if (status === 422) {
                 error.value = errorMessage(err, "Проверьте введённые данные")
             } else {
                 error.value = errorMessage(err, "Ошибка при проверке кода")

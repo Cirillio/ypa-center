@@ -18,9 +18,14 @@ mockNuxtImport("useAuthService", () => () => ({
 }))
 mockNuxtImport("useMeService", () => () => ({ getProfile: mocks.getProfile }))
 
-const httpError = (status: number, detail?: string) => ({
+const httpError = (status: number, detail?: string, code?: string) => ({
     status,
-    data: { status, title: `HTTP ${status}`, ...(detail ? { detail } : {}) }
+    data: {
+        status,
+        title: `HTTP ${status}`,
+        ...(detail ? { detail } : {}),
+        ...(code ? { code } : {})
+    }
 })
 
 const profile = (isComplete: boolean): MeProfile => ({
@@ -69,7 +74,7 @@ describe("auth store: email step", () => {
     it.each([
         [429, "Слишком часто", "Слишком часто"],
         [429, undefined, "Повторный запрос возможен позже"],
-        [400, undefined, "Некорректный формат email"],
+        [422, undefined, "Некорректный формат email"],
         [500, undefined, "Не удалось отправить код. Попробуйте снова"]
     ])(
         "maps HTTP %i (detail %j) to %j and stays on the email step",
@@ -133,7 +138,7 @@ describe("auth store: code step", () => {
 
     it.each([
         [401, "Неверный или истёкший код"],
-        [429, "Превышен лимит попыток. Запросите код заново"],
+        [429, "Слишком много запросов. Повторите позже"],
         [500, "Ошибка при проверке кода"]
     ])("maps HTTP %i to %j without logging in", async (status, message) => {
         mocks.verifyOtp.mockRejectedValue(httpError(status))
@@ -145,6 +150,18 @@ describe("auth store: code step", () => {
         expect(store.step).toBe("code")
         expect(store.isAuthed).toBe(false)
         expect(getTokens().access).toBeNull()
+    })
+
+    it("sends the user back to the email step on OTP_ATTEMPTS_EXCEEDED", async () => {
+        mocks.verifyOtp.mockRejectedValue(httpError(429, undefined, "OTP_ATTEMPTS_EXCEEDED"))
+        const store = await atCodeStep()
+        store.code = "000000"
+        await store.submit()
+
+        expect(store.error).toBe("Превышен лимит попыток. Запросите код заново")
+        expect(store.step).toBe("email")
+        expect(store.code).toBe("")
+        expect(store.isAuthed).toBe(false)
     })
 })
 

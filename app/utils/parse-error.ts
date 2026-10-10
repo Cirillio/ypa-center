@@ -6,6 +6,7 @@ const PROBLEM_CODES: ReadonlySet<string> = new Set<ProblemCode>([
     "MALFORMED_REQUEST",
     "AUTH_REQUIRED",
     "OTP_INVALID",
+    "OTP_ATTEMPTS_EXCEEDED",
     "FORBIDDEN_RESOURCE",
     "PROFILE_INCOMPLETE",
     "NOT_FOUND",
