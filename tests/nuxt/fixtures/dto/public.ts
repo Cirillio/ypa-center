@@ -37,6 +37,7 @@ export const eventDto = (overrides: Partial<EventPublic> = {}): EventPublic => (
     price: 50_000,
     is_free: false,
     capacity: 20,
+    seats_free: 20,
     is_upcoming: true,
     ...overrides
 })

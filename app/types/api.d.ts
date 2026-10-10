@@ -559,10 +559,10 @@ export interface components {
             readonly id: number
             /** Название */
             name: string
-            /** Слуг */
+            /** Адрес в ссылке */
             slug: string
             /** Категория */
-            category?: string
+            category?: components["schemas"]["CategoryEnum"]
             /** Цена */
             price?: number
             /** Обложка (URL) */
@@ -578,10 +578,10 @@ export interface components {
             readonly id: number
             /** Название */
             name: string
-            /** Слуг */
+            /** Адрес в ссылке */
             slug: string
             /** Категория */
-            category?: string
+            category?: components["schemas"]["CategoryEnum"]
             /** Цена */
             price?: number
             /** Обложка (URL) */
@@ -656,6 +656,12 @@ export interface components {
             readonly taken: number
             readonly free: number
         }
+        /**
+         * @description * `CLUB` - Кружок
+         *     * `SERVICE` - Услуга
+         * @enum {string}
+         */
+        CategoryEnum: "CLUB" | "SERVICE"
         CheckoutOrder: {
             title: string
             student_name: string
@@ -833,6 +839,7 @@ export interface components {
             readonly is_free: boolean
             /** Вместимость */
             capacity: number
+            readonly seats_free: number
             readonly is_upcoming: boolean
         }
         EventRegistrationCreateRequest: {
@@ -998,7 +1005,7 @@ export interface components {
              * Format: date-time
              * @description Когда дано согласие на обработку ПД; null — галочку надо показать
              */
-            readonly pd_consent_at: string
+            readonly pd_consent_at: string | null
             /** @description false — показать анкету; ЛК и покупки до её заполнения закрыты */
             readonly profile_completed: boolean
             readonly children: components["schemas"]["Child"][]
@@ -1057,9 +1064,9 @@ export interface components {
             name: string
             /** Число слотов */
             slots_count: number
-            /** Цена, в копейках */
+            /** Цена */
             price: number
-            readonly price_per_session: number
+            readonly price_per_session: number | null
             /** Безлимит */
             is_unlimited?: boolean
         }
@@ -1240,15 +1247,22 @@ export interface operations {
                 }
                 content?: never
             }
-            /** @description Ошибка валидации формата полей */
-            400: {
+            /** @description Невалидный или истёкший токен */
+            401: {
                 headers: {
                     [name: string]: unknown
                 }
                 content?: never
             }
-            /** @description Невалидный или истёкший токен */
-            401: {
+            /** @description Ошибка валидации формата полей */
+            422: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content?: never
+            }
+            /** @description Лимит запросов с IP, есть Retry-After */
+            429: {
                 headers: {
                     [name: string]: unknown
                 }
@@ -1279,13 +1293,13 @@ export interface operations {
                 content?: never
             }
             /** @description Ошибка валидации формата email */
-            400: {
+            422: {
                 headers: {
                     [name: string]: unknown
                 }
                 content?: never
             }
-            /** @description Cooldown: повторный запрос слишком рано */
+            /** @description RATE_LIMITED + Retry-After: cooldown 60 с, 5 кодов в час на email или лимит по IP */
             429: {
                 headers: {
                     [name: string]: unknown
@@ -1317,21 +1331,21 @@ export interface operations {
                     "application/json": components["schemas"]["OTPVerifyResponse"]
                 }
             }
-            /** @description Ошибка валидации формата полей */
-            400: {
-                headers: {
-                    [name: string]: unknown
-                }
-                content?: never
-            }
-            /** @description Неверный или истёкший код */
+            /** @description OTP_INVALID: неверный или истёкший код */
             401: {
                 headers: {
                     [name: string]: unknown
                 }
                 content?: never
             }
-            /** @description Превышен лимит попыток */
+            /** @description Ошибка валидации формата полей */
+            422: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content?: never
+            }
+            /** @description OTP_ATTEMPTS_EXCEEDED: 5 неверных попыток, нужен новый код (без Retry-After); RATE_LIMITED + Retry-After: лимит по IP */
             429: {
                 headers: {
                     [name: string]: unknown
@@ -1365,6 +1379,13 @@ export interface operations {
             }
             /** @description Невалидный или истёкший refresh-токен */
             401: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content?: never
+            }
+            /** @description Лимит запросов с IP, есть Retry-After */
+            429: {
                 headers: {
                     [name: string]: unknown
                 }
@@ -1498,6 +1519,20 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["Child"]
                 }
+            }
+            /** @description Нет входа */
+            401: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content?: never
+            }
+            /** @description Ошибка валидации полей ребёнка */
+            422: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content?: never
             }
         }
     }
@@ -1646,6 +1681,20 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["Profile"]
                 }
+            }
+            /** @description Нет входа */
+            401: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content?: never
+            }
+            /** @description Ошибка валидации полей анкеты */
+            422: {
+                headers: {
+                    [name: string]: unknown
+                }
+                content?: never
             }
         }
     }

@@ -99,20 +99,16 @@ describe("ScheduleService", () => {
 })
 
 describe("EventsService", () => {
-    it("requests the event list and never shows more free seats than capacity", async () => {
+    it("requests the event list and takes free seats from the backend as is", async () => {
         const { fetch, calls } = createFakeFetch(() => [
-            eventDto({ id: 1, capacity: 20 }),
-            eventDto({ id: 3, capacity: 5 })
+            eventDto({ id: 1, capacity: 20, seats_free: 3 }),
+            eventDto({ id: 3, capacity: 5, seats_free: 0 })
         ])
         const events = await new EventsService(fetch).getAll()
 
         expect(calls[0]?.path).toBe("/v1/public/events/")
-        for (const event of events) {
-            expect(event.availableSeats).toBeGreaterThanOrEqual(0)
-            expect(event.availableSeats).toBeLessThanOrEqual(event.capacity)
-        }
-        expect(events[1]?.availableSeats).toBe(5)
-        expect(events[0]).not.toHaveProperty("available_seats")
+        expect(events.map((e) => e.availableSeats)).toEqual([3, 0])
+        expect(events[0]).not.toHaveProperty("seats_free")
     })
 })
 

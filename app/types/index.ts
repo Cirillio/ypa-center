@@ -12,7 +12,7 @@ export type ActivityGroup = components["schemas"]["ScheduleGroupPublic"]
 // GET /public/events/
 export type EventPublic = components["schemas"]["EventPublic"]
 
-export interface EventItem extends EventPublic {
+export interface EventItem extends Omit<EventPublic, "seats_free"> {
     availableSeats: number
 }
 
