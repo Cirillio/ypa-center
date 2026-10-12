@@ -26,12 +26,7 @@ const rows = computed<EnrollSummaryRow[]>(() => [
     { label: "Группа", value: props.slotItem?.groupName ?? null, empty: "—" }
 ])
 
-const isFree = computed(() => props.price === 0)
-
-const amount = computed(() => {
-    if (props.price === null) return "—"
-    return isFree.value ? "Бесплатно" : formatRubles(props.price)
-})
+const amount = computed(() => (props.price === null ? "—" : formatRubles(props.price)))
 
 const missing = computed<string[]>(() => {
     const list: string[] = []
@@ -50,7 +45,7 @@ const missing = computed<string[]>(() => {
 
         <EnrollSummaryRows :rows="rows" />
 
-        <EnrollPriceBox :label="isFree ? 'Итого' : 'К оплате'" :amount="amount">
+        <EnrollPriceBox label="К оплате" :amount="amount">
             <template #aside>
                 <span class="text-muted pb-0.5 text-xs font-semibold">разовое посещение</span>
             </template>
@@ -64,8 +59,8 @@ const missing = computed<string[]>(() => {
                     ? 'У ребёнка уже было пробное в этом кружке – выберите другой или оформите абонемент'
                     : null
             "
-            :label="isFree ? 'Записаться' : 'Продолжить'"
-            :icon="isFree ? 'ph:check-bold' : 'ph:arrow-right-bold'"
+            label="Продолжить"
+            icon="ph:arrow-right-bold"
             :loading="isSubmitting"
             :cooldown-seconds="cooldownSeconds"
             :error="error"
@@ -73,18 +68,8 @@ const missing = computed<string[]>(() => {
         />
 
         <p class="text-muted flex items-start gap-2 text-xs">
-            <template v-if="isFree">
-                <UIcon name="ph:info-bold" class="mt-px size-4 shrink-0" aria-hidden="true" />
-                Пробное в этом кружке бесплатное – оплата не нужна, место закрепим сразу.
-            </template>
-            <template v-else>
-                <UIcon
-                    name="ph:lock-simple-bold"
-                    class="mt-px size-4 shrink-0"
-                    aria-hidden="true"
-                />
-                Оплата через ЮKassa. После нажатия места держим за вами 15 минут.
-            </template>
+            <UIcon name="ph:lock-simple-bold" class="mt-px size-4 shrink-0" aria-hidden="true" />
+            Оплата через ЮKassa. После нажатия места держим за вами 15 минут.
         </p>
 
         <NuxtLink
