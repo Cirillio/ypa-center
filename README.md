@@ -1,77 +1,149 @@
-# Центр Умного Развития "УРА" — Frontend Core
+# Центр Умного Развития «УРА» – Frontend Core
 
-Фронтенд-приложение сайта [ypa-center.ru](https://ypa-center.ru), построенное на Nuxt 4 и Vue 3.
+Фронтенд сайта [ypa-center.ru](https://ypa-center.ru) – публичная витрина (каталог кружков,
+расписание, события, галерея, калькулятор абонемента, формы записи) и личный кабинет родителя.
+Построен на Nuxt 4 / Vue 3, работает поверх DRF-бэкенда `ypa-center-backend`.
+
+## Скриншоты
+
+|                                                                               |                                                                                          |
+| ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| ![Главная](readme/01-home.webp) Главная                                       | ![Каталог кружков](readme/02-catalog.webp) Каталог кружков                               |
+| ![Конструктор абонемента](readme/03-subscription.webp) Конструктор абонемента | ![Вход по OTP](readme/04-login-otp.webp) Вход по OTP-коду                                |
+| ![Личный кабинет](readme/05-cabinet.webp) Личный кабинет родителя             | ![Диалог блокировки удаления](readme/06-conflict-dialog.webp) Бизнес-ошибка вместо `409` |
+| ![Мобильная версия](readme/07-mobile.webp) Мобильная версия (375px)           |                                                                                          |
+
+Данные на скриншотах тестовые. Оплата и часть каталога (свободные места события) на моменте
+съёмки ещё не подключены к бэку — статус см. в `context/progress-tracker.md`.
 
 ## Стек
 
-| Категория         | Технологии                              |
-| ----------------- | --------------------------------------- |
-| Фреймворк         | Nuxt 4, Vue 3                           |
-| UI / стили        | Nuxt UI, Tailwind CSS 4, Phosphor Icons |
-| Состояние         | Pinia, VueUse                           |
-| Утилиты           | dayjs (ru), zod, maska                  |
-| SEO               | sitemap, robots.txt                     |
-| Изображения       | @nuxt/image                             |
-| Доступность       | @nuxt/a11y                              |
-| Пакетный менеджер | Bun                                     |
+| Категория         | Технологии                                                   |
+| ----------------- | ------------------------------------------------------------ |
+| Фреймворк         | Nuxt 4 (SSR), Vue 3.5, `<script setup lang="ts">`            |
+| UI / стили        | Nuxt UI 4 (Reka UI), Tailwind CSS 4, Phosphor Icons          |
+| Шрифты            | `@nuxt/fonts` – Nunito, self-hosted, metric-matched fallback |
+| Состояние         | Pinia (глобальное), VueUse, `computed` (производное)         |
+| Формы / валидация | Zod 4, maska                                                 |
+| Данные            | `useAsyncData` + типы из OpenAPI-схемы бэка                  |
+| Изображения       | `@nuxt/image` (IPX, WebP)                                    |
+| SEO               | `@nuxtjs/sitemap`, `@nuxtjs/robots`, ручной JSON-LD          |
+| Доступность       | `@nuxt/a11y`, `prefers-reduced-motion`                       |
+| Дата/время        | `Intl.DateTimeFormat` (ru, TZ `Asia/Novosibirsk`)            |
+| Пакетный менеджер | Bun 1.3                                                      |
 
 ## Требования
 
 - [Bun](https://bun.sh) ≥ 1.3
+- Запущенный бэкенд `ypa-center-backend` (по умолчанию `http://127.0.0.1:8000`) —
+  нужен во время работы приложения (dev/prod). Для сборки бэкенд не требуется.
+
+## Переменные окружения
+
+`.env` в репозиторий не коммитится. Создайте его в корне:
+
+```bash
+echo 'NUXT_PUBLIC_API_BASE=http://127.0.0.1:8000/api' > .env
+```
+
+| Переменная             | Назначение              | По умолчанию                |
+| ---------------------- | ----------------------- | --------------------------- |
+| `NUXT_PUBLIC_API_BASE` | Базовый URL API бэкенда | `http://localhost:8000/api` |
 
 ## Запуск
 
 ```bash
-# Установка зависимостей
-bun install
-
-# Режим разработки
-bun dev
-
-# Сборка для продакшена
-bun build
-
-# Предпросмотр продакшен-сборки
-bun preview
+bun install            # зависимости
+bun dev                # режим разработки (http://localhost:3000)
+bun run build          # продакшен-сборка
+bun run preview        # предпросмотр сборки
+bun run typecheck      # проверка типов (vue-tsc)
+bun run lint           # ESLint
 ```
 
-## Структура проекта
+### Типы API
+
+Типы ответов бэкенда не пишутся руками — генерируются из живой OpenAPI-схемы в
+`app/types/api.d.ts`, алиасы удобных имён — в `app/types/index.ts`.
+
+```bash
+# бэкенд должен быть запущен
+bun run schema:update
+```
+
+### Docker
+
+Бэкенд на этапе сборки не нужен (все публичные роуты на `ssr`, `prerender` отключён).
+Он требуется только в runtime — по адресу из `NUXT_PUBLIC_API_BASE`.
+
+```bash
+# бэкенд поднят на localhost:8000
+docker compose up --build          # → http://localhost:3000
+```
+
+`docker-compose.yml` использует `network_mode: host` (Linux) — SSR внутри
+контейнера и браузер ходят к бэкенду по одному адресу. Для Docker Desktop
+(macOS / Windows) см. комментарии в `docker-compose.yml`.
+
+Если бэкенд не на `localhost:8000`:
+
+```bash
+NUXT_PUBLIC_API_BASE=http://192.168.1.10:8000/api docker compose up --build
+```
+
+## Стратегия рендеринга
+
+`routeRules` в `nuxt.config.ts`:
+
+| Роут(ы)                                                       | Режим              | Обоснование                                                                      |
+| ------------------------------------------------------------- | ------------------ | -------------------------------------------------------------------------------- |
+| Публичные страницы (`/`, `/clubs`, `/about`, `/teachers`, …)  | `ssr: true`        | SEO и быстрая первая отрисовка; сборка не зависит от наличия бэкенда в CI/Docker |
+| Покупка / запись (`/enroll/trial`, `/enroll/subscription`, …) | `ssr: true`        | SSR-каркас и SEO-мета                                                            |
+| Личный кабинет (`/login`, `/me`)                              | `ssr: false` (SPA) | Закрытый интерактивный клиентский раздел                                         |
+
+Для всех роутов задан CSP-заголовок `frame-src` (виджеты VK / Яндекс Карт).
+
+## Структура
 
 ```
 app/
-├── assets/
-│   ├── css/            # Глобальные стили
-│   └── images/         # Статические изображения
-├── components/
-│   └── App/            # Глобальные компоненты (AppHeader, AppFooter)
-├── composables/        # Vue composables (авто-импорт)
-├── layouts/
-│   └── default.vue     # Базовый layout
-├── middleware/         # Route middleware
-├── pages/              # Страницы (файловый роутинг)
-├── plugins/            # Nuxt plugins
-├── stores/             # Pinia stores
-├── types/              # TypeScript типы и интерфейсы
-├── utils/              # Утилиты (авто-импорт)
-└── app.vue             # Корневой компонент
-public/                 # Статические файлы (robots, favicon)
-docs/openapi/           # OpenAPI спецификации
-nuxt.config.ts          # Конфигурация Nuxt
-```
-
-## Переменные окружения
-
-Скопируйте `.env` и при необходимости измените значения:
-
-```bash
-cp .env .env.local
+├── assets/css/          # глобальные стили: tokens, base, utilities, animations
+├── components/          # 100 компонентов, каноничный автоимпорт Nuxt 4 с префиксом папки:
+│   ├── layout/          # каркас: LayoutHeader, LayoutFooter, LayoutMobileMenu
+│   ├── ui/              # базовые UI-кирпичики: UiPhoto, UiVideo, UiScrollFade, UiPageSection, UiSectionLeading, UiRoundIcon, UiRadioCard
+│   ├── promo/           # промо-секции: PromoFaq, PromoJoinUs, PromoSubscriptions, PromoFloatCard
+│   └── [domain]/        # секции страниц и флоу: home/, clubs/, about/, teachers/, gallery/, me/, enroll/ (trial/, subscription/, event/), checkout/, feedback/, legal/
+├── composables/         # реактивная логика (автоимпорт): useSchedule, useSubscriptionPlans, use*Checkout, …
+├── constants/           # навигация, маски, моки (nav, masks, mock)
+├── layouts/default.vue  # LayoutHeader + <slot> + LayoutFooter + LayoutMobileMenu
+├── middleware/          # гейты: auth, close-menu.global
+├── pages/               # файловый роутинг Nuxt
+├── plugins/             # auth-sync.client (сессия между вкладками), scroll-to-top.client
+├── schemas/             # Zod-схемы валидации форм (event, registration, feedback, fields)
+├── services/            # HTTP-сервисы (классы-клиенты, DTO → Domain маппинг, автоимпорт use*Service)
+├── stores/              # Pinia setup-stores (auth, mobile-menu-store)
+├── types/               # api.d.ts (генерация из OpenAPI) + index.ts (алиасы и доменные типы)
+└── utils/               # чистые функции (автоимпорт): format-price, get-day-name, pluralize, theme, …
+context/                 # база знаний проекта: архитектура, API, стандарты, трекер
+public/                  # статика: favicon, логотипы, шрифты, медиа
 ```
 
 ## Качество кода
 
-Проект использует ESLint + Prettier. Husky запускает линтер перед каждым коммитом.
+**Pre-commit** (husky, `.husky/pre-commit`):
 
-```bash
-# Запуск линтера
-bun lint
 ```
+bunx prettier --write . && bun run lint && bun run typecheck
+```
+
+Отдельно `.github/hooks/impeccable.json` — локальный хук, форматирующий затронутые
+файлы после каждого редактирования (в `.prettierignore`, CI его не проверяет).
+
+**CI** (`.github/workflows/ci.yml`, на каждый push в любую ветку):
+
+```
+bun run prettier --check .  →  bun run lint  →  bun run typecheck  →  bun run build
+```
+
+Стандарт кода: strict TS без `any`, слоистая архитектура Nuxt `pages → composables / services → types / stores / utils / components` (не FSD),
+производное состояние через `computed`, схемы Zod как единый источник правды для форм.

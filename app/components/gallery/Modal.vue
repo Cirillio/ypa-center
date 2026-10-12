@@ -11,7 +11,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     "update:modelValue": [value: boolean]
-    close: []
     prev: []
     next: []
 }>()
@@ -54,7 +53,7 @@ onUnmounted(() => {
             content: isMobile
                 ? 'rounded-none bg-black ring-0 shadow-none focus:outline-none'
                 : 'max-w-5xl w-full rounded-md ring-0 shadow-none overflow-hidden focus:outline-none',
-            overlay: 'bg-black/60 backdrop-blur-sm'
+            overlay: 'bg-black/60'
         }"
     >
         <template #content>
@@ -62,11 +61,11 @@ onUnmounted(() => {
             <div v-if="isMobile" class="flex h-dvh w-full flex-col">
                 <div class="relative min-h-0 flex-1 overflow-hidden">
                     <Transition name="photo-fade">
-                        <AppPhoto
+                        <UiPhoto
                             v-if="currentPhoto"
-                            :key="currentPhoto.url"
-                            :src="currentPhoto.url"
-                            :alt="currentPhoto.alt"
+                            :key="currentPhoto.image_url"
+                            :src="currentPhoto.image_url"
+                            :alt="'Фото ' + ((currentPhoto.order ?? 0) + 1) + ' из галереи центра'"
                             class="h-full w-full object-contain! object-center"
                         />
                     </Transition>
@@ -74,10 +73,12 @@ onUnmounted(() => {
 
                 <GalleryModalControls
                     class="controls-bar bg-black/80 text-sm text-white/75"
-                    :alt="currentPhoto?.alt"
-                    :prev="hasPrev ? () => emit('prev') : undefined"
-                    :next="hasNext ? () => emit('next') : undefined"
-                    :close="() => (isOpen = false)"
+                    :alt="currentPhoto ? 'Фото ' + ((currentPhoto.order ?? 0) + 1) : undefined"
+                    :has-prev="hasPrev"
+                    :has-next="hasNext"
+                    @prev="emit('prev')"
+                    @next="emit('next')"
+                    @close="void (isOpen = false)"
                 />
             </div>
 
@@ -85,11 +86,11 @@ onUnmounted(() => {
             <div v-else class="flex w-full flex-col">
                 <div class="relative h-fit max-h-[80vh] w-full overflow-hidden">
                     <Transition name="photo-fade">
-                        <AppPhoto
+                        <UiPhoto
                             v-if="currentPhoto"
-                            :key="currentPhoto.url"
-                            :src="currentPhoto.url"
-                            :alt="currentPhoto.alt"
+                            :key="currentPhoto.image_url"
+                            :src="currentPhoto.image_url"
+                            :alt="'Фото ' + ((currentPhoto.order ?? 0) + 1) + ' из галереи центра'"
                             class="h-fit! w-full object-contain! object-center"
                         />
                     </Transition>
@@ -97,10 +98,12 @@ onUnmounted(() => {
 
                 <GalleryModalControls
                     class="text-default/80 text-xl"
-                    :alt="currentPhoto?.alt"
-                    :prev="hasPrev ? () => emit('prev') : undefined"
-                    :next="hasNext ? () => emit('next') : undefined"
-                    :close="() => (isOpen = false)"
+                    :alt="currentPhoto ? 'Фото ' + ((currentPhoto.order ?? 0) + 1) : undefined"
+                    :has-prev="hasPrev"
+                    :has-next="hasNext"
+                    @prev="emit('prev')"
+                    @next="emit('next')"
+                    @close="void (isOpen = false)"
                 />
             </div>
         </template>

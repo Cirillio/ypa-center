@@ -14,13 +14,16 @@
         </UButton>
 
         <UButton
-            leading-icon="ph:calendar-dot-bold"
-            :to="EnrollRoutesEnum.Trial"
+            to="/clubs#schedule"
             variant="soft"
             size="md"
-            class="text-base md:text-lg"
+            class="group text-base font-bold md:text-lg"
         >
-            Разовое занятие
+            <UIcon
+                name="ph:calendar-dots-duotone"
+                class="size-5 transition group-hover:scale-110 md:size-6"
+            />
+            Смотреть расписание
         </UButton>
     </div>
 </template>

@@ -1,0 +1,143 @@
+<script lang="ts" setup>
+import { useMounted, useWindowScroll } from "@vueuse/core"
+import { HEADER_ACTIONS, NAV_ROUTES } from "~/constants/nav"
+import { useMobileMenuStore } from "~/stores/mobile-menu-store"
+
+const isMounted = useMounted()
+
+const SCROLL_THRESHOLD = 10
+const { y } = useWindowScroll()
+const isScrolled = computed(() => y.value > SCROLL_THRESHOLD)
+
+const mobileMenuStore = useMobileMenuStore()
+const { isMenuOpen } = storeToRefs(mobileMenuStore)
+</script>
+
+<template>
+    <header
+        class="fixed! top-0 right-0 left-0 z-99 flex justify-center transition-all duration-300"
+        :class="
+            isScrolled || isMenuOpen || !isMounted
+                ? 'bg-white/85 backdrop-blur-sm'
+                : 'bg-transparent'
+        "
+    >
+        <UContainer
+            class="relative flex h-(--ui-header-height) w-full items-center justify-between gap-4 p-2"
+        >
+            <!-- LOGO -->
+            <NuxtLink
+                to="/"
+                class="group header-left focus-visible:ring-primary flex h-full cursor-pointer items-center gap-2 rounded-md ring-2 ring-transparent outline-0 focus-visible:opacity-90 max-md:py-2"
+                aria-label="На главную Улица Радости"
+            >
+                <NuxtImg
+                    src="/core/ClearSun.png"
+                    alt="Логотип Улица Радости"
+                    width="48"
+                    height="48"
+                    class="h-full w-auto transition-transform delay-75 duration-300 ease-in-out group-hover:rotate-10"
+                    format="webp"
+                    quality="100"
+                    loading="eager"
+                    fetchpriority="high"
+                />
+
+                <div class="flex flex-col items-start">
+                    <span
+                        class="text-secondary flex gap-1 text-xl font-extrabold transition-colors duration-300 md:text-3xl"
+                    >
+                        <span class="flex">
+                            <span class="text-primary"> У </span>
+                            лица
+                        </span>
+                        <span class="flex">
+                            <span class="text-primary"> Ра </span>
+                            <span> дости </span>
+                        </span>
+                    </span>
+                    <span class="text-primary -mt-1.5 text-sm font-bold max-md:text-xs"
+                        >Центр умного развития</span
+                    >
+                </div>
+            </NuxtLink>
+
+            <div class="flex flex-1 items-center gap-4 max-lg:justify-end">
+                <!-- NAV -->
+                <nav class="mx-auto h-full max-lg:hidden" aria-label="Основная навигация">
+                    <ul class="borer flex list-none items-center gap-4">
+                        <li v-for="r in NAV_ROUTES" :key="r.label">
+                            <UButton
+                                :label="r.label"
+                                :to="r.to"
+                                variant="ghost"
+                                class="min-h-full flex-1 px-5 text-base font-semibold"
+                            />
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- ACTION -->
+
+                <UButton
+                    :to="HEADER_ACTIONS.subscription.to"
+                    :label="HEADER_ACTIONS.subscription.label"
+                    color="secondary"
+                    :leading-icon="HEADER_ACTIONS.subscription.icon"
+                    class="h-full px-2 py-2 text-base font-semibold max-lg:hidden xl:px-4"
+                    aria-label="Записаться на абонемент"
+                    :ui="{ trailingIcon: 'size-5' }"
+                />
+
+                <UButton
+                    :to="HEADER_ACTIONS.cabinet.to"
+                    :label="HEADER_ACTIONS.cabinet.label"
+                    color="info"
+                    variant="soft"
+                    :leading-icon="HEADER_ACTIONS.cabinet.icon"
+                    class="h-full px-2 py-2 text-base font-semibold max-lg:hidden xl:px-4"
+                    :ui="{ trailingIcon: 'size-5' }"
+                />
+
+                <!-- BURGER -->
+                <UButton
+                    :color="isMenuOpen ? 'primary' : 'neutral'"
+                    variant="ghost"
+                    class="aspect-square transition-transform duration-500 lg:hidden"
+                    :class="isMenuOpen ? 'rotate-90' : 'rotate-0'"
+                    :aria-label="isMenuOpen ? 'Закрыть меню' : 'Открыть меню'"
+                    :aria-expanded="isMenuOpen"
+                    aria-controls="mobile-menu"
+                    @click="() => mobileMenuStore.toggleMenu()"
+                >
+                    <Transition name="burger" mode="out-in">
+                        <UIcon
+                            :key="isMenuOpen ? 'close' : 'open'"
+                            class="size-5.5"
+                            :name="isMenuOpen ? 'ph:x-bold' : 'ph:list-bold'"
+                        />
+                    </Transition>
+                </UButton>
+            </div>
+        </UContainer>
+    </header>
+
+    <LayoutMobileMenu />
+</template>
+
+<style scoped>
+.burger-enter-active,
+.burger-leave-active {
+    transition:
+        opacity 0.125s ease,
+        transform 0.125s ease;
+}
+.burger-enter-from {
+    opacity: 0;
+    transform: rotate(15deg) scale(0.95);
+}
+.burger-leave-to {
+    opacity: 0;
+    transform: rotate(-15deg) scale(0.95);
+}
+</style>

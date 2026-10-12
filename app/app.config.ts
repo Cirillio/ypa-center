@@ -14,8 +14,54 @@ const pluralize = (count: number): string => {
 
 export default defineAppConfig({
     ui: {
+        // ПОЧЕМУ: дефолт Nuxt UI – lucide, которой нет локально; без замены иконки компонентов тянутся с api.iconify.design
+        icons: {
+            arrowDown: "i-ph-arrow-down",
+            arrowLeft: "i-ph-arrow-left",
+            arrowRight: "i-ph-arrow-right",
+            arrowUp: "i-ph-arrow-up",
+            caution: "i-ph-warning-circle",
+            check: "i-ph-check",
+            chevronDoubleLeft: "i-ph-caret-double-left",
+            chevronDoubleRight: "i-ph-caret-double-right",
+            chevronDown: "i-ph-caret-down",
+            chevronLeft: "i-ph-caret-left",
+            chevronRight: "i-ph-caret-right",
+            chevronUp: "i-ph-caret-up",
+            close: "i-ph-x",
+            copy: "i-ph-copy",
+            copyCheck: "i-ph-check-square",
+            dark: "i-ph-moon",
+            drag: "i-ph-dots-six-vertical",
+            ellipsis: "i-ph-dots-three",
+            error: "i-ph-x-circle",
+            external: "i-ph-arrow-up-right",
+            eye: "i-ph-eye",
+            eyeOff: "i-ph-eye-slash",
+            file: "i-ph-file",
+            folder: "i-ph-folder",
+            folderOpen: "i-ph-folder-open",
+            hash: "i-ph-hash",
+            info: "i-ph-info",
+            light: "i-ph-sun",
+            loading: "i-ph-circle-notch",
+            menu: "i-ph-list",
+            minus: "i-ph-minus",
+            panelClose: "i-ph-sidebar-simple",
+            panelOpen: "i-ph-sidebar-simple",
+            plus: "i-ph-plus",
+            reload: "i-ph-arrow-counter-clockwise",
+            search: "i-ph-magnifying-glass",
+            stop: "i-ph-square",
+            success: "i-ph-check-circle",
+            system: "i-ph-desktop",
+            tip: "i-ph-lightbulb",
+            upload: "i-ph-upload-simple",
+            warning: "i-ph-warning"
+        },
         colors: {
-            primary: "green",
+            primary: "orange",
+            secondary: "green",
             neutral: "taupe"
         },
         separator: {
@@ -24,7 +70,7 @@ export default defineAppConfig({
             }
         },
         container: {
-            base: "max-w-[80rem]"
+            base: "max-w-[84rem]"
         },
         button: {
             slots: {
@@ -63,11 +109,16 @@ export default defineAppConfig({
                 container: "mt-1.5"
             }
         },
+        toast: {
+            slots: {
+                root: "ring-0 shadow-sm rounded-sm"
+            }
+        },
 
         input: {
             slots: {
                 root: "w-full",
-                base: "w-full px-4! rounded-sm placeholder:text-dimmed/60 transition duration-150 text-lg!"
+                base: "w-full px-4! rounded-sm shadow-xs placeholder:text-dimmed/60 transition duration-150 text-lg!"
             },
             defaultVariants: {
                 variant: "soft",
@@ -79,11 +130,17 @@ export default defineAppConfig({
                     color: "error",
                     variant: "soft",
                     class: "ring-2 ring-inset ring-error"
+                },
+                {
+                    color: "error",
+                    variant: "subtle",
+                    class: "ring-2 ring-inset ring-error"
                 }
             ],
             variants: {
                 variant: {
-                    soft: "bg-default/50 text-default hover:bg-default focus-visible:bg-default"
+                    soft: "bg-default/50  text-default hover:bg-default focus-visible:bg-default",
+                    subtle: "bg-default ring-primary/0 focus-visible:ring-primary! ring-2"
                 }
             }
         },
@@ -104,8 +161,7 @@ export default defineAppConfig({
                 base: "w-full px-4! text-lg! rounded-sm cursor-pointer transition duration-150",
                 placeholder: "text-dimmed/60",
                 trailingIcon: "text-muted",
-                content:
-                    "bg-default shadow-none rounded-sm ring-2 ring-transparent hover:ring-primary transition border-0",
+                content: "bg-default shadow-none rounded-sm ring-0 transition border-0",
                 item: "rounded-sm cursor-pointer data-highlighted:not-data-disabled:before:bg-primary/10 data-highlighted:not-data-disabled:text-default! ring-0  px-4! transition duration-150",
                 itemLabel: "text-base font-semibold",
                 viewport: "p-1"
@@ -131,8 +187,21 @@ export default defineAppConfig({
                     class: "*:text-white!"
                 }
             ],
+            variants: {
+                color: {
+                    primary: {
+                        base: "bg-primary/50! transition hover:bg-primary/75! ring-0 shadow-sm"
+                    }
+                }
+            },
             slots: {
-                base: "rounded-xs ring-0 border-0 bg-default!"
+                base: "rounded-[0.25rem] cursor-pointer ring-2 ring-secondary border-0 bg-default!"
+            }
+        },
+
+        popover: {
+            slots: {
+                content: "ring-0 bg-white shadow-sm"
             }
         },
 
@@ -144,18 +213,24 @@ export default defineAppConfig({
                     class: "ring-2 ring-inset ring-error"
                 },
                 {
+                    color: "error",
+                    variant: "subtle",
+                    class: "ring-2 ring-inset ring-error"
+                },
+                {
                     variant: "soft",
                     class: "bg-default/50 hover:bg-default text-default focus-visible:bg-default"
                 }
             ],
             slots: {
                 root: "w-full",
-                base: "w-full px-4! rounded-sm text-lg! placeholder:text-dimmed/60 transition duration-150 resize-none"
+                base: "w-full px-4! shadow-xs rounded-sm text-lg! placeholder:text-dimmed/60 transition duration-150 resize-none"
             },
             variants: {
                 variant: {
                     outline:
-                        "bg-default ring ring-inset ring-accented hover:ring-primary/40 focus-visible:ring-2 focus-visible:ring-primary"
+                        "bg-default ring ring-inset ring-accented hover:ring-primary/40 focus-visible:ring-2 focus-visible:ring-primary",
+                    subtle: "ring-primary/0 focus-visible:ring-primary! ring-2"
                 }
             },
             defaultVariants: {
@@ -166,11 +241,11 @@ export default defineAppConfig({
         }
     },
     contactInfo: {
-        phone: "+7 (913) 452-60-39",
-        phoneTo: "+79134526039",
+        phone: "+7 (913) 452-00-39",
+        phoneTo: "+79134520039",
         email: "info@ulitsa-radosti.ru",
         directorTelegram: "https://t.me/MakukhaNG",
-        address: "г. Новосибирск, ул Ильича, 23",
+        address: "г. Новосибирск, ул Ильича, 77",
         workingHours: "Пн-Пт: 8:00-20:00",
         mapLink: "https://yandex.ru/maps/-/CPbt6Xni",
         socials: [
@@ -217,15 +292,15 @@ export default defineAppConfig({
         { lessons: 8, price: 7000 },
         { lessons: 12, price: 10000 },
         { lessons: 16, price: 11000 },
-        { lessons: 20, price: 12000 },
-        { lessons: null, price: 15000, label: "Безлимит", highlight: true }
+        { lessons: 20, price: 15000 },
+        { lessons: null, price: 16000, label: "Безлимит", highlight: true }
     ] as Array<{ lessons: number | null; price: number; label?: string; highlight?: boolean }>,
     faq: [
         {
             label: "Как работает система абонементов?",
             icon: "ph:stack",
             content:
-                "Абонемент оформляется на 1 месяц. Вы самостоятельно собираете его конфигурацию, выбирая любые доступные кружки (слоты) из расписания. Это математически выгоднее разового посещения (1 200 ₽): 4 занятия стоят 4 000 ₽, 8 занятий — 7 000 ₽, а пакет на 20 занятий снижает цену до 600 ₽ за встречу. Также доступен абсолютный «Безлимит» за 15 000 ₽. Безлимит активируется при выборе более 20 занятий в конструкторе."
+                "Абонемент оформляется на 1 месяц. Вы самостоятельно собираете его конфигурацию, выбирая любые доступные кружки (слоты) из расписания. Это математически выгоднее разового посещения (1 200 ₽): 4 занятия стоят 4 000 ₽, 8 занятий – 7 000 ₽, а 16 занятий обходятся в 11 000 ₽ – это 688 ₽ за встречу. Также доступен абсолютный «Безлимит» за 16 000 ₽. Безлимит активируется при выборе более 20 занятий в конструкторе."
         },
         {
             label: "Можно ли поменять кружки в действующем абонементе?",
@@ -243,7 +318,7 @@ export default defineAppConfig({
             label: "Для какого возраста подходят ваши программы?",
             icon: "ph:users",
             content:
-                "В центре занимаются дети от 4 лет, подростки и взрослые. У нас нет программ для малышей ясельного возраста. Под каждую возрастную категорию выделены профильные группы и адаптированные методики."
+                "В центре занимаются дети от 6 лет, подростки и взрослые. У нас нет программ для малышей ясельного возраста. Под каждую возрастную категорию выделены профильные группы и адаптированные методики."
         },
         {
             label: "Как протестировать формат до покупки абонемента?",

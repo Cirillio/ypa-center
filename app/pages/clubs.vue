@@ -1,57 +1,23 @@
 <script lang="ts" setup>
-import {
-    MOCK_ACTIVITIES,
-    MOCK_CLUBS_FULL,
-    MOCK_SCHEDULE_SLOTS,
-    MOCK_SUBGROUPS,
-    MOCK_WEEKDAY_SLOTS,
-    MOCK_WEEKLY_SLOTS
-} from "~/constants/mock"
-import type { Subgroup } from "~/types"
-
 const { subscriptions, contactInfo, seo } = useAppConfig()
+
 const siteUrl = seo.siteUrl
 
-// TODO: заменить на useFetch после реализации GET /clubs/, GET /schedule/, GET /activities/ на бэке
-const slots = MOCK_WEEKLY_SLOTS
+// Fetching Clubs
+const activities = useActivitiesService()
 
-const DAY_NAMES = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"] as const
-
-function getClubSubgroups(clubId: number): Subgroup[] {
-    const subgroupIds = MOCK_ACTIVITIES.filter((a) => a.club_id === clubId).map(
-        (a) => a.subgroup_id
-    )
-    return MOCK_SUBGROUPS.filter((s) => subgroupIds.includes(s.id))
-}
-
-function getScheduledDays(clubId: number): string[] {
-    const actIds = MOCK_ACTIVITIES.filter((a) => a.club_id === clubId).map((a) => a.id)
-    const wdSlotIds = [
-        ...new Set(
-            MOCK_SCHEDULE_SLOTS.filter((ss) => actIds.includes(ss.activity_id)).map(
-                (ss) => ss.weekday_slot_id
-            )
-        )
-    ]
-    const dows = [
-        ...new Set(
-            MOCK_WEEKDAY_SLOTS.filter((ws) => wdSlotIds.includes(ws.id)).map((ws) => ws.dayOfWeek)
-        )
-    ].sort() as (0 | 1 | 2 | 3 | 4 | 5 | 6)[]
-    return dows.map((d) => DAY_NAMES[d])
-}
-
-const enrichedClubs = MOCK_CLUBS_FULL.map((club) => ({
-    club,
-    subgroups: getClubSubgroups(club.id),
-    scheduledDays: getScheduledDays(club.id)
-}))
+const {
+    data: activitiesData,
+    error: activitiesError,
+    pending: activitiesPending,
+    refresh: refreshActivities
+} = useAsyncData("activities", () => activities.getAll())
 
 useSeoMeta({
-    title: "Кружки — Улица Радости",
+    title: "Кружки",
     description:
         "Каталог кружков центра умного развития «Улица Радости». Настольные игры, рисование, пианино, каникулярные программы и другие занятия для детей в Новосибирске.",
-    ogTitle: "Кружки — Улица Радости",
+    ogTitle: "Кружки – Улица Радости",
     ogDescription: "Найдите занятие для вашего ребёнка. Внимательные педагоги и уютная атмосфера.",
     ogImage: `${siteUrl}/og/default.jpg`,
     ogUrl: `${siteUrl}/clubs`
@@ -113,32 +79,21 @@ useHead({
 
 <template>
     <div class="flex w-full min-w-0 flex-col">
-        <ClubsSection />
-        <div class="relative z-20 h-0 w-full">
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                <UButton
-                    to="/clubs#schedule"
-                    size="lg"
-                    label="Посмотреть расписание"
-                    trailing-icon="ph:arrow-down-bold"
-                    class="floating-element-slow text-base md:text-lg"
-                />
-            </div>
-        </div>
+        <ClubsHero :activities="activitiesData ?? []" />
 
-        <section class="bg-default relative z-10 flex w-full py-12 md:py-20 lg:py-24">
-            <UContainer class="flex w-full flex-col gap-6 md:gap-8">
-                <div class="flex items-center justify-between gap-4">
-                    <h2 class="text-secondary text-2xl font-extrabold md:text-3xl">Все кружки</h2>
-                    <span class="text-primary text-lg font-bold">{{ enrichedClubs.length }}</span>
-                </div>
-                <ClubsGrid :enriched-clubs="enrichedClubs" />
-            </UContainer>
-        </section>
+        <ClubsList
+            :activities="activitiesData ?? []"
+            :error="activitiesError"
+            :pending="activitiesPending"
+            @retry="refreshActivities"
+        />
 
-        <ClubsSchedule :slots="slots" />
+        <ClubsSchedule />
+
         <ClubsOtherServices />
-        <FaqSection />
-        <JoinUsPromo />
+
+        <PromoFaq />
+
+        <PromoJoinUs />
     </div>
 </template>

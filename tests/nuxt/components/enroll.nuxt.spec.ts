@@ -1,0 +1,227 @@
+import { mountSuspended } from "@nuxt/test-utils/runtime"
+import { describe, expect, it } from "vitest"
+import SeatsStepper from "~/components/enroll/event/SeatsStepper.vue"
+import SummaryCta from "~/components/enroll/SummaryCta.vue"
+import EventSummary from "~/components/enroll/event/Summary.vue"
+import SubscriptionSummary from "~/components/enroll/subscription/Summary.vue"
+import TrialSummary from "~/components/enroll/trial/Summary.vue"
+import type { Activity, EventItem, TrialCheckoutSlot, WeeklySlot } from "~/types"
+import { eventDto } from "../fixtures/dto/public"
+
+const button = (wrapper: Awaited<ReturnType<typeof mountSuspended>>, label: string) =>
+    wrapper.get(`button[aria-label="${label}"]`)
+
+describe("EnrollEventSeatsStepper", () => {
+    it("emits ±1 from the buttons", async () => {
+        const wrapper = await mountSuspended(SeatsStepper, {
+            props: { seats: 2, max: 5, hasEvent: true }
+        })
+        await button(wrapper, "Больше").trigger("click")
+        await button(wrapper, "Меньше").trigger("click")
+        expect(wrapper.emitted("change")).toEqual([[1], [-1]])
+        expect(wrapper.get("output").text()).toBe("2")
+        expect(wrapper.text()).toContain("Свободно: 5")
+    })
+
+    it("cannot go below one seat", async () => {
+        const wrapper = await mountSuspended(SeatsStepper, {
+            props: { seats: 1, max: 5, hasEvent: true }
+        })
+        expect(button(wrapper, "Меньше").attributes("disabled")).toBeDefined()
+        expect(button(wrapper, "Больше").attributes("disabled")).toBeUndefined()
+    })
+
+    it("cannot exceed the free seats", async () => {
+        const wrapper = await mountSuspended(SeatsStepper, {
+            props: { seats: 5, max: 5, hasEvent: true }
+        })
+        expect(button(wrapper, "Больше").attributes("disabled")).toBeDefined()
+    })
+
+    it("is locked until an event is chosen", async () => {
+        const wrapper = await mountSuspended(SeatsStepper, {
+            props: { seats: 1, max: 1, hasEvent: false }
+        })
+        expect(button(wrapper, "Больше").attributes("disabled")).toBeDefined()
+        expect(wrapper.text()).toContain("Сначала выберите событие")
+    })
+})
+
+describe("EnrollSummaryCta", () => {
+    it("is disabled and lists what is missing", async () => {
+        const wrapper = await mountSuspended(SummaryCta, {
+            props: { ready: false, missing: ["ребёнка", "время"] }
+        })
+        expect(wrapper.get("button").attributes("disabled")).toBeDefined()
+        expect(wrapper.text()).toContain("Осталось выбрать: ребёнка, время")
+    })
+
+    it("continues when everything is chosen", async () => {
+        const wrapper = await mountSuspended(SummaryCta, {
+            props: { ready: true, missing: [], label: "Оплатить" }
+        })
+        const cta = wrapper.get("button")
+        expect(cta.attributes("disabled")).toBeUndefined()
+        expect(cta.text()).toContain("Оплатить")
+        expect(wrapper.text()).not.toContain("Осталось выбрать")
+
+        await cta.trigger("click")
+        expect(wrapper.emitted("continue")).toHaveLength(1)
+    })
+})
+
+describe("EnrollSubscriptionSummary: no plan for the cart", () => {
+    const slots = (count: number): WeeklySlot[] =>
+        Array.from({ length: count }, (_, i) => ({
+            id: i + 1,
+            activity: { id: i + 1, name: `Кружок ${i + 1}` },
+            dayOfWeek: 1,
+            startTime: `${String(8 + i).padStart(2, "0")}:00`,
+            endTime: `${String(9 + i).padStart(2, "0")}:00`,
+            groupName: "Группа",
+            maxCapacity: 8,
+            available: 3
+        }))
+
+    const mountSummary = (count: number) =>
+        mountSuspended(SubscriptionSummary, {
+            props: {
+                slots: slots(count),
+                tier: null,
+                totalMonthlyLessons: count * 4,
+                hasChild: true,
+                trialPrice: 1_200,
+                isSubmitting: false,
+                cooldownSeconds: 0,
+                error: null
+            }
+        })
+
+    it("blocks payment when the lineup has no plan for this many clubs", async () => {
+        const wrapper = await mountSummary(3)
+        const cta = wrapper.findAll("button").find((b) => b.text().includes("Продолжить"))
+        expect(cta?.attributes("disabled")).toBeDefined()
+        expect(wrapper.text()).toContain("Нет тарифа на 3 кружка – добавьте или уберите кружок")
+    })
+
+    it("explains the cart limit above 10 clubs", async () => {
+        const wrapper = await mountSummary(11)
+        expect(wrapper.text()).toContain("В абонементе не больше 10 кружков – уберите лишние")
+    })
+
+    it("tells how long the seats are held", async () => {
+        const wrapper = await mountSummary(1)
+        expect(wrapper.text()).toContain("места держим за вами 15 минут")
+    })
+})
+
+describe("EnrollEventSummary", () => {
+    const event = (isFree: boolean): EventItem => ({
+        ...eventDto({ is_free: isFree, price: isFree ? 0 : 150_000 }),
+        availableSeats: 10
+    })
+
+    const mountSummary = (isFree: boolean) =>
+        mountSuspended(EventSummary, {
+            props: {
+                event: event(isFree),
+                seats: 2,
+                isFree,
+                totalKopecks: isFree ? 0 : 300_000,
+                contactsValid: true,
+                loading: false,
+                cooldownSeconds: 0,
+                error: null
+            }
+        })
+
+    it("sends a paid event to online payment", async () => {
+        const wrapper = await mountSummary(false)
+        expect(wrapper.text()).toContain("К оплате")
+        expect(wrapper.text()).toContain("Перейти к оплате")
+        expect(wrapper.text()).toContain(
+            "Оплата через ЮKassa. После нажатия места держим за вами 15 минут"
+        )
+    })
+
+    it("books a free event without payment", async () => {
+        const wrapper = await mountSummary(true)
+        expect(wrapper.text()).toContain("Записаться")
+        expect(wrapper.text()).toContain("оплата не нужна")
+        expect(wrapper.text()).not.toContain("ЮKassa")
+    })
+
+    it.each([[true], [false]])("never promises payment on site (free: %s)", async (isFree) => {
+        const text = (await mountSummary(isFree)).text()
+        expect(text).not.toMatch(/на месте|позвонит/)
+    })
+})
+
+describe("EnrollTrialSummary", () => {
+    const CLUB: Activity = {
+        id: 1,
+        name: "Шахматы",
+        slug: "chess",
+        groups: [],
+        teachers: [],
+        days_of_week: []
+    }
+    const SLOT: TrialCheckoutSlot = {
+        key: "101_2026-10-12",
+        scheduleId: 101,
+        date: "2026-10-12",
+        startTime: "16:00",
+        endTime: "17:00",
+        groupName: "Младшая",
+        displayDate: "Пн, 12 октября",
+        displayTime: "16:00"
+    }
+
+    const mountSummary = (price: number | null, trialUsed = false) =>
+        mountSuspended(TrialSummary, {
+            props: {
+                club: CLUB,
+                slotItem: SLOT,
+                hasChild: true,
+                price,
+                trialUsed,
+                subscriptionFromPrice: null,
+                isSubmitting: false,
+                cooldownSeconds: 0,
+                error: null
+            }
+        })
+
+    const cta = (wrapper: Awaited<ReturnType<typeof mountSummary>>, label: string) =>
+        wrapper.findAll("button").find((b) => b.text().includes(label))
+
+    it("shows the club's own trial price and the 15-minute hold", async () => {
+        const text = (await mountSummary(1_100)).text()
+        // ПОЧЕМУ \u00a0: ru-RU разделяет разряды неразрывным пробелом
+        expect(text).toContain("1\u00a0100 ₽")
+        expect(text).toContain("места держим за вами 15 минут")
+    })
+
+    it("books a free trial without payment", async () => {
+        const wrapper = await mountSummary(0)
+        const text = wrapper.text()
+
+        expect(text).toContain("Бесплатно")
+        expect(text).not.toContain("ЮKassa")
+        expect(cta(wrapper, "Записаться")?.attributes("disabled")).toBeUndefined()
+    })
+
+    it("blocks a trial the child already had in this club", async () => {
+        const wrapper = await mountSummary(1_100, true)
+
+        expect(cta(wrapper, "Продолжить")?.attributes("disabled")).toBeDefined()
+        expect(wrapper.text()).toContain(
+            "У ребёнка уже было пробное в этом кружке – выберите другой или оформите абонемент"
+        )
+    })
+
+    it("shows a dash until a club is chosen", async () => {
+        const text = (await mountSummary(null)).text()
+        expect(text).toContain("—")
+    })
+})

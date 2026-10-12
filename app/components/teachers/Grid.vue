@@ -1,10 +1,15 @@
 <script lang="ts" setup>
 import type { Teacher } from "~/types"
 
+// Сетка педагогов: скелетон первой загрузки, ошибка с повтором, пустой список.
 defineProps<{
     teachers: Teacher[]
     pending?: boolean
     error?: boolean
+}>()
+
+const emit = defineEmits<{
+    retry: []
 }>()
 </script>
 
@@ -20,18 +25,20 @@ defineProps<{
         </div>
 
         <!-- Ошибка -->
-        <div
+        <UiErrorState
             v-else-if="error && !teachers.length"
-            class="flex flex-col items-center justify-center py-20 text-center"
-        >
-            <UIcon
-                name="ph:user-circle-dashed-duotone"
-                class="text-secondary mb-4 size-16 opacity-20"
-            />
-            <p class="text-secondary/60 text-lg">
-                Не удалось загрузить список педагогов. Попробуйте позже.
-            </p>
-        </div>
+            size="lg"
+            message="Не удалось загрузить список педагогов."
+            :retrying="pending"
+            @retry="emit('retry')"
+        />
+
+        <UiEmptyState
+            v-else-if="!teachers.length"
+            icon="ph:chalkboard-teacher-duotone"
+            title="Скоро познакомим с педагогами"
+            description="Страница обновляется – загляните чуть позже."
+        />
 
         <!-- Сетка -->
         <div v-else class="grid grid-cols-1 gap-4">

@@ -1,9 +1,9 @@
 <script lang="ts" setup></script>
 
 <template>
-    <PageSection>
+    <UiPageSection>
         <UContainer class="relative z-10 flex flex-col gap-8">
-            <SectionLeading as="h1" subtitle="Наша команда" icon="ph:users-duotone" center>
+            <UiSectionLeading as="h1" subtitle="Наша команда" icon="ph:users-duotone" center>
                 <template #title>
                     <span class="text-secondary">
                         Наша<br />
@@ -14,14 +14,15 @@
                     Каждый педагог — не просто специалист, а человек, который искренне любит детей и
                     своё дело.
                 </template>
-            </SectionLeading>
+            </UiSectionLeading>
 
-            <FloatPromoCard
+            <PromoFloatCard
                 to="/clubs"
                 icon="ph:puzzle-piece-duotone"
                 sublabel="Смотреть"
                 label="Кружки"
                 description="Узнайте, какие занятия ведёт каждый педагог."
-            /> </UContainer
-    ></PageSection>
+            />
+        </UContainer>
+    </UiPageSection>
 </template>

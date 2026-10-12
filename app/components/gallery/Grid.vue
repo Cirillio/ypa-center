@@ -1,13 +1,38 @@
 <script lang="ts" setup>
+import { useIntersectionObserver } from "@vueuse/core"
 import type { GalleryPhoto } from "~/types"
 
 const props = defineProps<{
     photos: GalleryPhoto[]
     pending?: boolean
     error?: boolean
+    hasMore?: boolean
+    loadingMore?: boolean
+    loadMoreError?: boolean
 }>()
 
+const emit = defineEmits<{
+    loadMore: []
+    retry: []
+}>()
+
+// Автоматическая подгрузка при скролле
+const sentinelRef = ref<HTMLElement | null>(null)
+
+useIntersectionObserver(
+    sentinelRef,
+    ([entry]) => {
+        if (entry?.isIntersecting && props.hasMore && !props.loadingMore && !props.loadMoreError) {
+            emit("loadMore")
+        }
+    },
+    {
+        rootMargin: "300px"
+    }
+)
+
 // Состояние модалки
+const hasModalOpened = ref(false)
 const activeIndex = ref<number | null>(null)
 const isModalOpen = computed({
     get: () => activeIndex.value !== null,
@@ -35,6 +60,7 @@ const prev = () => {
 }
 
 const openPhoto = (index: number) => {
+    hasModalOpened.value = true
     activeIndex.value = index
 }
 </script>
@@ -53,29 +79,34 @@ const openPhoto = (index: number) => {
             />
         </div>
 
-        <!-- Ошибка загрузки или пустые данные -->
-        <div
+        <!-- Ошибка первой загрузки -->
+        <UiErrorState
             v-else-if="error && !photos.length"
-            class="flex flex-col items-center justify-center py-20 text-center"
-        >
-            <UIcon name="ph:image-break-duotone" class="text-secondary mb-4 size-16 opacity-20" />
-            <p class="text-secondary/60 text-lg">
-                Пока здесь нет фотографий, но скоро они появятся!
-            </p>
-        </div>
+            size="lg"
+            message="Не удалось загрузить фотографии."
+            :retrying="pending"
+            @retry="emit('retry')"
+        />
+
+        <UiEmptyState
+            v-else-if="!photos.length"
+            icon="ph:image-duotone"
+            title="Пока здесь нет фотографий"
+            description="Скоро они появятся – загляните позже."
+        />
 
         <!-- Сетка -->
         <div v-else class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
             <button
                 v-for="(photo, index) in photos"
                 :key="photo.id"
-                :aria-label="'Открыть фото: ' + (photo.alt || 'Изображение из галереи')"
+                :aria-label="'Открыть фото ' + (index + 1) + ' из галереи'"
                 class="group hover:ring-primary focus-within:ring-primary active:ring-primary relative cursor-pointer overflow-hidden rounded-md ring-2 ring-transparent transition-all"
                 @click="openPhoto(index)"
             >
-                <LazyAppPhoto
-                    :src="photo.thumbnail || photo.url"
-                    :alt="photo.alt"
+                <UiPhoto
+                    :src="photo.image_url"
+                    :alt="'Фото ' + (index + 1) + ' из галереи центра'"
                     class="aspect-square scale-105 object-cover object-center transition-transform duration-150 group-hover:scale-100 group-active:scale-100"
                 />
                 <div
@@ -86,8 +117,29 @@ const openPhoto = (index: number) => {
             </button>
         </div>
 
+        <!-- Сентинел для бесконечного скролла -->
+        <div v-if="hasMore" ref="sentinelRef" class="pointer-events-none h-4 w-full" />
+
+        <!-- Кнопка «Показать ещё» -->
+        <div v-if="hasMore" class="mt-8 flex flex-col items-center justify-center gap-2 sm:mt-12">
+            <UButton
+                label="Показать ещё"
+                variant="soft"
+                color="secondary"
+                size="xl"
+                class="cursor-pointer font-semibold"
+                :loading="loadingMore"
+                :disabled="loadingMore"
+                @click="emit('loadMore')"
+            />
+            <p v-if="loadMoreError" class="text-error text-sm font-medium">
+                Не удалось загрузить фотографии, попробуйте ещё раз
+            </p>
+        </div>
+
         <!-- Модалка -->
-        <GalleryModal
+        <LazyGalleryModal
+            v-if="hasModalOpened"
             v-model:model-value="isModalOpen"
             :photo="activePhoto"
             :has-prev="photos.length > 1"

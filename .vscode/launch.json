@@ -6,9 +6,9 @@
     "configurations": [
         {
             "type": "node-terminal",
-            "name": "Запустить сценарий: dev",
+            "name": "bun dev",
             "request": "launch",
-            "command": "bun run dev",
+            "command": "bun dev",
             "cwd": "${workspaceFolder}"
         }
     ]

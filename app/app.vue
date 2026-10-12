@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ToasterProps } from "@nuxt/ui"
+
 const { seo } = useAppConfig()
 
 useHead({
@@ -6,7 +8,7 @@ useHead({
         lang: "ru"
     },
     titleTemplate: (titleChunk) => {
-        return titleChunk ? `${titleChunk} — ${seo.siteName}` : seo.siteName
+        return titleChunk ? `${titleChunk} – ${seo.siteName}` : seo.siteName
     },
     meta: [
         { charset: "utf-8" },
@@ -17,7 +19,7 @@ useHead({
         { name: "geo.position", content: `${seo.geo.lat};${seo.geo.lng}` },
         { name: "ICBM", content: `${seo.geo.lat}, ${seo.geo.lng}` }
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+    link: [{ rel: "icon", type: "image/png", href: "/favicon.png" }]
 })
 
 useSeoMeta({
@@ -25,10 +27,13 @@ useSeoMeta({
     ogImage: seo.ogImage,
     twitterCard: "summary_large_image"
 })
+
+const toaster: ToasterProps = { position: "top-center" }
 </script>
 
 <template>
-    <UApp>
+    <UApp :toaster="toaster">
+        <NuxtLoadingIndicator color="var(--ui-primary)" :height="4" />
         <NuxtLayout>
             <NuxtPage />
         </NuxtLayout>

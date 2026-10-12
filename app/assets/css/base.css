@@ -1,4 +1,4 @@
-@theme static {
+@theme {
     --font-sans: "Nunito", system-ui;
 }
 
@@ -12,13 +12,18 @@
         scroll-behavior: smooth;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-        html {
-            scroll-behavior: auto !important;
-        }
+    strong {
+        color: var(--ui-primary);
     }
 
-    *:focus-visible {
-        @apply outline-primary ring-0! outline-2 outline-offset-2;
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
     }
 }

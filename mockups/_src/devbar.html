@@ -1,0 +1,19 @@
+<!-- Только для макета: переключатель состояний. Во фронт не переносится. -->
+<details id="devbar" class="fixed bottom-20 left-3 z-[60] lg:bottom-4 lg:left-4">
+  <summary class="cursor-pointer list-none rounded-full bg-[#2b2724] px-3.5 py-2 text-xs font-bold text-white/90 shadow-lg select-none"><i class="ph-bold ph-sliders-horizontal mr-1.5 align-[-2px]"></i>Состояния макета</summary>
+  <div class="mt-2 flex w-56 flex-col gap-1.5 rounded-lg bg-[#2b2724] p-2.5 shadow-lg">
+    <div class="text-[10px] font-bold tracking-wider text-white/50 uppercase">Страница</div>
+    <div class="grid grid-cols-2 gap-1.5">
+      <button data-dev="reset" class="rounded-md bg-white/10 px-2 py-1.5 text-xs font-semibold text-white hover:bg-white/20">Пусто</button>
+      <button data-dev="fill" class="rounded-md bg-white/10 px-2 py-1.5 text-xs font-semibold text-white hover:bg-white/20">Заполнено</button>
+    </div>
+    <div class="mt-1 text-[10px] font-bold tracking-wider text-white/50 uppercase">Модалка оплаты</div>
+    <div class="grid grid-cols-2 gap-1.5">
+      <button data-dev="form" class="rounded-md bg-white/10 px-2 py-1.5 text-xs font-semibold text-white hover:bg-white/20">Форма</button>
+      <button data-dev="checking" class="rounded-md bg-white/10 px-2 py-1.5 text-xs font-semibold text-white hover:bg-white/20">Проверка</button>
+      <button data-dev="success" class="rounded-md bg-white/10 px-2 py-1.5 text-xs font-semibold text-white hover:bg-white/20">Успех</button>
+      <button data-dev="failed" class="rounded-md bg-white/10 px-2 py-1.5 text-xs font-semibold text-white hover:bg-white/20">Отказ</button>
+      <button data-dev="expired" class="col-span-2 rounded-md bg-white/10 px-2 py-1.5 text-xs font-semibold text-white hover:bg-white/20">Бронь истекла</button>
+    </div>
+  </div>
+</details>

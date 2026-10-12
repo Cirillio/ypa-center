@@ -24,7 +24,7 @@ onMounted(() => window.scrollTo({ top: 0, behavior: "instant" }))
         <!-- 404 -->
         <section
             v-if="is404"
-            class="gradient-bg-ps flex min-h-dvh w-full items-center justify-center pt-(--header-height)"
+            class="gradient-bg-ps flex min-h-dvh w-full items-center justify-center pt-(--ui-header-height)"
         >
             <UContainer
                 class="flex items-center justify-center gap-10 max-md:flex-col max-md:py-12 md:gap-16"
@@ -33,7 +33,7 @@ onMounted(() => window.scrollTo({ top: 0, behavior: "instant" }))
                     <div
                         class="group hover:ring-error flex items-center justify-center overflow-hidden rounded-md ring-4 ring-transparent transition"
                     >
-                        <AppPhoto
+                        <UiPhoto
                             src="/core/404_page.png"
                             alt="404"
                             class="h-full w-full object-contain transition duration-500 group-hover:scale-110 group-hover:rotate-6"
@@ -81,7 +81,7 @@ onMounted(() => window.scrollTo({ top: 0, behavior: "instant" }))
         <!-- Generic error -->
         <section
             v-else
-            class="gradient-bg-ps flex min-h-dvh w-full items-center justify-center pt-(--header-height)"
+            class="gradient-bg-ps flex min-h-dvh w-full items-center justify-center pt-(--ui-header-height)"
         >
             <UContainer class="flex flex-col items-center gap-8 py-16 text-center">
                 <p

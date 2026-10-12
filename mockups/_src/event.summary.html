@@ -1,0 +1,32 @@
+<div class="flex items-center gap-3"><div class="bg-primary/5 text-primary flex items-center justify-center rounded-full p-2"><i class="ph-bold ph-receipt text-xl"></i></div><h2 class="text-primary text-xl font-bold">Итого</h2></div>
+<div id="s-ev"></div>
+
+<section class="flex flex-col gap-2" aria-label="Количество мест">
+  <h3 class="text-default text-base font-semibold">Количество мест</h3>
+  <div class="flex items-center justify-between gap-3">
+    <div class="bg-default flex items-center gap-1 rounded-full p-1" role="group" aria-label="Изменить количество мест">
+      <button type="button" id="seat-minus" aria-label="Меньше" class="hover:bg-white flex size-9 items-center justify-center rounded-full transition-colors"><i class="ph-bold ph-minus text-lg"></i></button>
+      <output id="seat-n" aria-live="polite" class="text-default min-w-10 text-center text-xl font-extrabold tabular-nums">1</output>
+      <button type="button" id="seat-plus" aria-label="Больше" class="hover:bg-white flex size-9 items-center justify-center rounded-full transition-colors"><i class="ph-bold ph-plus text-lg"></i></button>
+    </div>
+    <span id="seat-hint" class="text-muted text-end text-xs font-semibold"></span>
+  </div>
+</section>
+
+<div class="bg-ink/15 h-px"></div>
+<form id="contacts" class="flex flex-col gap-3" novalidate aria-label="Контакты" onsubmit="return false">
+  <h3 class="text-default text-base font-semibold">Контакты для подтверждения</h3>
+  <label class="flex flex-col gap-1"><span class="text-default block text-base font-semibold">Имя</span>
+    <input name="name" autocomplete="name" placeholder="Как к вам обращаться" class="bg-default placeholder:text-muted w-full rounded-sm px-4 py-2.5 text-lg outline-none focus:ring-2 focus:ring-primary" /><span data-err="name"></span></label>
+  <label class="flex flex-col gap-1"><span class="text-default block text-base font-semibold">Телефон</span>
+    <input name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+7 (___) ___-__-__" class="bg-default placeholder:text-muted w-full rounded-sm px-4 py-2.5 text-lg outline-none focus:ring-2 focus:ring-primary" /><span data-err="phone"></span></label>
+  <label class="flex flex-col gap-1"><span class="text-default block text-base font-semibold">Почта</span>
+    <input name="email" type="email" autocomplete="email" placeholder="name@example.ru" class="bg-default placeholder:text-muted w-full rounded-sm px-4 py-2.5 text-lg outline-none focus:ring-2 focus:ring-primary" /><span class="text-muted text-xs">Пришлём подтверждение и напоминание</span><span data-err="email"></span></label>
+  <label class="flex cursor-pointer items-start gap-2.5"><input type="checkbox" name="consent" class="accent-primary mt-1 size-4 shrink-0" />
+    <span class="text-default text-sm leading-snug">Согласен с <a href="#" class="text-primary font-semibold underline underline-offset-2">обработкой персональных данных</a></span></label>
+</form>
+
+<div class="bg-ink/15 h-px"></div>
+<div id="s-price"></div>
+<div id="s-cta" class="flex flex-col gap-2"></div>
+<p id="s-note" class="text-muted flex items-start gap-2 text-xs"></p>

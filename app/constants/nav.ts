@@ -16,3 +16,24 @@ export enum EnrollRoutesEnum {
     Event = "/enroll/event",
     Subscription = "/enroll/subscription"
 }
+
+export enum CabinetRoutesEnum {
+    Login = "/login",
+    Me = "/me"
+}
+
+export interface HeaderAction {
+    label: string
+    to: string
+    icon: string
+}
+
+// Главные действия шапки: единый источник для десктопной шапки и мобильного меню, чтобы они не расходились.
+export const HEADER_ACTIONS = {
+    subscription: {
+        label: "Абонемент",
+        to: EnrollRoutesEnum.Subscription,
+        icon: "ph:puzzle-piece-bold"
+    },
+    cabinet: { label: "Мой кабинет", to: CabinetRoutesEnum.Me, icon: "ph:user-bold" }
+} as const satisfies Record<string, HeaderAction>

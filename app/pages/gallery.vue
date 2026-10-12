@@ -1,15 +1,14 @@
 <script lang="ts" setup>
 import type { GalleryPhoto } from "~/types"
-import { MOCK_GALLERY_PHOTOS } from "~/constants/mock"
 
 const { seo } = useAppConfig()
 const { siteUrl } = seo
 
 useSeoMeta({
-    title: "Галерея — Улица Радости",
+    title: "Галерея",
     description:
         "Фотографии нашего центра: учебные классы, игровые зоны и моменты с наших занятий.",
-    ogTitle: "Галерея — Улица Радости",
+    ogTitle: "Галерея – Улица Радости",
     ogDescription:
         "Фотографии нашего центра: учебные классы, игровые зоны и моменты с наших занятий.",
     ogImage: `${siteUrl}/og/default.jpg`,
@@ -42,18 +41,43 @@ useHead({
     ]
 })
 
-// Получение данных с бэка
-const { data, pending, error } = await useFetch<GalleryPhoto[]>("/api/gallery/photos/")
+const PAGE_SIZE = 12
 
-// Используем данные с бэка или моки
-const photos = computed(() =>
-    data.value && data.value.length > 0 ? data.value : MOCK_GALLERY_PHOTOS
-)
+const gallery = useGalleryService()
+const toast = useToast()
+
+// Первая страница – в SSR-HTML (без await: переход по клику не ждёт API, сетка показывает скелетон)
+const { items, hasMore, isLoadingMore, loadMoreError, loadMore, pending, error, refresh } =
+    usePagedList("gallery:page", ({ limit, offset }) => gallery.getPage(limit, offset), {
+        pageSize: PAGE_SIZE,
+        server: true
+    })
+
+const photos = computed<GalleryPhoto[]>(() => items.value ?? [])
+
+watch(loadMoreError, (err) => {
+    if (!err) return
+    toast.add({
+        title: "Не удалось загрузить фотографии",
+        description: "Проверьте подключение к сети и попробуйте снова.",
+        icon: "ph:x-circle-bold",
+        color: "error"
+    })
+})
 </script>
 
 <template>
     <div class="gradient-bg-ps">
         <GallerySection />
-        <GalleryGrid :photos="photos" :pending="pending" :error="!!error" />
+        <GalleryGrid
+            :photos="photos"
+            :pending="pending && !photos.length"
+            :error="!!error && !photos.length"
+            :has-more="hasMore"
+            :loading-more="isLoadingMore"
+            :load-more-error="!!loadMoreError"
+            @load-more="loadMore"
+            @retry="refresh"
+        />
     </div>
 </template>

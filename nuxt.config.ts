@@ -4,30 +4,24 @@ export default defineNuxtConfig({
         "@nuxt/eslint",
         "@nuxt/ui",
         "@nuxt/image",
-        "@nuxtjs/google-fonts",
         "@nuxt/a11y",
         "@pinia/nuxt",
         "@nuxtjs/sitemap",
         "@nuxtjs/robots",
-        "dayjs-nuxt",
-        "nuxt-openapi-docs-module"
-        // {
-        //     folder: "./docs/openapi",
-        //     name: "OpenApiDocs",
-        //     files: function () {
-        //         return { "News-API": "News API" }
-        //     }
-        // }
+        "@nuxtjs/turnstile"
     ],
 
     devtools: { enabled: false },
 
     css: ["~/assets/css/main.css"],
 
-    colorMode: {
-        preference: "light",
-        classSuffix: "", // по умолчанию там 'mode', из-за этого класс может быть 'light-mode' вместо 'light'
-        dataValue: "theme" // записывает data-theme="light" на <html>
+    // Сервисы автоимпортируются наравне с композаблами: useMeService(), useGalleryService()…
+    imports: {
+        dirs: ["services"]
+    },
+
+    ui: {
+        colorMode: false
     },
 
     runtimeConfig: {
@@ -36,27 +30,33 @@ export default defineNuxtConfig({
         }
     },
 
+    turnstile: {
+        siteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"
+    },
+
     routeRules: {
         "/": { ssr: true },
         "/clubs": { ssr: true },
         "/gallery": { ssr: true },
 
-        "/about": { prerender: true },
-        "/teachers": { prerender: true },
-        "/privacy": { prerender: true },
-        "/consent": { prerender: true },
+        "/about": { ssr: true },
+        "/teachers": { ssr: true },
+        "/privacy": { ssr: true },
+        "/consent": { ssr: true },
 
         "/enroll/trial": { ssr: true },
         "/enroll/event": { ssr: true },
         "/enroll/subscription": { ssr: true },
 
-        "my-status": { ssr: false },
+        "/login": { ssr: false },
+        "/me": { ssr: false },
+        "/checkout/**": { ssr: false },
 
         "/**": {
             ssr: true,
             headers: {
                 "Content-Security-Policy":
-                    "frame-src 'self' https://vk.com https://vkvideo.ru https://yandex.ru"
+                    "frame-src 'self' https://vk.com https://vkvideo.ru https://yandex.ru https://challenges.cloudflare.com"
             }
         }
     },
@@ -79,32 +79,24 @@ export default defineNuxtConfig({
     },
 
     robots: {
-        disallow: ["/enroll", "/api"]
+        disallow: ["/enroll", "/checkout", "/api"]
     },
 
     compatibilityDate: "2025-07-15",
 
     vite: {
         server: process.env.NODE_ENV === "development" ? { allowedHosts: true } : undefined,
-        // Добавляем этот блок:
         optimizeDeps: {
-            include: [
-                "@vue/devtools-core",
-                "@vue/devtools-kit",
-                "dayjs",
-                "dayjs/plugin/updateLocale",
-                "dayjs/locale/ru",
-                "dayjs/plugin/relativeTime",
-                "dayjs/plugin/utc",
-                "dayjs/plugin/timezone",
-                "dayjs/plugin/customParseFormat"
-            ]
+            include: ["@vue/devtools-core", "@vue/devtools-kit"]
         }
     },
 
     typescript: {
         strict: true,
-        typeCheck: true,
+        // type-check вынесен из dev-сервера: гонять vue-tsc в процессе nuxt dev
+        // слишком дорого по памяти. Проверка типов – отдельной командой:
+        // npx nuxi typecheck
+        typeCheck: false,
         tsConfig: {
             compilerOptions: {
                 types: ["node"]
@@ -112,28 +104,25 @@ export default defineNuxtConfig({
         }
     },
 
-    dayjs: {
-        locales: ["ru"],
-        defaultLocale: "ru",
-        defaultTimezone: "Asia/Novosibirsk",
-        plugins: ["relativeTime", "utc", "timezone", "customParseFormat"]
-    },
-
-    googleFonts: {
-        families: {
-            Nunito: "200..1000"
-        },
-        display: "swap",
-        download: false,
-        preload: true,
-        base64: false,
-        inject: true,
-        stylePath: "css/fonts.css"
+    // ПОЧЕМУ: serverBundle вшивал коллекции целиком (4.4 MB в Nitro); scan кладёт в клиент только найденные в коде иконки
+    icon: {
+        serverBundle: false,
+        clientBundle: {
+            // ПОЧЕМУ свой glob: дефолт не читает .ts (app.config, constants) и цепляет доки из context/*.md
+            scan: {
+                globInclude: ["app/**/*.{vue,ts}"]
+            }
+        }
     },
 
     fonts: {
-        providers: {
-            fontsource: false
-        }
+        families: [
+            {
+                name: "Nunito",
+                provider: "google",
+                weights: [400, 500, 600, 700, 800, 900],
+                styles: ["normal"]
+            }
+        ]
     }
 })

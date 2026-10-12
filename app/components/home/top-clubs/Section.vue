@@ -1,12 +1,41 @@
 <script lang="ts" setup>
-import { MOCK_CLUBS } from "~/constants/mock"
+const activities = useActivitiesService()
+const { data, status } = useAsyncData("activities:popular", () => activities.getPopular())
+
+// Бэк лимитирует выдачу тремя, но контракт на «ровно 3» не гарантирован –
+// >4 обрезаем сами, раскладка ниже рассчитана на 2..4
+const clubs = computed(() => (data.value ?? []).slice(0, 4))
+
+type Variant = "pending" | "empty" | "duo" | "trio" | "quad"
+
+const variant = computed<Variant>(() => {
+    if (status.value === "pending" && !clubs.value.length) return "pending"
+    // Ошибка без данных даёт пустой список, то есть то же приглашение; ошибка при наличии данных их не прячет
+    switch (clubs.value.length) {
+        case 4:
+            return "quad"
+        case 3:
+            return "trio"
+        case 2:
+            return "duo"
+        default:
+            return "empty"
+    }
+})
+
+// Раскладка grid-контейнера по числу карточек (мобила всегда столбик – grid-cols-1)
+const GRID_CLASS: Record<Exclude<Variant, "empty" | "pending">, string> = {
+    duo: "md:aspect-2/1 md:grid-cols-2 md:grid-rows-1",
+    trio: "md:aspect-2/1 md:grid-cols-[2fr_1fr] md:grid-rows-2",
+    quad: "md:aspect-square md:grid-cols-2 md:grid-rows-2"
+}
 </script>
 
 <template>
     <section class="bg-default relative z-10 flex w-full overflow-hidden py-12 md:py-20 lg:py-24">
         <UContainer class="relative z-10 flex flex-col gap-6 md:gap-12">
             <!-- Top: text content -->
-            <SectionLeading subtitle="Для вашего ребёнка" icon="ph:star-duotone">
+            <UiSectionLeading subtitle="Для вашего ребёнка" icon="ph:star-duotone">
                 <template #title>
                     <span class="text-secondary">
                         Популярные<br />
@@ -14,7 +43,7 @@ import { MOCK_CLUBS } from "~/constants/mock"
                     </span>
                 </template>
                 <template #description>
-                    Самые любимые кружки наших учеников. Выбирайте то, что по душе вашему ребёнку —
+                    Самые любимые кружки наших учеников. Выбирайте то, что по душе вашему ребёнку –
                     мы найдём занятие для каждого характера и таланта.
                 </template>
                 <template #action>
@@ -26,22 +55,43 @@ import { MOCK_CLUBS } from "~/constants/mock"
                         />
                     </UButton>
                 </template>
-            </SectionLeading>
+            </UiSectionLeading>
 
-            <!-- Grid: big card left, two square cards right -->
+            <!-- Мало кружков или ошибка загрузки – приглашение в каталог вместо сетки -->
+            <!-- Скелетон повторяет самую частую раскладку – trio -->
             <div
-                class="grid w-full grid-cols-1 overflow-hidden rounded-md max-md:gap-4 md:aspect-2/1 md:grid-cols-[2fr_1fr] md:grid-rows-2 lg:gap-2"
+                v-if="variant === 'pending'"
+                class="grid w-full grid-cols-1 gap-4 md:aspect-2/1 md:grid-cols-[2fr_1fr] md:grid-rows-2 lg:gap-2"
+                aria-busy="true"
             >
-                <LazyHomeTopClubsCard
-                    v-for="(club, i) in MOCK_CLUBS.slice(0, 3)"
-                    :key="club.title"
-                    v-bind="club"
+                <USkeleton class="h-80 rounded-md md:row-span-2 md:h-auto" />
+                <USkeleton class="h-80 rounded-md md:h-auto" />
+                <USkeleton class="h-80 rounded-md md:h-auto" />
+            </div>
+
+            <HomeTopClubsEmpty v-else-if="variant === 'empty'" />
+
+            <!-- Grid: раскладка зависит от числа карточек (2/3/4) -->
+            <div
+                v-else
+                class="grid w-full grid-cols-1 overflow-hidden rounded-md max-md:gap-4 lg:gap-2"
+                :class="GRID_CLASS[variant]"
+            >
+                <HomeTopClubsCard
+                    v-for="(club, i) in clubs"
+                    :key="club.id"
+                    :name="club.name"
+                    :slug="club.slug"
+                    :short-description="club.short_description ?? ''"
+                    :cover-image="club.cover_image"
+                    :featured="variant === 'trio' && i === 0"
                     class="h-80 md:h-auto"
-                    :class="{ 'md:row-span-2 *:*:last:md:text-2xl *:*:first:xl:text-6xl': i === 0 }"
+                    :class="{ 'md:row-span-2': variant === 'trio' && i === 0 }"
                 />
             </div>
+
             <!-- Floating promo card -->
-            <FloatPromoCard
+            <PromoFloatCard
                 to="/teachers"
                 icon="ph:chalkboard-teacher-duotone"
                 sublabel="Наши"

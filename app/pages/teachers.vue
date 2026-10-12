@@ -1,74 +1,20 @@
 <script lang="ts" setup>
-import type { Teacher } from "~/types"
-import { MOCK_TEACHERS } from "~/constants/mock"
+const teachersService = useTeachersService()
+const { data, pending, error, refresh } = useAsyncData("teachers", () => teachersService.getAll())
 
-const { data, pending, error } = await useFetch<Teacher[]>("/api/teachers/")
-
-const teachers = computed(() => (data.value && data.value.length > 0 ? data.value : MOCK_TEACHERS))
+const teachers = computed(() => data.value ?? [])
 
 const { seo } = useAppConfig()
 const siteUrl = seo.siteUrl
 
 useSeoMeta({
-    title: "Команда — Улица Радости",
+    title: "Команда",
     description:
         "Познакомьтесь с педагогами центра умного развития «Улица Радости». Внимательные специалисты, которые любят детей и своё дело.",
-    ogTitle: "Наша команда — Улица Радости",
+    ogTitle: "Наша команда – Улица Радости",
     ogDescription: "Педагоги, которые вдохновляют детей учиться, творить и верить в себя.",
     ogImage: `${siteUrl}/og/default.jpg`,
     ogUrl: `${siteUrl}/teachers`
-})
-
-useHead({
-    script: [
-        {
-            type: "application/ld+json",
-            innerHTML: JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "BreadcrumbList",
-                itemListElement: [
-                    {
-                        "@type": "ListItem",
-                        position: 1,
-                        name: "Главная",
-                        item: siteUrl
-                    },
-                    {
-                        "@type": "ListItem",
-                        position: 2,
-                        name: "Команда",
-                        item: `${siteUrl}/teachers`
-                    }
-                ]
-            })
-        }
-    ]
-})
-
-useHead({
-    script: [
-        {
-            type: "application/ld+json",
-            innerHTML: JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "BreadcrumbList",
-                itemListElement: [
-                    {
-                        "@type": "ListItem",
-                        position: 1,
-                        name: "Главная",
-                        item: siteUrl
-                    },
-                    {
-                        "@type": "ListItem",
-                        position: 2,
-                        name: "Команда",
-                        item: `${siteUrl}/teachers`
-                    }
-                ]
-            })
-        }
-    ]
 })
 
 useHead({
@@ -101,6 +47,6 @@ useHead({
 <template>
     <div class="gradient-bg-ps">
         <TeachersSection />
-        <TeachersGrid :teachers="teachers" :pending="pending" :error="!!error" />
+        <TeachersGrid :teachers="teachers" :pending="pending" :error="!!error" @retry="refresh" />
     </div>
 </template>

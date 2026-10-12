@@ -1,6 +1,25 @@
 <script lang="ts" setup>
-import { MOCK_EVENTS } from "~/constants/mock"
 import { EnrollRoutesEnum } from "~/constants/nav"
+
+const eventsService = useEventsService()
+const { data, status } = useAsyncData("events", () => eventsService.getAll())
+const events = computed(() => {
+    const raw = data.value ?? []
+    return raw.toSorted((a, b) => {
+        // 1. Актуальные события (is_upcoming === true) в начале, прошедшие – в самый конец
+        if (a.is_upcoming !== b.is_upcoming) {
+            return a.is_upcoming ? -1 : 1
+        }
+        // 2. Внутри каждой группы – хронологический порядок (от ближайших к дальним)
+        return new Date(a.start_datetime).getTime() - new Date(b.start_datetime).getTime()
+    })
+})
+
+// Бэк держит завершённые события ещё неделю: без будущих заголовок не должен обещать «ближайшие».
+const hasUpcoming = computed(() => events.value.some((e) => e.is_upcoming))
+const subtitle = computed(() =>
+    hasUpcoming.value ? "Ближайшие мероприятия" : "Недавние мероприятия"
+)
 </script>
 
 <template>
@@ -9,7 +28,7 @@ import { EnrollRoutesEnum } from "~/constants/nav"
         class="relative z-10 flex w-full overflow-hidden bg-white py-12 md:py-20 lg:py-24"
     >
         <UContainer class="relative z-10 flex flex-col gap-8 md:gap-12">
-            <SectionLeading subtitle="Ближайшие мероприятия" icon="ph:calendar-star-duotone">
+            <UiSectionLeading :subtitle="subtitle" icon="ph:calendar-star-duotone">
                 <template #title>
                     <span class="text-secondary">
                         События<br />
@@ -17,7 +36,7 @@ import { EnrollRoutesEnum } from "~/constants/nav"
                     </span>
                 </template>
                 <template #description>
-                    Интересные встречи, мастер-классы и праздники — следите за расписанием и
+                    Интересные встречи, мастер-классы и праздники – следите за расписанием и
                     приходите с детьми.
                 </template>
 
@@ -34,12 +53,40 @@ import { EnrollRoutesEnum } from "~/constants/nav"
                         />
                     </UButton>
                 </template>
-            </SectionLeading>
+            </UiSectionLeading>
+
+            <div
+                v-if="status === 'pending' && !events.length"
+                class="flex flex-col gap-2 lg:grid lg:grid-cols-3 lg:gap-4"
+                aria-busy="true"
+            >
+                <USkeleton class="h-96 rounded-md" />
+                <USkeleton class="h-96 rounded-md max-lg:hidden" />
+                <USkeleton class="h-96 rounded-md max-lg:hidden" />
+            </div>
+
+            <!-- Пусто или ошибка без данных; уже загруженные события ошибка не прячет -->
+            <HomeEventsEmpty v-else-if="!events.length" />
 
             <!-- Events list / grid -->
-            <div class="flex flex-col gap-2 lg:grid lg:grid-cols-3 lg:gap-4">
-                <LazyHomeEventsCard v-for="event in MOCK_EVENTS" :key="event.id" v-bind="event" />
-            </div>
+            <ul v-else class="flex flex-col gap-2 lg:grid lg:grid-cols-3 lg:gap-4">
+                <li
+                    v-for="event in events"
+                    :key="event.id + event.title + event.start_datetime"
+                    class="flex"
+                >
+                    <HomeEventsCard
+                        :id="event.id"
+                        :title="event.title"
+                        :description="event.description"
+                        :cover-image="event.cover_image"
+                        :start-datetime="event.start_datetime"
+                        :price="event.price"
+                        :is-free="event.is_free"
+                        :is-upcoming="event.is_upcoming"
+                    />
+                </li>
+            </ul>
         </UContainer>
     </section>
 </template>

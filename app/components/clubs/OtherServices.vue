@@ -13,19 +13,19 @@ const services: OtherService[] = [
         icon: "ph:house-simple-duotone",
         name: "Продлёнка",
         description:
-            "Ребёнок под присмотром до 20:00: помощь с домашним заданием, питание и время для игр. Спокойный вечер для родителей — без лишних договорённостей."
+            "Ребёнок под присмотром до 20:00: помощь с домашним заданием, питание и время для игр. Спокойный вечер для родителей – без лишних договорённостей."
     },
     {
         icon: "ph:books-duotone",
         name: "Подготовка к школе",
         description:
-            "Программа ГДЕЁЖ для детей от 5 лет. Буквы и цифры — через игру, движение и живой разговор. К первому классу — уверенно и с интересом к учёбе."
+            "Программа ГДЕЁЖ для детей от 5 лет. Буквы и цифры – через игру, движение и живой разговор. К первому классу – уверенно и с интересом к учёбе."
     },
     {
         icon: "ph:pencil-ruler-duotone",
         name: "Репетиторство",
         description:
-            "Индивидуальные занятия по школьным предметам с педагогами, которые умеют объяснять. Без зубрёжки — с пониманием."
+            "Индивидуальные занятия по школьным предметам с педагогами, которые умеют объяснять. Без зубрёжки – с пониманием."
     }
 ]
 </script>
@@ -35,7 +35,7 @@ const services: OtherService[] = [
         <UContainer class="relative z-10 flex flex-col gap-10 md:gap-12">
             <!-- Заголовок -->
             <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                <SectionLeading subtitle="Также у нас есть" icon="ph:squares-four-duotone">
+                <UiSectionLeading subtitle="Также у нас есть" icon="ph:squares-four-duotone">
                     <template #title>
                         <span class="text-secondary">
                             Другие услуги<br />
@@ -43,15 +43,15 @@ const services: OtherService[] = [
                         </span>
                     </template>
                     <template #description>
-                        Некоторые направления доступны только по предварительной записи — позвоните
+                        Некоторые направления доступны только по предварительной записи – позвоните
                         нам, и мы подберём удобное время.
                     </template>
-                </SectionLeading>
+                </UiSectionLeading>
 
                 <!-- Телефон -->
                 <a
                     :href="`mailto:${email}`"
-                    class="hover:ring-primary group flex w-fit shrink-0 items-center gap-3 rounded-sm bg-white p-4 transition-all duration-200 hover:ring-2 md:self-auto"
+                    class="hover:ring-primary group flex w-fit shrink-0 items-center gap-3 rounded-sm bg-white p-4 shadow-xs transition-all duration-200 hover:ring-2 md:self-auto"
                 >
                     <div
                         class="bg-primary/10 group-hover:bg-primary/20 flex size-10 items-center justify-center rounded-full transition-colors"
@@ -71,11 +71,11 @@ const services: OtherService[] = [
                 v-slot="{ item }"
                 :items="services"
                 :ui="{
-                    container: 'ms-0 gap-4 items-stretch',
+                    container: 'ms-0 gap-4 py-2 items-stretch',
                     item: 'sm:basis-[40%] basis-[80%] ps-0  min-h-full select-none cursor-pointer'
                 }"
             >
-                <div class="flex h-full flex-col gap-4 rounded-sm bg-white p-5 lg:p-6">
+                <div class="flex h-full flex-col gap-4 rounded-sm bg-white p-5 shadow-xs lg:p-6">
                     <UIcon :name="item.icon" class="text-primary/70 size-8" />
                     <div class="flex flex-col gap-2">
                         <span class="text-secondary text-xl font-extrabold">{{ item.name }}</span>

@@ -1,17 +1,22 @@
 <script lang="ts" setup>
 import { EnrollRoutesEnum } from "~/constants/nav"
+import type { PlanTier } from "~/types"
 
-const { subscriptions, pricing } = useAppConfig()
+const { pricing } = useAppConfig()
+const { tiers: allTiers } = useSubscriptionPlans()
 
-const tiers = subscriptions.filter((t) => t.lessons !== null) as Array<{
-    lessons: number
-    price: number
-    label?: string
-}>
+type FiniteTier = PlanTier & { lessons: number }
 
-const selectedLessons = ref(tiers[1]!.lessons) // default: 8
+// Калькулятор работает только с конечными тарифами, безлимит исключаем
+const tiers = computed<FiniteTier[]>(() =>
+    allTiers.value.filter((t): t is FiniteTier => t.lessons !== null)
+)
 
-const selectedTier = computed(() => tiers.find((t) => t.lessons === selectedLessons.value)!)
+const selectedLessons = ref(tiers.value[1]?.lessons ?? 8) // default: 8
+
+const selectedTier = computed(
+    () => tiers.value.find((t) => t.lessons === selectedLessons.value) ?? tiers.value[0]!
+)
 
 const lessonsPerWeek = computed(() => Math.round(selectedLessons.value / 4))
 
@@ -33,7 +38,7 @@ const fmt = (n: number) =>
         class="bg-default relative z-10 flex w-full py-12 md:py-20 lg:py-24"
     >
         <UContainer class="flex flex-col gap-10 md:gap-14">
-            <SectionLeading subtitle="Ценообразование" icon="ph:ticket-duotone">
+            <UiSectionLeading subtitle="Ценообразование" icon="ph:ticket-duotone">
                 <template #title>
                     <span class="text-secondary">
                         Калькулятор<br />
@@ -44,34 +49,40 @@ const fmt = (n: number) =>
                     Выбери количество занятий и посмотри, сколько экономишь по сравнению с разовыми
                     посещениями.
                 </template>
-            </SectionLeading>
+            </UiSectionLeading>
 
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
                 <!-- Calculator -->
-                <div class="flex flex-col gap-2 rounded-sm bg-white px-3 py-2 md:gap-4 md:p-4">
+                <div
+                    class="flex flex-col gap-2 rounded-sm bg-white px-3 py-2 shadow-xs md:gap-4 md:p-4"
+                >
                     <h3 class="text-secondary text-xl font-extrabold md:text-3xl">
                         Посчитай выгоду
                     </h3>
 
                     <!-- Lessons picker -->
                     <div class="flex flex-col gap-2">
-                        <span class="text-default/70 text-sm font-semibold">
+                        <span class="text-muted text-sm font-semibold">
                             Количество занятий в месяц
                         </span>
                         <div class="flex flex-wrap gap-2">
                             <UButton
                                 v-for="tier in tiers"
                                 :key="tier.lessons"
-                                size="xl"
+                                size="lg"
                                 :variant="selectedLessons === tier.lessons ? 'solid' : 'soft'"
                                 :color="selectedLessons === tier.lessons ? 'primary' : 'secondary'"
-                                class="flex size-9 justify-center rounded-sm font-bold md:size-11"
-                                @click="selectedLessons = tier.lessons"
+                                class="flex size-7 justify-center rounded-lg font-bold md:size-9"
+                                @click="
+                                    () => {
+                                        selectedLessons = tier.lessons
+                                    }
+                                "
                             >
                                 {{ tier.lessons }}
                             </UButton>
                         </div>
-                        <span class="text-default/50 text-xs font-medium">
+                        <span class="text-muted text-xs font-medium">
                             {{ selectedLessons }}
                             {{ pluralize(selectedLessons, ["занятие", "занятия", "занятий"]) }} в
                             месяц - {{ lessonsPerWeek }}
@@ -83,10 +94,10 @@ const fmt = (n: number) =>
                     <!-- Price comparison -->
                     <div class="flex flex-col gap-3 border-y border-neutral-100 py-4">
                         <div class="flex items-center justify-between">
-                            <span class="text-default/60 text-sm font-medium">
+                            <span class="text-muted text-sm font-medium">
                                 Разово ({{ selectedLessons }} × {{ fmt(pricing.trialLesson) }})
                             </span>
-                            <span class="text-default/50 text-base font-bold line-through">
+                            <span class="text-muted text-base font-bold line-through">
                                 {{ fmt(regularPrice) }}
                             </span>
                         </div>
@@ -99,7 +110,7 @@ const fmt = (n: number) =>
                             </span>
                         </div>
                         <div
-                            class="bg-primary/10 flex items-center justify-between rounded-sm px-3 py-2"
+                            class="bg-primary/10 flex items-center justify-between rounded-lg px-3 py-2"
                         >
                             <span class="text-primary text-base font-bold md:text-lg"
                                 >Ваша экономия</span
@@ -128,16 +139,16 @@ const fmt = (n: number) =>
                 </div>
 
                 <!-- Subscription grid -->
-                <SubscriptionsPromo>
+                <PromoSubscriptions>
                     <template #sub>Все тарифы</template>
                     <template #desc>
                         • Абонемент действует на <strong>любые</strong> кружки центра — можно
                         комбинировать занятия как угодно.<br />
-                        • Безлимит активируется при выборе более <strong>20</strong> занятий в
-                        месяц. В этом случае вы можете выбрать <strong>любое</strong> количество
+                        • Безлимит активируется при выборе <strong>более 20</strong> занятий в
+                        месяц. В этом случае вы можете выбрать <strong>любое количество</strong>
                         занятий.
                     </template>
-                </SubscriptionsPromo>
+                </PromoSubscriptions>
             </div>
         </UContainer>
     </section>

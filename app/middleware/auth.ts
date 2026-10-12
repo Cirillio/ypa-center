@@ -1,0 +1,19 @@
+export default defineNuxtRouteMiddleware((to) => {
+    // Страница сама решает, когда гостю можно (оплата события на /checkout/result)
+    if (to.meta.authSkip?.(to)) return
+
+    // ПОЧЕМУ: isAuthed стора выставляется один раз при создании и не следит
+    // за localStorage дальше (нет storage-события) – токены могли смениться
+    // в другой вкладке или очиститься извне. hasTokens() читает localStorage
+    // напрямую и остаётся источником истины для гейта; hydrate() подтягивает
+    // isAuthed к этому же значению, чтобы /login (который смотрит на
+    // isAuthed) не разъехался с реальным состоянием токенов.
+    if (import.meta.client) {
+        useAuthStore().hydrate()
+    }
+
+    if (!hasTokens()) {
+        // ПОЧЕМУ: после входа возвращаем на исходную страницу; белый список проверяет resolveRedirect
+        return navigateTo({ path: "/login", query: { redirectFrom: to.fullPath } })
+    }
+})

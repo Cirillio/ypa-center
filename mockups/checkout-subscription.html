@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Абонемент – макет – Улица Радости</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/duotone/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+<!--
+  Токены = frontend-core/app/assets/css/tokens.css + семантика Nuxt UI.
+  text-default / bg-default / border-default / text-muted — как в приложении.
+  Полупрозрачный текст: text-ink/xx (= text-default/xx в Nuxt UI, здесь — из-за ограничений CDN-сборки).
+-->
+<style type="text/tailwindcss">
+@theme {
+  --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  --color-primary: #f16d22;
+  --color-secondary: #2d915d;
+  --color-error: #dc2626;
+  --color-info: #2563eb;
+  --color-ink: #4d4845;
+  --radius-lg: 1rem;
+}
+@utility text-default { color: #4d4845; }
+@utility text-muted { color: #746c66; }
+@utility bg-default { background-color: #fbf9f7; }
+@utility border-default { border-color: #e6e1dc; }
+@utility p-3.75 { padding: 0.9375rem; }
+</style>
+
+<style>
+  :root { --ui-primary:#f16d22; --ui-secondary:#2d915d; --ui-text:#4d4845; --ui-bg:#fbf9f7; --ui-radius:1rem; --ui-header-height:72px; }
+  html { scroll-behavior: smooth; }
+  body { font-family: "Nunito", sans-serif; font-feature-settings: "ss01","ss02","cv01","cv02"; color: var(--ui-text); background: var(--ui-bg); }
+  strong { color: var(--ui-primary); }
+  .gradient-bg-ps { background-color: var(--ui-bg); background-image: radial-gradient(75% 55% at 50% 0%, color-mix(in oklab, var(--ui-primary) 9%, transparent), transparent 72%); }
+  .pending-dot { animation: pending-dot .9s ease-in-out infinite; }
+  @keyframes pending-dot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.8); } }
+  .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { scrollbar-width: none; }
+  .pop-in { animation: pop-in .18s ease-out; } @keyframes pop-in { from { opacity: 0; transform: translateY(6px) scale(.985); } to { opacity: 1; transform: none; } }
+  .fade-in { animation: fade-in .25s ease-out; } @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+  /* Блокировка виджетов на время оплаты */
+  .widget, #page section > div > * { min-width: 0; }
+  #page[inert] { pointer-events: none; user-select: none; }
+  #page[inert] .widget { opacity: .55; transition: opacity .2s; filter: saturate(.6); }
+  input[type=number]::-webkit-inner-spin-button { display: none; }
+  :focus-visible { outline: 2px solid var(--ui-primary); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body class="gradient-bg-ps text-default min-h-dvh antialiased">
+<!-- Шапка сайта: копия LayoutHeader (макет, ссылки условные) -->
+<header class="fixed top-0 right-0 left-0 z-40 flex justify-center bg-white/85 backdrop-blur-sm">
+  <div class="mx-auto flex h-(--ui-header-height) w-full max-w-[84rem] items-center justify-between gap-4 p-2 px-4 sm:px-6 lg:px-8">
+    <a href="#" class="flex h-full items-center gap-2 py-1" aria-label="На главную Улица Радости">
+      <img src="../frontend-core/public/core/ClearSun.png" alt="" class="h-full w-auto" />
+      <div class="flex flex-col items-start">
+        <span class="text-secondary flex gap-1 text-xl font-extrabold md:text-3xl">
+          <span class="flex"><span class="text-primary">У</span>лица</span>
+          <span class="flex"><span class="text-primary">Ра</span>дости</span>
+        </span>
+        <span class="text-primary -mt-1.5 text-sm font-bold max-md:text-xs">Центр умного развития</span>
+      </div>
+    </a>
+    <div class="flex flex-1 items-center gap-4 max-lg:justify-end">
+      <nav class="mx-auto h-full max-lg:hidden" aria-label="Основная навигация">
+        <ul class="flex list-none items-center gap-4">
+          <li><a href="#" class="hover:bg-primary/10 hover:text-primary rounded-lg px-5 py-2 text-base font-semibold transition-colors">О нас</a></li>
+          <li><a href="#" class="hover:bg-primary/10 hover:text-primary rounded-lg px-5 py-2 text-base font-semibold transition-colors">Кружки</a></li>
+          <li><a href="#" class="hover:bg-primary/10 hover:text-primary rounded-lg px-5 py-2 text-base font-semibold transition-colors">События</a></li>
+          <li><a href="#" class="hover:bg-primary/10 hover:text-primary rounded-lg px-5 py-2 text-base font-semibold transition-colors">Галерея</a></li>
+        </ul>
+      </nav>
+      <a href="#" class="bg-info/10 text-info hover:bg-info/15 flex items-center gap-1.5 rounded-lg px-4 py-2.5 text-base font-semibold transition-colors max-lg:hidden"><i class="ph-bold ph-user text-lg"></i>Мой кабинет</a>
+      <a href="checkout-subscription.html" class="bg-secondary flex items-center gap-1.5 rounded-lg px-4 py-2.5 text-base font-semibold text-white max-lg:hidden"><i class="ph-bold ph-puzzle-piece text-lg"></i>Абонемент</a>
+      <button type="button" class="text-default hover:bg-default aspect-square rounded-lg p-2 lg:hidden" aria-label="Открыть меню"><i class="ph-bold ph-list text-2xl"></i></button>
+    </div>
+  </div>
+</header>
+<div id="page" class="pt-(--ui-header-height)">
+<div class="mx-auto flex w-full max-w-[84rem] flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 py-6 sm:px-6 lg:px-8">
+  <div class="flex items-center gap-3">
+    <div class="bg-primary/10 flex aspect-square size-10 shrink-0 items-center justify-center rounded-full"><i class="ph-bold ph-puzzle-piece text-primary text-2xl"></i></div>
+    <div class="flex flex-col"><span class="text-secondary text-sm leading-tight font-semibold tracking-wide uppercase">Запись</span><h1 class="text-primary text-2xl leading-tight font-bold">Собрать абонемент</h1></div>
+  </div>
+  <nav aria-label="Тип покупки" class="no-scrollbar flex max-w-full gap-1 overflow-x-auto rounded-full bg-white p-1"><a href="checkout-trial.html"  class="flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-base font-bold transition-colors text-default hover:bg-primary/10 hover:text-primary"><i class="ph-bold ph-person-simple-run text-lg"></i>Пробное</a><a href="checkout-subscription.html" aria-current=page class="flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-base font-bold transition-colors bg-primary text-white"><i class="ph-bold ph-puzzle-piece text-lg"></i>Абонемент</a><a href="checkout-event.html"  class="flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-base font-bold transition-colors text-default hover:bg-primary/10 hover:text-primary"><i class="ph-bold ph-ticket text-lg"></i>Событие</a></nav>
+</div>
+<section class="pb-32 lg:pb-16"><div class="mx-auto grid w-full max-w-[84rem] gap-6 px-4 sm:px-6 lg:grid-cols-7 lg:px-8">
+<div class="flex flex-col gap-6 lg:col-span-5">
+<section class="widget flex flex-col gap-5 rounded-lg bg-white p-6" aria-label="Выбор кружков">
+  <div class="flex flex-wrap items-center gap-3">
+    <div class="bg-primary/5 text-primary flex items-center justify-center rounded-full p-2"><i class="ph-bold ph-puzzle-piece text-xl"></i></div>
+    <h2 class="text-primary text-xl font-bold">Кружки по дням</h2>
+    <div id="week" class="ml-auto flex items-center gap-1 rounded-full bg-default p-1" aria-label="Неделя показа мест"></div>
+  </div>
+  <p class="text-muted flex items-start gap-2 text-sm"><i class="ph-bold ph-info mt-0.5 text-base"></i><span id="week-note"></span></p>
+  <div id="days" class="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 py-1" role="tablist" aria-label="День недели"></div>
+  <div id="conflict"></div>
+  <div id="slots"></div>
+</section>
+<section class="widget flex flex-col gap-5 rounded-lg bg-white p-6" aria-label="Тариф">
+  <div class="flex items-center gap-3"><div class="bg-primary/5 text-primary flex items-center justify-center rounded-full p-2"><i class="ph-bold ph-chart-line-up text-xl"></i></div><h2 class="text-primary text-xl font-bold">Тариф подбирается сам</h2></div>
+  <p class="text-muted -mt-2 text-sm">Каждый кружок — 4 занятия в месяц. Чем больше кружков, тем ниже цена занятия.</p>
+  <div id="tiers" class="grid grid-cols-3 gap-2 sm:grid-cols-6"></div>
+  <div id="tier-next"></div>
+</section>
+</div>
+<aside id="summary" class="lg:col-span-2" aria-label="Итого"><div id="summary-box" class="widget flex flex-col gap-5 rounded-lg bg-white p-6 lg:sticky lg:top-[calc(var(--ui-header-height)+1rem)] lg:max-h-[calc(100dvh-var(--ui-header-height)-2rem)] lg:overflow-y-auto">
+<div class="flex items-center gap-3"><div class="bg-primary/5 text-primary flex items-center justify-center rounded-full p-2"><i class="ph-bold ph-receipt text-xl"></i></div><h2 class="text-primary text-xl font-bold">Итого</h2></div>
+<section class="flex flex-col gap-2.5" aria-label="Ребёнок"><h3 class="text-default text-base font-semibold">Для кого абонемент</h3><div id="kids" class="flex flex-col gap-2.5"></div></section>
+<div class="bg-ink/15 h-px"></div>
+<section class="flex flex-col gap-2.5" aria-label="Состав"><div class="flex items-center justify-between"><h3 class="text-default text-base font-semibold">Состав</h3><span id="s-count" class="bg-secondary/10 text-secondary rounded-full px-2 py-0.5 text-sm font-bold"></span></div><div id="s-list"></div></section>
+<div class="bg-ink/15 h-px"></div>
+<dl id="s-rows" class="flex flex-col gap-2"></dl>
+<div id="s-price"></div>
+<div id="s-save"></div>
+<div id="s-cta" class="flex flex-col gap-2"></div>
+<p class="text-muted flex items-start gap-2 text-xs"><i class="ph-bold ph-lock-simple mt-px text-base"></i>Оплата через ЮKassa. После нажатия места держим за вами 30 минут.</p>
+
+</div></aside>
+</div></section>
+<!-- Нижняя панель на мобильных: сумма + действие -->
+<div id="mbar" class="border-default fixed inset-x-0 bottom-0 z-30 flex items-center justify-between gap-3 border-t bg-white/90 px-4 py-3 backdrop-blur-sm lg:hidden">
+  <div class="flex flex-col"><span id="mbar-label" class="text-muted text-xs font-semibold">К оплате</span><span id="mbar-amount" class="text-primary text-2xl leading-none font-extrabold">—</span></div>
+  <button type="button" id="mbar-btn" class="bg-primary rounded-lg px-5 py-2.5 text-base font-bold text-white">Продолжить</button>
+</div>
+
+</div>
+<!-- Модалка оплаты: блокирует страницу (#page[inert]), состояния переключает Pay.setState() -->
+<div id="pay-modal" class="fixed inset-0 z-50 hidden items-end justify-center sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="pay-title">
+  <div class="fade-in absolute inset-0 bg-[#4d4845]/40 backdrop-blur-[3px]"></div>
+  <div class="pop-in relative flex max-h-dvh w-full max-w-lg flex-col gap-5 overflow-y-auto rounded-t-lg bg-white p-6 shadow-lg ring-1 ring-black/5 sm:rounded-lg">
+
+    <div class="flex items-center gap-3">
+      <div class="bg-primary/5 text-primary flex items-center justify-center rounded-full p-2"><i class="ph-bold ph-credit-card text-xl"></i></div>
+      <h2 id="pay-title" class="text-primary text-xl font-bold">Оплата</h2>
+      <span id="pay-timer" class="text-muted ml-auto flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1 text-sm font-semibold text-amber-700">
+        <span class="pending-dot size-2 rounded-full bg-amber-500"></span><span>Бронь ещё <b id="pay-timer-val" class="font-bold tabular-nums">30:00</b></span>
+      </span>
+    </div>
+
+    <!-- Сводка заказа -->
+    <div id="pay-order" class="bg-default flex flex-col gap-3 rounded-lg p-3.75"></div>
+
+    <!-- Состояние: платёжная форма -->
+    <div data-state="form" class="flex flex-col gap-4">
+      <div class="flex gap-2" role="tablist" aria-label="Способ оплаты">
+        <button type="button" role="tab" data-method="card" aria-selected="true" class="method-tab bg-primary/10 text-primary flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-base font-bold"><i class="ph-bold ph-credit-card text-lg"></i>Карта</button>
+        <button type="button" role="tab" data-method="sbp" aria-selected="false" class="method-tab bg-default text-default flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-base font-bold"><i class="ph-bold ph-qr-code text-lg"></i>СБП</button>
+      </div>
+
+      <div class="border-default relative rounded-lg border-2 border-dashed p-4">
+        <span class="text-muted absolute -top-3 left-3 bg-white px-2 text-xs font-semibold">Здесь встраивается платёжный виджет ЮKassa</span>
+        <div data-method-panel="card" class="flex flex-col gap-3">
+          <label class="flex flex-col gap-1"><span class="text-default text-base font-semibold">Номер карты</span>
+            <input inputmode="numeric" placeholder="0000 0000 0000 0000" class="bg-default text-default placeholder:text-muted w-full rounded-sm px-4 py-2.5 text-lg outline-none focus:ring-2 focus:ring-primary" /></label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="flex flex-col gap-1"><span class="text-default text-base font-semibold">Срок</span>
+              <input inputmode="numeric" placeholder="ММ / ГГ" class="bg-default text-default placeholder:text-muted w-full rounded-sm px-4 py-2.5 text-lg outline-none focus:ring-2 focus:ring-primary" /></label>
+            <label class="flex flex-col gap-1"><span class="text-default text-base font-semibold">CVC</span>
+              <input inputmode="numeric" placeholder="•••" class="bg-default text-default placeholder:text-muted w-full rounded-sm px-4 py-2.5 text-lg outline-none focus:ring-2 focus:ring-primary" /></label>
+          </div>
+        </div>
+        <div data-method-panel="sbp" class="hidden flex-col items-center gap-3 py-2 text-center">
+          <div class="bg-default flex size-36 items-center justify-center rounded-lg"><i class="ph-duotone ph-qr-code text-primary/60 text-[6rem]"></i></div>
+          <p class="text-muted text-sm">Отсканируйте QR-код камерой или откройте приложение банка</p>
+        </div>
+      </div>
+
+      <button type="button" id="pay-submit" class="bg-primary flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-lg font-bold text-white transition-[filter] hover:brightness-95">
+        <i class="ph-bold ph-lock-simple text-xl"></i><span>Оплатить <span data-pay-amount></span></span>
+      </button>
+      <p class="text-muted flex items-start gap-2 text-xs"><i class="ph-bold ph-shield-check text-secondary mt-px text-base"></i>Платёж проходит на стороне ЮKassa, данные карты нам не передаются.</p>
+      <button type="button" data-close class="text-error hover:bg-error/10 mx-auto flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors"><i class="ph-bold ph-x"></i>Отменить оплату</button>
+    </div>
+
+    <!-- Состояние: проверка -->
+    <div data-state="checking" class="hidden flex-col items-center gap-3 py-6 text-center">
+      <i class="ph-bold ph-spinner-gap text-primary animate-spin text-5xl"></i>
+      <h3 class="text-default text-xl font-bold">Проверяем оплату…</h3>
+      <p class="text-muted max-w-xs text-sm">Не закрывайте окно. Обычно это занимает несколько секунд.</p>
+    </div>
+
+    <!-- Состояние: успех -->
+    <div data-state="success" class="hidden flex-col items-center gap-4 py-2 text-center">
+      <div class="bg-secondary/10 text-secondary flex size-16 items-center justify-center rounded-full"><i class="ph-bold ph-check-circle text-4xl"></i></div>
+      <div class="flex flex-col gap-1"><h3 class="text-default text-2xl font-bold">Оплата прошла</h3><p id="pay-success-text" class="text-muted max-w-sm text-sm"></p></div>
+      <div class="flex w-full flex-col gap-2 sm:flex-row" id="pay-success-actions"></div>
+    </div>
+
+    <!-- Состояние: отказ -->
+    <div data-state="failed" class="hidden flex-col items-center gap-4 py-2 text-center">
+      <div class="bg-error/10 text-error flex size-16 items-center justify-center rounded-full"><i class="ph-bold ph-x-circle text-4xl"></i></div>
+      <div class="flex flex-col gap-1"><h3 class="text-default text-2xl font-bold">Платёж не прошёл</h3><p class="text-muted max-w-sm text-sm">Банк отклонил операцию. Деньги не списаны, места за вами сохранены до конца брони.</p></div>
+      <div class="flex w-full flex-col gap-2 sm:flex-row">
+        <button type="button" data-goto="form" class="bg-primary flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-base font-bold text-white"><i class="ph-bold ph-arrow-counter-clockwise"></i>Попробовать снова</button>
+        <button type="button" data-close class="bg-default text-default flex flex-1 items-center justify-center rounded-lg px-4 py-2.5 text-base font-bold">Изменить заказ</button>
+      </div>
+    </div>
+
+    <!-- Состояние: бронь истекла -->
+    <div data-state="expired" class="hidden flex-col items-center gap-4 py-2 text-center">
+      <div class="flex size-16 items-center justify-center rounded-full bg-amber-500/10 text-amber-600"><i class="ph-bold ph-clock-countdown text-4xl"></i></div>
+      <div class="flex flex-col gap-1"><h3 class="text-default text-2xl font-bold">Время брони истекло</h3><p class="text-muted max-w-sm text-sm">Места освобождены. Выберите заново — свободные ещё могут быть.</p></div>
+      <button type="button" data-close data-reset class="bg-primary flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-base font-bold text-white">Вернуться к выбору</button>
+    </div>
+  </div>
+</div>
+<!-- Только для макета: переключатель состояний. Во фронт не переносится. -->
+<details id="devbar" class="fixed bottom-20 left-3 z-[60] lg:bottom-4 lg:left-4">
+  <summary class="cursor-pointer list-none rounded-full bg-[#2b2724] px-3.5 py-2 text-xs font-bold text-white/90 shadow-lg select-none"><i class="ph-bold ph-sliders-horizontal mr-1.5 align-[-2px]"></i>Состояния макета</summary>
+  <div class="mt-2 flex w-56 flex-col gap-1.5 rounded-lg bg-[#2b2724] p-2.5 shadow-lg">
+    <div class="text-[10px] font-bold tracking-wider text-white/50 uppercase">Страница</div>
+    <div class="grid grid-cols-2 gap-1.5">
+      <button data-dev="reset" class="rounded-md bg-white/10 px-2 py-1.5 text-xs font-semibold text-white hover:bg-white/20">Пусто</button>
+      <button data-dev="fill" class="rounded-md bg-white/10 px-2 py-1.5 text-xs font-semibold text-white hover:bg-white/20">Заполнено</button>
+    </div>
+    <div class="mt-1 text-[10px] font-bold tracking-wider text-white/50 uppercase">Модалка оплаты</div>
+    <div class="grid grid-cols-2 gap-1.5">
+      <button data-dev="form" class="rounded-md bg-white/10 px-2 py-1.5 text-xs font-semibold text-white hover:bg-white/20">Форма</button>
+      <button data-dev="checking" class="rounded-md bg-white/10 px-2 py-1.5 text-xs font-semibold text-white hover:bg-white/20">Проверка</button>
+      <button data-dev="success" class="rounded-md bg-white/10 px-2 py-1.5 text-xs font-semibold text-white hover:bg-white/20">Успех</button>
+      <button data-dev="failed" class="rounded-md bg-white/10 px-2 py-1.5 text-xs font-semibold text-white hover:bg-white/20">Отказ</button>
+      <button data-dev="expired" class="col-span-2 rounded-md bg-white/10 px-2 py-1.5 text-xs font-semibold text-white hover:bg-white/20">Бронь истекла</button>
+    </div>
+  </div>
+</details>
+<script>
+/* ===== Общие хелперы макета ===== */
+const $ = (s, r = document) => r.querySelector(s)
+const $$ = (s, r = document) => [...r.querySelectorAll(s)]
+const ic = (n, c = '') => `<i class="ph-bold ph-${n} ${c}"></i>`
+const rub = (n) => new Intl.NumberFormat('ru-RU').format(n) + ' ₽'
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+const plural = (n, [a, b, c]) => { const m = n % 10, h = n % 100; return h >= 11 && h <= 19 ? c : m === 1 ? a : m >= 2 && m <= 4 ? b : c }
+const DAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+const capColor = (n) => (n === 0 ? 'text-ink/60' : n <= 3 ? 'text-amber-500' : 'text-emerald-600')
+
+/* Заголовок виджета — как в /me */
+const widgetHead = (icon, title, extra = '') =>
+  `<div class="flex items-center gap-3"><div class="bg-primary/5 text-primary flex items-center justify-center rounded-full p-2">${ic(icon, 'text-xl')}</div><h2 class="text-primary text-xl font-bold">${title}</h2>${extra}</div>`
+
+/* Строка «ключ — значение» в сводке */
+const sumRow = (label, val, empty = 'не выбрано') =>
+  `<div class="flex items-baseline justify-between gap-3 px-1"><dt class="text-muted shrink-0 text-sm font-medium">${label}</dt><dd class="${val ? 'text-default font-semibold' : 'text-muted italic'} min-w-0 text-end text-sm">${val || empty}</dd></div>`
+
+/* Блок суммы (как «Итого в месяц» в корзине) */
+const priceBox = (label, main, aside = '') =>
+  `<div class="bg-primary/5 ring-primary/15 flex flex-wrap items-end justify-between gap-2 rounded-sm px-4 py-3 ring-2">
+     <div class="flex min-w-fit flex-col gap-0.5"><span class="text-muted text-xs font-semibold">${label}</span><span class="text-primary text-3xl leading-none font-extrabold">${main}</span></div>${aside}</div>`
+
+/* Главная кнопка сводки */
+const ctaBtn = (id, ready, label, icon = 'arrow-right') =>
+  `<button type="button" id="${id}" ${ready ? '' : 'disabled aria-disabled="true"'} class="flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-lg font-bold transition-[filter] ${ready ? 'bg-primary text-white hover:brightness-95' : 'bg-ink/10 text-ink/45 cursor-not-allowed'}">${label}${ic(icon, 'text-xl')}</button>`
+
+const payNote = `<p class="text-muted flex items-start gap-2 text-xs">${ic('lock-simple', 'mt-px text-base')}Оплата через ЮKassa. После нажатия места держим за вами 30 минут.</p>`
+
+/* ===== Дети (общий пикер для пробного и абонемента) ===== */
+const Kids = {
+  list: [
+    { id: 1, name: 'Алиса', birth: '2018-03-12' },
+    { id: 2, name: 'Тимофей', birth: '2020-09-02' },
+  ],
+  selected: null, adding: false, error: '', onChange: () => {}, root: null,
+  mount(root, onChange) { this.root = root; this.onChange = onChange; this.render(); root.addEventListener('click', (e) => this.click(e)); root.addEventListener('submit', (e) => { e.preventDefault(); this.save() }) },
+  get() { return this.list.find((c) => c.id === this.selected) || null },
+  select(id) { this.selected = id; this.render(); this.onChange() },
+  setError(msg) { this.error = msg || ''; const el = $('[data-kid-error]', this.root); if (el) el.innerHTML = this.errorHtml() },
+  errorHtml() { return this.error ? `<p class="text-error flex items-start gap-1.5 text-sm font-medium">${ic('warning-circle', 'mt-0.5 text-base')}${this.error}</p>` : '' },
+  click(e) {
+    const chip = e.target.closest('[data-kid]'); if (chip) return this.select(Number(chip.dataset.kid))
+    if (e.target.closest('[data-kid-add]')) { this.adding = true; this.render(); $('[name=kid-name]', this.root)?.focus() }
+    if (e.target.closest('[data-kid-cancel]')) { this.adding = false; this.render() }
+  },
+  save() {
+    const name = $('[name=kid-name]', this.root).value.trim(), birth = $('[name=kid-birth]', this.root).value
+    if (!name || !birth) return
+    const id = Math.max(...this.list.map((c) => c.id)) + 1
+    this.list.push({ id, name, birth }); this.adding = false; this.select(id)
+  },
+  render() {
+    const chips = this.list.map((c) => {
+      const on = c.id === this.selected
+      return `<button type="button" role="radio" aria-checked="${on}" data-kid="${c.id}" class="flex items-center gap-2 rounded-full py-1 pr-3 pl-1 ring-2 transition-all ${on ? 'bg-secondary/10 ring-secondary' : 'bg-secondary/5 hover:bg-secondary/10 ring-transparent'}">
+        <span class="bg-secondary/15 text-secondary flex size-7 items-center justify-center rounded-full text-sm font-bold">${esc(c.name[0].toUpperCase())}</span>
+        <span class="text-default text-base leading-tight font-semibold">${esc(c.name)}</span>${on ? ic('check', 'text-secondary text-sm') : ''}</button>`
+    }).join('')
+    const form = this.adding
+      ? `<form class="flex flex-col gap-2"><input name="kid-name" maxlength="40" placeholder="Имя ребёнка" class="bg-default placeholder:text-muted w-full rounded-sm px-4 py-2 text-base outline-none focus:ring-2 focus:ring-primary" />
+           <div class="flex gap-2"><input name="kid-birth" type="date" class="bg-default min-w-0 flex-1 rounded-sm px-4 py-2 text-base outline-none focus:ring-2 focus:ring-primary" />
+           <button class="bg-primary rounded-lg px-3 text-white" title="Сохранить">${ic('check')}</button>
+           <button type="button" data-kid-cancel class="text-error hover:bg-error/10 rounded-lg px-3" title="Отмена">${ic('x')}</button></div></form>`
+      : `<button type="button" data-kid-add class="bg-info/10 text-info hover:bg-info/15 flex w-fit items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors">${ic('plus')}Добавить ребёнка</button>`
+    this.root.innerHTML = `<div role="radiogroup" aria-label="Ребёнок" class="flex flex-wrap gap-2">${chips}</div><div data-kid-error>${this.errorHtml()}</div>${form}`
+  },
+}
+
+/* ===== Модалка оплаты ===== */
+const Pay = {
+  el: null, timer: null, left: 0, order: null, state: 'form', onReset: () => {}, onSuccessAgain: () => {},
+  init() {
+    this.el = $('#pay-modal')
+    this.el.addEventListener('click', (e) => {
+      if (e.target.closest('[data-close]')) { const r = e.target.closest('[data-reset]'); this.close(); if (r) this.onReset() }
+      const g = e.target.closest('[data-goto]'); if (g) this.setState(g.dataset.goto)
+      const m = e.target.closest('[data-method]'); if (m) this.setMethod(m.dataset.method)
+    })
+    $('#pay-submit').addEventListener('click', () => { this.setState('checking'); setTimeout(() => this.state === 'checking' && this.setState('success'), 1600) })
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && ['success', 'failed', 'expired'].includes(this.state)) this.close() })
+  },
+  open(order) {
+    this.order = order; this.left = 30 * 60 - 19
+    $('#pay-order').innerHTML = `
+      <div class="flex items-center gap-3"><span class="flex shrink-0 items-center justify-center rounded-full p-2 ${order.tint}">${ic(order.icon, 'text-xl')}</span>
+        <div class="grid min-w-0"><span class="text-default/75 text-base leading-tight">${order.kicker}</span><span class="text-default truncate text-lg leading-tight font-semibold">${esc(order.title)}</span></div></div>
+      <div class="bg-ink/15 h-px"></div>
+      <dl class="flex flex-col gap-2">${order.rows.map(([l, v]) => sumRow(l, esc(v))).join('')}
+        <div class="flex items-baseline justify-between gap-3 px-1 pt-1"><dt class="text-default text-base font-bold">К оплате</dt><dd class="text-primary text-2xl font-extrabold">${rub(order.amount)}</dd></div></dl>`
+    $$('[data-pay-amount]').forEach((n) => (n.textContent = rub(order.amount)))
+    $('#page').inert = true; $('#page').setAttribute('aria-busy', 'true')
+    this.el.classList.remove('hidden'); this.el.classList.add('flex'); document.body.style.overflow = 'hidden'
+    this.setMethod('card'); this.setState('form'); this.tick(); clearInterval(this.timer); this.timer = setInterval(() => this.tick(), 1000)
+  },
+  tick() {
+    this.left = Math.max(0, this.left - (this.timer ? 1 : 0))
+    const m = String(Math.floor(this.left / 60)).padStart(2, '0'), s = String(this.left % 60).padStart(2, '0')
+    $('#pay-timer-val').textContent = `${m}:${s}`
+    if (this.left === 0 && ['form', 'failed'].includes(this.state)) this.setState('expired')
+  },
+  setMethod(m) {
+    $$('.method-tab').forEach((b) => { const on = b.dataset.method === m; b.setAttribute('aria-selected', on); b.classList.toggle('bg-primary/10', on); b.classList.toggle('text-primary', on); b.classList.toggle('bg-default', !on); b.classList.toggle('text-default', !on) })
+    $$('[data-method-panel]').forEach((p) => { const on = p.dataset.methodPanel === m; p.classList.toggle('hidden', !on); p.classList.toggle('flex', on) })
+  },
+  setState(s) {
+    this.state = s
+    $$('[data-state]', this.el).forEach((n) => { const on = n.dataset.state === s; n.classList.toggle('hidden', !on); n.classList.toggle('flex', on) })
+    $('#pay-timer').classList.toggle('hidden', ['success', 'expired'].includes(s))
+    $('#pay-order').classList.toggle('hidden', ['success', 'expired'].includes(s))
+    $('#pay-title').textContent = s === 'success' ? 'Готово' : 'Оплата'
+    if (s === 'success') { $('#pay-success-text').textContent = this.order.successText; $('#pay-success-actions').innerHTML = this.order.successActions }
+  },
+  close() { clearInterval(this.timer); this.timer = null; this.el.classList.add('hidden'); this.el.classList.remove('flex'); $('#page').inert = false; $('#page').removeAttribute('aria-busy'); document.body.style.overflow = '' },
+}
+
+/* ===== Мобильная панель и devbar ===== */
+const Bar = {
+  set({ amount, label = 'К оплате', ready, btn = 'Продолжить' }) {
+    $('#mbar-amount').textContent = amount; $('#mbar-label').textContent = label
+    const b = $('#mbar-btn'); b.textContent = ready ? btn : 'К итогу'
+    b.className = 'rounded-lg px-5 py-2.5 text-base font-bold ' + (ready ? 'bg-primary text-white' : 'bg-ink/10 text-ink/60')
+  },
+}
+function wireDev(page) {
+  $$('[data-dev]').forEach((b) => b.addEventListener('click', () => {
+    const a = b.dataset.dev
+    if (a === 'reset') { Pay.close(); page.reset(); return }
+    if (a === 'fill') { Pay.close(); page.fill(); return }
+    page.fill(); page.openPay(); Pay.setState(a)
+    $('#devbar').open = false
+  }))
+  $('#mbar-btn').addEventListener('click', () => (page.isReady() ? page.openPay() : $('#summary').scrollIntoView({ behavior: 'smooth', block: 'start' })))
+}
+
+/* ===== Абонемент ===== */
+const TRIAL_PRICE = 1200
+const TIERS = [{ lessons: 4, price: 4000 }, { lessons: 8, price: 7000 }, { lessons: 12, price: 10000 }, { lessons: 16, price: 11000 }, { lessons: 20, price: 12000 }, { lessons: null, price: 15000, label: 'Безлимит' }]
+const TH = {
+  rose: { bg: 'bg-rose-50', ring: 'ring-rose-400', title: 'text-rose-700', dot: 'bg-rose-400' },
+  emerald: { bg: 'bg-emerald-50', ring: 'ring-emerald-400', title: 'text-emerald-700', dot: 'bg-emerald-400' },
+  violet: { bg: 'bg-violet-50', ring: 'ring-violet-400', title: 'text-violet-700', dot: 'bg-violet-400' },
+  sky: { bg: 'bg-sky-50', ring: 'ring-sky-400', title: 'text-sky-700', dot: 'bg-sky-400' },
+  amber: { bg: 'bg-amber-50', ring: 'ring-amber-400', title: 'text-amber-700', dot: 'bg-amber-400' },
+  indigo: { bg: 'bg-indigo-50', ring: 'ring-indigo-400', title: 'text-indigo-700', dot: 'bg-indigo-400' },
+}
+const ACT = { chess: ['Шахматы', 'rose'], robo: ['Робототехника', 'sky'], eng: ['Английский', 'emerald'], draw: ['Рисование', 'amber'], theatre: ['Театральная студия', 'violet'], logic: ['Развитие логики', 'indigo'] }
+// [id, день 0=Пн, кружок, начало, конец, группа, вместимость, свободно]
+const RAW = [
+  [1, 0, 'chess', '16:00', '17:00', 'Мини, 5–7 лет', 8, 5], [2, 0, 'robo', '17:30', '18:30', 'Средняя, 8–10 лет', 8, 2], [3, 0, 'eng', '15:00', '16:00', 'Мини, 5–7 лет', 6, 4],
+  [4, 1, 'draw', '16:00', '17:00', 'Мини, 4–6 лет', 10, 7], [5, 1, 'theatre', '17:30', '18:30', 'Старшая, 8–12 лет', 10, 3], [6, 1, 'logic', '15:00', '15:45', 'Мини, 4–6 лет', 8, 6],
+  [7, 2, 'chess', '16:00', '17:00', 'Старшая, 8–12 лет', 8, 1], [8, 2, 'eng', '17:00', '18:00', 'Средняя, 8–10 лет', 6, 0], [9, 2, 'robo', '16:30', '17:30', 'Мини, 6–8 лет', 8, 4],
+  [10, 3, 'draw', '16:30', '17:30', 'Средняя, 7–9 лет', 10, 6], [11, 3, 'logic', '16:00', '16:45', 'Мини, 5–7 лет', 8, 5], [12, 3, 'theatre', '18:00', '19:00', 'Мини, 6–9 лет', 10, 8],
+  [13, 4, 'eng', '15:30', '16:30', 'Старшая, 9–12 лет', 6, 3], [14, 4, 'robo', '17:00', '18:00', 'Старшая, 10–14 лет', 8, 5], [15, 4, 'chess', '17:00', '18:00', 'Мини, 5–7 лет', 8, 2],
+  [16, 5, 'draw', '11:00', '12:00', 'Все возрасты', 10, 6], [17, 5, 'robo', '12:30', '13:30', 'Мини, 6–8 лет', 8, 4], [18, 5, 'theatre', '11:00', '12:00', 'Средняя, 7–10 лет', 10, 5], [19, 5, 'chess', '13:00', '14:00', 'Старшая, 8–12 лет', 8, 6],
+]
+const SLOTS = RAW.map(([id, dow, a, s, e, group, max, avail]) => ({ id, dow, act: a, name: ACT[a][0], th: TH[ACT[a][1]], start: s, end: e, group, max, avail }))
+const availOf = (s) => (week === 0 ? s.avail : Math.max(0, s.avail - ((s.id + week) % 3)))
+const mins = (t) => { const [h, m] = t.split(':').map(Number); return h * 60 + m }
+
+let week = 0, day = (new Date().getDay() + 6) % 7
+if (day === 6) day = 0
+const picked = new Set()
+const list = () => SLOTS.filter((s) => picked.has(s.id)).sort((a, b) => a.dow - b.dow || mins(a.start) - mins(b.start))
+const lessons = () => picked.size * 4
+const tierIdx = () => { const t = lessons(); if (!t) return -1; const i = TIERS.findIndex((x) => x.lessons === null || x.lessons >= t); return i === -1 ? TIERS.length - 1 : i }
+const tier = () => TIERS[tierIdx()] || null
+const tierName = (t) => (t.label || `${t.lessons} ${plural(t.lessons, ['занятие', 'занятия', 'занятий'])}`)
+const isReady = () => picked.size > 0 && !!Kids.get()
+const conflicts = () => { const l = list(), out = []; for (let i = 0; i < l.length; i++) for (let j = i + 1; j < l.length; j++) if (l[i].dow === l[j].dow && mins(l[i].start) < mins(l[j].end) && mins(l[j].start) < mins(l[i].end)) out.push([l[i], l[j]]); return out }
+
+function weekRange(w) {
+  const d = new Date(); d.setDate(d.getDate() - ((d.getDay() + 6) % 7) + w * 7); const e = new Date(d); e.setDate(e.getDate() + 6)
+  const f = (x, m) => new Intl.DateTimeFormat('ru-RU', m ? { day: 'numeric', month: 'long' } : { day: 'numeric' }).format(x)
+  return d.getMonth() === e.getMonth() ? `${f(d)}–${f(e, 1)}` : `${f(d, 1)} – ${f(e, 1)}`
+}
+
+function renderTop() {
+  $('#week').innerHTML = `<button type="button" data-w="-1" ${week === 0 ? 'disabled' : ''} aria-label="Предыдущая неделя" class="flex size-8 items-center justify-center rounded-full ${week === 0 ? 'text-ink/25 cursor-not-allowed' : 'hover:bg-white'}">${ic('caret-left')}</button>
+    <span class="min-w-32 px-1 text-center text-sm font-bold">${weekRange(week)}</span>
+    <button type="button" data-w="1" ${week === 3 ? 'disabled' : ''} aria-label="Следующая неделя" class="flex size-8 items-center justify-center rounded-full ${week === 3 ? 'text-ink/25 cursor-not-allowed' : 'hover:bg-white'}">${ic('caret-right')}</button>`
+  $('#week-note').innerHTML = `Свободные места показаны на неделю <b class="text-default">${weekRange(week)}</b> и на состав абонемента не влияют. Абонемент действует <b class="text-default">месяц с первого занятия</b>: каждый кружок сам развернётся в 4 занятия.`
+  $('#days').innerHTML = DAYS.map((d, i) => {
+    const n = SLOTS.filter((s) => s.dow === i && picked.has(s.id)).length, on = i === day
+    return `<button type="button" role="tab" aria-selected="${on}" data-day="${i}" class="relative flex min-w-16 flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-2.5 text-lg font-bold uppercase transition-colors ${on ? 'bg-primary text-white' : 'bg-default hover:bg-primary/10 hover:text-primary'}">${d}${n ? `<span class="flex size-5 items-center justify-center rounded-full text-xs ${on ? 'bg-white text-primary' : 'bg-secondary text-white'}">${n}</span>` : ''}</button>`
+  }).join('')
+  const cf = conflicts()
+  $('#conflict').innerHTML = cf.length ? `<div class="flex items-start gap-2 rounded-sm bg-amber-500/10 px-4 py-3 text-sm text-amber-800" role="alert">${ic('warning', 'mt-0.5 text-lg text-amber-600')}<span><b>Занятия пересекаются по времени:</b> ${cf.map(([a, b]) => `${a.name} и ${b.name} (${DAYS[a.dow]} ${a.start})`).join('; ')}. Проверьте, что ребёнок успеет.</span></div>` : ''
+}
+
+function renderSlots() {
+  const l = SLOTS.filter((s) => s.dow === day).sort((a, b) => mins(a.start) - mins(b.start))
+  if (!l.length) { $('#slots').innerHTML = `<div class="bg-default flex aspect-[5/2] flex-col items-center justify-center gap-1.5 rounded-lg">${ic('coffee', 'text-ink/30 text-4xl')}<span class="text-ink/40 font-semibold">Выходной</span></div>`; return }
+  $('#slots').innerHTML = `<div class="grid grid-cols-2 gap-2 sm:grid-cols-3">${l.map((s) => {
+    const a = availOf(s), on = picked.has(s.id), full = a === 0
+    return `<button type="button" aria-pressed="${on}" ${full ? 'disabled' : ''} data-slot="${s.id}" class="group flex aspect-[5/3] flex-col items-start rounded-sm p-2.5 text-start transition-all duration-200 md:px-4 md:py-3 ${s.th.bg} ${s.th.ring} ${full ? 'cursor-not-allowed opacity-50' : on ? 'ring-2' : 'ring-0 hover:contrast-95'}">
+      <div class="flex flex-col"><span class="line-clamp-2 text-base leading-tight font-extrabold md:text-xl ${s.th.title}">${s.name}</span><span class="text-default/95 line-clamp-1 text-xs font-semibold lg:text-sm">${s.group}</span></div>
+      <div class="mt-auto flex w-full flex-col gap-0.5"><span class="text-default/85 font-bold lg:text-base">${s.start}–${s.end}</span>
+        <div class="flex items-center justify-between gap-1"><span class="flex items-center gap-1 rounded-md bg-white px-1.5 py-0.5 text-xs font-bold lg:px-2 lg:py-1 lg:text-sm ${full ? 'text-ink/60' : capColor(a)}">${ic('users', 'text-base')}${full ? 'Мест нет' : `${a}/${s.max}`}</span>
+          <span class="flex size-5 items-center justify-center rounded-xs bg-white ring-2 md:size-6 ${s.th.ring} ${s.th.title}">${on ? ic('check', 'text-base') : ''}</span></div></div></button>`
+  }).join('')}</div>`
+}
+
+function renderTiers() {
+  const ci = tierIdx(), t = lessons()
+  $('#tiers').innerHTML = TIERS.map((x, i) => {
+    const on = i === ci, per = x.lessons ? rub(Math.round(x.price / x.lessons)) : ''
+    return `<div class="flex flex-col gap-0.5 rounded-lg px-3 py-2.5 ring-2 transition-all ${on ? 'bg-primary/5 ring-primary' : 'bg-default ring-transparent'}">
+      <span class="text-sm font-bold ${on ? 'text-primary' : 'text-default'}">${x.lessons ? x.lessons + ' зан.' : 'Безлимит'}</span>
+      <span class="text-lg leading-tight font-extrabold ${on ? 'text-primary' : 'text-default'}">${rub(x.price)}</span>
+      <span class="text-muted text-xs">${per ? per + '/зан.' : 'при 6+ кружках'}</span></div>`
+  }).join('')
+  const nx = TIERS[ci + 1]
+  $('#tier-next').innerHTML = !t
+    ? `<p class="text-muted flex items-center gap-2 text-sm italic">${ic('hand-pointing', 'text-lg')}Выберите кружки — тариф определится автоматически</p>`
+    : !nx ? `<p class="text-secondary flex items-center gap-2 text-sm font-bold">${ic('crown-simple', 'text-lg')}Максимальная выгода — безлимитный абонемент</p>`
+    : `<p class="text-default flex items-center gap-2 text-sm font-semibold">${ic('trend-up', 'text-secondary text-lg')}Ещё 1 кружок → <b>${tierName(nx)}</b> за <b>${rub(nx.price)}</b>${nx.lessons ? ` (≈ ${rub(Math.round(nx.price / nx.lessons))} за занятие)` : ''}</p>`
+}
+
+function renderSummary() {
+  const l = list(), t = tier(), k = Kids.get()
+  $('#s-count').textContent = l.length
+  $('#s-count').classList.toggle('hidden', !l.length)
+  $('#s-list').innerHTML = l.length
+    ? `<div class="flex max-h-56 flex-col gap-1.5 overflow-y-auto pr-0.5">${l.map((s) => `<div class="bg-default group flex items-center gap-3 rounded-sm py-2 pr-2 pl-3"><span class="size-2.5 shrink-0 rounded-full ${s.th.dot}"></span>
+        <div class="flex min-w-0 flex-1 flex-col"><span class="text-default truncate text-sm leading-tight font-bold">${s.name}</span><span class="text-muted text-xs font-semibold">${DAYS[s.dow]} · ${s.start}–${s.end}</span></div>
+        <button type="button" data-rm="${s.id}" aria-label="Убрать ${s.name} из абонемента" class="text-ink/30 hover:text-error rounded-xs p-1 transition-colors">${ic('x', 'text-lg')}</button></div>`).join('')}</div>`
+    : `<div class="flex flex-col items-center gap-1 py-4 text-center">${ic('basket', 'text-ink/15 text-5xl')}<span class="text-muted text-sm italic">Пока ничего не выбрано</span></div>`
+  $('#s-rows').innerHTML = sumRow('Занятий в месяц', l.length ? String(lessons()) : '') + sumRow('Тариф', t && tierName(t)) + sumRow('Действует', l.length ? 'месяц с 1-го занятия' : '', '—')
+  const per = t && lessons() ? Math.round(t.price / lessons()) : 0, save = t ? TRIAL_PRICE * lessons() - t.price : 0
+  $('#s-price').innerHTML = priceBox('Итого в месяц', t ? rub(t.price) : '—', per ? `<div class="flex flex-col items-end gap-0.5"><span class="text-muted text-xs font-semibold">за занятие</span><span class="text-ink/70 text-lg font-bold">≈ ${rub(per)}</span></div>` : '')
+  $('#s-save').innerHTML = save > 0 ? `<div class="flex items-center gap-1.5">${ic('piggy-bank', 'text-secondary text-base')}<span class="text-ink/70 text-xs font-semibold">Экономия к разовым занятиям: <span class="text-secondary font-bold">${rub(save)}/мес</span></span></div>` : ''
+  const miss = [!l.length && 'кружки', !k && 'ребёнка'].filter(Boolean)
+  $('#s-cta').innerHTML = ctaBtn('s-go', isReady(), 'Продолжить') + (isReady() ? '' : `<p class="text-muted text-center text-xs">Осталось выбрать: ${miss.join(', ')}</p>`)
+  Bar.set({ amount: t ? rub(t.price) : '—', label: 'Итого в месяц', ready: isReady() })
+}
+
+function openPay() {
+  const l = list(), t = tier(), k = Kids.get()
+  Pay.open({
+    icon: 'star', tint: 'bg-rose-500/5 text-rose-500', kicker: 'Абонемент', title: `${l.length} ${plural(l.length, ['кружок', 'кружка', 'кружков'])} · ${tierName(t)}`,
+    rows: [['Участник', k.name], ['Кружки', l.map((s) => s.name).join(', ')], ['Занятий в месяц', String(lessons())], ['Срок', 'месяц с первого занятия']], amount: t.price,
+    successText: `Абонемент для ${k.name} активен. Расписание занятий — в личном кабинете, напоминания придут на почту.`,
+    successActions: `<a href="#" class="bg-primary flex flex-1 items-center justify-center rounded-lg px-4 py-2.5 text-base font-bold text-white">В личный кабинет</a><button type="button" data-close data-reset class="bg-default text-default flex flex-1 items-center justify-center rounded-lg px-4 py-2.5 text-base font-bold">Собрать ещё</button>`,
+  })
+}
+
+function update() { renderTop(); renderSlots(); renderTiers(); renderSummary() }
+function reset() { picked.clear(); Kids.selected = null; Kids.adding = false; Kids.render(); update() }
+function fill() { picked.clear(); [1, 9, 12, 14].forEach((i) => picked.add(i)); Kids.selected = 1; Kids.render(); update() }
+
+document.addEventListener('click', (e) => {
+  const w = e.target.closest('[data-w]'); if (w && !w.disabled) { week += Number(w.dataset.w); update() }
+  const d = e.target.closest('[data-day]'); if (d) { day = Number(d.dataset.day); update() }
+  const s = e.target.closest('[data-slot]'); if (s && !s.disabled) { const id = Number(s.dataset.slot); picked.has(id) ? picked.delete(id) : picked.add(id); update() }
+  const r = e.target.closest('[data-rm]'); if (r) { picked.delete(Number(r.dataset.rm)); update() }
+  if (e.target.closest('#s-go') && isReady()) openPay()
+})
+Kids.mount($('#kids'), renderSummary)
+Pay.init(); Pay.onReset = reset
+wireDev({ reset, fill, openPay, isReady })
+update()
+
+</script>
+</body>
+</html>
