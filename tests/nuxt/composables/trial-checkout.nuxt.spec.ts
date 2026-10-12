@@ -32,12 +32,10 @@ mockNuxtImport(
         })
 )
 
-// Цена кружка в копейках – она же цена пробного; у кружка 2 пробное бесплатное
 const club = (id: number, slug: string): Activity => ({
     id,
     name: `Кружок ${id}`,
     slug,
-    price: id === 2 ? 0 : 110_000,
     groups: [],
     teachers: [],
     days_of_week: []
@@ -129,12 +127,11 @@ describe("useTrialCheckout", () => {
     })
 
     it.each([
-        ["no club", undefined, null, false],
-        ["a paid club", "1", 1_100, false],
-        ["a club with a free trial", "2", 0, true]
-    ])("takes the trial price from %s", async (_label, clubId, price, isFree) => {
+        ["no club", undefined, null],
+        ["club 1", "1", 1_200],
+        ["club 2", "2", 1_200]
+    ])("uses the single trial price for %s", async (_label, clubId, price) => {
         const checkout = await setup(clubId ? { clubId } : {})
         await vi.waitFor(() => expect(checkout.trialPrice.value).toBe(price))
-        expect(checkout.isFreeTrial.value).toBe(isFree)
     })
 })

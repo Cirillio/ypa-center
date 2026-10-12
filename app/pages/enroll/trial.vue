@@ -141,13 +141,7 @@ function handleContinue() {
         </section>
 
         <EnrollMobileBar
-            :amount="
-                trialPrice === null
-                    ? '—'
-                    : trialPrice === 0
-                      ? 'Бесплатно'
-                      : formatRubles(trialPrice)
-            "
+            :amount="trialPrice === null ? '—' : formatRubles(trialPrice)"
             :ready="isReady"
         />
     </div>

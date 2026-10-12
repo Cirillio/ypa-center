@@ -119,7 +119,7 @@ export interface paths {
         }
         get?: never
         put?: never
-        /** @description Идемпотентная запись на пробное занятие. Заголовок X-Idempotency-Key (UUID v4) обязателен. Не более одного пробного на ребёнка по кружку. Бесплатное пробное подтверждается сразу (CONFIRMED). */
+        /** @description Идемпотентная запись на пробное занятие. Заголовок X-Idempotency-Key (UUID v4) обязателен. Не более одного пробного на ребёнка по кружку. Цена единая (settings.TRIAL_PRICE), оплата всегда через ЮКассу. */
         post: operations["v1_checkout_trial_create"]
         delete?: never
         options?: never
@@ -563,8 +563,6 @@ export interface components {
             slug: string
             /** Категория */
             category?: components["schemas"]["CategoryEnum"]
-            /** Цена */
-            price?: number
             /** Обложка (URL) */
             cover_image?: string
             /** Краткое описание */
@@ -582,8 +580,6 @@ export interface components {
             slug: string
             /** Категория */
             category?: components["schemas"]["CategoryEnum"]
-            /** Цена */
-            price?: number
             /** Обложка (URL) */
             cover_image?: string
             /** Краткое описание */
