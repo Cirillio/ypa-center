@@ -195,20 +195,11 @@ describe("EnrollTrialSummary", () => {
     const cta = (wrapper: Awaited<ReturnType<typeof mountSummary>>, label: string) =>
         wrapper.findAll("button").find((b) => b.text().includes(label))
 
-    it("shows the club's own trial price and the 15-minute hold", async () => {
+    it("shows the trial price and the 15-minute hold", async () => {
         const text = (await mountSummary(1_100)).text()
         // ПОЧЕМУ \u00a0: ru-RU разделяет разряды неразрывным пробелом
         expect(text).toContain("1\u00a0100 ₽")
         expect(text).toContain("места держим за вами 15 минут")
-    })
-
-    it("books a free trial without payment", async () => {
-        const wrapper = await mountSummary(0)
-        const text = wrapper.text()
-
-        expect(text).toContain("Бесплатно")
-        expect(text).not.toContain("ЮKassa")
-        expect(cta(wrapper, "Записаться")?.attributes("disabled")).toBeUndefined()
     })
 
     it("blocks a trial the child already had in this club", async () => {

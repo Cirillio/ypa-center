@@ -131,14 +131,22 @@ const teaser = [
             />
         </form>
 
-        <ol class="text-muted list-disc space-y-2 px-6 py-4 text-start text-sm font-medium">
-            <li>Если вы впервые, регистрация займёт буквально 1–2 минуты.</li>
-            <li>
-                Пароль не нужен. На указанную почту придёт 6-значный код для быстрого подтверждения.
-            </li>
-        </ol>
+        <div class="group space-y-4 py-4">
+            <USeparator
+                icon="ph:info-bold"
+                :ui="{ icon: 'group-hover:text-info ease-in transition duration-150' }"
+            />
+            <ol class="text-muted list-disc space-y-2 px-6 text-justify text-sm font-medium">
+                <li>Если вы впервые, регистрация займёт буквально 1–2 минуты.</li>
+                <li>
+                    Пароль не нужен. На указанную почту придёт 6-значный код для быстрого
+                    подтверждения.
+                </li>
+            </ol>
+            <USeparator />
+        </div>
 
-        <div class="border-default mt-7 grid w-full grid-cols-3 gap-3 border-t pt-6">
+        <div class="mt-4 grid w-full grid-cols-3 gap-2 pt-6">
             <div
                 v-for="item in teaser"
                 :key="item.title"

@@ -128,18 +128,16 @@ export function useTrialCheckout() {
         }
     })
 
-    // Цена пробного – цена кружка (копейки → рубли); 0 – пробное бесплатное, без ЮKassa
-    const trialPrice = computed<number | null>(() => {
-        const price = selectedClub.value?.price
-        return price === undefined ? null : kopecksToRubles(price)
-    })
-    const isFreeTrial = computed(() => trialPrice.value === 0)
+    // Цена пробного едина для всех кружков (рубли, app.config); null – кружок не выбран
+    const { pricing } = useAppConfig()
+    const trialPrice = computed<number | null>(() =>
+        selectedClub.value ? pricing.trialLesson : null
+    )
 
     return {
         clubs,
         isClubsLoading,
         trialPrice,
-        isFreeTrial,
         clubsError,
         refreshClubs,
         selectedClubId,
