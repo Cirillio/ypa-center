@@ -22,7 +22,13 @@ useHead({
     link: [{ rel: "icon", type: "image/png", href: "/favicon.png" }]
 })
 
+// ПОЧЕМУ canonical на всех страницах: без него ?eventId=, ?tx= и utm-метки плодят дубли в индексе
+const route = useRoute()
+const canonicalUrl = computed(() => `${seo.siteUrl}${route.path === "/" ? "" : route.path}`)
+useHead({ link: [{ rel: "canonical", href: canonicalUrl }] })
+
 useSeoMeta({
+    ogUrl: canonicalUrl,
     ogSiteName: seo.siteName,
     ogImage: seo.ogImage,
     twitterCard: "summary_large_image"

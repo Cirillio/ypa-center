@@ -11,8 +11,7 @@ useSeoMeta({
     ogTitle: "Галерея – Улица Радости",
     ogDescription:
         "Фотографии нашего центра: учебные классы, игровые зоны и моменты с наших занятий.",
-    ogImage: `${siteUrl}/og/default.jpg`,
-    ogUrl: `${siteUrl}/gallery`
+    ogImage: `${siteUrl}/og/default.jpg`
 })
 
 useHead({
