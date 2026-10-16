@@ -10,12 +10,7 @@ const emit = defineEmits<{
     logout: []
 }>()
 
-const firstName = computed(() => {
-    if (!props.parentName) return ""
-    const trimmed = props.parentName.trim()
-    if (!trimmed) return ""
-    return trimmed.split(/\s+/)[0] ?? ""
-})
+const firstName = computed(() => getFirstName(props.parentName))
 
 const greeting = getGreeting()
 </script>
