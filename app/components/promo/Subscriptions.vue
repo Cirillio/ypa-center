@@ -22,7 +22,7 @@
                 :class="
                     tier.highlight
                         ? 'bg-primary ring-primary hover:bg-primary/90'
-                        : 'bg-white shadow-xs'
+                        : 'shadow-card bg-white'
                 "
             >
                 <span

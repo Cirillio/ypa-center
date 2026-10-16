@@ -21,7 +21,10 @@ const emit = defineEmits<{
 </script>
 
 <template>
-    <section aria-label="Выбор кружков" class="flex min-w-0 flex-col gap-5 rounded-lg bg-white p-6">
+    <section
+        aria-label="Выбор кружков"
+        class="shadow-card flex min-w-0 flex-col gap-5 rounded-lg bg-white p-6"
+    >
         <div class="flex items-center gap-3">
             <div
                 class="bg-primary/5 text-primary flex items-center justify-center rounded-full p-2"

@@ -18,7 +18,7 @@ const isSelected = computed(() => selectedId.value === props.id)
 
 <template>
     <label
-        class="relative flex cursor-pointer rounded-sm border-0 bg-white ring-2 transition-all duration-200"
+        class="shadow-card relative flex cursor-pointer rounded-sm border-0 bg-white ring-2 transition-all duration-200"
         :class="[
             img ? 'flex-col gap-2 p-2 sm:flex-row sm:gap-3' : 'flex-col px-4 py-2.5',
             isSelected ? 'ring-primary scale-[1.005]' : 'hover:ring-primary/50 ring-transparent'

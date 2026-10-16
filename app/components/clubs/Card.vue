@@ -58,7 +58,7 @@ const headingId = computed(() => `club-${props.activity.id}`)
 <template>
     <article
         :id="activity.slug"
-        class="flex w-full scroll-mt-[calc(var(--ui-header-height)+0.5rem)] flex-col gap-5 rounded-sm bg-white p-4 md:grid md:grid-cols-9 lg:gap-6 lg:p-6"
+        class="shadow-card flex w-full scroll-mt-[calc(var(--ui-header-height)+0.5rem)] flex-col gap-5 rounded-sm bg-white p-4 md:grid md:grid-cols-9 lg:gap-6 lg:p-6"
     >
         <!-- Фото -->
         <div

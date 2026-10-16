@@ -52,7 +52,7 @@ const SKELETON_KEYS = ["clubs-sk-1", "clubs-sk-2", "clubs-sk-3"] as const
 
             <UiErrorState
                 v-else-if="error && !activities.length"
-                class="w-full rounded-lg bg-white"
+                class="shadow-card w-full rounded-lg bg-white"
                 size="lg"
                 message="Не удалось загрузить список кружков."
                 :retrying="pending"

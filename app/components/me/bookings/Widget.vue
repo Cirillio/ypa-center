@@ -21,7 +21,7 @@ const firstPastKey = computed(() => props.bookings?.find((b) => b.isPast)?.key)
 </script>
 
 <template>
-    <div class="flex flex-col gap-6 rounded-lg bg-white p-6">
+    <div class="shadow-card flex flex-col gap-6 rounded-lg bg-white p-6">
         <div class="flex items-center gap-3">
             <div
                 class="bg-primary/5 text-primary flex items-center justify-center rounded-full p-2"

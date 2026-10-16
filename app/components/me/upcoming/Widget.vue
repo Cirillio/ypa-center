@@ -35,7 +35,7 @@ const groupedUpcoming = computed(() => {
 
 <template>
     <div
-        class="sticky top-[calc(var(--ui-header-height)+1rem)] flex flex-col gap-6 rounded-lg bg-white p-6"
+        class="shadow-card sticky top-[calc(var(--ui-header-height)+1rem)] flex flex-col gap-6 rounded-lg bg-white p-6"
     >
         <div class="flex items-center gap-3">
             <div

@@ -57,7 +57,10 @@ function handleKeydown(event: KeyboardEvent) {
 </script>
 
 <template>
-    <section aria-label="Выбор кружка" class="flex flex-col gap-5 rounded-lg bg-white p-6">
+    <section
+        aria-label="Выбор кружка"
+        class="shadow-card flex flex-col gap-5 rounded-lg bg-white p-6"
+    >
         <div class="flex items-center gap-3">
             <div
                 class="bg-primary/5 text-primary flex items-center justify-center rounded-full p-2"

@@ -18,7 +18,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-    <div class="rounded-lg bg-white p-6">
+    <div class="shadow-card rounded-lg bg-white p-6">
         <UiErrorState
             v-if="error && !parent"
             message="Не удалось загрузить профиль."
