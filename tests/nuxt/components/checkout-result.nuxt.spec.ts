@@ -6,11 +6,12 @@ import type { CheckoutTransaction } from "~/types"
 import { formatEventDateTime } from "~/utils/format-event-datetime"
 
 const mocks = vi.hoisted(() => ({
-    getEventPaymentStatus: vi.fn<(id: string) => Promise<CheckoutTransaction>>()
+    getEventPaymentStatus: vi.fn<(id: string) => Promise<CheckoutTransaction>>(),
+    getTransactionStatus: vi.fn<(id: string) => Promise<CheckoutTransaction>>()
 }))
 
 mockNuxtImport("useBillingService", () => () => ({
-    getTransactionStatus: vi.fn(),
+    getTransactionStatus: mocks.getTransactionStatus,
     getEventPaymentStatus: mocks.getEventPaymentStatus
 }))
 
@@ -50,6 +51,37 @@ const linkTo = (wrapper: Awaited<ReturnType<typeof mountSuspended>>, label: stri
 
 beforeEach(() => {
     mocks.getEventPaymentStatus.mockReset()
+    mocks.getTransactionStatus.mockReset()
+})
+
+describe("CheckoutResultWidget: subscription payment", () => {
+    const subscriptionTx: CheckoutTransaction = {
+        id: "9324f0aa-4cbc-462c-81d6-55d9cddc199b",
+        type: "SUBSCRIPTION",
+        status: "SUCCEEDED",
+        reason: null,
+        amount: 7_000,
+        expiresAt: "2099-01-01T00:00:00Z",
+        order: {
+            kind: "purchase",
+            title: "Абонемент «8 занятий»",
+            studentName: "Петя",
+            trialDate: null,
+            slots: []
+        }
+    }
+
+    it("offers the cabinet first and «Обратно» to the schedule on success", async () => {
+        mocks.getTransactionStatus.mockResolvedValue(subscriptionTx)
+        const wrapper = await mountSuspended(ResultWidget, {
+            props: { txId: subscriptionTx.id, kind: "purchase" }
+        })
+        await vi.waitFor(() => expect(wrapper.text()).toContain("УРА!"))
+
+        expect(linkTo(wrapper, "В личный кабинет")).toBe("/me")
+        expect(linkTo(wrapper, "Обратно")).toBe("/clubs#schedule")
+        expect(wrapper.text()).toContain("Абонемент действует 4 недели с первого занятия.")
+    })
 })
 
 describe("CheckoutResultWidget: event payment", () => {
