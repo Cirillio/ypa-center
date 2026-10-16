@@ -63,7 +63,7 @@ describe("CheckoutResultWidget: event payment", () => {
         // ПОЧЕМУ \u00a0: ru-RU разделяет разряды неразрывным пробелом
         expect(text).toContain("1\u00a0600 ₽")
         expect(text).not.toContain("личном кабинете")
-        expect(linkTo(wrapper, "К афише")).toBe("/enroll/event")
+        expect(linkTo(wrapper, "Обратно")).toBe("/enroll/event")
     })
 
     it("offers to try the same event again after a cancel", async () => {
