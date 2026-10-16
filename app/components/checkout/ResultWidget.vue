@@ -79,7 +79,7 @@ const refundDescription = computed<string>(() => {
                     <UButton to="/" label="На главную" size="xl" block class="sm:flex-1" />
                     <UButton
                         :to="EVENTS_PATH"
-                        label="К афише"
+                        label="Обратно"
                         variant="soft"
                         size="xl"
                         block
@@ -90,7 +90,7 @@ const refundDescription = computed<string>(() => {
                     <UButton to="/me" label="В личный кабинет" size="xl" block class="sm:flex-1" />
                     <UButton
                         to="/clubs#schedule"
-                        label="К расписанию"
+                        label="Обратно"
                         variant="soft"
                         size="xl"
                         block
