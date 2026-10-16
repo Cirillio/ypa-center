@@ -51,7 +51,7 @@ const canActive = computed<boolean>(() => !isSubmitDisabled.value && isMounted.v
         :schema="feedbackSchema"
         :state="form"
         class="flex flex-col gap-2"
-        :validate-on="[]"
+        :validate-on="['input', 'change']"
         @submit="
             (event) => {
                 onSubmit(event)

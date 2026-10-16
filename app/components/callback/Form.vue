@@ -51,7 +51,7 @@ const onSelectTime = (option: ContactTimeOption) => {
         id="callbackForm"
         :schema="callbackSchema"
         :state="form"
-        :validate-on="[]"
+        :validate-on="['input', 'change']"
         class="flex flex-col gap-2"
         @submit="submitForm()"
     >
