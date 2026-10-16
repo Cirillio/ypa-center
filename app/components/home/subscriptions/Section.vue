@@ -63,7 +63,7 @@ const fmt = (n: number) =>
                     <!-- Lessons picker -->
                     <div class="flex flex-col gap-2">
                         <span class="text-muted text-sm font-semibold">
-                            Количество занятий в месяц
+                            Количество занятий за 4 недели
                         </span>
                         <div class="flex flex-wrap gap-2">
                             <UButton
@@ -84,8 +84,8 @@ const fmt = (n: number) =>
                         </div>
                         <span class="text-muted text-xs font-medium">
                             {{ selectedLessons }}
-                            {{ pluralize(selectedLessons, ["занятие", "занятия", "занятий"]) }} в
-                            месяц - {{ lessonsPerWeek }}
+                            {{ pluralize(selectedLessons, ["занятие", "занятия", "занятий"]) }} за 4
+                            недели - {{ lessonsPerWeek }}
                             {{ pluralize(lessonsPerWeek, ["занятие", "занятия", "занятий"]) }} в
                             неделю
                         </span>
@@ -144,8 +144,8 @@ const fmt = (n: number) =>
                     <template #desc>
                         • Абонемент действует на <strong>любые</strong> кружки центра — можно
                         комбинировать занятия как угодно.<br />
-                        • Безлимит активируется при выборе <strong>более 20</strong> занятий в
-                        месяц. В этом случае вы можете выбрать <strong>любое количество</strong>
+                        • Безлимит активируется при выборе <strong>более 20</strong> занятий за 4
+                        недели. В этом случае вы можете выбрать <strong>любое количество</strong>
                         занятий.
                     </template>
                 </PromoSubscriptions>

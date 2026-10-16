@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-// Сводка «Итого» абонемента: ребёнок (слот), состав с удалением, тариф, сумма в месяц и экономия.
+// Сводка «Итого» абонемента: ребёнок (слот), состав с удалением, тариф, сумма за 4 недели и экономия.
 import type { CheckoutError, EnrollSummaryRow, PlanTier, WeeklySlot } from "~/types"
 
 const props = defineProps<{
@@ -37,13 +37,13 @@ const tierName = computed<string | null>(() => {
 
 const rows = computed<EnrollSummaryRow[]>(() => [
     {
-        label: "Занятий в месяц",
+        label: "Занятий за 4 недели",
         value: props.totalMonthlyLessons ? String(props.totalMonthlyLessons) : null
     },
     { label: "Тариф", value: tierName.value },
     {
         label: "Действует",
-        value: props.slots.length ? "месяц с 1-го занятия" : null,
+        value: props.slots.length ? "4 недели с 1-го занятия" : null,
         empty: "—"
     }
 ])
@@ -136,7 +136,7 @@ const missing = computed<string[]>(() => {
 
         <EnrollSummaryRows :rows="rows" />
 
-        <EnrollPriceBox label="Итого в месяц" :amount="tier ? formatRubles(tier.price) : '—'">
+        <EnrollPriceBox label="Итого за 4 недели" :amount="tier ? formatRubles(tier.price) : '—'">
             <template v-if="perLesson" #aside>
                 <div class="flex flex-col items-end gap-0.5">
                     <span class="text-muted text-xs font-semibold">за занятие</span>

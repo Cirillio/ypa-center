@@ -1,7 +1,7 @@
 import type { ApiFetch } from "~/composables/useApi"
 import type { PlanTier, SubscriptionPlanPublic } from "~/types"
 
-// WHY slots_count * 4: 1 слот абонемента = 4 занятия в месяц (см. project-context)
+// WHY slots_count * 4: 1 слот абонемента = 4 занятия за 4 недели (см. project-context)
 const LESSONS_PER_SLOT = 4
 
 function toTier(plan: SubscriptionPlanPublic): PlanTier {

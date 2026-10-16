@@ -35,8 +35,8 @@ const emit = defineEmits<{
             <UIcon name="ph:info-bold" class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
             <span>
                 Абонемент действует
-                <span class="text-default font-bold">месяц с первого занятия</span>: каждый кружок
-                развернётся в 4 занятия. Свободные места показаны для ориентира.
+                <span class="text-default font-bold">4 недели с первого занятия</span>: каждый
+                кружок развернётся в 4 занятия. Свободные места показаны для ориентира.
             </span>
         </p>
 

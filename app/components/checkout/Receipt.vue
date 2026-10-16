@@ -121,7 +121,7 @@ const orderNumber = computed(() => props.transaction.id.slice(0, 8).toUpperCase(
                 <li v-if="transaction.type === 'SUBSCRIPTION'" class="flex items-start gap-3">
                     <UiRoundIcon name="ph:calendar-check-bold" />
                     <span class="text-default text-sm font-semibold">
-                        Абонемент действует месяц с первого занятия.
+                        Абонемент действует 4 недели с первого занятия.
                     </span>
                 </li>
                 <li class="flex items-start gap-3">
