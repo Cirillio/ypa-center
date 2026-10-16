@@ -108,7 +108,7 @@ const orderNumber = computed(() => props.transaction.id.slice(0, 8).toUpperCase(
             <h2 class="text-default text-base font-bold">Что дальше</h2>
             <ol class="flex flex-col gap-3">
                 <!-- ПОЧЕМУ не для события: платит гость, кабинета у него может не быть -->
-                <li v-if="purchase" class="flex items-start gap-3">
+                <li v-if="purchase" class="flex items-center gap-3">
                     <UiRoundIcon name="ph:user-circle-bold" />
                     <span class="text-default text-sm font-semibold">
                         Запись уже в
@@ -118,13 +118,13 @@ const orderNumber = computed(() => props.transaction.id.slice(0, 8).toUpperCase(
                         – там расписание и все покупки.
                     </span>
                 </li>
-                <li v-if="transaction.type === 'SUBSCRIPTION'" class="flex items-start gap-3">
+                <li v-if="transaction.type === 'SUBSCRIPTION'" class="flex items-center gap-3">
                     <UiRoundIcon name="ph:calendar-check-bold" />
                     <span class="text-default text-sm font-semibold">
                         Абонемент действует 4 недели с первого занятия.
                     </span>
                 </li>
-                <li class="flex items-start gap-3">
+                <li class="flex items-center gap-3">
                     <UiRoundIcon name="ph:map-pin-bold" />
                     <span class="text-default text-sm font-semibold">
                         Ждём вас:
