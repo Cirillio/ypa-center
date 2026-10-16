@@ -7,7 +7,8 @@
         id="partners"
         class="relative z-10 flex w-full scroll-mt-(--ui-header-height) pt-12 pb-8 md:pt-20 lg:pt-24"
     >
-        <UContainer class="relative z-10 flex flex-col gap-8">
+        <!-- ПОЧЕМУ lg:min-h-80: плавающий виджет абсолютный (top-12 + h-56 = 272 px) и без высоты наезжает на первую карточку -->
+        <UContainer class="relative z-10 flex flex-col gap-8 lg:min-h-80">
             <UiSectionLeading subtitle="Наши партнёры" icon="ph:users-duotone" center>
                 <template #title>
                     <span class="text-secondary">
