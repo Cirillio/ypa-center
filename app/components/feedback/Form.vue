@@ -41,6 +41,7 @@ const inputUi = {
     base: "md:text-lg !text-base bg-white font-semibold text-default placeholder:text-default/75"
 }
 
+// Кнопка ждёт только монтирования и антиспам-паузы; пустые поля ловит валидация по клику
 const canActive = computed<boolean>(() => !isSubmitDisabled.value && isMounted.value)
 </script>
 
@@ -139,8 +140,8 @@ const canActive = computed<boolean>(() => !isSubmitDisabled.value && isMounted.v
             "
         >
             <UButton
-                :disabled="!canActive || isSpamBlocked"
-                :loading="!canActive"
+                :disabled="!canActive"
+                :loading="isLoading || !isMounted"
                 color="primary"
                 type="submit"
                 :label="canActive ? 'Отправить' : isSpamBlocked ? 'Ожидайте...' : 'Загрузка...'"

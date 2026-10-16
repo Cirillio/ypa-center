@@ -2,6 +2,12 @@ import type { ActiveEnrollmentDto, ProblemCode, ProblemDetail } from "~/types"
 
 export type ApiError = { title: string; description?: string }
 
+// ПОЧЕМУ отдельная ошибка: кнопка отправки больше не серая, пока Turnstile думает – клик до токена объясняем словами
+export const CAPTCHA_PENDING_ERROR: ApiError = {
+    title: "Проверка ещё идёт",
+    description: "Подождите пару секунд и отправьте снова."
+}
+
 const PROBLEM_CODES: ReadonlySet<string> = new Set<ProblemCode>([
     "MALFORMED_REQUEST",
     "AUTH_REQUIRED",

@@ -2,6 +2,7 @@
 import { useMounted } from "@vueuse/core"
 import { vMaska } from "maska/vue"
 import { Maskas } from "~/constants/masks"
+import { callbackSchema } from "~/schemas/callback.schema"
 import type { ContactTimeOption } from "~/types"
 
 // UI-состояния компонента
@@ -20,7 +21,6 @@ const turnstileRef = ref()
 // Использование композабла для управления логикой формы
 const {
     form,
-    isFormCompleted,
     captchaToken,
     isLoading,
     isSpamBlocked,
@@ -47,44 +47,55 @@ const onSelectTime = (option: ContactTimeOption) => {
 </script>
 
 <template>
-    <form id="callbackForm" class="flex flex-col gap-2" @submit.prevent="submitForm">
-        <div class="flex items-center gap-2">
+    <UForm
+        id="callbackForm"
+        :schema="callbackSchema"
+        :state="form"
+        :validate-on="[]"
+        class="flex flex-col gap-2"
+        @submit="submitForm()"
+    >
+        <div class="flex items-start gap-2">
             <UiRoundIcon name="ph:user" />
-            <UInput
-                v-model="form.name"
-                :disabled="isLoading"
-                name="name"
-                placeholder="Как к вам обращаться?"
-                autocomplete="name"
-                type="text"
-                size="xl"
-                color="secondary"
-                class="text-lg"
-                variant="subtle"
-                :ui="{
-                    base: 'md:text-lg !text-base bg-white font-semibold text-default placeholder:text-default/75'
-                }"
-            />
+            <UFormField name="name" class="w-full">
+                <UInput
+                    v-model="form.name"
+                    :disabled="isLoading"
+                    name="name"
+                    placeholder="Как к вам обращаться?"
+                    autocomplete="name"
+                    type="text"
+                    size="xl"
+                    color="secondary"
+                    class="w-full text-lg"
+                    variant="subtle"
+                    :ui="{
+                        base: 'md:text-lg !text-base bg-white font-semibold text-default placeholder:text-default/75'
+                    }"
+                />
+            </UFormField>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items-start gap-2">
             <UiRoundIcon name="ph:phone" />
-            <UInput
-                v-model="form.phone"
-                v-maska="Maskas.Phone"
-                :disabled="isLoading"
-                name="phone"
-                :placeholder="Maskas.Phone"
-                type="tel"
-                autocomplete="tel"
-                inputmode="decimal"
-                size="xl"
-                color="secondary"
-                class="text-lg"
-                variant="subtle"
-                :ui="{
-                    base: 'md:text-lg !text-base bg-white font-semibold text-default placeholder:text-default/75'
-                }"
-            />
+            <UFormField name="phone" class="w-full">
+                <UInput
+                    v-model="form.phone"
+                    v-maska="Maskas.Phone"
+                    :disabled="isLoading"
+                    name="phone"
+                    :placeholder="Maskas.Phone"
+                    type="tel"
+                    autocomplete="tel"
+                    inputmode="decimal"
+                    size="xl"
+                    color="secondary"
+                    class="w-full text-lg"
+                    variant="subtle"
+                    :ui="{
+                        base: 'md:text-lg !text-base bg-white font-semibold text-default placeholder:text-default/75'
+                    }"
+                />
+            </UFormField>
         </div>
         <!-- Выбор времени звонка -->
         <div class="flex items-center gap-2">
@@ -139,7 +150,9 @@ const onSelectTime = (option: ContactTimeOption) => {
             </UPopover>
         </div>
 
-        <UiConsentCheckbox v-model="form.consent" :disabled="isLoading" class="px-1 py-1" />
+        <UFormField name="consent" class="px-1 py-1">
+            <UiConsentCheckbox v-model="form.consent" :disabled="isLoading" />
+        </UFormField>
 
         <!-- Кнопка отправки с подсказкой при блокировке спама -->
         <UTooltip
@@ -157,11 +170,11 @@ const onSelectTime = (option: ContactTimeOption) => {
         >
             <UButton
                 :disabled="isSubmitDisabled || !isMounted"
-                :loading="isLoading || isSpamBlocked || !isMounted"
+                :loading="isLoading || !isMounted"
                 color="primary"
                 type="submit"
                 :label="!isMounted ? 'Загрузка...' : isSpamBlocked ? 'Ожидайте...' : 'Жду звонка'"
-                :variant="isFormCompleted && !isSpamBlocked ? 'solid' : 'soft'"
+                :variant="isSpamBlocked ? 'soft' : 'solid'"
                 class="w-full justify-center text-lg font-semibold focus-visible:ring-0"
             />
         </UTooltip>
@@ -174,5 +187,5 @@ const onSelectTime = (option: ContactTimeOption) => {
                 :options="{ appearance: 'interaction-only' }"
             />
         </ClientOnly>
-    </form>
+    </UForm>
 </template>

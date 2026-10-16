@@ -1,6 +1,4 @@
 import type { ContactTimeOption, ContactTimeValue, PreferredTimeWindow } from "~/types"
-import { Mask } from "maska"
-import { Maskas } from "~/constants/masks"
 
 /**
  * Интерфейс данных формы обратного звонка
@@ -29,7 +27,7 @@ export interface UseCallbackFormOptions {
  * Композабл для управления логикой формы обратного звонка.
  * Зона ответственности:
  * - Состояние полей формы
- * - Валидация
+ * - Валидация полей – в callbackSchema через UForm
  * - Anti-Spam кулдаун
  * - Делегирование отправки сервису
  */
@@ -46,24 +44,12 @@ export const useCallbackForm = (options: UseCallbackFormOptions = {}) => {
     }
 
     const form = reactive<ContactCallbackForm>({ ...DEFAULT_FORM_STATE })
-    const isFormCompleted = computed<boolean>(() => {
-        const phoneCompleted = new Mask({ mask: Maskas.Phone }).completed(form.phone)
-        // Имя опционально, но если введено – валидируем от 2 символов
-        const nameValid = !form.name?.trim() || form.name.trim().length >= 2
-
-        return phoneCompleted && nameValid && form.consent
-    })
     const captchaToken = ref("")
     const isLoading = ref(false)
     const error = ref<unknown>(null)
 
-    /**
-     * Валидация и доступность отправки
-     */
-    const isSubmitDisabled = computed(
-        () =>
-            !isFormCompleted.value || !captchaToken.value || isSpamBlocked.value || isLoading.value
-    )
+    // ПОЧЕМУ без проверки полей и капчи: кнопка активна всегда, поля проверяет callbackSchema по клику
+    const isSubmitDisabled = computed(() => isSpamBlocked.value || isLoading.value)
 
     /**
      * Сброс формы к начальному состоянию
@@ -85,6 +71,10 @@ export const useCallbackForm = (options: UseCallbackFormOptions = {}) => {
      */
     const submitForm = async (): Promise<boolean> => {
         if (isSubmitDisabled.value) return false
+        if (!captchaToken.value) {
+            options.onError?.(CAPTCHA_PENDING_ERROR)
+            return false
+        }
 
         isLoading.value = true
         error.value = null
@@ -132,7 +122,6 @@ export const useCallbackForm = (options: UseCallbackFormOptions = {}) => {
     return {
         // State
         form,
-        isFormCompleted,
         captchaToken,
         isLoading,
         error,

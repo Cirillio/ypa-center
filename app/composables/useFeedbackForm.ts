@@ -26,7 +26,8 @@ export const useFeedbackForm = (options: UseFeedbackFormOptions = {}) => {
     const isLoading = ref(false)
     const error = ref<ApiError | null>(null)
 
-    const isSubmitDisabled = computed(() => !captchaToken.value || isLoading.value)
+    // ПОЧЕМУ без проверки полей и капчи: кнопка активна всегда, ошибки показывает валидация UForm по клику
+    const isSubmitDisabled = computed(() => isLoading.value || isSpamBlocked.value)
 
     const resetForm = () => {
         Object.assign(form, { ...DEFAULT_FORM_STATE })
@@ -35,6 +36,10 @@ export const useFeedbackForm = (options: UseFeedbackFormOptions = {}) => {
 
     const onSubmit = async (event: FormSubmitEvent<FeedbackFormState>): Promise<boolean> => {
         if (isSubmitDisabled.value) return false
+        if (!captchaToken.value) {
+            options.onError?.(CAPTCHA_PENDING_ERROR)
+            return false
+        }
 
         isLoading.value = true
         error.value = null
