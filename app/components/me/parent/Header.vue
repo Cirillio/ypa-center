@@ -16,6 +16,8 @@ const firstName = computed(() => {
     if (!trimmed) return ""
     return trimmed.split(/\s+/)[0] ?? ""
 })
+
+const greeting = getGreeting()
 </script>
 
 <template>
@@ -29,7 +31,7 @@ const firstName = computed(() => {
                     Личный кабинет
                 </span>
                 <h1 class="text-primary text-2xl leading-tight font-bold">
-                    Здравствуйте, {{ firstName }}
+                    {{ greeting }}, {{ firstName }}
                 </h1>
             </div>
             <h1 v-else class="text-primary text-2xl leading-tight font-bold">Личный кабинет</h1>
