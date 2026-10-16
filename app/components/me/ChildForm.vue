@@ -128,6 +128,7 @@ function onSubmit(event: FormSubmitEvent<NewChild>) {
                 variant="ghost"
                 icon="ph:x-bold"
                 aria-label="Отмена"
+                class="aspect-square justify-center rounded-full"
                 @click="emit('cancel')"
             />
         </div>
