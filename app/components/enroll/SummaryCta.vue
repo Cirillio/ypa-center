@@ -28,7 +28,6 @@ const emit = defineEmits<{
 }>()
 
 const isCoolingDown = computed(() => props.cooldownSeconds > 0)
-const isActive = computed(() => props.ready && !isCoolingDown.value)
 // ПОЧЕМУ: кнопка не серая до полного выбора – клик без выбора подсвечивает, чего не хватает
 const attempted = ref(false)
 
@@ -60,7 +59,7 @@ const buttonLabel = computed(() =>
             :disabled="isCoolingDown"
             :loading="loading"
             :color="isCoolingDown ? 'neutral' : 'primary'"
-            :variant="isActive ? 'solid' : 'soft'"
+            :variant="isCoolingDown ? 'soft' : 'solid'"
             size="xl"
             block
             class="text-lg font-bold"
