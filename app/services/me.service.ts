@@ -53,7 +53,8 @@ function toProfile(dto: Profile): MeProfile {
             email: dto.email
         },
         children: dto.children.map(toChild),
-        isComplete: isProfileComplete(dto)
+        isComplete: isProfileComplete(dto),
+        hasConsent: dto.pd_consent_at !== null
     }
 }
 

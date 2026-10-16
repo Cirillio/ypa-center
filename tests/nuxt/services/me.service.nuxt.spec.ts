@@ -22,7 +22,8 @@ describe("MeService.getProfile", () => {
         expect(profile).toEqual({
             parent: { name: "Иванова Анна", phone: "+79131234567", email: "anna@example.com" },
             children: [{ id: "11", name: "Иванов Петя", birthdate: "2018-05-20" }],
-            isComplete: true
+            isComplete: true,
+            hasConsent: true
         })
     })
 
@@ -34,6 +35,13 @@ describe("MeService.getProfile", () => {
 
         expect(profile.parent).toEqual({ name: "", phone: "", email: "anna@example.com" })
         expect(profile.isComplete).toBe(false)
+    })
+
+    it("reports no stored consent when pd_consent_at is empty", async () => {
+        const dto = profileDto({ pd_consent_at: null })
+        const profile = await new MeService(createFakeFetch(() => dto).fetch).getProfile()
+
+        expect(profile.hasConsent).toBe(false)
     })
 
     it("trusts the backend profile_completed flag", () => {

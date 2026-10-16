@@ -31,7 +31,8 @@ const httpError = (status: number, detail?: string, code?: string) => ({
 const profile = (isComplete: boolean): MeProfile => ({
     parent: { name: "", phone: "", email: "anna@example.com" },
     children: [],
-    isComplete
+    isComplete,
+    hasConsent: isComplete
 })
 
 beforeEach(() => {

@@ -17,7 +17,8 @@ mockNuxtImport("useMeService", () => () => ({
 const profile: MeProfile = {
     parent: { name: "Анна", phone: "+79131234567", email: "anna@example.com" },
     children: [{ id: "11", name: "Петя", birthdate: "2018-05-20" }],
-    isComplete: true
+    isComplete: true,
+    hasConsent: true
 }
 
 const enrollment = (overrides: Partial<ActiveEnrollmentDto>): ActiveEnrollmentDto => ({

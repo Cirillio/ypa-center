@@ -266,6 +266,8 @@ export interface MeProfile {
     parent: MeParent
     children: MeChild[]
     isComplete: boolean
+    // Согласие на обработку ПД дано при регистрации (pd_consent_at не пуст)
+    hasConsent: boolean
 }
 
 export interface ProfileCompletionPayload {

@@ -34,7 +34,8 @@ beforeEach(() => {
     mocks.completeProfile.mockReset().mockResolvedValue({
         parent: { name: "Иванова Анна", phone: "+7 (913) 123-45-67", email: "anna@example.com" },
         children: [],
-        isComplete: true
+        isComplete: true,
+        hasConsent: true
     })
 })
 
