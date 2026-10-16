@@ -10,7 +10,7 @@ defineProps<{
 </script>
 
 <template>
-    <section aria-label="О событии" class="shadow-card flex flex-col gap-5 rounded-lg bg-white p-6">
+    <section aria-label="О событии" class="flex flex-col gap-5 rounded-lg bg-white p-6 shadow-sm">
         <div class="flex items-center gap-3">
             <div
                 class="bg-primary/5 text-primary flex items-center justify-center rounded-full p-2"

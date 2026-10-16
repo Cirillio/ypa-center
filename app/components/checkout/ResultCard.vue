@@ -13,7 +13,7 @@ withDefaults(
 
 <template>
     <div
-        class="shadow-card relative flex flex-col items-center gap-6 rounded-lg bg-white px-6 pt-8 pb-8 text-center md:px-10"
+        class="relative flex flex-col items-center gap-6 rounded-lg bg-white px-6 pt-8 pb-8 text-center shadow-sm md:px-10"
     >
         <div class="relative -mt-24 flex justify-center">
             <slot name="icon" />

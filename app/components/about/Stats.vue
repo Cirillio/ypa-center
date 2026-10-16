@@ -39,7 +39,7 @@ const CENTER_STATS = [
                 <div
                     v-for="stat in CENTER_STATS"
                     :key="stat.label"
-                    class="hover:ring-primary shadow-card flex flex-col items-center gap-4 rounded-md bg-white p-8 ring-2 ring-transparent transition-all duration-200 hover:-translate-y-1"
+                    class="hover:ring-primary flex flex-col items-center gap-4 rounded-md bg-white p-8 shadow-sm ring-2 ring-transparent transition-all duration-200 hover:-translate-y-1"
                     style="box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.06)"
                 >
                     <UIcon :name="stat.icon" class="size-12" :class="stat.textColor" />

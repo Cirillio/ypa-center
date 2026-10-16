@@ -53,9 +53,7 @@ const fmt = (n: number) =>
 
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
                 <!-- Calculator -->
-                <div
-                    class="shadow-card flex flex-col gap-4 rounded-sm bg-white p-5 md:gap-5 md:p-6"
-                >
+                <div class="flex flex-col gap-4 rounded-sm bg-white p-5 shadow-sm md:gap-5 md:p-6">
                     <h3 class="text-secondary text-2xl font-extrabold md:text-3xl">
                         Посчитай выгоду
                     </h3>

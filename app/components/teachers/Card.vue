@@ -8,7 +8,7 @@ defineProps<{
 
 <template>
     <article
-        class="group shadow-card flex gap-4 overflow-hidden rounded-md bg-white p-4 transition-all duration-300 max-md:flex-col md:gap-6"
+        class="group flex gap-4 overflow-hidden rounded-md bg-white p-4 shadow-sm transition-all duration-300 max-md:flex-col md:gap-6"
     >
         <!-- Фото -->
         <div class="w-full overflow-hidden rounded-md max-md:h-76 md:aspect-4/5 md:w-76">
