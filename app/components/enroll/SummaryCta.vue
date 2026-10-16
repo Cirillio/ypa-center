@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-// Главная кнопка сводки: блокировка до полного выбора, отправка, пауза перед повтором и ошибка заказа.
+// Главная кнопка сводки: подсказка о недостающем выборе по клику, отправка, пауза перед повтором и ошибка заказа.
 import type { CheckoutError } from "~/types"
 
 const props = withDefaults(
@@ -27,7 +27,26 @@ const emit = defineEmits<{
     continue: []
 }>()
 
-const isActive = computed(() => props.ready && props.cooldownSeconds === 0)
+const isCoolingDown = computed(() => props.cooldownSeconds > 0)
+const isActive = computed(() => props.ready && !isCoolingDown.value)
+// ПОЧЕМУ: кнопка не серая до полного выбора – клик без выбора подсвечивает, чего не хватает
+const attempted = ref(false)
+
+// Отправляет заказ, а при неполном выборе только показывает, что осталось выбрать.
+function handleClick() {
+    if (!props.ready) {
+        attempted.value = true
+        return
+    }
+    emit("continue")
+}
+
+watch(
+    () => props.ready,
+    (ready) => {
+        if (ready) attempted.value = false
+    }
+)
 const buttonLabel = computed(() =>
     props.cooldownSeconds > 0 ? `Повторить через ${props.cooldownSeconds} с` : props.label
 )
@@ -38,15 +57,15 @@ const buttonLabel = computed(() =>
         <UButton
             :label="buttonLabel"
             :trailing-icon="icon"
-            :disabled="!isActive"
+            :disabled="isCoolingDown"
             :loading="loading"
-            :color="isActive ? 'primary' : 'neutral'"
+            :color="isCoolingDown ? 'neutral' : 'primary'"
             :variant="isActive ? 'solid' : 'soft'"
             size="xl"
             block
             class="text-lg font-bold"
             :ui="{ trailingIcon: 'size-5' }"
-            @click="emit('continue')"
+            @click="handleClick"
         />
 
         <UAlert
@@ -66,7 +85,12 @@ const buttonLabel = computed(() =>
         </UAlert>
 
         <p v-else-if="hint" class="text-muted text-center text-xs">{{ hint }}</p>
-        <p v-else-if="!ready && missing.length" class="text-muted text-center text-xs">
+        <p
+            v-else-if="!ready && missing.length"
+            :role="attempted ? 'alert' : undefined"
+            class="text-center text-xs transition-colors"
+            :class="attempted ? 'text-error font-semibold' : 'text-muted'"
+        >
             Осталось выбрать: {{ missing.join(", ") }}
         </p>
     </div>

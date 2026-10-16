@@ -48,12 +48,30 @@ describe("EnrollEventSeatsStepper", () => {
 })
 
 describe("EnrollSummaryCta", () => {
-    it("is disabled and lists what is missing", async () => {
+    it("stays clickable and lists what is missing", async () => {
         const wrapper = await mountSuspended(SummaryCta, {
             props: { ready: false, missing: ["ребёнка", "время"] }
         })
-        expect(wrapper.get("button").attributes("disabled")).toBeDefined()
+        expect(wrapper.get("button").attributes("disabled")).toBeUndefined()
         expect(wrapper.text()).toContain("Осталось выбрать: ребёнка, время")
+    })
+
+    it("highlights what is missing on click instead of continuing", async () => {
+        const wrapper = await mountSuspended(SummaryCta, {
+            props: { ready: false, missing: ["ребёнка"] }
+        })
+        await wrapper.get("button").trigger("click")
+
+        expect(wrapper.emitted("continue")).toBeUndefined()
+        expect(wrapper.get("[role=alert]").text()).toContain("Осталось выбрать: ребёнка")
+    })
+
+    it("is disabled only while the retry cooldown runs", async () => {
+        const wrapper = await mountSuspended(SummaryCta, {
+            props: { ready: true, missing: [], cooldownSeconds: 5 }
+        })
+        expect(wrapper.get("button").attributes("disabled")).toBeDefined()
+        expect(wrapper.get("button").text()).toContain("Повторить через 5 с")
     })
 
     it("continues when everything is chosen", async () => {
@@ -100,7 +118,9 @@ describe("EnrollSubscriptionSummary: no plan for the cart", () => {
     it("blocks payment when the lineup has no plan for this many clubs", async () => {
         const wrapper = await mountSummary(3)
         const cta = wrapper.findAll("button").find((b) => b.text().includes("Продолжить"))
-        expect(cta?.attributes("disabled")).toBeDefined()
+        await cta?.trigger("click")
+
+        expect(wrapper.emitted("continue")).toBeUndefined()
         expect(wrapper.text()).toContain("Нет тарифа на 3 кружка – добавьте или уберите кружок")
     })
 
@@ -204,8 +224,9 @@ describe("EnrollTrialSummary", () => {
 
     it("blocks a trial the child already had in this club", async () => {
         const wrapper = await mountSummary(1_100, true)
+        await cta(wrapper, "Продолжить")?.trigger("click")
 
-        expect(cta(wrapper, "Продолжить")?.attributes("disabled")).toBeDefined()
+        expect(wrapper.emitted("continue")).toBeUndefined()
         expect(wrapper.text()).toContain(
             "У ребёнка уже было пробное в этом кружке – выберите другой или оформите абонемент"
         )
