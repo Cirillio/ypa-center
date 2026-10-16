@@ -90,10 +90,12 @@ const SKELETON_KEYS = ["clubs-sk-1", "clubs-sk-2", "clubs-sk-3"] as const
                 />
             </div>
             <!-- Приписка -->
-            <span v-if="activities.length" class="text-default/95 text-xs font-semibold md:text-sm"
-                >• Узнать какие учителя занимаются направлениями можно на
-                <NuxtLink to="/teachers" class="text-primary">странице учителей</NuxtLink>.</span
-            >
+            <p v-if="activities.length" class="text-default/95 text-base font-semibold md:text-lg">
+                • Узнать, какие педагоги ведут направления, можно в разделе
+                <NuxtLink to="/about#partners" class="text-primary underline underline-offset-2">
+                    «Наши партнёры»</NuxtLink
+                >.
+            </p>
         </UContainer>
     </section>
 </template>
