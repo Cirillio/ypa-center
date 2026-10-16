@@ -76,7 +76,13 @@ async function redirectToProfileForm(): Promise<void> {
 }
 
 export function useApi() {
-    const { apiBase } = useRuntimeConfig().public
+    const config = useRuntimeConfig()
+    // ПОЧЕМУ: SSR ходит в бэкенд по docker-сети, браузер — через nginx того же домена
+    const apiBase =
+        import.meta.server && config.apiBaseServer ? config.apiBaseServer : config.public.apiBase
+    // ПОЧЕМУ: без X-Forwarded-For все SSR-запросы приходят в DRF с IP контейнера nuxt
+    // и делят один анонимный лимит на всех посетителей
+    const forwardedHeaders = import.meta.server ? useRequestHeaders(["x-forwarded-for"]) : {}
 
     // ПОЧЕМУ здесь, а не в виджетах: 403 PROFILE_INCOMPLETE отдают все ручки ЛК и чекаута,
     // гейт в каждом потребителе разъехался бы. Ошибка всё равно пробрасывается вызывающему.
@@ -100,6 +106,9 @@ export function useApi() {
         opts?: Parameters<typeof $fetch<T>>[1]
     ): Promise<T> {
         const headers = new Headers(opts?.headers)
+        for (const [name, value] of Object.entries(forwardedHeaders)) {
+            if (value && !headers.has(name)) headers.set(name, value)
+        }
         const access = getAccessToken()
 
         if (access && !headers.has("Authorization")) {

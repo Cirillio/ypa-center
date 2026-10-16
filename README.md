@@ -46,9 +46,10 @@
 echo 'NUXT_PUBLIC_API_BASE=http://127.0.0.1:8000/api' > .env
 ```
 
-| Переменная             | Назначение              | По умолчанию                |
-| ---------------------- | ----------------------- | --------------------------- |
-| `NUXT_PUBLIC_API_BASE` | Базовый URL API бэкенда | `http://localhost:8000/api` |
+| Переменная             | Назначение                                                         | По умолчанию                   |
+| ---------------------- | ------------------------------------------------------------------ | ------------------------------ |
+| `NUXT_PUBLIC_API_BASE` | Базовый URL API бэкенда                                            | `http://localhost:8000/api`    |
+| `NUXT_API_BASE_SERVER` | URL API для SSR (только сервер), в проде `http://backend:8000/api` | пусто → `NUXT_PUBLIC_API_BASE` |
 
 ## Запуск
 
@@ -80,6 +81,9 @@ bun run schema:update
 # бэкенд поднят на localhost:8000
 docker compose up --build          # → http://localhost:3000
 ```
+
+Локальный `docker-compose.yml` — только для разработки. Прод-стек (nginx, бэк, БД) и ручной
+деплой через GitHub Actions — `../devops/02-deploy-runbook.md`, workflow `deploy-frontend.yml`.
 
 `docker-compose.yml` использует `network_mode: host` (Linux) — SSR внутри
 контейнера и браузер ходят к бэкенду по одному адресу. Для Docker Desktop

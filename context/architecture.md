@@ -27,6 +27,10 @@
 
 Бэкенд: Django + DRF, репозиторий `../ypa-center-backend`. Базовый URL задаётся
 переменной `NUXT_PUBLIC_API_BASE` (по умолчанию `http://localhost:8000/api`).
+На SSR `useApi()` берёт приватный `apiBaseServer` (`NUXT_API_BASE_SERVER`, в проде
+`http://backend:8000/api` — напрямую по docker-сети), если он задан, и пробрасывает
+`X-Forwarded-For` входящего запроса — иначе все SSR-запросы делят один анонимный лимит
+DRF по IP контейнера. В браузере — `public.apiBase` (в проде относительный `/api` через nginx).
 
 ---
 

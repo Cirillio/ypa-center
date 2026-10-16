@@ -1,0 +1,80 @@
+# Ручной деплой фронта: сборка образа на раннере GitHub → GHCR → pull и перезапуск на VPS.
+# Сервер ничего не собирает (2 ГБ RAM), только pull/up/prune.
+#
+# Секреты репозитория (Settings → Secrets and variables → Actions):
+#   SSH_HOST         — IP или домен VPS
+#   SSH_USER         — deploy
+#   SSH_PRIVATE_KEY  — приватный ключ ed25519, выделенный под CI (публичная часть — в ~deploy/.ssh/authorized_keys)
+#   SSH_PORT         — необязателен, по умолчанию 22
+# GITHUB_TOKEN выдаётся автоматически, отдельный секрет не нужен.
+
+name: Deploy frontend
+
+on:
+    workflow_dispatch:
+
+# ПОЧЕМУ: два параллельных деплоя гонялись бы за .env и docker compose на одном сервере
+concurrency:
+    group: deploy-frontend
+    cancel-in-progress: false
+
+permissions:
+    contents: read
+    packages: write
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Image name
+              id: meta
+              # ПОЧЕМУ lowercase: GHCR отвергает имена с заглавными буквами, а владелец — Cirillio
+              run: |
+                  owner="${GITHUB_REPOSITORY_OWNER,,}"
+                  echo "image=ghcr.io/${owner}/ypa-frontend" >> "$GITHUB_OUTPUT"
+                  echo "tag=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+            - uses: docker/setup-buildx-action@v3
+
+            - uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Build and push
+              uses: docker/build-push-action@v6
+              with:
+                  context: .
+                  platforms: linux/amd64
+                  push: true
+                  tags: |
+                      ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}
+                      ${{ steps.meta.outputs.image }}:latest
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
+
+            - name: Deploy on VPS
+              uses: appleboy/ssh-action@v1.2.0
+              env:
+                  IMAGE: ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT || 22 }}
+                  envs: IMAGE
+                  script_stop: true
+                  script: |
+                      set -eu
+                      cd /opt/ypa
+                      # В .env пишется конкретный sha, не latest: откат = вернуть прошлый тег
+                      sed -i "s|^FRONTEND_IMAGE=.*|FRONTEND_IMAGE=${IMAGE}|" .env
+                      docker compose pull frontend
+                      # --no-deps: не трогать backend и БД при выкладке фронта
+                      docker compose up -d --no-deps frontend
+                      # Деплой успешен, только когда сработал HEALTHCHECK образа
+                      timeout 90 sh -c 'until [ "$(docker inspect -f "{{.State.Health.Status}}" ypa-frontend-1)" = healthy ]; do sleep 3; done'
+                      docker image prune -af --filter "until=72h"
