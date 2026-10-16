@@ -110,7 +110,7 @@ const orderNumber = computed(() => props.transaction.id.slice(0, 8).toUpperCase(
                 <!-- ПОЧЕМУ не для события: платит гость, кабинета у него может не быть -->
                 <li v-if="purchase" class="flex items-center gap-3">
                     <UiRoundIcon name="ph:user-circle-bold" />
-                    <span class="text-default text-sm font-semibold">
+                    <span class="text-default text-sm leading-tight font-semibold">
                         Запись уже в
                         <NuxtLink to="/me" class="text-primary underline-offset-2 hover:underline">
                             личном кабинете
@@ -120,13 +120,13 @@ const orderNumber = computed(() => props.transaction.id.slice(0, 8).toUpperCase(
                 </li>
                 <li v-if="transaction.type === 'SUBSCRIPTION'" class="flex items-center gap-3">
                     <UiRoundIcon name="ph:calendar-check-bold" />
-                    <span class="text-default text-sm font-semibold">
+                    <span class="text-default text-sm leading-tight font-semibold">
                         Абонемент действует 4 недели с первого занятия.
                     </span>
                 </li>
                 <li class="flex items-center gap-3">
                     <UiRoundIcon name="ph:map-pin-bold" />
-                    <span class="text-default text-sm font-semibold">
+                    <span class="text-default text-sm leading-tight font-semibold">
                         Ждём вас:
                         <a
                             :href="contactInfo.mapLink"
