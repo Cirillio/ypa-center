@@ -26,7 +26,7 @@ function onSubmit(child: NewChild) {
         description="Имя и дата рождения обязательны, класс – по желанию."
         :ui="{
             overlay: 'bg-black/30 backdrop-blur-xs',
-            content: 'max-w-md rounded-lg bg-white ring-0 shadow-xl'
+            content: 'max-w-md rounded-lg bg-default ring-0 shadow-xl'
         }"
     >
         <template #content>

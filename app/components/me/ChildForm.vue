@@ -93,7 +93,7 @@ function onSubmit(event: FormSubmitEvent<NewChild>) {
                         variant="soft"
                         type="button"
                         class="w-full justify-between max-md:text-base!"
-                        :ui="{ base: 'truncate' }"
+                        :ui="{ base: 'truncate py-2 md:py-2' }"
                         trailing-icon="ph:caret-down-bold"
                     />
                     <template #content>
