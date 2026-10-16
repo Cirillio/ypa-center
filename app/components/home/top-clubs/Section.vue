@@ -47,7 +47,7 @@ const GRID_CLASS: Record<Exclude<Variant, "empty" | "pending">, string> = {
                     мы найдём занятие для каждого характера и таланта.
                 </template>
                 <template #action>
-                    <UButton to="/clubs" size="xl" class="group mt-auto w-fit">
+                    <UButton to="/clubs#all-clubs" size="xl" class="group mt-auto w-fit">
                         <span class="font-bold md:text-lg">Смотреть все</span>
                         <UIcon
                             name="ph:arrow-right-bold"

@@ -30,7 +30,10 @@ const SKELETON_KEYS = ["clubs-sk-1", "clubs-sk-2", "clubs-sk-3"] as const
 </script>
 
 <template>
-    <section class="bg-default relative z-10 flex w-full py-12 md:py-20 lg:py-24">
+    <section
+        id="all-clubs"
+        class="bg-default relative z-10 flex w-full scroll-mt-(--ui-header-height) py-12 md:py-20 lg:py-24"
+    >
         <UContainer class="flex w-full flex-col gap-6 md:gap-8">
             <!-- Заголовок -->
             <h2
