@@ -29,7 +29,7 @@ const onErrorSubmit = (error: ApiError) => {
 </script>
 
 <template>
-    <div class="bg-default flex max-w-xs flex-col rounded-lg p-2 sm:p-6 xl:max-w-sm">
+    <div class="bg-default flex w-full flex-col rounded-lg p-5 sm:p-6 md:max-w-xs xl:max-w-sm">
         <LazyCallbackModal
             v-if="hasBeenSubmitted"
             v-model:open="modalOpen"
