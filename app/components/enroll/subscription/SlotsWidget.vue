@@ -57,14 +57,14 @@ const emit = defineEmits<{
             <section
                 v-for="day in days"
                 :key="day.dow"
-                :aria-label="day.dayShort"
+                :aria-label="getFullDayName(day.dayShort)"
                 class="flex min-w-0 flex-col gap-2"
             >
                 <div
                     class="flex items-center gap-2 rounded-md px-3 py-1.5"
                     :class="day.isToday ? 'bg-primary text-white' : 'bg-default text-default/95'"
                 >
-                    <span class="font-bold uppercase">{{ day.dayShort }}</span>
+                    <span class="font-bold">{{ getFullDayName(day.dayShort) }}</span>
                     <span
                         v-if="countsByDow[day.dow]"
                         class="flex min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-bold"
