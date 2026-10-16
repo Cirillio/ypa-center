@@ -48,7 +48,7 @@ function handleClick() {
         <div class="flex flex-col">
             <span
                 :title="slotItem.activity.name"
-                class="line-clamp-2 text-base leading-tight font-extrabold md:text-xl"
+                class="line-clamp-2 text-base leading-tight font-extrabold wrap-break-word hyphens-auto md:text-xl"
                 :class="theme.title"
             >
                 {{ slotItem.activity.name }}

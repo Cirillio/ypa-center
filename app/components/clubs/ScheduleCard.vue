@@ -22,7 +22,7 @@ const cardClass = computed(() => [
             <!-- Название -->
             <span
                 :title="weeklySlot.activity.name"
-                class="line-clamp-2 flex-1 text-base leading-[1.3rem] font-extrabold xl:line-clamp-3 xl:text-xl"
+                class="line-clamp-2 flex-1 text-base leading-[1.3rem] font-extrabold wrap-break-word hyphens-auto xl:line-clamp-3 xl:text-xl"
                 :class="style.title"
             >
                 {{ weeklySlot.activity.name }}

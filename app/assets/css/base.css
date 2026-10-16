@@ -18,6 +18,16 @@
         color: var(--ui-primary);
     }
 
+    /* Длинное одиночное слово не вылезает за карточку: ломается только при переполнении */
+    h1,
+    h2,
+    h3,
+    h4,
+    p,
+    li {
+        overflow-wrap: break-word;
+    }
+
     @media (prefers-reduced-motion: reduce) {
         *,
         *::before,
