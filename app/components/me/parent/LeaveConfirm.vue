@@ -21,7 +21,7 @@ function handleLogout() {
         description="Записи и депозит сохранятся. Чтобы вернуться, понадобится новый код из письма."
         :ui="{
             overlay: 'bg-black/30 backdrop-blur-xs',
-            content: 'max-w-sm rounded-3xl bg-white ring-0 shadow-xl'
+            content: 'max-w-sm rounded-lg bg-white ring-0 shadow-xl'
         }"
     >
         <template #content>
