@@ -81,7 +81,8 @@ export default defineNuxtConfig({
     },
 
     robots: {
-        disallow: ["/enroll", "/checkout", "/api"]
+        // ПОЧЕМУ здесь, а не в definePageMeta: /me и /login рендерятся только на клиенте, сервер их мету не видит
+        disallow: ["/enroll", "/checkout", "/api", "/me", "/login"]
     },
 
     compatibilityDate: "2025-07-15",
