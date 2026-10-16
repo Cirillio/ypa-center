@@ -17,7 +17,8 @@ const kind = computed(() => parseCheckoutResultKind(route.query.kind))
 </script>
 
 <template>
-    <div class="gradient-bg-ps-hero min-h-dvh pt-(--ui-header-height)">
+    <!-- ПОЧЕМУ overflow-x-clip: салют вылетает за край экрана – без обрезки страница шире вьюпорта и едет вбок -->
+    <div class="gradient-bg-ps-hero min-h-dvh overflow-x-clip pt-(--ui-header-height)">
         <!-- ПОЧЕМУ верхний отступ: маскот выглядывает из-за края карточки -->
         <section aria-label="Результат оплаты" class="px-4 pt-32 pb-16 md:pt-36 md:pb-24">
             <div class="mx-auto w-full max-w-lg">
