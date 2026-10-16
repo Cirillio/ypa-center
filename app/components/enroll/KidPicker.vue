@@ -22,24 +22,18 @@ const emit = defineEmits<{
 const selectedChildId = defineModel<string | undefined>({ required: true })
 
 const isAdding = ref<boolean>(false)
-const newName = ref<string>("")
-const newBirthdate = ref<string>("")
 
 // Roving tabindex: Tab попадает в группу один раз – на выбранного ребёнка или на первого.
 const focusableChildId = computed(() => selectedChildId.value ?? props.children[0]?.id)
 
-// Закрывает форму добавления и очищает черновик.
+// Закрывает форму добавления; черновик живёт в самой форме и уходит вместе с ней.
 function closeForm() {
     isAdding.value = false
-    newName.value = ""
-    newBirthdate.value = ""
 }
 
 // Отдаёт нового ребёнка наверх; выбор его после сохранения делает композабл.
-function submitForm() {
-    const name = newName.value.trim()
-    if (!name || !newBirthdate.value) return
-    emit("add", { name, birthdate: newBirthdate.value })
+function submitForm(child: NewChild) {
+    emit("add", child)
     closeForm()
 }
 </script>
@@ -116,32 +110,12 @@ function submitForm() {
                 {{ errorText }}
             </p>
 
-            <form v-if="isAdding" class="flex flex-col gap-2" @submit.prevent="submitForm">
-                <UInput v-model="newName" autofocus maxlength="40" placeholder="Имя ребёнка" />
-                <div class="flex gap-2">
-                    <UInput
-                        v-model="newBirthdate"
-                        type="date"
-                        aria-label="Дата рождения"
-                        class="min-w-0 flex-1"
-                    />
-                    <UButton
-                        type="submit"
-                        icon="ph:check-bold"
-                        :loading="isSaving"
-                        :disabled="!newName.trim() || !newBirthdate"
-                        aria-label="Сохранить ребёнка"
-                    />
-                    <UButton
-                        type="button"
-                        color="error"
-                        variant="ghost"
-                        icon="ph:x-bold"
-                        aria-label="Отмена"
-                        @click="closeForm"
-                    />
-                </div>
-            </form>
+            <MeChildForm
+                v-if="isAdding"
+                :is-saving="isSaving"
+                @submit="submitForm"
+                @cancel="closeForm"
+            />
             <UButton
                 v-else
                 label="Добавить ребёнка"

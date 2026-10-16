@@ -260,6 +260,8 @@ export interface MeChild {
     id: string
     name: string
     birthdate: string
+    // Класс («3 класс», «Дошкольник»); пусто, если родитель не указал
+    schoolGrade?: string
 }
 
 export interface MeProfile {
@@ -287,6 +289,7 @@ export interface MeChildBlocker {
 export interface NewChild {
     name: string
     birthdate: string
+    schoolGrade?: string
 }
 
 export interface MeSubscriptionSlot {

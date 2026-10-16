@@ -41,7 +41,8 @@ function toChild(dto: ProfileChild): MeChild {
     return {
         id: String(dto.id),
         name: dto.full_name,
-        birthdate: dto.dob
+        birthdate: dto.dob,
+        ...(dto.school_grade ? { schoolGrade: dto.school_grade } : {})
     }
 }
 
@@ -216,7 +217,8 @@ export class MeService {
             method: "POST",
             body: {
                 full_name: dto.name.trim(),
-                dob: dto.birthdate
+                dob: dto.birthdate,
+                ...(dto.schoolGrade ? { school_grade: dto.schoolGrade } : {})
             }
         })
         return toChild(created)

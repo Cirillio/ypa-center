@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 // Отображает список детей родителя с формой добавления нового ребёнка.
-import type { MeChild } from "~/types"
+import type { MeChild, NewChild } from "~/types"
 
 defineProps<{
     children?: readonly MeChild[]
@@ -9,13 +9,11 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-    add: [payload: { name: string; birthdate: string }]
+    add: [payload: NewChild]
     remove: [child: MeChild]
 }>()
 
 const isAdding = ref<boolean>(false)
-const newName = ref<string>("")
-const newBirthdate = ref<string>("")
 
 const initial = (name: string) => name.trim().charAt(0).toUpperCase()
 
@@ -25,13 +23,10 @@ const openForm = () => {
 
 const cancelForm = () => {
     isAdding.value = false
-    newName.value = ""
-    newBirthdate.value = ""
 }
 
-const submitForm = () => {
-    if (!newName.value.trim() || !newBirthdate.value) return
-    emit("add", { name: newName.value.trim(), birthdate: newBirthdate.value })
+const submitForm = (child: NewChild) => {
+    emit("add", child)
     cancelForm()
 }
 </script>
@@ -67,6 +62,9 @@ const submitForm = () => {
                     </span>
                     <span class="text-default text-base leading-tight font-semibold">
                         {{ child.name }}
+                        <span v-if="child.schoolGrade" class="text-muted text-sm font-medium">
+                            · {{ child.schoolGrade }}
+                        </span>
                     </span>
                     <UButton
                         icon="ph:x-bold"
@@ -81,35 +79,13 @@ const submitForm = () => {
             </div>
             <p v-else class="text-muted text-sm italic">Пока не добавлено ни одного ребёнка</p>
 
-            <form
+            <MeChildForm
                 v-if="isAdding"
-                class="flex flex-wrap items-center gap-2"
-                @submit.prevent="submitForm"
-            >
-                <UInput
-                    v-model="newName"
-                    autofocus
-                    maxlength="40"
-                    placeholder="Имя ребёнка"
-                    class="max-w-44"
-                />
-                <UInput v-model="newBirthdate" type="date" class="max-w-40" />
-                <UButton
-                    type="submit"
-                    icon="ph:check-bold"
-                    :loading="isSaving"
-                    :disabled="!newName.trim() || !newBirthdate"
-                    title="Сохранить"
-                />
-                <UButton
-                    type="button"
-                    color="error"
-                    variant="ghost"
-                    icon="ph:x-bold"
-                    title="Отмена"
-                    @click="cancelForm"
-                />
-            </form>
+                :is-saving="isSaving"
+                class="max-w-md"
+                @submit="submitForm"
+                @cancel="cancelForm"
+            />
             <UButton
                 v-else
                 icon="ph:plus-bold"
