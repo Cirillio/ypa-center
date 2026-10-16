@@ -1,17 +1,10 @@
 <script lang="ts" setup>
-// Шапка личного кабинета с приветствием родителя и кнопкой выхода.
-interface Props {
-    parentName?: string
-}
-
-const props = defineProps<Props>()
-
+// Шапка личного кабинета с приветствием по времени суток и кнопкой выхода.
 const emit = defineEmits<{
     logout: []
 }>()
 
-const firstName = computed(() => getFirstName(props.parentName))
-
+// ПОЧЕМУ без имени: в поле ФИО родитель пишет что угодно – подставлять его в обращение небезопасно
 const greeting = getGreeting()
 </script>
 
@@ -19,17 +12,14 @@ const greeting = getGreeting()
     <UContainer class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 py-6">
         <div class="flex items-center gap-3">
             <UiRoundIcon name="ph:book-open-text-bold" />
-            <div v-if="firstName" class="flex flex-col">
+            <div class="flex flex-col">
                 <span
                     class="text-secondary text-sm leading-tight font-semibold tracking-wide uppercase"
                 >
                     Личный кабинет
                 </span>
-                <h1 class="text-primary text-2xl leading-tight font-bold">
-                    {{ greeting }}, {{ firstName }}
-                </h1>
+                <h1 class="text-primary text-2xl leading-tight font-bold">{{ greeting }}!</h1>
             </div>
-            <h1 v-else class="text-primary text-2xl leading-tight font-bold">Личный кабинет</h1>
         </div>
 
         <UiPillNav label="Действия кабинета">

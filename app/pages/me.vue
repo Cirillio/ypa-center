@@ -121,7 +121,7 @@ const parent = computed(() => profileData.value?.parent)
             @confirm="confirmDeleteChild"
         />
 
-        <MeParentHeader :parent-name="parent?.name" @logout="openConfirmModal">
+        <MeParentHeader @logout="openConfirmModal">
             <template #actions>
                 <MeDepositWidget v-if="profileData?.isComplete" />
             </template>

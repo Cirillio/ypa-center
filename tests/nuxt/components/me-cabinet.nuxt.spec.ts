@@ -9,24 +9,18 @@ afterEach(() => {
 })
 
 describe("MeParentHeader", () => {
-    it("greets by the given name according to the Novosibirsk time of day", async () => {
+    it("greets by the Novosibirsk time of day without the parent's name", async () => {
         // 02:00 UTC = 09:00 в Новосибирске
         vi.useFakeTimers({ toFake: ["Date"] })
         vi.setSystemTime(new Date("2026-10-16T02:00:00Z"))
-        const wrapper = await mountSuspended(Header, {
-            props: { parentName: "Петрова Елизавета Михайловна" }
-        })
+        const wrapper = await mountSuspended(Header)
 
-        expect(wrapper.get("h1").text()).toBe("Доброе утро, Елизавета")
-    })
-
-    it("falls back to the plain title without a name", async () => {
-        const wrapper = await mountSuspended(Header, { props: { parentName: "" } })
-        expect(wrapper.get("h1").text()).toBe("Личный кабинет")
+        expect(wrapper.get("h1").text()).toBe("Доброе утро!")
+        expect(wrapper.text()).toContain("Личный кабинет")
     })
 
     it("asks to confirm the logout instead of logging out at once", async () => {
-        const wrapper = await mountSuspended(Header, { props: { parentName: "Анна" } })
+        const wrapper = await mountSuspended(Header)
         const logout = wrapper.findAll("button").find((b) => b.text().includes("Выйти"))
         await logout?.trigger("click")
 
