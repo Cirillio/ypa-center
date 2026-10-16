@@ -136,8 +136,7 @@ function slotsForDay(dow: number) {
                 <div
                     v-else
                     :key="`empty-${selectedDay.dow}`"
-                    :class="selectedDay.dow === 0 ? 'ring-primary' : 'ring-transparent'"
-                    class="bg-default flex aspect-5/3 flex-col items-center justify-center gap-1.5 rounded-md opacity-35 ring-2 transition active:opacity-100"
+                    class="bg-default flex aspect-5/3 flex-col items-center justify-center gap-1.5 rounded-md opacity-35 transition active:opacity-100"
                 >
                     <UIcon name="ph:coffee-duotone" class="text-default size-10" />
                     <span class="text-default font-semibold">Выходной</span>
@@ -174,10 +173,7 @@ function slotsForDay(dow: number) {
                     <!-- Выходной -->
                     <div
                         v-else
-                        :class="
-                            day.dow === 0 || 'text-default opacity-35 transition hover:opacity-100'
-                        "
-                        class="bg-default flex aspect-square flex-col items-center justify-center gap-1.5 rounded-md"
+                        class="bg-default text-default flex aspect-square flex-col items-center justify-center gap-1.5 rounded-md opacity-35 transition hover:opacity-100"
                     >
                         <UIcon name="ph:coffee-duotone" class="size-8" />
                         <span class="text-base font-semibold">Выходной</span>
