@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 // Инлайн-форма нового ребёнка (кабинет и запись): имя, дата рождения, класс; ошибки – по клику «Сохранить».
 import type { FormSubmitEvent } from "@nuxt/ui"
-import { SCHOOL_GRADE_ITEMS } from "~/constants/school-grades"
+import { SCHOOL_GRADES } from "~/constants/school-grades"
 import { childSchema, type ChildFormState } from "~/schemas/child.schema"
 import type { NewChild } from "~/types"
 
@@ -21,6 +21,14 @@ const fieldUi = {
     base: "md:text-lg !text-base bg-white font-semibold text-default placeholder:text-default/75"
 }
 
+const gradeOpen = ref(false)
+
+// Ставит класс и закрывает список, как выбор времени в форме звонка.
+function selectGrade(grade: (typeof SCHOOL_GRADES)[number]) {
+    state.schoolGrade = grade
+    gradeOpen.value = false
+}
+
 // Отдаёт проверенного схемой ребёнка наверх; сохранение и выбор – забота родителя.
 function onSubmit(event: FormSubmitEvent<NewChild>) {
     emit("submit", {
@@ -36,7 +44,7 @@ function onSubmit(event: FormSubmitEvent<NewChild>) {
         :schema="childSchema"
         :state="state"
         :validate-on="['input', 'change']"
-        class="flex flex-col gap-2"
+        class="bg-default flex flex-col gap-2 rounded-lg p-4"
         @submit="onSubmit"
     >
         <UFormField name="name">
@@ -68,19 +76,41 @@ function onSubmit(event: FormSubmitEvent<NewChild>) {
                 />
             </UFormField>
             <UFormField name="schoolGrade">
-                <USelect
-                    v-model="state.schoolGrade"
-                    :items="SCHOOL_GRADE_ITEMS"
-                    value-key="value"
-                    placeholder="Класс"
-                    aria-label="Класс"
-                    size="xl"
-                    color="secondary"
-                    variant="subtle"
-                    class="w-full"
-                    :content="{ bodyLock: false }"
-                    :ui="{ ...fieldUi, content: 'bg-white shadow-xs' }"
-                />
+                <!-- ПОЧЕМУ поповер, а не USelect: выбор класса выглядит как выбор времени в форме звонка -->
+                <UPopover
+                    v-model:open="gradeOpen"
+                    :content="{ align: 'start' }"
+                    :ui="{
+                        content:
+                            'ring-transparent shadow-sm transition duration-150 ease-out bg-default'
+                    }"
+                >
+                    <UButton
+                        :label="state.schoolGrade ?? 'Класс'"
+                        aria-label="Класс"
+                        size="xl"
+                        color="secondary"
+                        variant="soft"
+                        type="button"
+                        class="w-full justify-between max-md:text-base!"
+                        :ui="{ base: 'truncate' }"
+                        trailing-icon="ph:caret-down-bold"
+                    />
+                    <template #content>
+                        <div class="flex max-h-72 flex-col gap-1 overflow-y-auto p-2">
+                            <UButton
+                                v-for="grade in SCHOOL_GRADES"
+                                :key="grade"
+                                :label="grade"
+                                size="xl"
+                                variant="ghost"
+                                type="button"
+                                class="font-semibold"
+                                @click="selectGrade(grade)"
+                            />
+                        </div>
+                    </template>
+                </UPopover>
             </UFormField>
         </div>
 
