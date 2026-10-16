@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-// Инлайн-форма нового ребёнка (кабинет и запись): имя, дата рождения, класс; ошибки – по клику «Сохранить».
+// Форма нового ребёнка для MeChildDialog: имя, дата рождения, класс; ошибки – по клику «Сохранить».
 import type { FormSubmitEvent } from "@nuxt/ui"
 import { SCHOOL_GRADES } from "~/constants/school-grades"
 import { childSchema, type ChildFormState } from "~/schemas/child.schema"
@@ -44,7 +44,7 @@ function onSubmit(event: FormSubmitEvent<NewChild>) {
         :schema="childSchema"
         :state="state"
         :validate-on="['input', 'change']"
-        class="bg-default flex flex-col gap-2 rounded-lg p-4"
+        class="flex flex-col gap-2"
         @submit="onSubmit"
     >
         <UFormField name="name">

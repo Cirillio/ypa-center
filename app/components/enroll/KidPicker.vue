@@ -26,15 +26,9 @@ const isAdding = ref<boolean>(false)
 // Roving tabindex: Tab попадает в группу один раз – на выбранного ребёнка или на первого.
 const focusableChildId = computed(() => selectedChildId.value ?? props.children[0]?.id)
 
-// Закрывает форму добавления; черновик живёт в самой форме и уходит вместе с ней.
-function closeForm() {
-    isAdding.value = false
-}
-
-// Отдаёт нового ребёнка наверх; выбор его после сохранения делает композабл.
+// Отдаёт нового ребёнка наверх; диалог закрывается сам, выбор после сохранения делает композабл.
 function submitForm(child: NewChild) {
     emit("add", child)
-    closeForm()
 }
 </script>
 
@@ -110,14 +104,8 @@ function submitForm(child: NewChild) {
                 {{ errorText }}
             </p>
 
-            <MeChildForm
-                v-if="isAdding"
-                :is-saving="isSaving"
-                @submit="submitForm"
-                @cancel="closeForm"
-            />
+            <MeChildDialog v-model:open="isAdding" :is-saving="isSaving" @submit="submitForm" />
             <UButton
-                v-else
                 label="Добавить ребёнка"
                 leading-icon="ph:plus-bold"
                 color="info"

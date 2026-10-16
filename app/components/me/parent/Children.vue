@@ -21,13 +21,8 @@ const openForm = () => {
     isAdding.value = true
 }
 
-const cancelForm = () => {
-    isAdding.value = false
-}
-
 const submitForm = (child: NewChild) => {
     emit("add", child)
-    cancelForm()
 }
 </script>
 
@@ -79,15 +74,8 @@ const submitForm = (child: NewChild) => {
             </div>
             <p v-else class="text-muted text-sm italic">Пока не добавлено ни одного ребёнка</p>
 
-            <MeChildForm
-                v-if="isAdding"
-                :is-saving="isSaving"
-                class="max-w-md"
-                @submit="submitForm"
-                @cancel="cancelForm"
-            />
+            <MeChildDialog v-model:open="isAdding" :is-saving="isSaving" @submit="submitForm" />
             <UButton
-                v-else
                 icon="ph:plus-bold"
                 color="info"
                 variant="soft"
