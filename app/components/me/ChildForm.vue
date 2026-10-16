@@ -120,7 +120,7 @@ function onSubmit(event: FormSubmitEvent<NewChild>) {
                 icon="ph:check-bold"
                 label="Сохранить"
                 :loading="isSaving"
-                class="flex-1 justify-center"
+                class="flex-1 justify-center text-base font-bold"
             />
             <UButton
                 type="button"
