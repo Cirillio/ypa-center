@@ -54,9 +54,9 @@ const fmt = (n: number) =>
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
                 <!-- Calculator -->
                 <div
-                    class="shadow-card flex flex-col gap-2 rounded-sm bg-white px-3 py-2 md:gap-4 md:p-4"
+                    class="shadow-card flex flex-col gap-4 rounded-sm bg-white p-5 md:gap-5 md:p-6"
                 >
-                    <h3 class="text-secondary text-xl font-extrabold md:text-3xl">
+                    <h3 class="text-secondary text-2xl font-extrabold md:text-3xl">
                         Посчитай выгоду
                     </h3>
 
@@ -65,14 +65,14 @@ const fmt = (n: number) =>
                         <span class="text-muted text-sm font-semibold">
                             Количество занятий за 4 недели
                         </span>
-                        <div class="flex flex-wrap gap-2">
+                        <div class="grid grid-cols-5 gap-2 sm:flex sm:flex-wrap">
                             <UButton
                                 v-for="tier in tiers"
                                 :key="tier.lessons"
                                 size="lg"
                                 :variant="selectedLessons === tier.lessons ? 'solid' : 'soft'"
                                 :color="selectedLessons === tier.lessons ? 'primary' : 'secondary'"
-                                class="flex size-7 justify-center rounded-lg font-bold md:size-9"
+                                class="flex h-11 w-full justify-center rounded-lg text-base font-bold sm:size-12 md:text-lg"
                                 @click="
                                     () => {
                                         selectedLessons = tier.lessons
@@ -82,7 +82,7 @@ const fmt = (n: number) =>
                                 {{ tier.lessons }}
                             </UButton>
                         </div>
-                        <span class="text-muted text-xs font-medium">
+                        <span class="text-muted text-sm font-medium">
                             {{ selectedLessons }}
                             {{ pluralize(selectedLessons, ["занятие", "занятия", "занятий"]) }} за 4
                             недели - {{ lessonsPerWeek }}
@@ -128,7 +128,7 @@ const fmt = (n: number) =>
                         :to="EnrollRoutesEnum.Subscription"
                         color="secondary"
                         size="lg"
-                        class="group w-fit"
+                        class="group w-full justify-center sm:w-fit"
                     >
                         <span class="text-base font-bold lg:text-lg">Перейти к составлению</span>
                         <UIcon
