@@ -38,13 +38,7 @@ const formattedTime = computed(() => {
 })
 
 const formattedPrice = computed(() =>
-    !props.isUpcoming
-        ? "Завершено"
-        : props.isFree
-          ? "Бесплатно"
-          : props.price != null
-            ? formatRub(props.price)
-            : ""
+    !props.isUpcoming ? "Завершено" : props.price != null ? formatRub(props.price) : ""
 )
 </script>
 
@@ -140,6 +134,13 @@ const formattedPrice = computed(() =>
                         "
                     />
                     <span
+                        v-if="isUpcoming && isFree"
+                        class="bg-secondary/10 text-secondary rounded-xs px-2 py-0.5 font-bold whitespace-nowrap normal-case"
+                    >
+                        Вход свободный
+                    </span>
+                    <span
+                        v-else
                         :class="isUpcoming ? 'text-primary' : 'text-neutral-500'"
                         class="truncate font-bold"
                     >

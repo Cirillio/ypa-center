@@ -88,10 +88,13 @@ function handleClick() {
                 </span>
 
                 <span
-                    class="ml-auto text-base"
-                    :class="event.is_free ? 'text-secondary' : 'text-primary'"
+                    v-if="event.is_free"
+                    class="bg-secondary/10 text-secondary ml-auto rounded-xs px-2 py-0.5 text-base whitespace-nowrap"
                 >
-                    {{ event.is_free ? "Бесплатно" : formatRub(event.price ?? 0) }}
+                    Вход свободный
+                </span>
+                <span v-else class="text-primary ml-auto text-base">
+                    {{ formatRub(event.price ?? 0) }}
                 </span>
             </div>
         </div>
