@@ -104,8 +104,10 @@ const headingId = computed(() => `club-${props.activity.id}`)
                 </ul>
             </header>
 
-            <!-- Описание -->
-            <p class="text-default line-clamp-4 text-base leading-relaxed font-medium text-pretty">
+            <!-- ПОЧЕМУ разное число строк: на телефоне 4 строки – треть описания, на десктопе оно влезает в 5–6 -->
+            <p
+                class="text-default line-clamp-7 text-base leading-relaxed font-medium text-pretty sm:line-clamp-6 lg:line-clamp-5 xl:line-clamp-6"
+            >
                 {{ activity.description }}
             </p>
 
