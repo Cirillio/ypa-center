@@ -42,7 +42,8 @@ export default defineNuxtConfig({
         "/gallery": { ssr: true },
 
         "/about": { ssr: true },
-        "/teachers": { ssr: true },
+        // ПОЧЕМУ 301: страница слита с «О нас» – старые ссылки и поисковики переезжают на якорь
+        "/teachers": { redirect: { to: "/about#partners", statusCode: 301 } },
         "/privacy": { ssr: true },
         "/consent": { ssr: true },
 
@@ -73,7 +74,6 @@ export default defineNuxtConfig({
             { loc: "/", priority: 1.0, changefreq: "weekly" },
             { loc: "/clubs", priority: 0.9, changefreq: "weekly" },
             { loc: "/about", priority: 0.7, changefreq: "monthly" },
-            { loc: "/teachers", priority: 0.7, changefreq: "monthly" },
             { loc: "/gallery", priority: 0.6, changefreq: "monthly" },
             { loc: "/privacy", priority: 0.2, changefreq: "yearly" },
             { loc: "/consent", priority: 0.2, changefreq: "yearly" }

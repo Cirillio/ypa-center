@@ -1,13 +1,18 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+// Шапка блока педагогов на странице «О нас» (бывшая страница /teachers), якорь #partners.
+</script>
 
 <template>
-    <UiPageSection>
+    <section
+        id="partners"
+        class="relative z-10 flex w-full scroll-mt-(--ui-header-height) pt-12 pb-8 md:pt-20 lg:pt-24"
+    >
         <UContainer class="relative z-10 flex flex-col gap-8">
-            <UiSectionLeading as="h1" subtitle="Наша команда" icon="ph:users-duotone" center>
+            <UiSectionLeading subtitle="Наши партнёры" icon="ph:users-duotone" center>
                 <template #title>
                     <span class="text-secondary">
-                        Наша<br />
-                        <span class="text-primary">команда</span>
+                        Наши<br />
+                        <span class="text-primary">партнёры</span>
                     </span>
                 </template>
                 <template #description>
@@ -24,5 +29,5 @@
                 description="Узнайте, какие занятия ведёт каждый педагог."
             />
         </UContainer>
-    </UiPageSection>
+    </section>
 </template>

@@ -16,7 +16,7 @@ const NAVIGATION_LINKS: FooterLink[] = [
     { label: "О нас", to: "/about" },
     { label: "Кружки", to: "/clubs" },
     { label: "События", to: "/#events" },
-    { label: "Учителя", to: "/teachers" },
+    { label: "Наши партнёры", to: "/about#partners" },
     { label: "Галерея", to: "/gallery" }
 ]
 

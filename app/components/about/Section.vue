@@ -19,10 +19,10 @@
             </UiSectionLeading>
 
             <PromoFloatCard
-                to="/teachers"
+                to="/about#partners"
                 icon="ph:chalkboard-teacher-duotone"
-                sublabel="Наша"
-                label="Команда"
+                sublabel="Наши"
+                label="Партнёры"
                 description="Внимательные педагоги, которые любят своё дело."
             />
 

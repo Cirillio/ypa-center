@@ -92,10 +92,10 @@ const GRID_CLASS: Record<Exclude<Variant, "empty" | "pending">, string> = {
 
             <!-- Floating promo card -->
             <PromoFloatCard
-                to="/teachers"
+                to="/about#partners"
                 icon="ph:chalkboard-teacher-duotone"
                 sublabel="Наши"
-                label="Учителя"
+                label="Партнёры"
                 description="Профессионалы, которые вдохновляют детей и помогают найти призвание."
                 go-text="Познакомиться"
                 class="max-md:relative! max-md:size-auto!"
