@@ -56,6 +56,8 @@ export interface WeeklySlot {
     groupName: string
     maxCapacity: number
     available: number
+    // Занятие этой недели перенесено маской: исходное время начала («09:00»); день API не отдаёт
+    rescheduledFrom?: string
 }
 
 export enum SchoolClasses {

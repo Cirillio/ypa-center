@@ -19,7 +19,11 @@ function toWeeklySlot(slot: WeekScheduleSlot): WeeklySlot {
         endTime: slot.end_time,
         groupName: slot.group_name,
         maxCapacity: slot.capacity.max,
-        available: slot.capacity.free
+        available: slot.capacity.free,
+        // ПОЧЕМУ: день и время уже новые – без пометки перенос выглядит обычным занятием, а исходное просто пропадает
+        ...(slot.is_rescheduled
+            ? { rescheduledFrom: slot.override?.original_start_time ?? slot.start_time }
+            : {})
     }
 }
 

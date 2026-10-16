@@ -96,6 +96,25 @@ describe("ScheduleService", () => {
             }
         ])
     })
+
+    it("keeps the new day and time of a rescheduled lesson and remembers the original start", async () => {
+        const { fetch } = createFakeFetch(() => ({
+            week_start: "2026-10-12",
+            week_end: "2026-10-18",
+            slots: [
+                weekSlotDto({
+                    day_of_week: 6,
+                    start_time: "12:00",
+                    end_time: "13:00",
+                    is_rescheduled: true,
+                    override: { original_start_time: "09:00", reason: "Перенос" }
+                })
+            ]
+        }))
+        const [slot] = await new ScheduleService(fetch).getWeek()
+
+        expect(slot).toMatchObject({ dayOfWeek: 0, startTime: "12:00", rescheduledFrom: "09:00" })
+    })
 })
 
 describe("EventsService", () => {

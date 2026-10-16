@@ -38,6 +38,15 @@ const cardClass = computed(() => [
         <div
             class="flex shrink-0 flex-col gap-0.5 max-lg:ml-auto max-lg:items-end max-lg:gap-0.5 lg:mt-auto"
         >
+            <!-- Перенос этой недели: исходное занятие из сетки ушло, новое не должно выглядеть обычным -->
+            <span
+                v-if="weeklySlot.rescheduledFrom"
+                :title="`Занятие перенесено, было в ${weeklySlot.rescheduledFrom}`"
+                class="bg-warning/15 text-warning w-fit rounded-md px-1.5 py-0.5 text-xs font-bold whitespace-nowrap"
+            >
+                Перенос с {{ weeklySlot.rescheduledFrom }}
+            </span>
+
             <!-- Время (desktop) -->
             <span
                 :title="`${weeklySlot.startTime}–${weeklySlot.endTime}`"
