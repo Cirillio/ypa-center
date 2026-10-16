@@ -198,17 +198,18 @@ describe("useSubscriptionCheckout: cart", () => {
         ])
     })
 
-    it("shows the selected day's slots sorted by time", async () => {
+    it("groups the whole week by weekday, each day sorted by time", async () => {
         const checkout = await withSetup(() => useSubscriptionCheckout())
-        const day = dow(checkout.selectedDay.value.dow)
-        const other = dow(day + 1)
         mocks.getWeek.mockResolvedValue([
-            slot(1, day, "17:00"),
-            slot(2, other, "09:00"),
-            slot(3, day, "09:30")
+            slot(1, 1, "17:00"),
+            slot(2, 3, "09:00"),
+            slot(3, 1, "09:30")
         ])
         await checkout.refreshSlots()
 
-        expect(checkout.slotsForSelectedDay.value.map((s) => s.id)).toEqual([3, 1])
+        const ids = (dayOfWeek: number) => checkout.slotsByDow.value[dayOfWeek]?.map((s) => s.id)
+        expect(ids(1)).toEqual([3, 1])
+        expect(ids(3)).toEqual([2])
+        expect(ids(0)).toBeUndefined()
     })
 })

@@ -2,11 +2,11 @@ import type { PlanTier, SubscriptionSlotConflict, WeeklySlot } from "~/types"
 
 const LESSONS_PER_SLOT = 4
 
-// Управляет состоянием конструктора абонемента: день недели, снимки выбранных слотов, подбор тарифа и конфликты.
+// Управляет состоянием конструктора абонемента: расписание недели по дням, снимки выбранных слотов, подбор тарифа и конфликты.
 export function useSubscriptionCheckout() {
     const scheduleService = useScheduleService()
     const { tiers } = useSubscriptionPlans()
-    const { weekDays, selectedDay } = useSchedule()
+    const { weekDays } = useSchedule()
 
     const selectedSlots = ref<WeeklySlot[]>([])
 
@@ -31,12 +31,17 @@ export function useSubscriptionCheckout() {
         return counts
     })
 
-    const slotsForSelectedDay = computed<WeeklySlot[]>(() =>
-        (weekSlots.value ?? [])
-            .filter((slot) => slot.dayOfWeek === selectedDay.value.dow)
+    // ПОЧЕМУ вся неделя сразу: родитель собирает абонемент из разных дней – вкладки прятали шесть из семи
+    const slotsByDow = computed<Record<number, WeeklySlot[]>>(() => {
+        const byDow: Record<number, WeeklySlot[]> = {}
+        const sorted = (weekSlots.value ?? [])
             .slice()
             .sort((a, b) => a.startTime.localeCompare(b.startTime))
-    )
+        for (const slot of sorted) {
+            ;(byDow[slot.dayOfWeek] ??= []).push(slot)
+        }
+        return byDow
+    })
 
     const conflicts = computed<SubscriptionSlotConflict[]>(() =>
         findSlotConflicts(selectedSlots.value)
@@ -85,8 +90,7 @@ export function useSubscriptionCheckout() {
 
     return {
         weekDays,
-        selectedDay,
-        slotsForSelectedDay,
+        slotsByDow,
         isSlotsPending,
         slotsError,
         refreshSlots,

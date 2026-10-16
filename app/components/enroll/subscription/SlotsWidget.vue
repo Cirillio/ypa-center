@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-// Виджет «Кружки по дням» с вкладками дней недели, уведомлением о конфликтах и сеткой слотов абонемента.
+// Виджет «Кружки по дням»: вся неделя сразу (как сетка /clubs), уведомление о конфликтах и выбор слотов абонемента.
 import type { ScheduleWeekDay, SubscriptionSlotConflict, WeeklySlot } from "~/types"
 
 defineProps<{
-    slots: WeeklySlot[]
+    slotsByDow: Record<number, WeeklySlot[]>
     selectedIds: Set<number>
     days: ScheduleWeekDay[]
-    selectedDow: number
     countsByDow: Record<number, number>
     conflicts: SubscriptionSlotConflict[]
     isPending: boolean
@@ -14,7 +13,6 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-    selectDay: [day: ScheduleWeekDay]
     toggleSlot: [slot: WeeklySlot]
     retry: []
 }>()
@@ -43,58 +41,65 @@ const emit = defineEmits<{
             </span>
         </p>
 
-        <EnrollSubscriptionDayTabs
-            :days="days"
-            :selected-dow="selectedDow"
-            :counts-by-dow="countsByDow"
-            @select="emit('selectDay', $event)"
-        />
-
         <EnrollSubscriptionConflictAlert :conflicts="conflicts" />
 
         <div
-            id="subscription-day-panel"
-            role="tabpanel"
-            :aria-labelledby="`subscription-day-tab-${selectedDow}`"
+            v-if="error"
+            class="bg-default flex flex-col items-center justify-center gap-3 rounded-sm py-8 text-center"
         >
-            <div
-                v-if="error"
-                class="bg-default flex flex-col items-center justify-center gap-3 rounded-sm py-8 text-center"
-            >
-                <UIcon
-                    name="ph:warning-circle-duotone"
-                    class="text-muted size-10"
-                    aria-hidden="true"
-                />
-                <p class="text-muted text-sm font-medium">Не удалось загрузить расписание.</p>
-                <UButton variant="soft" size="sm" label="Повторить" @click="emit('retry')" />
-            </div>
+            <UIcon name="ph:warning-circle-duotone" class="text-muted size-10" aria-hidden="true" />
+            <p class="text-muted text-sm font-medium">Не удалось загрузить расписание.</p>
+            <UButton variant="soft" size="sm" label="Повторить" @click="emit('retry')" />
+        </div>
 
-            <div
-                v-else-if="isPending"
-                class="grid grid-cols-2 gap-2 sm:grid-cols-3"
-                aria-busy="true"
+        <!-- ПОЧЕМУ дни подряд, а не 7 колонок: колонка рядом со сводкой ~100 px, карточка слота в неё не влезает -->
+        <div v-else class="flex flex-col gap-5" :aria-busy="isPending">
+            <section
+                v-for="day in days"
+                :key="day.dow"
+                :aria-label="day.dayShort"
+                class="flex min-w-0 flex-col gap-2"
             >
-                <USkeleton v-for="n in 6" :key="`skeleton-${n}`" class="aspect-5/3 rounded-sm" />
-            </div>
+                <div
+                    class="flex items-center gap-2 rounded-md px-3 py-1.5"
+                    :class="day.isToday ? 'bg-primary text-white' : 'bg-default text-default/95'"
+                >
+                    <span class="font-bold uppercase">{{ day.dayShort }}</span>
+                    <span
+                        v-if="countsByDow[day.dow]"
+                        class="flex min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-bold"
+                        :class="day.isToday ? 'text-primary bg-white' : 'bg-secondary text-white'"
+                        :aria-label="`Выбрано: ${countsByDow[day.dow]}`"
+                    >
+                        {{ countsByDow[day.dow] }}
+                    </span>
+                </div>
 
-            <div v-else-if="slots.length > 0" class="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                <EnrollSubscriptionSlotCard
-                    v-for="slotItem in slots"
-                    :key="slotItem.id"
-                    :slot-item="slotItem"
-                    :is-selected="selectedIds.has(slotItem.id)"
-                    @toggle="emit('toggleSlot', $event)"
-                />
-            </div>
+                <div v-if="isPending" class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    <USkeleton class="aspect-5/3 rounded-sm" />
+                </div>
 
-            <div
-                v-else
-                class="bg-default flex aspect-5/2 flex-col items-center justify-center gap-1.5 rounded-sm"
-            >
-                <UIcon name="ph:coffee-bold" class="text-dimmed size-10" aria-hidden="true" />
-                <span class="text-muted font-semibold">Выходной</span>
-            </div>
+                <div
+                    v-else-if="slotsByDow[day.dow]?.length"
+                    class="grid grid-cols-2 gap-2 sm:grid-cols-3"
+                >
+                    <EnrollSubscriptionSlotCard
+                        v-for="slotItem in slotsByDow[day.dow]"
+                        :key="slotItem.id"
+                        :slot-item="slotItem"
+                        :is-selected="selectedIds.has(slotItem.id)"
+                        @toggle="emit('toggleSlot', $event)"
+                    />
+                </div>
+
+                <p
+                    v-else
+                    class="bg-default text-muted flex items-center justify-center gap-1.5 rounded-sm py-3 text-sm font-semibold opacity-60"
+                >
+                    <UIcon name="ph:coffee-duotone" class="size-5" aria-hidden="true" />
+                    Выходной
+                </p>
+            </section>
         </div>
     </section>
 </template>

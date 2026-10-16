@@ -13,8 +13,7 @@ useSeoMeta({
 
 const {
     weekDays,
-    selectedDay,
-    slotsForSelectedDay,
+    slotsByDow,
     isSlotsPending,
     slotsError,
     refreshSlots,
@@ -94,15 +93,13 @@ function handleContinue() {
             <UContainer class="grid gap-6 lg:grid-cols-7">
                 <div class="flex min-w-0 flex-col gap-6 lg:col-span-5">
                     <EnrollSubscriptionSlotsWidget
-                        :slots="slotsForSelectedDay"
+                        :slots-by-dow="slotsByDow"
                         :selected-ids="selectedSlotIds"
                         :days="weekDays"
-                        :selected-dow="selectedDay.dow"
                         :counts-by-dow="selectedCountByDow"
                         :conflicts="conflicts"
                         :is-pending="isSlotsPending"
                         :error="slotsError"
-                        @select-day="void (selectedDay = $event)"
                         @toggle-slot="toggleSlot"
                         @retry="refreshSlots"
                     />
