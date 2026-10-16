@@ -16,8 +16,10 @@ const emit = defineEmits<{
 
 const state = reactive<ChildFormState>({ name: "", birthdate: "", schoolGrade: undefined })
 
-// Единый стиль полей – как в анкете регистрации
-const fieldUi = { base: "bg-white shadow-sm" }
+// Единый стиль полей – как в форме обратного звонка (size xl, secondary, subtle)
+const fieldUi = {
+    base: "md:text-lg !text-base bg-white font-semibold text-default placeholder:text-default/75"
+}
 
 // Отдаёт проверенного схемой ребёнка наверх; сохранение и выбор – забота родителя.
 function onSubmit(event: FormSubmitEvent<NewChild>) {
@@ -44,6 +46,9 @@ function onSubmit(event: FormSubmitEvent<NewChild>) {
                 maxlength="40"
                 placeholder="Имя ребёнка"
                 aria-label="Имя ребёнка"
+                size="xl"
+                color="secondary"
+                variant="subtle"
                 class="w-full"
                 :ui="fieldUi"
             />
@@ -55,6 +60,9 @@ function onSubmit(event: FormSubmitEvent<NewChild>) {
                     v-model="state.birthdate"
                     type="date"
                     aria-label="Дата рождения"
+                    size="xl"
+                    color="secondary"
+                    variant="subtle"
                     class="w-full"
                     :ui="fieldUi"
                 />
@@ -66,6 +74,9 @@ function onSubmit(event: FormSubmitEvent<NewChild>) {
                     value-key="value"
                     placeholder="Класс"
                     aria-label="Класс"
+                    size="xl"
+                    color="secondary"
+                    variant="subtle"
                     class="w-full"
                     :content="{ bodyLock: false }"
                     :ui="{ ...fieldUi, content: 'bg-white shadow-xs' }"
